@@ -4,3 +4,7 @@ dist
 .build-notes.md
 .DS_Store
 .screenshots
+.build-notes-*.md
+.glossary-additions-*.md
+.notes*
+*.notes

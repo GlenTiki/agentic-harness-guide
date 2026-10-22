@@ -179,7 +179,7 @@ Never say a level "solves" the bug. Say what that level adds and what is left.
 4. Do not use a term before the chapter that defines it, unless you link it and say "more on this in level N".
 5. If you introduce a term the glossary lacks, add the entry in the same commit. Entries are alphabetical, with one beginner sentence and an optional "For experts" sentence.
 
-Anchors that exist today: `agent`, `audit-log`, `brief`, `compaction`, `connector-mcp`, `constraint`, `context-window`, `definition-of-done`, `eval`, `example`, `hallucination`, `harness`, `hook`, `human-checkpoint`, `instruction-file`, `ledger`, `memory`, `model`, `permission`, `prompt`, `prompt-injection`, `read-only`, `refinement-loop`, `reviewer`, `sandbox`, `skill`, `spec`, `sub-agent`, `test`, `token`, `tool`. Check the file for additions.
+Anchors that exist today: `ablation`, `agent`, `allowlist`, `audit-log`, `brief`, `characterisation-test`, `compaction`, `compounding-error`, `connector-mcp`, `constraint`, `context-window`, `control-point`, `decomposition`, `definition-of-done`, `denylist`, `eval`, `example`, `fan-out-and-gather`, `frontmatter`, `hallucination`, `harness`, `hook`, `human-checkpoint`, `idempotent`, `instruction-file`, `isolation-of-helpers`, `ledger`, `memory`, `model`, `permission`, `prompt`, `prompt-injection`, `read-draft-write-with-confirmation-write-alone`, `read-only`, `reconciliation`, `refinement-loop`, `reviewer`, `rubric`, `sandbox`, `sensitivity`, `severity-scale`, `skill`, `spec`, `spend-cap`, `sub-agent`, `test`, `token`, `tool`. Check the file for additions.
 
 ## 8. Voice for the four reader types
 

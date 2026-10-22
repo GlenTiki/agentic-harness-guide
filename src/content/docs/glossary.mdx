@@ -6,11 +6,23 @@ tableOfContents: false
 
 Each entry gives one sentence a beginner can follow. Some add a sentence for experts. The journey links here the first time it uses a term.
 
+## Ablation
+
+Removing one part of an instruction to see what changes. If nothing changes, the part may not be doing its job on that tool.
+
+*For experts:* One run per variant shows only large effects, so a null result needs many runs before you trust it.
+
 ## Agent
 
 A model that works in a loop: it looks at the task, uses a tool, looks at the result and repeats until it decides it is done.
 
 *For experts:* An agent is a model plus a loop plus tools. The loop and the tools belong to the harness, not the model.
+
+## Allowlist
+
+A list of what is permitted, where everything not listed is refused.
+
+*For experts:* It fails safe, because a new tool or request is refused until someone decides.
 
 ## Audit log
 
@@ -24,11 +36,23 @@ The written task you give to a helper. It is the only thing the helper knows abo
 
 *For experts:* A good brief names the goal, the inputs, the limits and what to hand back.
 
+## Characterisation test
+
+A test that records what code does today, right or wrong, before you change it.
+
+*For experts:* It pins accidents as well as intentions, so name the behaviour you mean to keep.
+
 ## Compaction
 
 Squashing a long conversation into a short summary to free up room. Some detail is lost.
 
 *For experts:* Facts the summary drops are gone for the rest of the session, so keep the important ones in a file.
+
+## Compounding error
+
+When a job has many steps, each small chance of error multiplies, so the whole job fails more often than any one step.
+
+*For experts:* Assumes independent steps; correlated failures break the simple product.
 
 ## Connector (MCP)
 
@@ -46,11 +70,27 @@ The amount of text the assistant can see at once. Anything outside it, the assis
 
 *For experts:* It is measured in tokens and holds the instructions, the conversation and tool results together.
 
+## Control point
+
+A place in a job where you put a check, a limit or a human yes.
+
+*For experts:* Place them on the weakest and the irreversible steps.
+
+## Decomposition
+
+Breaking a job into steps small enough to give each one an owner and a check.
+
 ## Definition of done
 
 A written list of what must be true before a piece of work counts as finished.
 
 *For experts:* Phrase each line so a test or a reviewer can answer yes or no.
+
+## Denylist
+
+A list of what is forbidden, where everything else is permitted.
+
+*For experts:* It covers only the bad cases someone thought of.
 
 ## Eval
 
@@ -63,6 +103,14 @@ A repeatable check of how well the assistant does a task, scored the same way ea
 A sample of the answer you want, shown to the assistant so it can copy the pattern.
 
 *For experts:* Two or three varied examples usually steer format better than a paragraph of description.
+
+## Fan-out and gather
+
+Split a job into independent parts, run each on its own, then combine the results.
+
+## Frontmatter
+
+The block of settings at the top of a file, between two `---` lines. In a skill file it holds the name and the description.
 
 ## Hallucination
 
@@ -88,11 +136,21 @@ A point where the assistant must stop and wait for a person to say yes before it
 
 *For experts:* Place it before actions that are costly or hard to undo, not before every step.
 
+## Idempotent
+
+A step that gives the same result if you run it twice, so a restart is safe.
+
+*For experts:* Side-effecting steps need an idempotency key or a prior-run record.
+
 ## Instruction file
 
 A plain text file the assistant reads at the start of every session, holding the rules you do not want to repeat.
 
 *For experts:* Keep it short and current. Every line costs context on every run.
+
+## Isolation (of helpers)
+
+Giving each helper its own workspace, or letting one write at a time, so helpers do not overwrite each other.
 
 ## Ledger
 
@@ -130,11 +188,19 @@ Text inside something the assistant reads, such as an email or web page, that tr
 
 *For experts:* Treat all fetched content as data. Never let it widen the assistant's permissions.
 
+## Read, draft, write with confirmation, write alone
+
+The order of trust for connecting a system. Move up a step only when the step below has earned it.
+
 ## Read-only
 
 Access that lets the assistant look but not change anything.
 
 *For experts:* Start every new connection read-only and add write access only for a named task.
+
+## Reconciliation
+
+Checking a set of figures against an outside record, such as a bank statement, and explaining every difference.
 
 ## Refinement loop
 
@@ -148,11 +214,23 @@ A second pair of eyes that checks the work, ideally with no stake in it and none
 
 *For experts:* A reviewer that shares the author's context tends to agree with it. Give it the output and the checklist only.
 
+## Rubric
+
+A short list of qualities with a plain description of good and bad for each, used to review work.
+
 ## Sandbox
 
 A closed space where the assistant can run things without touching the rest of your machine or accounts.
 
 *For experts:* Enforce it at the operating system level, not by asking the model to behave.
+
+## Sensitivity
+
+How much an answer changes when one input changes. Moving each input by the same amount shows which one matters most.
+
+## Severity scale
+
+A fixed ordering of findings (blocker, major, minor) so that serious problems do not look like polish.
 
 ## Skill
 
@@ -165,6 +243,10 @@ A packaged set of instructions the assistant loads only when a task needs it.
 A short written description of what you want built or done, and how you will know it is right.
 
 *For experts:* A spec states intent, acceptance criteria and what is out of scope.
+
+## Spend cap
+
+A fixed limit on paid usage for a run, after which the run stops.
 
 ## Sub-agent
 
