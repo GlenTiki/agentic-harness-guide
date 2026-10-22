@@ -12,6 +12,7 @@ export default defineConfig({
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/GlenTiki/agentic-harness-guide' }],
       editLink: { baseUrl: 'https://github.com/GlenTiki/agentic-harness-guide/edit/main/' },
       lastUpdated: false,
+      disable404Route: true,
       sidebar: [
         {
           label: 'Reference shelf',
