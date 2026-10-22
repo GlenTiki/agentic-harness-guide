@@ -5,36 +5,164 @@ description: Write the rules once in an instruction file, and keep memory and co
 
 ## Scene
 
-TODO(writer)
+*Last time: you built a strong ask from a goal, constraints and an example, and the assistant started to show its month count before giving a total.*
+
+A new flatmate moves in. Sam explains the house rules once: bins go out on Tuesday, the top shelf is shared, the heating goes off at night. Nobody explains them again every morning, because that would be a very tiring flat. Sam's assistant is the opposite. Every new chat is a flatmate who has just arrived, and the rules have to be explained from scratch.
 
 ## The idea
 
-TODO(writer)
+**Write the rules down once, in a place the assistant reads every time.** That place is an **[instruction file](../../glossary/#instruction-file)**: a short plain text file of standing rules. It sits on the desk at the start of every session, so you stop repeating yourself.
+
+Three ideas make this work:
+
+- **The instruction file** holds rules you write: how you want things done.
+- **[Memory](../../glossary/#memory)** holds facts the assistant keeps between sessions: things it learned about you or the job.
+- **Context hygiene** is the habit of keeping the desk tidy, so the useful things stay on it.
+
+Many chat tools let you save standing instructions in their settings or in a named project. Tools that live in a code editor or a terminal usually read a named file from your project folder. The idea is the same in all of them. The reference shelf covers the file names and loading rules in [instruction files](../../shelf/context/instruction-files/).
+
+Here is Sam's file. It is short on purpose.
+
+```text
+# Money admin: standing brief
+
+## Who and what
+- I am Sam. I do the monthly money admin for a flat of three: me, Priya and Tom.
+- Currency is euros. Round to the cent.
+- Shared bills are electricity, broadband, heating and bins. Rent is handled separately.
+
+## How to answer
+- Use only the figures I give you in the chat. If a figure is missing, ask. Do not guess.
+- List each month once. Before the result, say how many months you counted and the sum of the figures.
+- If the count is not what I expect, stop and tell me.
+- Keep answers under ten lines. Use plain words.
+
+## Splitting
+- Split in three equal shares unless I say otherwise.
+- If a cent is left over, say so and give it to me.
+
+## Limits
+- Draft only. Never send a message or move money.
+```
+
+Notice what the file does not contain.
+
+**Leave out**
+
+- **Secrets.** No passwords, account numbers or tokens. The file is read as plain text and may be stored or logged.
+- **This month's figures.** They change. Paste them into the chat.
+- **Things the assistant can see for itself.** If a file is on the desk, do not describe it.
+- **Whole documents.** Link to them or paste the relevant part when needed.
+- **Vague wishes.** "Be helpful" and "be accurate" cannot be followed or checked.
+- **One-off requests.** If it only applies today, say it in the chat.
+
+:::tip[New to this]
+You can start without any setting. Paste the file at the top of a new chat. The effect is the same. The setting only saves you the pasting.
+:::
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant. This takes about five minutes.
+
+1. Copy Sam's file above. Change the names and the shared bills to fit your own life, or keep Sam's.
+2. Open a new chat and paste the file as your first message. Add this line under it:
+
+```text
+Acknowledge these rules in one sentence, then wait for figures.
+```
+
+3. Send this, with a deliberate gap. June is missing:
+
+```text
+Bills last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split it.
+```
+
+An example reply:
+
+```text
+I counted 11 months. June is missing. I have not guessed it.
+Sum of the 11 figures: 1,978.00.
+Please send June and I will split the full total.
+```
+
+That is the rule "ask, do not guess" in action. Without the file, many assistants would quietly total what they had, or invent a plausible June.
+
+4. Now send June (142). Check the final total yourself: it should be 2,120.00, and two flatmates pay 706.67 while one pays 706.66.
+5. Optional: save the file in your tool's standing-instructions place and start a new chat without pasting. Ask "What are my rules?" to see that it is loaded.
+
+The February slip is still possible. The rule says to count, and the assistant can still miscount. A rule is a request, not a lock. Level 3 reduces the slip by reading the data directly. Level 5 proves the count with a test.
 
 ## Under the bonnet
 
-TODO(writer)
+An instruction file does not teach the model anything. The model learns nothing from your chats. The tool simply adds the file's text to the start of the prompt each time, so it is on the desk before you type. If the file is long, it takes space from everything else.
+
+Memory works in a similar way. Some tools notice a fact ("Priya pays on the first of the month") and save it. In a later chat, the tool picks the relevant notes and puts them on the desk. The model reads them as text, like everything else. The difference from an instruction file is who writes it: you write the file, the tool writes the memory.
+
+Context hygiene follows from the size of the desk. A long chat drifts: old detail gets shortened by the tool, and the assistant can lose a rule you gave an hour ago. Good habits cost little:
+
+- One job per chat. Start a new chat for a new job.
+- Restate key facts after a long chat, or ask for a short summary and carry that into a fresh chat.
+- When the assistant gets something wrong twice, fix the rule in the file instead of arguing in the chat.
+- Remove rules that no longer apply. A stale rule is an instruction the assistant will obey.
+
+The shelf pages on [context management](../../shelf/context/context-management/) and [memory](../../shelf/context/memory/) go deeper.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+Every line in an instruction file costs context on every run, and a long file dilutes the lines that matter. Treat it like a configuration file: each line should be a rule you would be annoyed to repeat, and the file should be reviewed when behaviour changes.
+
+Rules in a file are advisory. The model weighs them with the rest of the prompt, so a conflicting instruction in the chat or in fetched text can override them. A rule that must hold, such as "never send a message", belongs in a harness control that runs whether or not the model agrees. Level 4 covers that.
+
+Memory is a second source of instructions. A wrong or planted entry misleads every later session, so it needs the same review as code. When a memory is wrong, edit it in place. Do not append a correction below it, or both versions reach the desk.
+
+In a finance team, the standing brief is the close procedure, with a named owner and a review date.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+Read the instruction file at the start of every session. Follow it unless the user's current message explicitly overrides a specific rule.
+
+If you are asked to remember a fact, store only durable facts. Do not store secrets, session state or one-off figures.
+
+If a stored rule or memory is wrong, edit it in place. Do not append a correction.
+
+If a rule is missing and you need it to proceed, ask. Do not infer it.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Writing an essay.** A long file costs context every run and buries the rules that matter. Fix: keep one rule per line, cut anything you would not be annoyed to repeat, and check the file monthly.
+
+**Putting secrets or this month's figures in it.** Secrets can leak, and figures go stale. Fix: keep the file for rules only. Paste figures into the chat. Keep secrets out of any text the assistant reads.
+
+**Never updating it.** The assistant keeps obeying a rule that stopped being true. Fix: when you correct the assistant twice for the same thing, change the file. When a job changes, delete the rules that no longer apply.
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Write a short instruction file with who, how, limits and a "draft only" line.
+- Say what to leave out of it, and why.
+- Tell an instruction file from memory, and say who writes each.
+- Keep a chat tidy: one job per chat, restate key facts, refresh long chats.
+
+**Self-test**
+
+1. The assistant keeps splitting bills in the wrong currency. Where do you fix it, and why not in the chat?
+2. A teammate wants to put the flat's bank login in the instruction file "so it is handy". What do you say?
+3. Why can a rule such as "never send a message" in an instruction file not be fully relied on?
+
+<details>
+<summary>Answers</summary>
+
+1. Fix it in the instruction file, so every future chat has it. Fixing it in the chat solves it for that chat only, and you will repeat yourself next time.
+2. No. Keep secrets out of any text the assistant reads. The file is plain text and may be stored, shared or logged. Use the login yourself, or use a proper secure connection (level 3 and level 4).
+3. The model treats the rule as one input among many. A conflicting instruction, or text inside something it reads, can outweigh it. A rule that must always hold needs a control outside the model (level 4).
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+The assistant now knows your rules, but it still cannot see your bank export or your shared sheet, so you copy and paste everything by hand. Level 3 gives it hands, with safe limits.

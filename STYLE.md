@@ -168,7 +168,7 @@ Never say a level "solves" the bug. Say what that level adds and what is left.
 1. Every core idea has exactly one home page. The home page states its purpose once. Other pages link to the home page and do not restate it.
 2. Journey ideas have their home in the level that introduces them (see the map in `journey/index.mdx`). Reference-shelf pages are deep dives for those ideas. A deep dive may restate detail the journey omits, but not the purpose.
 3. Link to a home page the first time the idea appears on a page. Later in the same page, use plain text.
-4. Use relative links with a trailing slash, as the existing pages do. From a page at `/journey/<page>/`, `/workflows/<page>/` or `/appendix/<page>/`, a sibling in another section is `../../workflows/<page>/`. From a shelf page at `/shelf/<group>/<page>/`, a journey page is `../../../journey/<page>/`. The `npm run check:links` script catches mistakes.
+4. Use relative links with a trailing slash, as the existing pages do. From a page at `/journey/<page>/`, `/workflows/<page>/` or `/appendix/<page>/`, a sibling in another section is `../../workflows/<page>/`. The section index pages (`journey/index.mdx`, `workflows/index.mdx`) sit one level higher, so they use `../` where chapters use `../../`. From a shelf page at `/shelf/<group>/<page>/`, a journey page is `../../../journey/<page>/`. The `npm run check:links` script catches mistakes.
 5. Link text says where the link goes: "see [instruction files](../02-house-rules/)", never "click here".
 
 ## 7. Glossary on first use
@@ -179,7 +179,7 @@ Never say a level "solves" the bug. Say what that level adds and what is left.
 4. Do not use a term before the chapter that defines it, unless you link it and say "more on this in level N".
 5. If you introduce a term the glossary lacks, add the entry in the same commit. Entries are alphabetical, with one beginner sentence and an optional "For experts" sentence.
 
-Anchors that exist today: `agent`, `audit-log`, `connector-mcp`, `context-window`, `eval`, `hallucination`, `hook`, `instruction-file`, `ledger`, `memory`, `model`, `permission`, `prompt`, `prompt-injection`, `reviewer`, `sandbox`, `skill`, `spec`, `sub-agent`, `test`, `token`, `tool`. Check the file for additions.
+Anchors that exist today: `agent`, `audit-log`, `brief`, `compaction`, `connector-mcp`, `constraint`, `context-window`, `definition-of-done`, `eval`, `example`, `hallucination`, `harness`, `hook`, `human-checkpoint`, `instruction-file`, `ledger`, `memory`, `model`, `permission`, `prompt`, `prompt-injection`, `read-only`, `refinement-loop`, `reviewer`, `sandbox`, `skill`, `spec`, `sub-agent`, `test`, `token`, `tool`. Check the file for additions.
 
 ## 8. Voice for the four reader types
 

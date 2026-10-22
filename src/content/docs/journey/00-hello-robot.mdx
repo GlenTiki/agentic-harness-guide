@@ -5,36 +5,161 @@ description: Learn what a model, a prompt and a context window are, and why the 
 
 ## Scene
 
-TODO(writer)
+Sam is planning a birthday dinner for a friend. Sam asks a chat assistant for ideas, gets a good answer, and asks the same question again to double-check. The second answer is different. Sam now has two plans, no extra certainty and a mild suspicion that the assistant is making things up as it goes.
+
+It is. That is how it works, and once you see why, it stops being annoying and starts being useful.
 
 ## The idea
 
-TODO(writer)
+A **[model](../../glossary/#model)** is a program that has learned language from a huge amount of writing, and it works by writing the most fitting next piece of text, one small piece at a time. You steer it with a **[prompt](../../glossary/#prompt)**, which is just the text you send. It can only use what fits in its **[context window](../../glossary/#context-window)**, which is the amount of text it can see at once.
+
+Those three words explain most of what surprises people:
+
+- The model writes plausible text. It does not look facts up. That is why it can be fluent and wrong in the same sentence.
+- The model picks among several fitting continuations. That is why the same prompt gives different answers.
+- The model only sees what is in the window. That is why it "forgets" the start of a very long chat, and why a brand new chat knows nothing about the last one.
+
+:::tip[New to this]
+A **token** is the small chunk of text a model reads and writes. It is often a word or part of a word. The context window is counted in tokens. You do not need to count them. Just know that a long chat, a pasted document and the assistant's own replies all use up the same space.
+:::
+
+Think of the context window as a desk. Everything on the desk, the assistant can use. Everything off the desk, it cannot. A desk has a size, and when it is full, something has to go.
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant. Free versions are fine. This takes about five minutes.
+
+**Part 1: ask twice.** Open a new chat and paste this:
+
+```text
+Plan a birthday dinner for a friend who turns 30 next month. There are six of us. Give me one idea for the venue and one for the menu.
+```
+
+Copy the answer. Open another new chat and paste exactly the same words. Compare. An example of what you might see:
+
+```text
+First chat:
+Venue: a long table in the back room of a neighbourhood Italian restaurant.
+Menu: shared starters, a choice of two pastas, and a tiramisu with a candle in it.
+
+Second chat:
+Venue: a home dinner at your place, with the table pushed against a window.
+Menu: a slow-cooked stew that you can make the day before, and a lemon cake.
+```
+
+Both are fine. Neither is "the" answer. That is the model choosing among good options.
+
+**Part 2: the desk fills up.** In the first chat, add this:
+
+```text
+One guest is vegetarian and one cannot eat nuts. Update the menu.
+```
+
+Read the new menu. Check that both limits are respected. Now keep chatting for a while about decorations, music and a playlist. Then ask:
+
+```text
+Remind me of the dietary needs we planned for.
+```
+
+In a short chat it will answer correctly, because the early messages are still on the desk. In a very long one, a tool may drop or shorten the early part, and the answer can slip. Try to notice where your tool's limit is, if it shows one.
+
+**Part 3: the money question.** Sam does the flat's money admin. Open a new chat and paste this one-line ask along with the figures:
+
+```text
+Here are our shared bills for last year, in euros per month: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split the total between three flatmates.
+```
+
+An example reply:
+
+```text
+Here is the yearly breakdown:
+
+Jan 212
+Feb 198
+Feb 198
+Mar 187
+Apr 164
+May 151
+Jun 142
+Jul 139
+Aug 141
+Sep 158
+Oct 183
+Nov 205
+Dec 240
+
+Total: 2,318
+Each flatmate pays: 772.67
+```
+
+It looks tidy and it sounds sure. Now check it. Count the months in the list. Add the twelve figures yourself on a calculator or in a spreadsheet such as Sheets or Excel.
+
+The honest total is 2,120, so each flatmate owes 706.67. The reply above lists February twice, so everyone is asked for 66 euros too much. Your reply may be right, or wrong in a different place. The point is that you checked.
+
+Keep this slip in mind. You will meet it at every level, and each level gives you a better way to deal with it.
 
 ## Under the bonnet
 
-TODO(writer)
+When you press send, the tool packs up the whole conversation so far, including your latest message, and sends it to the model. The model reads all of it and writes a reply, one token at a time. At each step it weighs many possible next tokens and picks one. The pick is partly random, which is why two runs differ.
+
+Some tools expose a setting that controls how adventurous that pick is. Chat apps usually hide it. A cautious setting gives more repeatable answers. An adventurous one gives more varied answers. Neither setting makes the model look anything up.
+
+Because the model rebuilds its view from the text it is sent each time, it has no memory of its own. If it seems to remember yesterday, the tool has put yesterday's text back on the desk for it. Level 2 returns to this.
+
+The model also has no sense of when it is unsure. It will write "Total: 2,318" in the same tone as "Total: 2,120". A confident wrong statement has a name: a **[hallucination](../../glossary/#hallucination)**. The word is dramatic, but the cause is ordinary. The model wrote text that fit the pattern.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+Variation has two sources: sampling randomness and differences in the prompt. Lowering the randomness setting reduces variation but does not remove it in every provider, so do not build a check that expects identical text twice. Compare meaning or compare a computed result instead.
+
+The context limit is a ceiling, not a promise. Long inputs can degrade how well details are used, even when they fit. Treat the window as a budget to spend on the material that matters, not a bucket to fill.
+
+In a finance team's month-end close, the same slip appears as a reconciliation break caused by a duplicated ledger line. The cause differs. The shape is the same: a fluent summary that no one recounted.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+Treat your context window as limited. Keep only what the task needs.
+
+Do not state a figure you did not compute from supplied data. When you total a list, print each item once and print the item count. If the count does not match what the user expects, say so before giving the total.
+
+When you are unsure, say what is uncertain. Do not fill gaps with plausible text.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Treating the assistant as a fact lookup.** It writes likely text. It is not a database. Fix: give it the material (the bills, the guest list) and ask it to work from that. Check anything that matters.
+
+**Judging it on one answer.** One reply is one draw from many. Fix: for anything that matters, ask twice, or ask it to give two options and compare them.
+
+**Expecting it to remember last week.** A new chat is a blank desk. Fix: paste in what matters, or save it somewhere the tool loads for you (level 2).
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Explain what a model, a prompt and a context window are in one sentence each.
+- Say why the same question can give different answers.
+- Explain why a long chat can lose its beginning.
+- Check a list of numbers for a missing or repeated item before you trust a total.
+
+**Self-test**
+
+1. You ask the same question in two new chats and get two different good answers. Is something broken?
+2. A friend says, "The assistant told me my flight leaves at nine, so it must know." What is the weak point?
+3. You have chatted for hours about a trip and the assistant now suggests a hotel that ignores your budget, which you mentioned at the start. What is the most likely reason, and what is one fix?
+
+<details>
+<summary>Answers</summary>
+
+1. No. The model chooses among fitting continuations, so variation is normal. Variation matters only when you need one exact result, and then you check the result.
+2. The model writes likely text and does not look up flights. Unless it was given the booking or a tool to fetch it, the time is a guess. Check the booking.
+3. The early message about the budget has probably dropped off the desk or been shortened. Fix: restate the budget in a new message, or start a fresh chat with a short summary of what matters.
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+A one-line ask gets a different answer each time and no clue how good it is. Level 1 shows how to say what you want, so the answer is the one you needed.

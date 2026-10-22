@@ -1,40 +1,173 @@
 ---
 title: "Level 1: Say it properly"
-description: Turn a vague ask into a strong one with a goal, constraints, examples and a refinement loop.
+description: Turn a vague ask into a strong one with a goal, constraints, an example and a refinement loop.
 ---
 
 ## Scene
 
-TODO(writer)
+*Last time: you learned that a model writes likely text, that it varies, and that it only sees what is on its desk. You also counted the months in a bills total and found a slip.*
+
+Sam types "Make my CV better" and gets back a CV that is longer, shinier and full of the word "dynamic". Sam did not say who would read it, which job it was for or what "better" meant. The assistant guessed. It is a good guesser. It is still guessing.
 
 ## The idea
 
-TODO(writer)
+**A good ask removes guesses.** Each part you add takes one guess away.
+
+There are three parts and one habit:
+
+- **Goal.** What the result is for and who will use it.
+- **[Constraints](../../glossary/#constraint).** The limits: what to use, what to avoid, how long, in what shape.
+- **[Example](../../glossary/#example).** A small sample of the result you want.
+- **The [refinement loop](../../glossary/#refinement-loop).** Ask, read, name what is wrong, ask again. One change per pass.
+
+Here is the CV ask, before and after.
+
+```text
+Before:
+Make my CV better.
+
+After:
+Goal: I am applying for an office administrator job at a small accountancy firm. The reader is a busy partner who will skim for ten seconds.
+Constraints: Keep every fact true. Do not invent skills. Use plain words. Keep it to one page. Do not use the words "dynamic" or "passionate".
+Example of the style I want for one bullet: "Booked travel and rooms for a team of 12; cut the cost by moving to a single supplier."
+Here is my CV:
+[paste]
+```
+
+The second ask is longer. It also gets a better answer the first time, which is quicker overall.
+
+:::tip[New to this]
+You do not have to write all four parts every time. For a quick question, one line is fine. Use the full shape when the result matters, when you will reuse the ask, or when the first answer disappointed you.
+:::
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant. This takes about five minutes. You will refine one ask in four passes and watch each pass change the answer. Sam's bills ask is below. Use it, or swap in a task of your own.
+
+**The starting ask**, from level 0:
+
+```text
+Here are our shared bills for last year, in euros per month: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split the total between three flatmates.
+```
+
+**Pass 1: add the goal.** Add this line to the front:
+
+```text
+Goal: work out what each of my three flatmates owes for last year's shared bills, so I can send each of them one amount.
+```
+
+What changed, in plain words: the assistant now knows the result is one number per person, not an essay on bills.
+
+**Pass 2: add constraints.** Add these lines:
+
+```text
+Constraints: Use only the figures I gave you. List each month once. Round to the cent. If the split leaves a cent over or short, say how you handled it. If a month is missing or repeated, tell me instead of guessing. Keep the answer under ten lines.
+```
+
+What changed: the assistant must not invent or repeat figures, must flag problems, and must keep it short. This is the first direct hit on the February slip. It helps. It does not prove anything yet.
+
+**Pass 3: add an example.** Add a tiny sample of the layout, using different figures so the assistant copies the shape and not the numbers:
+
+```text
+Layout I want, shown with two made-up months (Jan 100, Feb 50):
+Months counted: 2
+Total: 150.00
+Each of 3 pays: 50.00
+```
+
+What changed: the assistant now has a format to follow, so the answer is easy to scan and easy to compare across runs.
+
+**Pass 4: add a check step.** Add this:
+
+```text
+Before the final answer, state how many months you counted and the sum of the figures. If the count is not 12, stop and tell me.
+```
+
+What changed: the assistant must show the count and the sum before it commits to a result. A slip now has to be written down in plain sight, where you can see it.
+
+Send the full ask. An example reply:
+
+```text
+Months counted: 12
+Total: 2,120.00
+Each of 3 pays: 706.67 (two flatmates) and 706.66 (one flatmate), so the three shares add up to 2,120.00.
+```
+
+Now do what you did in level 0. Add the twelve figures yourself. If your total matches, the loop worked. If it does not, copy the mismatch into the chat and say what is wrong. That is the loop in action.
+
+:::note[Want consistency]
+Save the final ask as a template with blanks for the figures. Next month you paste new numbers into the same shape. The tool will not remember it for you yet, so keep it in a notes app such as Notion or Obsidian, or in a plain note on your phone. Level 2 shows a better place for it.
+:::
+
+If you do this often, you do not need to do the passes by hand. A **prompt refiner** is a reusable instruction that reads a weak ask, says what is missing and gives you a stronger one. It does the same four passes for you. See [the prompt refiner](../../appendix/prompt-refiner/), and the [line-by-line walkthrough](../../appendix/prompt-refiner-line-by-line/) if you want to know why each line is there.
 
 ## Under the bonnet
 
-TODO(writer)
+The model fills every gap in your ask with its most likely guess. A gap in the goal is filled with a typical goal. A gap in the format is filled with a typical format. Most of the time the typical guess is fine. When it is not, you get a polished answer to a question you did not ask.
+
+Each part of the ask closes a different kind of gap:
+
+- The goal closes the gap about purpose, so the model picks the right kind of answer.
+- The constraints close the gap about limits, so the model stays inside them.
+- The example closes the gap about shape, which is hard to describe and easy to show.
+- The check step makes a mistake visible, because the model has to write its count before it writes its conclusion.
+
+The loop works because one change per pass tells you which change helped. If you change five things at once and the answer improves, you learn nothing about why.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+Examples anchor the output. A single example often makes every answer look like it, including its length and word choice. Give two examples that differ, or tell the assistant which features of the example to copy.
+
+A check the assistant runs on itself is not an independent check. A model can write "Months counted: 12" and be wrong, because it wrote the number, not counted it. Self-reported counts make slips easier to spot for a human. They do not replace a test run by something else. Level 5 builds that.
+
+State constraints as observable properties, such as "each month appears once", not as intentions, such as "be accurate".
+
+In a finance team's month-end close, the same ask becomes a close checklist: a goal, tolerances, a template and a tick-box that someone other than the preparer signs.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+Before acting on an under-specified task, extract or ask for: the goal, the reader or user of the result, the constraints and the output format. If you cannot ask, state your assumptions at the top of your reply.
+
+Follow any layout example for shape only. Do not copy its values.
+
+When the task includes a check step, run it first, print its result, and stop if it fails. Do not continue past a failed check.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Changing five things at once.** The answer improves or worsens and you cannot tell why. Fix: change one thing per pass, and note what changed.
+
+**Writing vague constraints.** "Be accurate" and "be professional" cannot be checked. Fix: name something you could verify, such as "list each month once" or "no sentence over 20 words".
+
+**Asking for a check with no plan for a failure.** "Check your work" invites a confident "all fine". Fix: say what to count or compare, and what to do if it fails: "If the count is not 12, stop and tell me."
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Split an ask into goal, constraints and example.
+- Refine an ask in small passes and say what each pass changed.
+- Write a constraint that you could check by eye.
+- Ask for a count or sum before a conclusion, so a slip shows.
+
+**Self-test**
+
+1. Your first ask is "Write a bio for my website." The answer is bland. Which part of the ask do you add first, and why?
+2. You add six constraints at once and the answer gets worse. What went wrong with your method, and what do you do?
+3. Rewrite "Summarise this meeting" so it has a goal, one checkable constraint and a check step.
+
+<details>
+<summary>Answers</summary>
+
+1. The goal: who reads the bio and what they should do after reading it. Blandness comes from the assistant guessing a generic reader. An example of the tone you like also helps once the goal is set.
+2. You changed too much at once, so you cannot tell which constraint hurt. Go back to the last good version and add one constraint at a time.
+3. One version: "Goal: I could not attend and need to know what I must do. Constraints: no more than five bullets; each action names an owner. Check: before the summary, list the decisions you found and say how many; if there are none, say so." Yours may differ if it has all three parts and a checkable limit.
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+A strong ask works today, then next week you have to write it all again. Level 2 saves the rules once, so you stop repeating yourself.
