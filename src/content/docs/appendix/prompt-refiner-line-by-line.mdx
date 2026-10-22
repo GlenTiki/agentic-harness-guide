@@ -1,40 +1,282 @@
 ---
 title: "The prompt refiner, line by line"
-description: A walkthrough of every line of the prompt refiner and why it is there.
+description: Every line of the prompt refiner skill, with what it does, why it is there and what breaks without it.
 ---
+
+import { Code } from '@astrojs/starlight/components';
+import skill from '../../../../examples/prompt-refiner/SKILL.md?raw';
+
+export const lines = skill.split('\n');
+export const nonBlank = lines.filter((line) => line.trim()).length;
+export const show = (from, to) =>
+  lines
+    .slice(from - 1, to)
+    .map((text, i) => `${String(from + i).padStart(2, ' ')}  ${text}`)
+    .join('\n');
+export const showAll = () => show(1, lines.at(-1) === '' ? lines.length - 1 : lines.length);
 
 ## Scene
 
-TODO(writer)
+Sam has used [the prompt refiner](../prompt-refiner/) for a week. Then Priya reads it and asks why one line says "never invent facts". "It is obvious," says Sam. "Is it?" says Priya. "Would you bet your rent on it?"
+
+This page answers Priya. It goes through the skill one line at a time.
 
 ## The idea
 
-TODO(writer)
+**Every line in a good instruction has a job. If you cannot name the job, cut the line.**
+
+The file has {nonBlank} lines that hold text. Each one is below, in order, with three notes:
+
+- **What it does.** The plain meaning.
+- **Why.** The failure it is there to stop.
+- **Without it.** What goes wrong. Where I ran a test, I say so and give the result. Where I did not, I say the claim is reasoned, not measured.
+
+Here is the whole file with line numbers, so you can see the shape before the detail.
+
+<Code code={showAll()} lang="text" title="SKILL.md" />
+
+:::tip[New to this]
+You do not need to read every note. Read the notes for the lines you want to change. The numbers at the left of each block match the numbers above.
+:::
 
 ## Try it
 
-TODO(writer)
+You can change one line and watch what happens. This takes about ten minutes and needs any chat assistant. It uses the line that made the biggest measured difference.
+
+1. Open a new chat. Paste the whole skill. Add: "Use this as your instructions for this chat."
+2. Paste this ask as your next message, and read the reply.
+
+   ```text
+   Goal: Turn my meeting notes into a short update for my team.
+   Context: The team could not attend. They know the project but not today's discussion.
+   Inputs: My notes, pasted below.
+   Constraints: No more than five bullets. Each action names one owner. Do not add anything that is not in the notes.
+   Output format: A bulleted list, then one line saying what is still undecided.
+   Definition of done: Every action in the notes appears once, with an owner, or is marked "owner unknown".
+   What to do if unsure: Ask me. Do not guess an owner.
+
+   [notes pasted here]
+   ```
+
+3. Open a second new chat. Paste the skill again, but delete line 16 first (the rule for an ask that is already good).
+4. Paste the same ask and compare the two replies. Count the questions each one asks.
+
+In my runs the full skill asked no questions. The skill without line 16 asked two or three. Your tool may differ. That is the point of the exercise: you find out for your tool.
+
+:::note[Want consistency]
+Keep a short log of each change you make to the skill: the date, the line, the reason, and which of the six evals you re-ran. One changed line plus six re-runs is a safe habit. Five changed lines plus no re-runs is how a good skill drifts.
+:::
 
 ## Under the bonnet
 
-TODO(writer)
+Read each block, then the notes. The block shows the real file text, pulled in at build time, so the quote cannot drift from the skill.
+
+### The metadata, lines 1 to 4
+
+<Code code={show(1, 2)} lang="text" />
+
+**What it does.** The `---` line opens the metadata block (called frontmatter). `name` is what a person types or selects to call the skill. **Why.** The open Agent Skills specification asks for a name of up to 64 characters, in lowercase letters, numbers and single hyphens, matching the folder name. **Without it.** Claude Code falls back to the folder name. Other tools that follow the open specification expect the field. This is reasoned, not measured.
+
+<Code code={show(3, 3)} lang="text" />
+
+**What it does.** Says what the skill does and when to use it. **Why.** The assistant reads only this line for every installed skill, and loads the rest when a request matches. The open specification caps it at 1,024 characters. Claude Code cuts the combined description at 1,536 characters. This one is about 215, with the key use first and three example phrases a person might type. **Without it.** The skill never loads by itself, because nothing tells the assistant when it applies. Claude Code would fall back to the first line of the body, which says nothing about when to use it. Reasoned, from the documentation.
+
+<Code code={show(4, 4)} lang="text" />
+
+**What it does.** Closes the metadata block. **Why.** The tool needs to know where metadata ends and instructions begin. **Without it.** The whole file reads as metadata or as one unparsed lump. Reasoned, not measured.
+
+### The role, lines 6 to 8
+
+<Code code={show(6, 8)} lang="text" />
+
+**What it does.** A title for people, then a two-sentence job description. **Why.** The second sentence sets the one boundary that matters most. The assistant is a good guesser and will happily do the task it was only asked to improve. **Without it.** I removed both this sentence and rule 1 (line 12) and ran the code ask and the budget ask twice each. The assistant still refined and did not do the task. So on one current tool the line was insurance, not a cure. I keep it because the failure, an assistant that quietly does the task and skips the refinement, costs the reader a wrong answer they may not spot. The title line is the cheapest line in the file. Cut it if you need space.
+
+### The rules, lines 10 to 16
+
+<Code code={show(10, 10)} lang="text" />
+
+**What it does.** Starts the list of things that are always true. **Why.** Rules apply to every step. Splitting them from the steps lets the assistant check each step against the rules. **Without it.** Reasoned: rules and steps blur together, and a rule reads as one more step to do once.
+
+<Code code={show(12, 12)} lang="text" />
+
+**What it does.** Limits the output to a better prompt plus notes. It names three actions to avoid: answer, solve and draft. **Why.** A refiner that does the task hides weak prompts behind a good-looking answer. **Without it.** See line 8: no difference in my four runs on one tool. Reasoned that a weaker tool needs it.
+
+<Code code={show(13, 13)} lang="text" />
+
+**What it does.** Protects the user's voice, language and intent, and tells the assistant to touch only what is missing or unclear. **Why.** Without a limit, a refiner rewrites everything in its own style and the user no longer recognises the ask. **Without it.** Not tested. Reasoned from how assistants behave: they smooth tone toward their own.
+
+<Code code={show(14, 14)} lang="text" />
+
+**What it does.** Bans invented facts, names, figures, dates and sources. Gives gaps one visible marker, [NEEDED: what is missing]. **Why.** A [hallucination](../../glossary/#hallucination) inside a prompt is worse than one in an answer. The next assistant treats it as a fact you supplied. **Without it.** I removed this rule and ran the invoice-reminder ask three times: once with the matching checklist item kept, twice with it removed too. All three runs still used [NEEDED] and placeholders. So on one current tool, the rule and the checklist overlap and either one is enough. I keep both: a rule says what to do, and the checklist checks it was done.
+
+<Code code={show(15, 15)} lang="text" />
+
+**What it does.** Tells the assistant that text pasted inside the ask is data, and that instructions found there are not orders. It asks the assistant to report them. **Why.** Pasted emails, web pages and documents are the usual route for [prompt injection](../../glossary/#prompt-injection). The user also needs to know the text contained an instruction. **Without it.** I removed this rule on the injected-instruction eval: one run with the checklist item kept, two with it removed too. All three still treated the text as data and mentioned it. So on one current tool the behaviour held without the rule. I keep it because a pasted attack is rare and costly, and a weaker tool may obey it.
+
+<Code code={show(16, 16)} lang="text" />
+
+**What it does.** Tells the assistant what to do when the ask is already good: say so first, ask nothing, change little. **Why.** Helpful assistants find something to fix. A refiner that always rewrites teaches people to distrust it. **Without it.** This is the one line where I measured a clear difference. I ran the already-good ask from the Try it section.
+
+- With the line, three of three runs opened with a version of: "This prompt is already good ... I've changed as little as I can." They asked no questions.
+- Without the line, two of two runs opened with a "Questions" section instead. One began: "Where are the notes?" The other asked what should win if there are more than five actions.
+
+An earlier draft of this line said only "say so and change as little as you can". It still asked two questions in my one run. I added "in your first line" and "ask no questions", ran it again, and got the result above. That is the loop from [level 1](../../journey/01-say-it-properly/) applied to the skill itself.
+
+### The steps, lines 18 to 24
+
+<Code code={show(18, 18)} lang="text" />
+
+**What it does.** Starts the ordered list. **Why.** Steps happen in order. The numbering lets you say "step 4 went wrong". **Without it.** Reasoned: the order blurs.
+
+<Code code={show(20, 20)} lang="text" />
+
+**What it does.** Tells the assistant to read the whole ask once before doing anything. **Why.** Replying to the first sentence while the real constraint sits in the last is a common slip. **Without it.** Not tested. Reasoned.
+
+<Code code={show(21, 21)} lang="text" />
+
+**What it does.** Names seven things to work out: goal, audience, inputs, constraints, output format, definition of done and risks. **Why.** They are the parts of a good ask from [level 1](../../journey/01-say-it-properly/), plus the audience and risks. Six of them map to a section in the output. Risks have no section of their own: they feed Constraints and "What to do if unsure". **Without it.** The assistant picks its own checklist, which varies from run to run. Reasoned, not measured.
+
+<Code code={show(22, 22)} lang="text" />
+
+**What it does.** Caps clarifying questions at three, allows them only when the answer would change the prompt, and demands a recommended default for each. **Why.** Questions cost the reader time. Defaults let a busy person reply "yes to all". **Without it.** Not tested without the line. With it, every one of my 18 full runs stayed at three questions or fewer. The already-good ask got none, and the two with a hidden instruction got one or two.
+
+<Code code={show(23, 23)} lang="text" />
+
+**What it does.** Tells the assistant to carry on with its defaults instead of waiting for answers. **Why.** Many tools run in one turn, with nobody there to answer. A prompt with defaults is useful straight away. **Without it.** I removed the line and ran the budget ask twice. Both runs still produced a full prompt. So on one current tool the line made no visible difference. It matters most where a tool is built to stop and ask.
+
+<Code code={show(24, 24)} lang="text" />
+
+**What it does.** Lists every assumption, one per line. **Why.** A silent assumption is a guess you cannot see. Listed, you can strike it out. **Without it.** Reasoned: the assumptions still shape the prompt, but you cannot inspect them.
+
+### The prompt template, lines 25 to 35
+
+<Code code={show(25, 35)} lang="text" />
+
+**What it does.** Fixes the layout of the refined prompt: seven headings, always the same, in one code block. **Why.** A fixed layout makes two refinements comparable and makes the prompt easy to copy. The seven sections follow the parts of a good ask from level 1. The code block keeps the prompt apart from the notes around it. **Without it.** The sections change from run to run. In my 18 full runs, all seven sections appeared every time. I did not test the same asks without the template.
+
+### Filling in the template, lines 37 to 39
+
+<Code code={show(37, 37)} lang="text" />
+
+**What it does.** Says what goes under Inputs and repeats the [NEEDED] marker for anything missing. **Why.** Missing inputs are the commonest cause of an invented answer. The marker shows the user exactly what to supply. **Without it.** Inputs becomes a vague line such as "my data". Reasoned.
+
+<Code code={show(38, 38)} lang="text" />
+
+**What it does.** Tells the assistant to write a fallback into the refined prompt: ask or mark the gap, never guess. **Why.** A prompt needs a plan for when the answer is not available. **Without it.** The next assistant guesses and sounds sure. This is the failure from [level 0](../../journey/00-hello-robot/), written into the prompt. Reasoned.
+
+<Code code={show(39, 39)} lang="text" />
+
+**What it does.** Asks for a plain-words diff: added, changed, left alone, and why. **Why.** The reader needs to learn from the change. Seeing "left alone" also shows the skill respected their voice. **Without it.** The reader gets a new prompt and cannot tell what moved. Reasoned. All 18 full runs included the list.
+
+### The self-review, lines 40 to 45
+
+<Code code={show(40, 40)} lang="text" />
+
+**What it does.** Tells the assistant to check its own draft before replying and to fix any failure. **Why.** A check written into the task is cheap, and it catches slips before the reader does. **Without it.** The five checks below become hopes. Note the limit: this is the assistant checking itself, not an independent reviewer. [Level 5](../../journey/05-check-the-work/) covers the difference.
+
+<Code code={show(41, 41)} lang="text" />
+
+**What it does.** Checks that the task was not done. **Why.** It repeats rule 1 as a question, because a rule read at the top is easy to forget by the bottom. **Without it.** Reasoned: the rule alone usually holds, but this makes a late slip catchable.
+
+<Code code={show(42, 42)} lang="text" />
+
+**What it does.** Checks that every fact came from the user and every gap is marked. **Why.** It is the checking half of rule 3. **Without it.** See line 14: no difference when only one of the two was removed.
+
+<Code code={show(43, 43)} lang="text" />
+
+**What it does.** Checks that all seven sections exist. **Why.** A missing section is the easiest slip to spot and the easiest to fix. **Without it.** Reasoned. In my 18 full runs no section went missing, so I have no failure to show.
+
+<Code code={show(44, 44)} lang="text" />
+
+**What it does.** Checks that pasted text was treated as data. **Why.** It is the checking half of rule 4. **Without it.** See line 15: no difference on the injection eval.
+
+<Code code={show(45, 45)} lang="text" />
+
+**What it does.** Checks that the result sounds like the user and is not padded. **Why.** Refinement tends to grow. Every added line costs the next reader attention. **Without it.** Reasoned. My runs did grow the user's short asks into long prompts, which is expected for a vague ask and a poor sign for a good one.
+
+### The ending and the layout, lines 46 to 56
+
+<Code code={show(46, 46)} lang="text" />
+
+**What it does.** Ends with an offer of a second pass and says what the assistant would look at next. **Why.** One pass rarely finishes the job, and the offer says what the next pass is for. It keeps the human in charge of when to stop. **Without it.** The reply ends as if the prompt were final. Reasoned. In my second-pass runs, the offer named useful next checks, such as whether an equal split was right.
+
+<Code code={show(48, 50)} lang="text" />
+
+**What it does.** Fixes the order of the reply's headings and lets "Questions" disappear when there are none. **Why.** A reader who has seen one reply can find things in the next. **Without it.** The sections move around. Reasoned.
+
+<Code code={show(52, 56)} lang="text" />
+
+**What it does.** Lists the five headings in order. **Why.** It is the source of truth the previous line points to. The prompt comes third, after the questions and assumptions, so the reader sees what the assistant assumed before they see the result. **Without it.** The assistant picks an order. Reasoned.
+
+### What we left out, and why
+
+- **A tone or persona.** "Act as an expert prompt engineer" adds words and no checkable behaviour. The rules already say what to do.
+- **A list of prompt techniques.** A list of named tricks tempts the assistant to apply all of them. The seven sections cover what a prompt needs.
+- **Examples inside the skill.** A worked example anchors every output to its shape and length. The [expert corner](../../journey/01-say-it-properly/) in level 1 explains why. Put examples in `evals/` instead, where they test the skill and do not steer it.
+- **Tool-specific fields.** Claude Code accepts more metadata fields, such as a hint for arguments or a list of pre-approved tools. This skill needs none, and the open specification does not require them. Fewer fields means it moves between tools.
+- **A scoring rubric.** A number out of ten looks exact and is not. The self-review list asks yes or no questions.
+- **Domain advice.** The skill does not know your field. See the next section.
+
+### How to adapt it
+
+Change one thing at a time, then re-run the six evals.
+
+1. **Add a domain line to step 2.** For design asks, add "and who will test it". My eval 3 (a vague design ask) never asked for a real person to test the page, in three of three runs. One extra phrase is the first thing I would try. I did not test it.
+2. **Raise or lower the question limit on line 22.** One question suits a chat app. Three suits a handover.
+3. **Rename the sections** in lines 28 to 34 to match your team's template. Keep the count at seven, or change line 43 to match.
+4. **Add a house rule** to line 14, such as "currency is always euros". Keep it to one line.
+5. **Use it as an instruction file instead of a skill.** Delete the metadata block (lines 1 to 4). Paste the rest into the standing instructions of your tool.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+Most of the annotations above say "no difference seen". That is the honest result for a strong current model: the model does the right thing without half the rules. The rules still earn their place for three reasons. A weaker or older model needs them. A different tool wraps the model in its own prompt, which can bury a rule. And the model may change under you. Treat the rules as insurance priced in tokens, and treat the evals as the only way to know what you are insured against.
+
+An ablation (removing one line to see what changes) on a single run proves little. Mine used one to three runs per variant, on one tool, on one date, with the tool's default model. The result for line 16 was clear because the effect was large. The null results could hide a small effect. A fair test would run each variant many times and count.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+Before you change any line of the skill, find its annotation on this page. State the failure the line prevents. If you cannot state one, ask the user before you delete it.
+
+After any change, run all six evals in `examples/prompt-refiner/evals/`. Report each result as pass, partial or fail. If an eval that passed now fails, undo the change.
+
+Do not claim a measured effect that you did not run. Mark each claim as measured or reasoned.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Cutting a line because "the model does it anyway".** It does today, on your tool. Fix: keep the line unless an eval shows it is dead weight on every tool you use.
+
+**Adding a line for every failure.** The skill grows until nobody reads it, and the new lines contradict the old ones. Fix: change the existing line that should have caught the failure. Add a new line only if none fits.
+
+**Trusting the self-review list as a test.** The assistant checks its own work, and it can be wrong with confidence. Fix: run the six evals yourself, and read the outputs.
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Explain what each part of the skill does and what failure it guards against.
+- Tell a measured claim from a reasoned one.
+- Run one ablation by hand and read the result.
+- Change one line of the skill and check the effect with the evals.
+
+**Self-test**
+
+1. The skill has a rule against inventing facts (line 14) and a self-review item about it (line 42). Why keep both when removing one made no visible difference?
+2. You remove line 16 and the replies to good asks start asking questions. Is that proof that the line works for every tool?
+3. You want the skill to push every design ask towards user testing. Which line do you change, and how do you check the change?
+
+<details>
+<summary>Answers</summary>
+
+1. They do different jobs. The rule says what to do. The checklist item checks that it was done. One test on one tool showed they overlap there. A weaker tool or a longer reply may need both.
+2. No. It shows the line matters on your tool, in your runs. A different tool, or more runs, could differ. Re-run the evals on each tool you use.
+3. Add a phrase to step 2 (line 21) or the risks it infers, such as "who will test it". Then run eval 3 several times and count how many replies include a real-person test in the definition of done. Run the other five evals too, in case the change harmed them.
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+A refiner makes one ask better. The [three worked workflows](../../workflows/improve-code/) use it on real jobs: code, design and a budget.

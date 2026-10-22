@@ -5,36 +5,241 @@ description: Refine a piece of code in small, tested passes with an independent 
 
 ## Scene
 
-TODO(writer)
+Mina's shop site has a four-line function that adds up a basket. It works. Nobody wants to touch it, because nobody is sure what `i[1]` and `i[2]` are. Sam types the obvious thing: "Make this function better."
+
+"Better" could mean faster, shorter, safer or prettier. The assistant will pick one. It may pick the wrong one, and then it will hand back a confident rewrite that looks fine.
 
 ## The idea
 
-TODO(writer)
+**Improve code in small steps, with tests written first, and let someone else check the result.**
+
+The loop has five parts. Each one has a home elsewhere in the guide, so this page only shows them working together:
+
+1. Refine the ask with [the prompt refiner](../../appendix/prompt-refiner/), so "better" gets a meaning.
+2. Write the [tests](../../glossary/#test) first, so you pin down what must not change.
+3. Make one small change.
+4. Run the tests.
+5. Give the change to a separate [reviewer](../../glossary/#reviewer) who has the [spec](../../glossary/#spec) and the diff, and nothing else.
+
+The rule underneath: **improve means "same behaviour, easier to read" unless you say otherwise.** Changing behaviour is a different job with a different spec.
+
+This is [level 5](../../journey/05-check-the-work/) in practice: a checkable [definition of done](../../glossary/#definition-of-done) and an independent check.
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant. Python is optional: you can follow the passes without running anything. The examples below come from real runs on 2026-10-22. Your tool will word things differently.
+
+### The function, before
+
+```python
+def total(items):
+    t = 0
+    for i in items:
+        t = t + i[1] * i[2]
+    return t
+```
+
+### Pass 0: the rough ask
+
+```text
+Make this function better.
+```
+
+Sam pastes that, plus the function, into the refiner. Nothing has run yet.
+
+### Pass 1: the refiner asks, and states its guesses
+
+The refiner asked three questions, each with a default. In short:
+
+- What does "better" mean: readability, robustness or speed? Default: readability and robustness, same behaviour.
+- What is each item? Default: index 1 is a price and index 2 is a quantity, but confirm.
+- Any limits on language version or libraries? Default: standard library only.
+
+It listed its assumptions, including "the language is Python (inferred from syntax)" and "the function's current behaviour is correct and must be preserved". It marked what each position holds as [NEEDED]. It did not rewrite the function.
+
+What changed, in plain words: the one-word ask became a goal, a limit on behaviour, an output format and a plan for the unknowns. The code was left exactly as pasted.
+
+**Human checkpoint 1.** Sam reads the assumptions. Only Sam knows what the items are. Sam answers:
+
+```text
+Better means easier to read, with the same behaviour. Each item is (name, price, quantity). Python 3.11, standard library only. It is called from two places in checkout code, so the name and the way it is called must stay.
+```
+
+### Pass 2: the second pass
+
+The refiner took the answers and revised its own prompt. Its diff said, in part:
+
+- **Changed:** "clearer and more robust" became "easier to read", to match your definition.
+- **Changed:** "do not change the name or signature unless you say why" became a flat "must not change", because two callers depend on it.
+- **Added:** "empty list" to the asserts and the same-output rule, because the current function already handles it.
+- **Left alone:** the output format and the rule against guessing.
+
+It asked one question: must the function keep accepting plain tuples, or may the callers change? Its default was to keep the tuples. In its offer of a third pass it suggested checking whether `price` and `quantity` can ever be missing or not numbers. That decides whether "same behaviour" includes the current crash on bad input.
+
+### The final spec
+
+This is the refined prompt after pass 2, shortened but faithful:
+
+```text
+Goal: Make this Python function easier to read while keeping exactly the same result.
+Context: Each item is a tuple of (name, price, quantity). The function is called from two places in checkout code, so its name and the way it is called must not change.
+Constraints: Keep the name `total` and the single argument `items`. Same output for any input the current function handles, including an empty list. Standard library only. Do not add validation or error handling that is not there now.
+Output format: The revised function; one line per change with the reason; two or three example calls as plain asserts.
+Definition of done: Reads clearly to someone new. Indexes 1 and 2 are replaced by names. Behaviour is unchanged, shown by the asserts.
+What to do if unsure: State the assumption at the top. Do not silently change what the function accepts.
+```
+
+### Tests first
+
+Before the assistant touches the function, Sam asks for tests that describe what it does today. These are called characterisation tests: they pin down current behaviour, right or wrong. Here are two of the first six. The empty case and the decimal case are the ones people forget.
+
+```python
+def test_empty_basket_is_zero(self):
+    self.assertEqual(total([]), 0)
+
+def test_decimals_match_the_old_result(self):
+    self.assertEqual(total([("a", 0.1, 3), ("b", 0.2, 3)]), 0.1 * 3 + 0.2 * 3)
+```
+
+Sam runs them against the original function. They must pass first. A test that fails on the old code is testing a guess.
+
+```text
+Ran 6 tests in 0.000s
+
+OK
+```
+
+**Human checkpoint 2.** Sam reads the test names. If a test describes behaviour Sam does not want, it goes before any change.
+
+### One small change
+
+The assistant proposes this:
+
+```python
+def total(items):
+    return sum(price * quantity for _name, price, quantity in items)
+```
+
+Six tests pass. It looks done.
+
+### The reviewer
+
+Sam opens a new chat and pastes only the spec, the diff and a one-line test summary. The reviewer has not seen the earlier conversation. Its reply, in part:
+
+```text
+Verdict: CHANGES NEEDED
+
+1. `for _name, price, quantity in items` is an exact-length unpack, so any item with more than three fields now raises ValueError where the old `i[1] * i[2]` silently worked.
+2. For under-length items the failure type changes from IndexError to ValueError; low risk, but any caller catching IndexError would break.
+3. `sum()` switched to compensated summation in 3.12 and later, so float results can differ from the old loop after an interpreter upgrade.
+
+Test I would add: an item with an extra trailing field must return exactly what the old function returned.
+```
+
+Sam checks finding 3 rather than trusting it. In Python 3.13, `sum([0.1] * 10)` gives `1.0`, and the old loop gives `0.9999999999999999`. The finding is true. The spec said Python 3.11, so it does not block this change. It goes on the list for Mina's developer: money held as floats is a separate job.
+
+Sam adds the missing test first, and it fails on the proposed change:
+
+```text
+ERROR: test_extra_fields_are_ignored
+FAILED (errors=1)
+```
+
+Then the assistant fixes the function so the test passes:
+
+```python
+def total(items):
+    return sum(price * quantity for _name, price, quantity, *_rest in items)
+```
+
+Seven tests pass on the original and on the final version.
+
+**Human checkpoint 3.** Sam reads the final diff and the notes. The change is small enough to read in a minute. Sam merges it.
+
+### Try it yourself
+
+Paste this into any chat assistant, with a function of your own:
+
+```text
+Act as my prompt refiner: improve my request, do not do it. My request: "Make this function better." The function is below. Ask at most three questions, each with a default. Then give me a prompt that keeps the function's behaviour the same, asks for tests first, and asks for one line per change. Mark anything you do not know as [NEEDED].
+
+[paste your function]
+```
+
+Then do the loop: answer, get the prompt, ask for tests, run them on the old code, change, run them again, and ask a new chat to review the diff against the spec.
 
 ## Under the bonnet
 
-TODO(writer)
+Each check in the loop catches a different failure.
+
+- **The refiner** catches the unclear goal. Without it, "better" was open.
+- **The tests first** catch changes in behaviour. They are written against the old code, so they record what is true, not what the assistant believes.
+- **The small change** keeps the diff readable. A reviewer can check four lines. They cannot check four hundred.
+- **The reviewer** catches what the author cannot see. The author wrote the tests from the same belief as the change. Here both missed rows with extra fields, and a reviewer with only the spec spotted it.
+- **The human checkpoints** hold the decisions only Sam can make: what the items are, which behaviour counts, and when to merge.
+
+The checks that say when it is done:
+
+- All seven tests pass on the old and the new function.
+- The reviewer's findings are fixed, or listed as out of scope with a reason.
+- A person who has not seen the old code can say what the function does.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+Characterisation tests pin accidents as well as intentions. The old function accepted rows with extra fields. That may be a feature or an accident, and the test now makes it a promise. Decide on purpose, and say so in the test name.
+
+The reviewer is only independent if it lacks the author's context. Give it the spec and the diff. If you give it the whole chat, it inherits the same assumptions.
+
+Do not widen scope during the review. The float summation finding is real and was left out, because it needs its own spec. In a release team's terms, this is the line between a fix that ships today and a ticket that gets its own change.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+When asked to improve code, treat "improve" as "same behaviour, easier to read" unless the user says otherwise.
+
+Write tests first, and run them against the original code. They must pass before you change anything. Do not edit a test to make a change pass without telling the user.
+
+Make one small change at a time. Run the tests after each. Do not add validation, retries or new dependencies that were not requested.
+
+Report each change with its reason. If you find an unrelated problem, list it. Do not fix it in the same change.
+
+State what you did not check.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Letting the assistant write the tests after the change.** The tests then describe the new code, so they pass by construction. Fix: write them against the old code first, and run them on it.
+
+**Reviewing in the same chat.** The reviewer shares the author's assumptions and agrees with them. Fix: open a new chat, give it the spec and the diff only.
+
+**Fixing everything the reviewer mentions.** Each fix changes more code and needs its own review. Fix: sort findings into "blocks this change" and "own ticket", and keep the change small.
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Turn "make this better" into a goal that says what must not change.
+- Write tests against old code before changing it.
+- Give a reviewer only the spec and the diff.
+- Sort review findings into this change and a later change.
+
+**Self-test**
+
+1. The tests pass on your new code but you never ran them on the old code. What could be wrong?
+2. A reviewer lists five findings. Two block the change and three are style. What do you do?
+3. You want to use the same loop to make a slow query faster. What does "same behaviour" mean there, and which test do you write first?
+
+<details>
+<summary>Answers</summary>
+
+1. The tests may describe the new code and not the old. They would pass whatever the old code did. Run them on the original first.
+2. Fix the two that block the change, then re-run the tests and the review. Write the other three down for a later change.
+3. The same rows come back, in the same order, for the same inputs. First write a test that records the old query's result on a fixed set of data. Then change the query and compare.
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+Code has tests to say when it is right. A design has no test, so [the next workflow](../improve-design/) uses named goals and real people instead.
