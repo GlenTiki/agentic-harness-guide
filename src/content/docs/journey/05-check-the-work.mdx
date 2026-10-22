@@ -1,22 +1,22 @@
 ---
 title: "Level 5: Check the work"
-description: Write a definition of done that a stranger could check, and have someone other than the author check it.
+description: Write a definition of done that a stranger could check, and have a formula or a second pair of eyes check it.
 ---
 
 ## Scene
 
-*Last time: you drew the line between what the assistant may do and what it must ask, and a human yes caught a draft payment with the wrong total.*
+*Last time: you drew the line between what the assistant may do and what it must ask, and a human yes caught a draft message with the wrong shares. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
 
-A friend asks Sam to read over their cover letter. Sam finds three typos in a minute. The friend had read the letter ten times and saw none of them. The author reads what they meant to write. A second reader reads what is on the page. At month-end the same thing happens with a bank statement: you do not trust the shop's own total, you reconcile it against the statement, which came from somewhere else.
+A friend asks Sam to read over their cover letter. Sam finds three typos in a minute. The friend had read the letter ten times and saw none of them. The author reads what they meant to write. A second reader reads what is on the page. At month-end the same thing happens with a bank statement: you do not trust the shop's own total, you [reconcile](../../glossary/#bank-reconciliation) it against the statement, which came from somewhere else.
 
 ## The idea
 
-**Say what "done" means in a way a stranger could check, and let someone other than the author do the checking.**
+**Say what "done" means in a way a stranger could check, and let a formula or someone other than the author do the checking.**
 
 Three ideas carry this:
 
 - **A checkable [definition of done](../../glossary/#definition-of-done).** A short list of facts that are true when the work is finished, each one something you can test by looking, counting or comparing.
-- **[Tests](../../glossary/#test) and an independent [reviewer](../../glossary/#reviewer).** A test is a check that gives pass or fail. A reviewer is a second pair of eyes that is not the author.
+- **A [test](../../glossary/#test) and an independent [reviewer](../../glossary/#reviewer).** A test is a check that gives pass or fail. A reviewer is a second pair of eyes that is not the author. The test comes first.
 - **[Evals](../../glossary/#eval).** A small set of fixed cases you run every time you change the instructions, so you can see whether the change helped.
 
 ### Writing a done a stranger could check
@@ -27,35 +27,37 @@ Compare two versions for the bills task.
 Vague:   The bills are split correctly.
 Checkable:
   1. Exactly 12 distinct months appear, January to December, none twice.
-  2. The sum of the 12 figures equals the bank export total for the year.
+  2. The sum of the 12 figures equals the total on the suppliers' year-end statements.
   3. The three shares add up to that total, to the cent.
-  4. Any leftover cent is named and given to Sam.
+  4. Each share is rounded to the cent. If the three shares do not add to the total, Sam's share changes by the difference and the answer says so.
   5. If any of 1 to 4 fails, the answer says which one and stops.
 ```
 
-The vague version cannot fail, so it cannot be checked. The checkable version can fail in five named ways. A stranger with the bank export could tick every line without asking Sam a question. That is the test of a good "done": it does not need the author in the room.
+The vague version cannot fail, so it cannot be checked. The checkable version can fail in five named ways. A stranger with the four suppliers' year-end statements could tick every line without asking Sam a question. That is the test of a good "done": it does not need the author in the room. The rounding rule belongs to the owner. The assistant applies it and does not choose one.
 
-### The checker should not be the author
+### The author should not be the only check
 
 An assistant that writes "all checks passed" has marked its own homework. It wrote the number, so it believes the number. Move the check somewhere the author cannot influence. There are two kinds.
 
-- **A mechanical check.** A formula, a script or a spreadsheet function that counts months and adds figures. It does the same thing every time and has no opinions.
-- **A separate reviewer.** A second assistant run, with a different brief, that sees the finished output and the definition of done, and not the author's reasoning.
+- **A [mechanical check](../../glossary/#mechanical-check).** A formula, a script or a spreadsheet function that counts months and adds figures. It does the same thing every time and has no opinions.
+- **A separate reviewer.** A second assistant run, with different instructions, that sees the finished output and the definition of done, and not the author's reasoning.
 
-For judgement calls a mechanical check cannot do, such as "is this email polite?", the reviewer is the only option. For anything countable, use the mechanical check, and do not pay a reviewer to count.
+For anything countable (a count or a sum), use a formula. For judgement calls a formula cannot do, such as "is this email polite?", use a reviewer. A deterministic check outranks a model reviewer. A reviewer assistant is a filter, not a control.
 
 ### Why a second reviewer sees different errors
 
-A reviewer in the same conversation as the author carries the author's reasoning on its desk. It read the same wrong turn and tends to follow it again, like two people who agree because the second one heard the first one's argument. A reviewer in a fresh context gets only the output and the checklist. It has to reach its own view, so it can disagree. A reviewer that is a different model adds another effect: it was trained differently, so its habits and blind spots are not the author's. This does not make a reviewer correct. It makes the errors it misses less likely to be the same errors the author made. So give the reviewer the output, the definition of done and nothing else, and ask for findings with evidence.
+A reviewer in the same chat as the author carries the author's reasoning. It read the same wrong turn and tends to follow it again. A reviewer in a fresh chat gets only the output and the checklist, so it has to reach its own view. A different model may make different mistakes; measure it, because none of these is a proof (see [independent review (for engineers)](../../shelf/quality/independent-review/)).
 
 ## Try it
 
-You need any chat assistant and a spreadsheet or calculator. This takes about five minutes. You will write a checkable done, run a review in a fresh chat, and prove your check can fail.
+*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+
+You need any chat assistant and a spreadsheet. This takes about 15 minutes. You will get some work, check it with a formula, practise a review in a fresh chat, and prove each check can fail.
 
 1. Open chat A. Ask for the work:
 
 ```text
-Figures per month for last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Give me the yearly total and each flatmate's share (three flatmates). Show the months you counted.
+Figures per month for last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Give me the yearly total and each share for the three of us (Sam, Priya and Tom). Rule: round each share to the cent. If the three shares do not add to the total, change Sam's share by the difference and say so. Show the months you counted.
 ```
 
 An example reply:
@@ -63,10 +65,24 @@ An example reply:
 ```text
 Months counted: 12
 Total: 2,120.00
-Each of 3 pays: 706.67 (two) and 706.66 (one).
+Shares: Priya 706.67, Tom 706.67, Sam 706.66.
 ```
 
-2. Open a new chat, B. Do not paste chat A. Paste this with the output underneath:
+2. Check it with formulas. Put the months in A2 to A13 and the figures in B2 to B13. In B14 type `=SUM(B2:B13)`. It gives 2,120. Then try these:
+
+```text
+=COUNTA(A2:A13)                                  gives 12
+=SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13))            gives 12 (the distinct months)
+=IF(COUNTA(A2:A13)=SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13)),"OK","REPEAT")
+=ROUND(B14/3,2)                                  gives 706.67
+=B14-2*ROUND(B14/3,2)                            gives 706.66 (Sam's share)
+```
+
+3. Make it fail on purpose. Change A4 from Mar to Feb. The repeat flag should now read REPEAT. A check that has never failed might not be a check. Change A4 back.
+
+In practice this check is a formula. The chat reviewer in the next steps is here to practise the independence idea.
+
+4. Open a second chat, B. Do not paste chat A. Paste the work and the checklist, and ask for PASS or FAIL:
 
 ```text
 You are a reviewer. You did not write the work below. Check it against this definition of done.
@@ -79,7 +95,7 @@ Figures: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141,
 Work to check:
 Months counted: 12
 Total: 2,120.00
-Each of 3 pays: 706.67 (two) and 706.66 (one).
+Shares: Priya 706.67, Tom 706.67, Sam 706.66.
 ```
 
 An example reply:
@@ -90,16 +106,18 @@ An example reply:
 3. PASS. 706.67 + 706.67 + 706.66 = 2,120.00.
 ```
 
-3. Now prove the check can go red. A check that has never failed might not be a check. Change the work to a deliberately wrong one, the February slip, and resend to chat B:
+5. Now prove the reviewer can go red. Change the work to the February slip and resend to chat B. The block below is a deliberately wrong piece of work.
+
+Example of a WRONG reply, shown for practice:
 
 ```text
 Work to check:
 Months counted: 13
 Total: 2,318.00
-Each of 3 pays: 772.67 (two) and 772.66 (one).
+Shares: Priya 772.67, Tom 772.67, Sam 772.66.
 ```
 
-An example reply:
+An example reply from the reviewer:
 
 ```text
 1. FAIL. 13 months were counted. February appears twice.
@@ -109,21 +127,23 @@ An example reply:
 
 Point 3 passed because the shares matched the wrong total. A check can pass for the wrong reason, which is why you need points 1 and 2 as well.
 
-4. Add the check to your instruction file from level 2: "Before reporting, send the output and the definition of done to a reviewer in a new context. Report its FAIL lines."
+6. Add the check to your instruction file from level 2: "Before reporting, send the output and the definition of done to a reviewer in a new chat. Report its FAIL lines."
+
+Your version: swap in a task of your own, for example shift cover, a status update or a Slack thread to summarise.
 
 ### A tiny eval table
 
 An eval is the same idea made repeatable. Run these three cases every time you change the bills instructions.
 
-| Case | Input | Expected | Pass when |
-| --- | --- | --- | --- |
-| 1. Normal | All 12 months | Total 2,120.00, shares 706.67, 706.67, 706.66 | Matches exactly |
-| 2. Repeat | 13 rows, February twice | Flags the repeat, does not total it silently | Says "February twice" and asks |
-| 3. Gap | 11 rows, June missing | Asks for June, does not guess | Asks, and any partial sum is 1,978.00 |
+| Case | Input | Expected | Runs | Pass when |
+| --- | --- | --- | --- | --- |
+| 1. Normal | All 12 months | 2,120.00; 706.67, 706.67, 706.66 | 3 | Matches exactly |
+| 2. Repeat | 13 rows, February twice | Flags the repeat, no silent total | 3 | Says "February twice" and asks |
+| 3. Gap | 11 rows, June missing | Asks for June, does not guess | 3 | Asks; any partial sum is 1,978.00 |
 
-Case 1 shows it still works. Cases 2 and 3 show it fails the right way. Before you trust the table, break something on purpose and check that a case goes red. If you remove the count rule from your instructions and case 2 still passes, the case is not testing what you think.
+A case passes only if all 3 runs pass. Case 1 shows it still works. Cases 2 and 3 show it fails the right way. Before you trust the table, break something on purpose and check that a case goes red. If you remove the count rule from your instructions and case 2 still passes, the case is not testing what you think.
 
-**Hold the rubric still.** When you compare two versions of your instructions, score both on the same three cases with the same pass rule. If you change the rubric because the new version looks better, you have moved the ruler and the comparison means nothing. Change the rubric in its own step, and re-score the old version too.
+Apply it: the [review content workflow](../../workflows/review-content/) uses a reviewer for judgement, [improve code](../../workflows/improve-code/) uses tests, and the [small shop month-end](../../workflows/small-shop-month-end/) puts a reconciliation behind Mina's September close. For engineers: [small PRs](../../shelf/quality/small-prs/) and [spec-driven development](../../shelf/quality/spec-driven-development/).
 
 :::note[Want consistency]
 Keep the three cases and the definition of done in one file next to the instruction file. Before you change the instructions, run the cases. After, run them again. Write down both results in one line each.
@@ -131,34 +151,68 @@ Keep the three cases and the definition of done in one file next to the instruct
 
 ## Under the bonnet
 
+*How it works. Optional reading.*
+
 A model writes text that fits. A count it writes is text that looks like a count, not necessarily the result of counting. That is why a self-reported "Months counted: 12" helps a human spot a slip, and does not prove there is none. The reviewer in chat B reads the figures fresh and does its own addition. Its answer is text too, so it can also be wrong, but it is wrong in a different way from the author, and for a countable fact you can back it with a formula that does not guess.
 
 Tests give a check three useful properties. They give the same answer each time, they are cheap to rerun, and they make a change visible. When a test fails, you know what to fix. When a vague review fails, you know only that someone felt uneasy. Where you can, write the test first, from the definition of done, before the work exists. The test then describes the target and cannot be bent to fit what was produced.
 
-The shelf pages on [evals](../../shelf/quality/evals/), [independent review](../../shelf/quality/independent-review/) and [test-first gates](../../shelf/quality/test-first-and-gates/) go deeper.
+Each extra tool or model you use for a review is another processor of the data. Use a separate chat or project for each client, with memory off when the data identifies a client. The [professional guardrails](../professional-guardrails/) page covers sampling and the working paper that records a review.
+
+<details class="go-deeper">
+<summary>Go deeper: hold the rubric still, and keep a held-out case</summary>
+
+When you compare two versions of your instructions, score both on the same three cases with the same pass rule. Use the same scoring rules both times. If you change the rubric because the new version looks better, you have moved the ruler and the comparison means nothing. Change the [rubric](../../glossary/#rubric) in its own step, and re-score the old version too.
+
+Keep one held-out case that you never tune against. If the score on it falls while the others rise, you have been fitting the instructions to the cases.
+
+</details>
+
+<details class="go-deeper">
+<summary>Go deeper: the same idea for Mina's month-end</summary>
+
+For Mina's September close, "done" has five points:
+
+1. Sales per records agree to the sum of the channels: 7,380.00.
+2. Receipts per bank agree to the statement: 7,064.00.
+3. The reconciling items are listed and total 316.00, and the unexplained difference is within 1.00.
+4. Every variance line over 5% and 50.00 has an explanation from Mina.
+5. The preparer and the reviewer are different people, with initials and date.
+
+The [small shop month-end](../../workflows/small-shop-month-end/) workflow works through the figures.
+
+</details>
+
+:::note[At work]
+In a finance team the check is a reconciliation: two independent balances, with the reconciling items listed. The rule is that the preparer does not review their own work. Sam prepares the month-end. Mina reviews it. The assistant is a filter before her, not a replacement.
+:::
 
 ## Expert corner
 
 :::caution[Expert corner]
 A test that cannot fail is decoration. For every check, show a red run: seed the defect it should catch and see it fail. A uniform pass across varied cases is a signal to check the check, because the key, the field or the comparison may be wrong.
 
-Reviewer independence has degrees. A reviewer that shares the author's context shares its framing. A fresh context with the same model shares its training habits. A different model shares less. None is a proof. Give the reviewer the specification, not the author's summary, and ask for findings with evidence, such as a line or a computed figure, so you can check the reviewer too.
+Reviewer independence has degrees. A reviewer that shares the author's context shares its framing. A fresh context with the same model shares its training habits. A different model may share less, and that is a claim to measure: seed known defects and record the catch rate for each reviewer and for the two together. Give the reviewer the definition of done, not the author's summary, and ask for findings with evidence, such as a line or a computed figure, so you can check the reviewer too.
 
-Evals drift. Rubrics that move to flatter the new version, cases leaked into the instructions, and graders that share the author's blind spots all make scores rise without quality rising. Keep a held-out case you never tune against.
-
-In a finance team the human version is reconciliation, and the rule is that the preparer does not review.
+Evals drift. Rubrics that move to flatter the new version, cases leaked into the instructions, and graders that share the author's blind spots all make scores rise without quality rising.
 :::
 
 ## Agent note
 
 :::note[Agent note]
+**Topic: checking your own output.**
+
 Before you start, restate the definition of done as a numbered list of checkable facts. If it is missing, ask for it.
 
-Do not mark your own work as passed. Run the mechanical checks. Send reviewable output to a separate reviewer if one exists.
+Run the check before you give the final answer. If it fails, report which point failed and stop. Do not change the check to make it pass.
+
+The rounding rule is the owner's. Apply it. Do not choose one.
+
+If you can start a separate reviewer, send it the output and the definition of done. You may report the result of a mechanical check you ran, with its output. Do not report a pass based only on your own reading.
 
 When you act as a reviewer, use only the output and the definition of done. Return PASS or FAIL per point, with the evidence. Do not rewrite the work.
 
-When a check fails, report which point failed and stop. Do not adjust the check to make it pass.
+Check: the final answer lists each point of the definition of done with PASS or FAIL, and any PASS comes from a mechanical check you ran or from a separate reviewer.
 :::
 
 ## Mistakes people make
@@ -171,11 +225,13 @@ When a check fails, report which point failed and stop. Do not adjust the check 
 
 ## Checkpoint
 
+*Audience: the reader. Agents may skip the quiz.*
+
 You can now:
 
 - Rewrite a vague "done" as a numbered list a stranger could tick.
-- Explain why the author should not be the only checker.
-- Run a review in a fresh context with only the output and the definition of done.
+- Explain why the author should not be the only check.
+- Run a formula check first and a review in a fresh chat second.
 - Build a three-case eval and prove a check can go red.
 - Compare two versions without moving the rubric.
 
@@ -189,11 +245,13 @@ You can now:
 <summary>Answers</summary>
 
 1. One version: it names invoice 1042 and the amount due; it states the due date; it contains no threat or legal wording; it is under 120 words; it asks for payment by a named date; it is saved as a draft and not sent. Each line can be checked by reading.
-2. Feed it a case you know is wrong and see whether it reports a failure. If it passes that too, the reviewer's brief or the comparison is broken. Then fix the brief before trusting a week of passes.
+2. Feed it a case you know is wrong and see whether it reports a failure. If it passes that too, the reviewer's instructions or the comparison are broken. Fix them before trusting a week of passes.
 3. Nothing. You changed the ruler between the runs. Re-score version A on the new case 2, or version B on the old one, then compare.
 
 </details>
 
 ## Bridge
 
-One assistant writes, another checks, and a single chat is already juggling both roles. Level 6 splits the job into helpers, each with a bounded brief.
+Checking works on one small output, but Mina's whole month-end is too long for one chat, so level 6 splits it among helpers.
+
+**Next:** [Level 6: Hire a team](../06-hire-a-team/)
