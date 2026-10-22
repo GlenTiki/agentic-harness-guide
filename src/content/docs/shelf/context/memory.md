@@ -3,6 +3,8 @@ title: Memory
 description: What an agent should remember across sessions, what it should forget, and how to keep memory correct.
 ---
 
+*Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
+
 **Recommendation:** persist durable facts and corrected behaviour, never session state. When memory is wrong, edit the existing entry. Do not append a correction below it. Add a recall step so memory is read before a risky action, not only at session start.
 
 ## Why it matters

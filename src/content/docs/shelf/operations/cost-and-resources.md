@@ -3,6 +3,8 @@ title: Cost and resource discipline
 description: Bound loops, timeouts and heavy jobs so an agent cannot burn money or lock up your machine.
 ---
 
+*Deep dive for [level 7: Run it for real](../../../journey/07-run-it-for-real/).*
+
 **Recommendation:** put an explicit upper bound on every loop, poll, retry, timeout and background job. Run heavy local work at lower priority. Spend capability budgets deliberately, and record cost per session.
 
 ## Why it matters

@@ -3,6 +3,8 @@ title: The adoption path
 description: A staged checklist for building a harness, ordered by effort and not by calendar.
 ---
 
+*Deep dive for [level 7: Run it for real](../../../journey/07-run-it-for-real/).*
+
 **Recommendation:** adopt in the order below. Each stage is cheap relative to the risk it removes, and each assumes the previous one is in place. Do not wait for a calendar. Move on when the exit check of a stage passes.
 
 ## Why it matters

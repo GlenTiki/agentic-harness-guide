@@ -3,6 +3,8 @@ title: Principles
 description: Seven principles that decide which harness features are worth enabling.
 ---
 
+*Deep dive for [level 8: Design anything](../../../journey/08-design-anything/).*
+
 **Recommendation:** judge every harness feature by one question. Does it make the agent's work more bounded, more recoverable or more checkable? Enable it if the answer is yes. Skip it if the answer is no, however impressive the demo.
 
 ## Why it matters

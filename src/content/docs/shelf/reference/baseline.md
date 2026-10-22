@@ -3,6 +3,8 @@ title: Recommended baseline
 description: The minimum viable harness as one checklist.
 ---
 
+*Deep dive for [level 8: Design anything](../../../journey/08-design-anything/).*
+
 **Recommendation:** treat this list as the floor for any repository where an agent can edit code. Each item links to the page that explains it. Add the rest of the guide as your risk grows.
 
 ## The checklist

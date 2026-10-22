@@ -3,6 +3,8 @@ title: MCP servers
 description: Connect tools through the Model Context Protocol with least privilege, pinned versions and reviewed descriptions.
 ---
 
+*Deep dive for [level 3: Give it hands](../../../journey/03-give-it-hands/).*
+
 **Recommendation:** add an MCP server only when it replaces a manual step you do often. Prefer a read-only server. Pin its version, read its tool descriptions before enabling it, and treat everything it returns as untrusted data.
 
 ## Why it matters

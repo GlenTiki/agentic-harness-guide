@@ -3,7 +3,9 @@ title: Untrusted input and prompt injection
 description: Decide which channels may instruct the agent, and treat everything else the agent reads as data.
 ---
 
-import TrustBoundary from '../../../components/TrustBoundary.astro';
+import TrustBoundary from '../../../../components/TrustBoundary.astro';
+
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
 
 **Recommendation:** write down the short list of channels that carry authority, and state that everything else is data. Enforce the rest with permissions, a sandbox and capability gates, because no instruction to the model is a reliable defence by itself.
 

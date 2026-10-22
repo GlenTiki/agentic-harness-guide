@@ -3,6 +3,8 @@ title: Evals for LLM-driven steps
 description: Test every step that a model decides, using real output as fixtures and a rubric you do not move.
 ---
 
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
 **Recommendation:** give every step where a model makes a decision its own eval. Build the fixtures from real model output. Before you trust a check, make it fail on purpose. Score new runs against the old rubric.
 
 ## Why it matters

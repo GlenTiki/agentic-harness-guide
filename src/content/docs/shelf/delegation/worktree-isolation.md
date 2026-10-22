@@ -3,6 +3,8 @@ title: Worktree isolation
 description: Give every agent that writes files its own checkout so parallel work cannot collide.
 ---
 
+*Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
+
 **Recommendation:** run each write-capable agent in its own git worktree on its own branch. Read-only agents can share the main checkout. Name the base branch explicitly and check it before you merge.
 
 ## Why it matters

@@ -3,6 +3,8 @@ title: Skills
 description: Package a repeatable procedure as a skill so it loads only when needed.
 ---
 
+*Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
+
 **Recommendation:** write a skill for any procedure you explain to the agent more than twice and that has a clear trigger. Keep the description precise, keep the body short, and move detail into supporting files that load on demand. Use a plain prompt for one-off work.
 
 ## Why it matters

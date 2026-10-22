@@ -3,6 +3,8 @@ title: Instruction files
 description: How to layer, size and scope the files that tell an agent how your project works.
 ---
 
+*Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
+
 **Recommendation:** keep one short, project-level instruction file, and write it as a list of commands and non-obvious rules. Put it in `AGENTS.md` if you use more than one tool. Import it from a tool-specific file only where that tool needs its own filename. Target well under 200 lines.
 
 ## Why it matters

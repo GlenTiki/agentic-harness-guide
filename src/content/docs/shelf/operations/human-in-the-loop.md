@@ -3,6 +3,8 @@ title: Human-in-the-loop
 description: Decide in advance which actions always need a person, and batch the decisions so approvals stay meaningful.
 ---
 
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
+
 **Recommendation:** run reversible, local work unattended and require a person for irreversible or outward-facing actions. Write the list down. Batch routine questions into one form, and ask a person only for what an agent cannot decide.
 
 ## Why it matters

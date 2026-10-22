@@ -3,6 +3,8 @@ title: Capability gating
 description: Give each power its own switch, default it to off, and gate every path that leaves your machine.
 ---
 
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
+
 **Recommendation:** model every power the agent can use as a named capability with its own on/off switch in one registry file. Default new capabilities to off. Require explicit consent per surface, and run redaction before anything leaves your machine.
 
 ## Why it matters

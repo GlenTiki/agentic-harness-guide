@@ -3,6 +3,8 @@ title: Small PRs and trunk-based flow
 description: Slice agent work into small, single-concern changes that a person can review in one sitting.
 ---
 
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
 **Recommendation:** target one concept per pull request, under about eight files and four hundred lines, with the test in the same change. Branch from trunk, keep branches short-lived and limit work in progress to one open change per concern.
 
 ## Why it matters

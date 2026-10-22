@@ -3,6 +3,8 @@ title: Test-first and quality gates
 description: Write the failing test first, and run the same automated gates locally and in CI on every change.
 ---
 
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
 **Recommendation:** have the agent write a failing test before it writes the code, and run one fixed set of gates on every change: types, lint, formatting, complexity and the full test suite. Run them in a pre-commit hook and again in CI. Never skip a hook to get a commit through.
 
 ## Why it matters

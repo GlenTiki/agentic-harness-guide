@@ -3,6 +3,8 @@ title: Anti-patterns
 description: Common harness mistakes as a table of symptom, cause and fix.
 ---
 
+*Deep dive for [level 8: Design anything](../../../journey/08-design-anything/).*
+
 **Recommendation:** use this table to diagnose a problem by its symptom. Each row names the mechanism behind it, then the fix.
 
 | Symptom | Cause | Fix |

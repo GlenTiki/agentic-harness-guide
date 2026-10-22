@@ -3,6 +3,8 @@ title: Spec-driven development
 description: Write a short spec before the agent writes code, and make the spec the contract for tests and review.
 ---
 
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
 **Recommendation:** for any change larger than a few lines, write a one-page spec first. Put it in the repository, have a second agent or person challenge it, and trace every test and commit back to it. Skip the spec for trivial edits.
 
 ## Why it matters

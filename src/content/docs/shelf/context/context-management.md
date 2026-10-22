@@ -3,6 +3,8 @@ title: Context management
 description: Keep decisions in files, not in the conversation, so compaction and restarts cost nothing.
 ---
 
+*Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
+
 **Recommendation:** treat the conversation as disposable and keep a durable ledger of intent and decisions in a file in the repository. Checkpoint it at phase boundaries. Brief sub-agents from the ledger, never from the chat.
 
 ## Why it matters

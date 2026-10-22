@@ -3,6 +3,8 @@ title: Glossary
 description: The terms this guide uses, each with one meaning.
 ---
 
+*Deep dive for [level 0: Hello, robot](../../../journey/00-hello-robot/).*
+
 **Recommendation:** use these terms the same way in your own instruction files. A term with two meanings produces two behaviours.
 
 ## Terms

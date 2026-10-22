@@ -3,7 +3,9 @@ title: Hooks
 description: Run scripts at fixed points in the agent loop to enforce rules, format code and keep an audit log.
 ---
 
-import HookLifecycle from '../../../components/HookLifecycle.astro';
+import HookLifecycle from '../../../../components/HookLifecycle.astro';
+
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
 
 **Recommendation:** use hooks for every rule that must hold. Start with three: a pre-tool hook that blocks one dangerous action, a post-tool hook that formats edited files, and a stop hook that runs your tests. Make a hook block only when a wrong action is costly or irreversible. Make every other hook advise.
 

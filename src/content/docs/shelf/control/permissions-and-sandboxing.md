@@ -3,6 +3,8 @@ title: Permissions and sandboxing
 description: Use least privilege, deny rules and an operating system sandbox to limit what a runaway agent can touch.
 ---
 
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
+
 **Recommendation:** combine three layers. Permission rules decide which tool calls need approval. A sandbox limits what shell commands can reach at the operating system level. A container or virtual machine bounds everything else. Start with deny rules for secrets and a sandbox with an empty network allow list.
 
 ## Why it matters

@@ -3,6 +3,8 @@ title: Observability and audit trail
 description: Record what the agent did in a file you control, so you can answer what happened and why.
 ---
 
+*Deep dive for [level 7: Run it for real](../../../journey/07-run-it-for-real/).*
+
 **Recommendation:** write an append-only action log from hooks, not from the model. Keep session transcripts for as long as your policy needs them and know when your harness deletes them. Track token use and cost per session.
 
 ## Why it matters

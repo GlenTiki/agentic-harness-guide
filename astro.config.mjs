@@ -14,62 +14,67 @@ export default defineConfig({
       lastUpdated: false,
       sidebar: [
         {
+          label: 'Reference shelf',
+          items: [
+        {
           label: 'Foundations',
           items: [
-            { slug: 'foundations/principles' },
-            { slug: 'foundations/adoption-path' },
-            { slug: 'foundations/glossary' },
+            { slug: 'shelf/foundations/principles' },
+            { slug: 'shelf/foundations/adoption-path' },
+            { slug: 'shelf/foundations/glossary' },
           ],
         },
         {
           label: 'Instructions and context',
           items: [
-            { slug: 'context/instruction-files' },
-            { slug: 'context/context-management' },
-            { slug: 'context/memory' },
+            { slug: 'shelf/context/instruction-files' },
+            { slug: 'shelf/context/context-management' },
+            { slug: 'shelf/context/memory' },
           ],
         },
         {
           label: 'Control',
           items: [
-            { slug: 'control/hooks' },
-            { slug: 'control/permissions-and-sandboxing' },
-            { slug: 'control/capability-gating' },
-            { slug: 'control/untrusted-input' },
+            { slug: 'shelf/control/hooks' },
+            { slug: 'shelf/control/permissions-and-sandboxing' },
+            { slug: 'shelf/control/capability-gating' },
+            { slug: 'shelf/control/untrusted-input' },
           ],
         },
         {
           label: 'Delegation',
           items: [
-            { slug: 'delegation/sub-agents' },
-            { slug: 'delegation/worktree-isolation' },
-            { slug: 'delegation/skills' },
-            { slug: 'delegation/mcp-servers' },
+            { slug: 'shelf/delegation/sub-agents' },
+            { slug: 'shelf/delegation/worktree-isolation' },
+            { slug: 'shelf/delegation/skills' },
+            { slug: 'shelf/delegation/mcp-servers' },
           ],
         },
         {
           label: 'Quality',
           items: [
-            { slug: 'quality/spec-driven-development' },
-            { slug: 'quality/test-first-and-gates' },
-            { slug: 'quality/independent-review' },
-            { slug: 'quality/evals' },
-            { slug: 'quality/small-prs' },
+            { slug: 'shelf/quality/spec-driven-development' },
+            { slug: 'shelf/quality/test-first-and-gates' },
+            { slug: 'shelf/quality/independent-review' },
+            { slug: 'shelf/quality/evals' },
+            { slug: 'shelf/quality/small-prs' },
           ],
         },
         {
           label: 'Operations',
           items: [
-            { slug: 'operations/observability' },
-            { slug: 'operations/cost-and-resources' },
-            { slug: 'operations/human-in-the-loop' },
+            { slug: 'shelf/operations/observability' },
+            { slug: 'shelf/operations/cost-and-resources' },
+            { slug: 'shelf/operations/human-in-the-loop' },
           ],
         },
         {
           label: 'Reference',
           items: [
-            { slug: 'reference/baseline' },
-            { slug: 'reference/anti-patterns' },
+            { slug: 'shelf/reference/baseline' },
+            { slug: 'shelf/reference/anti-patterns' },
+          ],
+        },
           ],
         },
       ],
