@@ -1,0 +1,41 @@
+<figure class="diagram">
+  <svg viewBox="0 0 480 250" role="img" aria-labelledby="cd-t cd-d" xmlns="http://www.w3.org/2000/svg">
+    <title id="cd-t">The context window as a desk</title>
+    <desc id="cd-d">A desk holds your messages, the assistant's replies and any pasted text. The assistant can use everything on the desk. Older text that no longer fits sits off the desk, where the assistant cannot see it.</desc>
+    <rect x="20" y="20" width="300" height="190" rx="10" class="desk" />
+    <text x="36" y="44" class="zhead">On the desk: the assistant sees this</text>
+    <rect x="40" y="62" width="120" height="50" rx="6" class="sheet hot" />
+    <text x="100" y="92" class="label">Your message</text>
+    <rect x="180" y="62" width="120" height="50" rx="6" class="sheet" />
+    <text x="240" y="92" class="label">Its reply</text>
+    <rect x="40" y="130" width="260" height="50" rx="6" class="sheet" />
+    <text x="170" y="160" class="label">Pasted bills or article</text>
+    <rect x="350" y="62" width="110" height="50" rx="6" class="sheet gone" />
+    <text x="405" y="92" class="label">Oldest text</text>
+    <rect x="350" y="130" width="110" height="50" rx="6" class="sheet gone" />
+    <text x="405" y="160" class="label">Older still</text>
+    <text x="405" y="44" class="zhead mid">Off the desk</text>
+    <text x="405" y="206" class="sub">not seen</text>
+    <path d="M345 120H325" class="line" marker-end="url(#cd-a)" />
+    <defs>
+      <marker id="cd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>When the desk is full, older text falls off. The assistant cannot use what is off the desk.</figcaption>
+</figure>
+
+<style>
+  svg { font-family: var(--sl-font-system); }
+  .desk { fill: none; stroke: var(--sl-color-accent); stroke-width: 1.5; stroke-dasharray: 6 4; }
+  .sheet { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
+  .hot { stroke: var(--sl-color-accent); stroke-width: 2; }
+  .gone { stroke-dasharray: 3 3; opacity: 0.7; }
+  .zhead { fill: var(--sl-color-gray-2); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+  .mid { text-anchor: middle; }
+  .label { fill: var(--sl-color-text); font-size: 14px; font-weight: 600; text-anchor: middle; }
+  .sub { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
+  .line { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.8; }
+  .arrow { fill: var(--sl-color-gray-3); }
+</style>

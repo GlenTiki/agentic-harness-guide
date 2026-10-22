@@ -8,3 +8,4 @@ dist
 .glossary-additions-*.md
 .notes*
 *.notes
+.claude/

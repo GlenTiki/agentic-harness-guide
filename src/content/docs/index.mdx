@@ -1,30 +1,63 @@
 ---
 title: The Agentic Harness Guide
-description: What to enable in a modern agentic coding harness, and why.
+description: A plain-English guide to getting reliable, checkable work from AI assistants, from your first chat to systems of several assistants.
 template: splash
 hero:
-  tagline: A model writes the code. The harness decides what it may touch, what it remembers, who checks it and what it costs.
+  title: Get dependable work from an AI assistant
+  tagline: A plain-English course for anyone who uses an AI assistant. No coding needed. Nine short levels, each with a try-it you can do now. Engineers get the depth on the shelf.
   actions:
-    - text: Start the journey
-      link: ./journey/00-hello-robot/
+    - text: Try it in two minutes
+      link: ./journey/00-hello-robot/#try-it
       icon: right-arrow
-    - text: How to read this guide
+    - text: Pick your route
       link: ./start-here/how-to-read/
       variant: secondary
-    - text: Jump to the baseline
-      link: ./shelf/reference/baseline/
+    - text: For engineers
+      link: ./start-here/engineer-route/
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
+import LevelLadder from '../../components/LevelLadder.astro';
 
-This guide argues for one position. Treat the harness as the product and the model as a replaceable part. A good harness limits what the agent can do, keeps its context small and durable, and puts an independent check between the agent and your main branch. Each page gives a recommendation first, the steps to enable it, the failure it prevents and a minimum to start with. The advice is vendor-neutral. Where a page names a tool setting, it was checked against that tool's documentation and dated.
+Assistants write confident answers that can be wrong. This guide shows you how to catch that. Here is the kind of slip it teaches you to catch. You paste a year of shared bills, and February is in the list twice by accident.
 
-The journey has nine short levels. Each one starts from where the last one ended and adds at most three ideas. The sections below are the reference shelf for readers who already know the way.
+```text
+Example of a WRONG reply, shown for practice:
+Total for the year: 2,318.00. Each of the three of us pays 772.67.
+
+A checked reply:
+I counted 13 figures for 12 months. February appears twice.
+Total without the repeat: 2,120.00. Shares: 706.67, 706.67 and 706.66.
+```
+
+The wrong reply sounds sure and costs each person 66.00 too much. The checked reply says what it counted. Nine levels teach you to ask for that.
+
+## The nine levels
+
+Levels 0 to 2 take about an hour. That is enough to see most of the gain.
+
+<LevelLadder />
+
+## Put it to work
+
+<CardGrid>
+  <Card title="Workflows" icon="rocket">
+    Ten worked jobs: a budget, a spreadsheet, a month-end, a review. [See the workflows](./workflows/).
+  </Card>
+  <Card title="Your route" icon="right-arrow">
+    A fast track for repeatable chat results, a route for finance and regulated work, and a one-page cheat sheet. [Pick your route](./start-here/how-to-read/).
+  </Card>
+</CardGrid>
+
+<details>
+<summary>For engineers: the reference shelf</summary>
+
+The shelf is written against Claude Code, with notes on Codex CLI. The ideas transfer; the setting names do not. Each page names the tool, the version or build checked, and the date. [The engineer route](./start-here/engineer-route/) says where each mechanism sits in the journey.
 
 <CardGrid>
   <Card title="Foundations" icon="open-book">
-    The principles, a staged adoption path and a glossary. [Read the principles](./shelf/foundations/principles/).
+    The principles and a staged adoption path. [Read the principles](./shelf/foundations/principles/).
   </Card>
   <Card title="Instructions and context" icon="document">
     Instruction files, context management and memory. [Open the section](./shelf/context/instruction-files/).
@@ -39,9 +72,11 @@ The journey has nine short levels. Each one starts from where the last one ended
     Specs, tests, independent review, evals and small pull requests. [Open the section](./shelf/quality/spec-driven-development/).
   </Card>
   <Card title="Operations" icon="setting">
-    Audit trail, cost discipline and human approval. [Open the section](./shelf/operations/observability/).
+    Audit log, cost discipline and human approval. [Open the section](./shelf/operations/observability/).
   </Card>
   <Card title="Reference" icon="list-format">
-    The minimum viable harness and a table of anti-patterns. [Open the section](./shelf/reference/baseline/).
+    The minimum viable setup and a table of anti-patterns. [Open the section](./shelf/reference/baseline/).
   </Card>
 </CardGrid>
+
+</details>

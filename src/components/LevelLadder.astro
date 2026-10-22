@@ -1,0 +1,53 @@
+---
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const levels = [
+  { slug: '00-hello-robot', title: 'Hello, robot', goal: 'Catch the assistant being confidently wrong' },
+  { slug: '01-say-it-properly', title: 'Say it properly', goal: 'Turn a vague ask into one that works the first time' },
+  { slug: '02-house-rules', title: 'House rules', goal: 'Stop repeating your rules' },
+  { slug: '03-give-it-hands', title: 'Give it hands', goal: 'Connect the first system, read-only' },
+  { slug: '04-trust-but-verify', title: 'Trust, but verify', goal: 'Draw the line between may do and must ask' },
+  { slug: '05-check-the-work', title: 'Check the work', goal: 'Write a done that a stranger can check' },
+  { slug: '06-hire-a-team', title: 'Hire a team', goal: 'Split a job so helpers do not trip over each other' },
+  { slug: '07-run-it-for-real', title: 'Run it for real', goal: 'Predict where a many-step job fails first' },
+  { slug: '08-design-anything', title: 'Design anything', goal: 'Design a checked workflow for a task you know well' },
+];
+const stepWidth = 52;
+const gap = 6;
+const unit = 11;
+const baseline = 124;
+---
+
+<figure class="level-ladder">
+  <svg viewBox="0 0 520 130" role="img" aria-labelledby="ll-t ll-d" xmlns="http://www.w3.org/2000/svg">
+    <title id="ll-t">The nine levels as a staircase</title>
+    <desc id="ll-d">Nine steps rise from left to right, numbered 0 to 8. Level 0 is catching the assistant being wrong. Level 8 is designing a checked workflow.</desc>
+    {levels.map((_, i) => {
+      const height = 30 + unit * i;
+      const x = i * (stepWidth + gap);
+      return (
+        <g>
+          <rect x={x} y={baseline - height} width={stepWidth} height={height} rx="4" class="step" />
+          <text x={x + stepWidth / 2} y={baseline - height + 18} class="num">{i}</text>
+        </g>
+      );
+    })}
+  </svg>
+  <ol class="level-list" start="0">
+    {levels.map((level) => (
+      <li>
+        <a href={`${base}/journey/${level.slug}/`}><strong>{level.title}.</strong> {level.goal}.</a>
+      </li>
+    ))}
+  </ol>
+</figure>
+
+<style>
+  .level-ladder { margin: 1.5rem 0; }
+  svg { width: 100%; height: auto; max-width: 100%; font-family: var(--sl-font-system); }
+  .step { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); stroke-width: 1.5; }
+  .num { fill: var(--sl-color-text); font-size: 14px; font-weight: 700; text-anchor: middle; }
+  .level-list { margin: 1rem 0 0; padding-left: 1.6rem; }
+  .level-list li { margin: 0.35rem 0; }
+  .level-list a { text-decoration: none; }
+  .level-list a:hover { text-decoration: underline; }
+</style>

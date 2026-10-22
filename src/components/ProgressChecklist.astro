@@ -1,0 +1,102 @@
+---
+import { getCollection } from 'astro:content';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const plainText = (markdown: string) =>
+  markdown
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, '$1')
+    .replace(/[`*_]/g, '')
+    .trim();
+
+const chapters = (await getCollection('docs'))
+  .filter((entry) => /^journey\/0[0-8]-/.test(entry.id))
+  .sort((a, b) => a.id.localeCompare(b.id))
+  .map((entry) => {
+    const body = entry.body ?? '';
+    const start = body.indexOf('You can now:');
+    const end = body.indexOf('**Self-test**');
+    const section = start >= 0 && end > start ? body.slice(start, end) : '';
+    const bullets = section
+      .split('\n')
+      .filter((line) => line.startsWith('- '))
+      .map((line) => plainText(line.slice(2)));
+    return { id: entry.id, title: entry.data.title, bullets };
+  });
+---
+
+<div class="progress-checklist" data-progress>
+  {chapters.map((chapter) => (
+    <details class="progress-group" open>
+      <summary>{chapter.title} <span class="progress-count" data-count></span></summary>
+      <p class="progress-link"><a href={`${base}/${chapter.id}/`}>Open this level</a></p>
+      <ul class="progress-list">
+        {chapter.bullets.map((bullet, index) => (
+          <li>
+            <label>
+              <input type="checkbox" data-key={`ahg-progress:${chapter.id}:${index}`} />
+              <span>{bullet}</span>
+            </label>
+          </li>
+        ))}
+      </ul>
+    </details>
+  ))}
+  <p><button type="button" class="progress-reset" data-reset>Clear all ticks</button></p>
+</div>
+
+<script>
+  const root = document.querySelector('[data-progress]');
+  const boxes = root ? Array.from(root.querySelectorAll<HTMLInputElement>('input[data-key]')) : [];
+
+  const read = (key: string) => {
+    try {
+      return localStorage.getItem(key) === '1';
+    } catch {
+      return false;
+    }
+  };
+  const write = (key: string, ticked: boolean) => {
+    try {
+      if (ticked) localStorage.setItem(key, '1');
+      else localStorage.removeItem(key);
+    } catch {
+      // The page works without storage; ticks last until the page closes.
+    }
+  };
+  const updateCounts = () => {
+    root?.querySelectorAll('details').forEach((group) => {
+      const inputs = Array.from(group.querySelectorAll<HTMLInputElement>('input[data-key]'));
+      const done = inputs.filter((input) => input.checked).length;
+      const count = group.querySelector('[data-count]');
+      if (count) count.textContent = `(${done} of ${inputs.length})`;
+    });
+  };
+
+  boxes.forEach((box) => {
+    box.checked = read(box.dataset.key ?? '');
+    box.addEventListener('change', () => {
+      write(box.dataset.key ?? '', box.checked);
+      updateCounts();
+    });
+  });
+  root?.querySelector('[data-reset]')?.addEventListener('click', () => {
+    boxes.forEach((box) => {
+      box.checked = false;
+      write(box.dataset.key ?? '', false);
+    });
+    updateCounts();
+  });
+  updateCounts();
+</script>
+
+<style>
+  .progress-group { margin: 0.75rem 0; padding: 0.5rem 0.9rem; border: 1px solid var(--sl-color-hairline); border-radius: 0.5rem; }
+  .progress-group summary { cursor: pointer; font-weight: 600; }
+  .progress-count { font-weight: 400; color: var(--sl-color-gray-3); font-size: var(--sl-text-sm); }
+  .progress-link { margin: 0.4rem 0 0; font-size: var(--sl-text-sm); }
+  .progress-list { list-style: none; padding: 0; margin: 0.5rem 0 0.25rem; }
+  .progress-list li { margin: 0.4rem 0; }
+  .progress-list label { display: flex; gap: 0.6rem; align-items: flex-start; cursor: pointer; }
+  .progress-list input { margin-top: 0.3rem; flex: none; }
+  .progress-reset { cursor: pointer; padding: 0.3rem 0.8rem; border: 1px solid var(--sl-color-gray-4); border-radius: 0.3rem; background: transparent; color: var(--sl-color-text); }
+</style>

@@ -46,3 +46,38 @@ figure.diagram figcaption {
   color: var(--sl-color-gray-3);
   margin-top: 0.5rem;
 }
+
+details.go-deeper {
+  margin: 1.25rem 0;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--sl-color-hairline);
+  border-left: 4px solid var(--sl-color-accent);
+  border-radius: 0.4rem;
+}
+
+details.go-deeper > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+details.go-deeper[open] > summary {
+  margin-bottom: 0.6rem;
+}
+
+@media print {
+  .cheat-sheet {
+    font-size: 10pt;
+    line-height: 1.35;
+    break-inside: avoid;
+  }
+
+  .cheat-sheet h2 {
+    margin-top: 0.8rem;
+    font-size: 12pt;
+  }
+
+  .cheat-sheet p,
+  .cheat-sheet li {
+    margin-block: 0.15rem;
+  }
+}

@@ -7,7 +7,7 @@ export default defineConfig({
   integrations: [
     starlight({
       title: 'The Agentic Harness Guide',
-      description: 'What to enable in a modern agentic coding harness, and why.',
+      description: 'A plain-English guide to getting reliable, checkable work from AI assistants, from your first chat to systems of several assistants.',
       customCss: ['./src/styles/custom.css'],
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/GlenTiki/agentic-harness-guide' }],
       editLink: { baseUrl: 'https://github.com/GlenTiki/agentic-harness-guide/edit/main/' },
@@ -16,7 +16,14 @@ export default defineConfig({
       sidebar: [
         {
           label: 'Start here',
-          items: [{ slug: 'start-here/how-to-read' }, { slug: 'glossary' }],
+          items: [
+            { slug: 'start-here/how-to-read' },
+            { slug: 'start-here/consistency-fast-track' },
+            { slug: 'start-here/professional-route' },
+            { slug: 'start-here/engineer-route' },
+            { slug: 'start-here/cheat-sheet' },
+            { slug: 'glossary' },
+          ],
         },
         {
           label: 'The journey',
@@ -31,19 +38,30 @@ export default defineConfig({
             { slug: 'journey/06-hire-a-team' },
             { slug: 'journey/07-run-it-for-real' },
             { slug: 'journey/08-design-anything' },
+            {
+              label: 'Beyond the levels',
+              items: [
+                { slug: 'journey/progress' },
+                { slug: 'journey/professional-guardrails' },
+                { slug: 'journey/why-it-sounds-sure' },
+              ],
+            },
           ],
         },
         {
           label: 'Workflows',
           items: [
             { slug: 'workflows' },
+            { slug: 'workflows/build-a-budget' },
+            { slug: 'workflows/spreadsheet-monday' },
+            { slug: 'workflows/review-content' },
             { slug: 'workflows/improve-code' },
             { slug: 'workflows/improve-design' },
-            { slug: 'workflows/build-a-budget' },
             { slug: 'workflows/connect-systems' },
-            { slug: 'workflows/review-content' },
+            { slug: 'workflows/small-shop-month-end' },
             { slug: 'workflows/define-a-workflow' },
             { slug: 'workflows/research-a-decision' },
+            { slug: 'workflows/design-reps' },
           ],
         },
         {
@@ -62,7 +80,6 @@ export default defineConfig({
           items: [
             { slug: 'shelf/foundations/principles' },
             { slug: 'shelf/foundations/adoption-path' },
-            { slug: 'shelf/foundations/glossary' },
           ],
         },
         {

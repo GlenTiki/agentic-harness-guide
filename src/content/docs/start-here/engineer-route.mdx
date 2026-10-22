@@ -1,0 +1,28 @@
+---
+title: The engineer route
+description: Where the mechanism sits in each level for engineers, then the order to read the reference shelf.
+---
+
+The journey is written for any reader. The mechanism that engineers care about sits in the Expert corner and the Go deeper blocks of each level. Read those first, then the shelf.
+
+The shelf is written against Claude Code, with notes on Codex CLI. The ideas transfer; the setting names do not. Each page names the tool, the version or build checked, and the date, or says `version not recorded`. Look for the line that starts "Verified against"; a claim without one is generic.
+
+## Where the mechanism sits
+
+| Level | Where to look | What you find there |
+| --- | --- | --- |
+| [4. Trust, but verify](../../journey/04-trust-but-verify/) | Allowlist semantics, then Go deeper on hooks and sandboxes | How a permission rule differs from a hook, and why a control that runs outside the assistant is stronger than a request |
+| [5. Check the work](../../journey/05-check-the-work/) | Expert corner | Degrees of independence between author and reviewer |
+| [6. Hire a team](../../journey/06-hire-a-team/) | Go deeper | Isolation of helpers and bounded briefs |
+| [7. Run it for real](../../journey/07-run-it-for-real/) | Go deeper | Restart, idempotency and sample size |
+
+## Where "harness" is defined
+
+A [harness](../../glossary/#harness) is the program around the assistant: the part that runs tools, applies permissions and keeps logs. Level 3 defines it at first use. The shelf is the engineering view of it.
+
+## The shelf, in order
+
+1. [Principles](../../shelf/foundations/principles/), then the [baseline](../../shelf/reference/baseline/), then the [anti-patterns](../../shelf/reference/anti-patterns/). These three give the position and the minimum.
+2. Then by area: [instruction files](../../shelf/context/instruction-files/) and context, [hooks](../../shelf/control/hooks/) and permissions, [sub-agents](../../shelf/delegation/sub-agents/) and skills, [specs](../../shelf/quality/spec-driven-development/) and review, [observability](../../shelf/operations/observability/) and cost.
+
+**Next:** [Principles](../../shelf/foundations/principles/)

@@ -1,6 +1,6 @@
 # The Agentic Harness Guide
 
-A vendor-neutral guide to what you should enable in a modern agentic coding harness: instructions, hooks, permissions, delegation, review and operations. It is built with [Astro Starlight](https://starlight.astro.build/).
+A plain-English guide to getting reliable, checkable work from AI assistants, from your first chat to systems of several assistants. Nine short levels teach the ideas. The reference shelf is for engineers and is written against Claude Code, with notes on Codex CLI; the ideas transfer. It is built with [Astro Starlight](https://starlight.astro.build/).
 
 ## Develop
 

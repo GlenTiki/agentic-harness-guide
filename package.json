@@ -10,7 +10,8 @@
     "check:links": "node scripts/check-links.mjs",
     "check:todos": "node scripts/check-todos.mjs",
     "check:skill-coverage": "node scripts/check-skill-coverage.mjs",
-    "check": "npm run build && npm run check:links && npm run check:skill-coverage && npm run check:todos"
+    "check:llms": "node scripts/check-llms.mjs",
+    "check": "npm run build && npm run check:links && npm run check:skill-coverage && npm run check:todos && npm run check:llms"
   },
   "dependencies": {
     "@astrojs/starlight": "0.42.6",

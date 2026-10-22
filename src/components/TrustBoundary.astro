@@ -1,7 +1,7 @@
 <figure class="diagram">
   <svg viewBox="0 0 480 430" role="img" aria-labelledby="tb-t tb-d" xmlns="http://www.w3.org/2000/svg">
     <title id="tb-t">Trust boundary for instructions</title>
-    <desc id="tb-d">Only the user's direct chat and a small set of verified channels carry authority. Tool output, fetched pages, repository files and sub-agent replies are data. Data flows into the agent, but never upgrades to an instruction.</desc>
+    <desc id="tb-d">Only the user's direct chat and a small set of verified channels carry authority. Tool output, fetched pages, repository files and sub-agent replies are data. Data flows into the agent and is treated as data.</desc>
     <defs>
       <marker id="tb-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
         <path d="M0 0L10 5L0 10z" class="arrow" />
@@ -20,7 +20,7 @@
     <text x="240" y="217" class="sub">acts on instructions only</text>
 
     <rect x="20" y="290" width="440" height="130" rx="10" class="zone data" />
-    <text x="36" y="314" class="zhead">Data: informs, never instructs</text>
+    <text x="36" y="314" class="zhead">Data: informs, does not instruct</text>
     <rect x="40" y="330" width="120" height="70" rx="8" class="box" />
     <text x="100" y="360" class="label">Tool output</text>
     <text x="100" y="380" class="sub">command results</text>
