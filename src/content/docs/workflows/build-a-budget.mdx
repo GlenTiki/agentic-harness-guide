@@ -1,13 +1,13 @@
 ---
 title: "Workflow: build a budget"
-description: Build a flat-share budget and a shop budget against actual, with no invented figures, marked assumptions and a check against source documents.
+description: Build a flat-share and a shop budget against actual with no invented figures and a check against source documents. Chat only; a spreadsheet helps.
 ---
 
 ## Scene
 
 *Last time (level 1): you made a request clear enough to check.*
 
-*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
+*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
 Sam types "Help me make a budget." Within a second the assistant produces a tidy table with rent at 1,200, groceries at 400 and "entertainment" at 150. They are lovely numbers. They are also nobody's numbers. Sam has not told it a single figure.
 
@@ -22,23 +22,39 @@ Four rules do the work. Each one is written into the prompt, so the assistant se
 3. **Find the lines that matter most.** Test how much the answer moves if the biggest items change. This is called [sensitivity](../../glossary/#sensitivity).
 4. **Agree to source.** Tie every total to a bank statement, a card statement or an invoice before you trust the budget.
 
-This workflow runs the rules twice: first for Sam's flat share, from [level 1](../../journey/01-say-it-properly/), then for Mina's shop, as a budget against actual. It uses [the prompt refiner](../../appendix/prompt-refiner/) to write the ask. If you do not have the full refiner, [refiner lite](../../appendix/prompt-refiner/#refiner-lite) is a short plain prompt you paste instead.
+This workflow runs the rules twice: first for Sam's flat share, from [level 1](../../journey/01-say-it-properly/), then for Mina's shop, as a budget against actual. It uses [the prompt refiner](../../appendix/prompt-refiner/) to write the ask. If you do not have the full refiner, [refiner lite](../../appendix/prompt-refiner/#refiner-lite) is a short plain prompt you paste instead. The refiner is optional. Do not paste confidential material into it, because it works on the shape of your ask and not on your data. Read its output before you use it, and see [the injection result](../../appendix/prompt-refiner/#the-seven-evals) in the appendix.
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant and, for the shop, a few figures of your own. A spreadsheet helps. The replies below are examples recorded on 2026-10-22; the tool and model were not recorded. Your tool will answer differently.
+You need any chat assistant and, for the shop, a few figures of your own. A spreadsheet helps. Start with the paste block below. The session after it shows what a run can look like.
 
-### Part 1: the flat share
+### Try it yourself
 
-#### Pass 0: the rough ask
+Paste this into any chat assistant, and add your own figures. The first prompt below is the whole exercise:
+
+```text
+Act as my prompt refiner: improve my request, do not do it. My request: "Help me make a budget." Ask at most three questions, each with a default. Then give me a prompt that never invents a figure, marks every assumption, tests the three biggest lines by 10%, and ends with a check against my statement. Mark anything you do not know as [NEEDED].
+```
+
+Then give it your figures, check every total by hand, and agree each to a statement.
+
+### What a run looked like
+
+The replies in this section are example replies, written for teaching. They are not a record of any run, and your tool will answer differently.
+
+*Illustrative numbers, made up for teaching. They are not measurements.*
+
+#### Part 1: the flat share
+
+##### Pass 0: the rough ask
 
 ```text
 Help me make a budget.
 ```
 
-#### Pass 1: the refiner refuses to guess
+##### Pass 1: the refiner refuses to guess
 
 The refiner asked three questions, each with a default: personal or something else; what the budget is for; and whether you have your real numbers ready or want a template. It listed its assumptions, including "currency, income, expenses and goals are all unknown and must come from you". Its prompt marked income, currency, fixed costs, spending and goals as [NEEDED]. It also added a constraint: "Use only the figures I give you. Don't fill in 'typical' amounts for anything I haven't supplied."
 
@@ -52,7 +68,7 @@ One thing the refiner added that Sam did not ask for: up to five "observations" 
 The three of us (Sam, Priya and Tom) share a flat. Euros. I want each person's share of the year's shared bills. Last year's bills by month: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Rent is not part of these bills; each of us pays the landlord directly.
 ```
 
-#### Pass 2: the refiner narrows the job
+##### Pass 2: the refiner narrows the job
 
 The refiner saw that the answers described a smaller job than a full budget, and said so. Its diff said, in part:
 
@@ -62,7 +78,7 @@ The refiner saw that the answers described a smaller job than a full budget, and
 
 It asked whether the split should be equal. Its default was equal.
 
-#### The final specification
+##### The final specification
 
 ```text
 Goal: Work out each flatmate's share of the year's shared bills, so the three of us know what to put aside.
@@ -75,7 +91,7 @@ What to do if unsure: Say so and leave a marked blank. Do not guess.
 
 The rounding rule is a rule set by the owner before the run. Here Sam is the owner, so Sam writes it in. The refiner cannot choose it for Sam, because only the owner knows which rule the flat accepts.
 
-#### Agree to source
+##### Agree to source
 
 The final spec says the shares must add back to the total. Sam checks with arithmetic, not by trusting the assistant.
 
@@ -90,15 +106,15 @@ This is the February slip's cousin. An assistant that wants the table to "add up
 
 Last, Sam ties the table to the real bank statements. For each month, find the lines that make up the bills and confirm the table agrees to them. A difference is a finding. It is either a bill that was left out or a figure Sam mistyped.
 
-### Part 2: the shop, budget against actual
+#### Part 2: the shop, budget against actual
 
 Mina asks Sam to compare the shop's September budget with what happened. The shop has more lines and more at stake, so the four rules get stricter.
 
-**Basis.** The figures exclude VAT and stock. Materials includes one accrual, invoice 1042 for 100.00, as the [month-end workflow](../small-shop-month-end/) explains. State any other basis in the prompt. Profit here means profit before the owner's pay.
+**Basis.** The figures exclude VAT (value added tax). Materials is purchases in the month plus one accrual, invoice 1042 for 100.00, as the [month-end workflow](../small-shop-month-end/) explains. There is no stock count and no stock adjustment. Moving to cost of sales is the accountant's decision. State any other basis in the prompt. Profit here means profit before the owner's pay.
 
 Before you paste real figures from a real business, read [confidentiality and sign-off](../../journey/professional-guardrails/). The figures below are made up for the example.
 
-#### The ask
+##### The ask
 
 ```text
 Goal: Compare Mina's September budget with the actual result for her candle shop, and show which lines need an explanation.
@@ -111,7 +127,7 @@ What to do if unsure: Leave a blank and mark it. Do not guess.
 
 Sam checks this against the rules, then runs it through the refiner to find gaps before pasting the figures.
 
-#### The variance table
+##### The variance table
 
 | Line | Budget | Actual | Variance | % |
 | --- | --- | --- | --- | --- |
@@ -125,11 +141,11 @@ Sam checks this against the rules, then runs it through the refiner to find gaps
 | Total costs | 2,525.00 | 2,698.00 | +173.00 | +6.9 |
 | Profit before the owner's pay | 3,275.00 | 3,302.00 | +27.00 | +0.8 |
 
-The investigation rule asks for two things at once: more than 5% and more than 50.00 from budget. Only materials qualifies (9.3% and 130.00). Other costs is 12.0%, but only 12.00, so it does not.
+Only materials is past the investigation threshold (more than 5% and more than 50.00 from budget, 9.3% and 130.00). The rule and its workings are on the [small shop month-end](../small-shop-month-end/#step-5-budget-against-actual) page.
 
 **Human checkpoint 2.** The assistant flags materials and writes "Reason needed from Mina". Mina gives the reason: the wax supplier raised its price on 1 September. That reason is an example supplied by Mina. The assistant does not know why a cost moved, and it must not make up a reason.
 
-#### Sensitivity: which line matters most
+##### Sensitivity: which line matters most
 
 Sensitivity shows how much the answer moves when one input moves. Profit before the owner's pay is 3,302.00. Move one line by 10% and hold the others fixed.
 
@@ -137,16 +153,6 @@ Sensitivity shows how much the answer moves when one input moves. Profit before 
 - Sales down 10% is 600.00 less. Profit falls to 2,702.00.
 
 The same 10% move costs 153.00 on materials and 600.00 on sales. Profit is far more sensitive to sales than to materials, so a weak month of sales is the thing to watch. The assumption is that costs stay fixed when sales fall. That is rarely true, because materials fall with sales. Write it down as an assumption, and let Mina correct it.
-
-### Try it yourself
-
-Paste this into any chat assistant, and add your own figures:
-
-```text
-Act as my prompt refiner: improve my request, do not do it. My request: "Help me make a budget." Ask at most three questions, each with a default. Then give me a prompt that never invents a figure, marks every assumption, tests the three biggest lines by 10%, and ends with a check against my statement. Mark anything you do not know as [NEEDED].
-```
-
-Then give it your figures, check every total by hand, and agree each to a statement.
 
 ## Under the bonnet
 
@@ -165,7 +171,7 @@ The checks that say when it is done:
 - The rounding rule is the owner's, and it is stated and applied.
 - The totals agree to the statements, and every difference has an explanation.
 - The assumptions are listed and the person who owns the money has read them.
-- Reviewed and approved by a named person who is not the preparer.
+- Reviewed and approved by a named person who is not the preparer, or by the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/).
 
 ## Expert corner
 
@@ -182,15 +188,15 @@ This is money, so keep data to what the job needs. Paste the lines you need, not
 :::note[Agent note]
 **Topic: budgets and rounding.**
 
-State a figure only if it came from supplied data, a cited source or a computation you show. When you total a list, state the item count and the sum. Print the items only if there are 50 or fewer.
+State a figure only if it came from supplied data, a cited source or a computation you show. When you total numbers, state how many you added and the sum. Do not list the items unless asked and there are 50 or fewer.
 
-Mark each missing figure as [NEEDED: what is missing]. List every assumption on its own line.
+Mark each missing figure as [NEEDED: what is missing]. List every assumption on its own line. For a flagged variance, write "Reason needed from" and the owner's name.
 
-The rounding rule is the owner's. Apply it. Do not choose one.
+Apply the rounding rule you are given. If none is given, ask for it. If you cannot ask, round each item to the cent, state that you did, and list it as an assumption.
 
-Do not supply a reason for a variance. Do not choose an accounting treatment. When asked for advice, ask whether the user wants advice.
+Do not supply a reason for a variance. Do not choose an accounting treatment. Give advice only when asked.
 
-Check: the reply states the item count and the sum, every figure traces to the input, and each flagged variance reads "Reason needed from Mina" or names the owner.
+Check: the reply states how many figures were added and the sum, every figure traces to the input, and each flagged variance reads "Reason needed from" and names the owner.
 :::
 
 ## Mistakes people make
@@ -203,7 +209,7 @@ Check: the reply states the item count and the sum, every figure traces to the i
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 
@@ -229,6 +235,6 @@ You can now:
 
 ## Bridge
 
-You have now refined code, a design and a budget, and the next job is a spreadsheet that does the arithmetic for you.
+A budget needs its totals checked, and the next job is a spreadsheet that does the arithmetic for you.
 
 **Next:** [Workflow: spreadsheet Monday](../spreadsheet-monday/)

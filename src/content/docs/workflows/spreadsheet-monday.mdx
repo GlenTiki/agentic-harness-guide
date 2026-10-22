@@ -1,13 +1,13 @@
 ---
 title: "Workflow: spreadsheet Monday"
-description: Ask an assistant for spreadsheet formulas, check them with a TRUE or FALSE cell, and draft a variance note where every figure is traceable.
+description: Ask an assistant for formulas, check them with a TRUE or FALSE cell, and draft a traceable variance note. Chat and a spreadsheet; needs bookkeeping.
 ---
 
 ## Scene
 
 *Last time (level 1): you made a request clear enough to check.*
 
-*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
+*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
 Monday morning. Sam pastes twelve months of shared bills into a chat and asks for the total. The assistant answers with a confident figure. It is the sum of thirteen numbers, because February is in the list twice. A person adding the column in a spreadsheet would have seen thirteen rows. An assistant adding in prose sees none of that.
 
@@ -21,19 +21,23 @@ Three habits keep the Monday routine safe:
 2. **A check cell.** One cell shows TRUE or FALSE, so a wrong total shows itself.
 3. **Traceable commentary.** Any sentence about the numbers uses only figures in the sheet, each with its cell reference.
 
-Anonymise first. Replace names with codes, round figures if the task allows, and keep the key that links codes to names offline.
+Anonymise first. The steps are in [how to anonymise a spreadsheet](../../journey/professional-guardrails/#how-to-anonymise-a-spreadsheet).
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant and a spreadsheet. This takes about 20 minutes. Replies vary between runs and tools. The figures are made up for the example.
+You need any chat assistant and a spreadsheet. This takes about 25 minutes. Needs a laptop. Replies vary between runs and tools. The figures are made up for the example.
 
 :::tip[Which app?]
 Excel and Google Sheets both take the formulas below. Paste a formula into a cell and compare the result with the figure given on this page. If your result differs, check the formula syntax in your spreadsheet's help.
 :::
 
-*Verified against the official docs on 2026-10-22: SUMPRODUCT is documented for Excel at [SUMPRODUCT function](https://support.microsoft.com/en-us/excel/functions/sumproduct-function) and for Google Sheets at [SUMPRODUCT](https://support.google.com/docs/answer/3094294). The other formulas on this page were not checked against the docs.*
+<p class="verified">Docs page fetched on 2026-10-22: https://support.microsoft.com/en-us/excel/functions/sumproduct-function. Quoted line: "The SUMPRODUCT function returns the sum of the products of corresponding ranges or arrays." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-10-22: https://support.google.com/docs/answer/3094294. Quoted line: "The SUMPRODUCT function calculates the sum of the products of corresponding entries in 2 equally sized arrays or ranges." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+
+Every formula on this page was evaluated in LibreOffice 26.8 on 2026-10-22, and the results are printed beside it. COUNTIF ignores case, so Feb and feb count as one month, and it treats `*` and `?` as wildcards.
 
 ### Part 1: the flat's shared bills
 
@@ -81,7 +85,7 @@ Here B14 holds the total. The rounding rule is the owner's. Round each share to 
 
 The distinct-months formula divides by zero if a cell in A2:A13 is blank, so fill every row first.
 
-**Make the check fail.** Insert a second February row with 198, and extend the ranges to row 14. The total becomes 2,318, the count becomes 13, the distinct count stays 12, and the flag says REPEAT. A check that cannot turn red proves nothing, so run this once.
+**Make the check fail.** Change A4 from Mar to Feb. The total stays 2,120, the count stays 12, the distinct count drops to 11, and the flag says REPEAT. Change A4 back. A check that cannot turn red proves nothing, so run this once.
 
 ### Part 2: the shop's September
 
@@ -94,14 +98,16 @@ Mina's September sales, with a label in column A, a type in column B and the amo
 | Market card takings | Market | 1,720.00 |
 | Market cash takings | Market | 410.00 |
 
+In C7, type Mina's own total from her sales report: 7380. Write its source beside it.
+
 | Task | Formula | Result |
 | --- | --- | --- |
 | Total sales | `=SUM(C2:C5)` | 7,380.00 |
 | Online, net of refunds | `=SUMIF(B2:B5,"Online",C2:C5)` | 5,250.00 |
 | Market total | `=SUMIF(B2:B5,"Market",C2:C5)` | 2,130.00 |
-| Check cell | `=ABS(SUM(C2:C5)-7380)<=1` | TRUE |
+| Check cell | `=ROUND(SUM(C2:C5)-C7,2)=0` | TRUE |
 
-The 7,380.00 in the check cell is Mina's own total from her records, typed in by her. If the cell says FALSE, the sheet and Mina's records disagree by more than 1.00, and you stop and find out why.
+The check cell compares the sheet with Mina's total in C7, which she typed from her records. If the cell says FALSE, the sheet and Mina's records disagree, and you stop and find out why. The tolerance is zero.
 
 Next, budget in column B, actual in column C, variance in D and percentage in E:
 
@@ -110,7 +116,7 @@ Next, budget in column B, actual in column C, variance in D and percentage in E:
 | Materials | 1,400.00 | 1,530.00 | `=C3-B3` gives 130.00 | `=D3/B3` gives 9.3% |
 | Other costs | 100.00 | 112.00 | `=C8-B8` gives 12.00 | `=D8/B8` gives 12.0% |
 
-In the full table, sales is row 2, materials row 3 and other costs row 8. A flag for lines that need an explanation: `=AND(ABS(D3)>50,ABS(E3)>0.05)`. The percentage is a fraction, so 5% is 0.05. It gives TRUE for materials (130.00 and 9.3%) and FALSE for other costs (12.00 is under 50.00). The rule comes from the [small shop month-end](../small-shop-month-end/) page.
+Format column E as a percentage, or `=D3/B3` shows 0.0929 and not 9.3%. A positive variance on a cost is adverse (A). A positive variance on sales is favourable (F). In the full table, sales is row 2, materials row 3 and other costs row 8. A flag for lines past the investigation threshold: `=AND(ABS(D3)>50,ABS(E3)>0.05)`. The percentage is a fraction, so 5% is 0.05. It gives TRUE for materials (130.00 and 9.3%) and FALSE for other costs (12.00 is under 50.00). The rule, and why it uses "and", are on the [small shop month-end](../small-shop-month-end/#step-5-budget-against-actual) page.
 
 ### Part 3: the commentary
 
@@ -122,7 +128,7 @@ Using only the figures in the table below, write two sentences on the materials 
 
 Check every figure in the reply against its cell. A figure with no cell is an invented figure.
 
-Before you paste real figures from a real business, anonymise them and read [confidentiality and sign-off](../../journey/professional-guardrails/). Definition of done: the formulas give the results above, the check cell shows TRUE, every figure in the commentary has a cell reference, and the work is reviewed and approved by a named person who is not the preparer.
+Before you paste real figures from a real business, anonymise them and read [confidentiality and sign-off](../../journey/professional-guardrails/). Definition of done: the formulas give the results above, the check cell shows TRUE, every figure in the commentary has a cell reference, and the work is reviewed and approved by a named person who is not the preparer, or by the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/).
 
 ## Under the bonnet
 
@@ -141,7 +147,7 @@ Keep the check cell, the source figures and the reviewer's initials on the sheet
 ## Expert corner
 
 :::caution[Expert corner]
-The distinct-count trick compares text exactly, so "Feb" and "Feb " (with a trailing space) count as different months. Clean the column first. Floating-point sums can leave tiny differences, so compare money with a tolerance, as in the check cell, not with exact equality.
+The distinct-count trick treats "Feb" and "Feb " (with a trailing space) as different months, and "Feb" and "feb" as the same one. Clean the column first. Floating-point sums can leave tiny differences, so compare money with a tolerance, as in the check cell, not with exact equality.
 
 An assistant can write a formula that looks right and refers to the wrong range. Test every formula on a case with a known answer before you trust it on the real data.
 
@@ -153,13 +159,13 @@ Anonymising reduces what leaves your machine. It does not remove the need for pe
 :::note[Agent note]
 **Topic: spreadsheet arithmetic.**
 
-State a figure only if it came from supplied data, a cited source or a computation you show. When you total a list, state the item count and the sum. Print the items only if there are 50 or fewer.
+State a figure only if it came from supplied data, a cited source or a computation you show. When you total numbers, state how many you added and the sum. Do not list the items unless asked and there are 50 or fewer.
 
 When asked for a total, give the formula and say what range it uses. Do not report a result you did not compute with a tool.
 
 Quote each figure in commentary with its cell reference. Do not supply a reason for a variance.
 
-Check: the reply states the item count and the sum, and every figure in the commentary has a cell reference.
+Check: the reply states how many figures were added and the sum, and every figure in the commentary has a cell reference.
 :::
 
 ## Mistakes people make
@@ -172,7 +178,7 @@ Check: the reply states the item count and the sum, and every figure in the comm
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 

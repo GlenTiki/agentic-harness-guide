@@ -7,7 +7,7 @@ description: Design a multi-part agent system for a job you have never seen, and
 
 *Last time: you predicted where a many-step job fails first, and gave the run an audit log, limits and a safe restart.*
 
-*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
+*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
 *Only use a chat window? You can skip to the [cheat sheet](../../start-here/cheat-sheet/) and come back when you connect tools.*
 
@@ -26,7 +26,7 @@ A wedding is a project with a hundred small jobs, a fixed date and one very bad 
 1. **Name the outcome and its checkable done.** Say what must be true at the end, in words a test could check. Use the [definition of done](../../glossary/#definition-of-done) from level 5.
 2. **List the steps a careful human would take.** Do not think about agents yet. Write what a sensible person would do, in order.
 3. **Mark each step.** Is it judgement (needs weighing and taste), mechanical (has one right answer) or risky (hard to undo, or touches other people)?
-4. **Assign roles and tools, least privilege.** Give each step to a human, a helper or a script (a small program that does one fixed job). Give each helper only the access its step needs. That is [least privilege](../../glossary/#least-privilege). Use [read-only](../../glossary/#read-only) access where you can. Mechanical steps often belong in a script, not an assistant.
+4. **Assign roles and tools.** Give each step to a human, a helper or a script (a small program that does one fixed job). Give each helper only the access its step needs. Use [read-only](../../glossary/#read-only) access where you can. Mechanical steps often belong in a script, not an assistant.
 5. **Place checks and human checkpoints.** Put a check after the weakest or most costly step. Put a [human checkpoint](../../glossary/#human-checkpoint) before anything risky. Use a separate [reviewer](../../glossary/#reviewer) where the producer would share the blind spot.
 6. **Decide how it fails safely, and how you will know.** What does each step do when it fails? What does the run do when it dies halfway? What goes in the [audit log](../../glossary/#audit-log), and what limits apply?
 
@@ -41,7 +41,7 @@ Here is the method applied to Mina's September month-end, in short form. The [fu
 | 5 | Checks and checkpoints | Months check, reconciliation, Mina approves before sending |
 | 6 | Failure | A failed check stops the run, logs why, tells Sam |
 
-Done means: nine distinct months, year to date 44,600.00; the reconciliation of sales to the bank has an unexplained difference within 1.00; every variance line over 5% and 50.00 has an explanation from Mina; the reviewer is not the preparer.
+Done means: nine distinct months, year to date 44,600.00; the proof of sales to the bank receipts has an unexplained difference of 0.00; every variance line over 5% and 50.00 has an explanation from Mina; the reviewer is not the preparer, or is the fallback reviewer.
 
 ### The pattern library
 
@@ -49,11 +49,11 @@ Most designs combine a few shapes. Learn the shapes and the smell that tells you
 
 | Pattern | Shape | Use it when | Smell of misuse |
 | --- | --- | --- | --- |
-| Pipeline | Step A, then B, then C | Order matters, each needs the last result | Fifteen stages, no check between them |
+| [Pipeline](../../glossary/#pipeline) | Step A, then B, then C | Order matters, each needs the last result | Fifteen stages, no check between them |
 | [Fan-out and gather](../../glossary/#fan-out-and-gather) | Split, run in parallel, combine | Parts are independent | Shared files, or gather drops a part |
-| Reviewer loop | One produces, another reviews, producer revises | Quality needs an independent look | Reviewer sees the reasoning, or no limit |
+| [Reviewer loop](../../glossary/#reviewer-loop) | One produces, another reviews, producer revises | Quality needs an independent look | Reviewer sees the reasoning, or no limit |
 | Human checkpoint | The run stops until a person says yes | The step is hard to undo | Rubber stamp: a wall of text, one click |
-| Watcher | Checks a condition on a schedule, raises a flag | You must notice a change or stall | The watcher acts instead of reporting |
+| [Watcher](../../glossary/#watcher) | Checks a condition on a schedule, raises a flag | You must notice a change or stall | The watcher acts instead of reporting |
 | [Ledger](../../glossary/#ledger) | A written record of tasks, status, decisions | The job spans steps, sessions or helpers | Nobody reads it, or many writers edit it |
 
 The remedy for a ledger with many writers is one writer, or append-only with a version check. A good design uses three or four patterns, not all six. For detail, see [sub-agents](../../shelf/delegation/sub-agents/) and [human in the loop](../../shelf/operations/human-in-the-loop/) (both for engineers).
@@ -64,9 +64,9 @@ Keep the six steps on a card. When you are stuck, ask the next question on the c
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant, plus pen and paper. This takes about 20 minutes.
+You need any chat assistant, plus pen and paper. This takes about 10 minutes. Phone OK.
 
 Pick a job from your own life with several steps: planning a trip, moving a bank account, preparing a talk. Then:
 
@@ -98,6 +98,8 @@ An example reply for a trip-planning job:
 ```
 
 5. Fix one thing it found. You have just run the six steps on a real job.
+
+Tick it off: add the outcomes you can now do on [your progress page](../progress/).
 
 ### Rep 1: plan a wedding budget
 
@@ -131,7 +133,7 @@ A couple has two family guest lists, a caterer who charges per head, a venue quo
 
 </details>
 
-**Apply it.** Four more reps are in [design reps](../../workflows/design-reps/). To turn a vague request into a written plan, use [define a workflow](../../workflows/define-a-workflow/). To turn "should we" into a decision memo, use [research a decision](../../workflows/research-a-decision/). When you are done, compare your habits with the [baseline](../../shelf/reference/baseline/) and the [anti-patterns](../../shelf/reference/anti-patterns/) (both for engineers).
+**Apply it.** Five more reps are in [design reps](../../workflows/design-reps/). To turn a vague request into a written plan, use [define a workflow](../../workflows/define-a-workflow/). To turn "should we" into a decision memo, use [research a decision](../../workflows/research-a-decision/). When you are done, compare your habits with the [baseline](../../shelf/reference/baseline/) and the [anti-patterns](../../shelf/reference/anti-patterns/) (both for engineers).
 
 ## Under the bonnet
 
@@ -139,9 +141,9 @@ A couple has two family guest lists, a caterer who charges per head, a venue quo
 
 The method forces the questions people skip. Most weak designs fail at step 1 (no checkable done), step 3 (a risky step treated as routine) or step 6 (no plan for the day it breaks). You describe the human way first, because it shows the real steps without a technology guess in the way. You mark the steps before you assign owners, because the mark decides the owner: judgement leans on an assistant or a human, mechanical on a script, risky on a human.
 
-Least privilege keeps mistakes small. A helper that can only read cannot send a wrong email. Checks cost time and money, and each can be wrong, as level 7 showed. Place them after the weakest step, before the irreversible one, and wherever a helper's blind spot would be shared by its reviewer. If the answer is a count or a sum, use a formula.
+[Least privilege](../../glossary/#least-privilege), giving each helper only the access its step needs, keeps mistakes small. A helper that can only read cannot send a wrong email. Checks cost time and money, and each can be wrong, as level 7 showed. Place them after the weakest step, before the irreversible one, and wherever a helper's blind spot would be shared by its reviewer. If the answer is a count or a sum, use a formula.
 
-The patterns reuse ideas you already have: the reviewer loop is level 5, the human checkpoint is level 4, fan-out and gather is level 6, and the ledger and watcher come from level 7.
+The patterns reuse ideas you already have: the reviewer loop is level 5, the human checkpoint is level 4, fan-out and gather is level 6. The ledger and the watcher are new here. The audit log from level 7 is their cousin.
 
 :::note[Want consistency]
 Keep the six steps as a template file. Fill it in for each new job and keep the filled copy next to the job. When the job misbehaves, the filled template shows which decision to revisit.
@@ -156,7 +158,7 @@ This chapter is control design. Segregation of duties means the preparer does no
 :::caution[Expert corner]
 A method surfaces decisions. It does not make them for you. The common failure is over-decomposition: many helpers, many hand-offs, and a reliability figure below the single-assistant baseline. Add structure only where a check or an access boundary justifies it.
 
-A human checkpoint on every run teaches the human to approve without reading, which is worse than none. Place it on irreversibility and exceptions, and show a small, checkable summary. In an engineering team, this is release design: tests, review, staged rollout and rollback.
+A human checkpoint on every run is worse than none ([level 4](../04-trust-but-verify/) explains approval fatigue). Place it on irreversibility and exceptions, and show a small, checkable summary. In an engineering team, this is release design: tests, review, staged rollout and rollback.
 :::
 
 ## Agent note
@@ -183,13 +185,13 @@ Check: a reader can name the owner, the check and the failure behaviour of every
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 
 - Name the outcome and a checkable done for a job you have never seen.
 - Decompose a job into steps and mark each as judgement, mechanical or risky.
-- Assign roles and tools using least privilege, and place checks and human checkpoints where they matter.
+- Assign roles and tools, giving each only the access its step needs, and place checks and human checkpoints where they matter.
 - Choose from the pattern library and spot a misuse by its smell.
 - Describe how a design fails safely, and defend each choice.
 
@@ -204,12 +206,12 @@ You can now:
 
 1. They skipped marking the steps and placing checkpoints. Split the roles, make the availability reader read-only, and add a human checkpoint before booking and emailing.
 2. A check that each receipt is counted once, because merging three sources is where duplicates enter. This is the February slip again: a distinct-count check right after the merge.
-3. Too many checkpoints teach people to click yes without reading. Keep them for steps that cannot be undone and for exceptions, and cover the rest with automatic checks.
+3. Too many checkpoints cause approval fatigue (see [level 4](../04-trust-but-verify/)). Keep them for steps that cannot be undone and for exceptions, and cover the rest with automatic checks.
 
 </details>
 
 ## Bridge
 
-The workflows apply levels 1 to 8 to ten real jobs.
+A method only becomes a habit with repetition, so the workflows apply it to ten real jobs.
 
 **Next:** [Workflows](../../workflows/)

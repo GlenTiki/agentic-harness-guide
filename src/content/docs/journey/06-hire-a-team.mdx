@@ -5,7 +5,7 @@ description: Split a job across helpers with bounded briefs so they do not trip 
 
 ## Scene
 
-*Last time: you wrote a checkable "done" for the money admin, checked it with a formula first, and used a separate reviewer for the rest. If you arrive here directly: Sam does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
+*Last time: you wrote a checkable "done" for the money admin, checked it with a formula first, and used a separate reviewer for the rest. If you arrive here directly: Sam does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
 *Only use a chat window? The Try it below needs only two chats. You can also skip ahead to [level 8's Try it](../08-design-anything/#try-it) and come back.*
 
@@ -13,11 +13,11 @@ Moving house goes badly when one person does everything. By the fourth hour they
 
 ## The idea
 
-**Split a big job into small jobs, and give each helper a brief it can finish without you.** A helper (a [sub-agent](../../glossary/#sub-agent)) is a second assistant that takes one task, works on it with its own fresh [context window](../../glossary/#context-window), and hands back a short result.
+**Split a big job into small jobs, and give each helper a brief it can finish without you.** A [helper](../../glossary/#helper) (a [sub-agent](../../glossary/#sub-agent)) is a second assistant that takes one task, works on it with its own fresh [context window](../../glossary/#context-window), and hands back a short result.
 
 Three ideas make this work:
 
-- **Delegation** is giving one task to one helper, with only what that task needs.
+- **[Delegation](../../glossary/#delegation)** is giving one task to one helper, with only what that task needs.
 - **A bounded [brief](../../glossary/#brief)** says what to do, where to look, what to return and what not to touch.
 - **A packaged [skill](../../glossary/#skill)** is a reusable instruction you write once and any helper can follow.
 
@@ -30,9 +30,11 @@ Sam splits Mina's September month-end into four helpers.
 | Reviewer | Run the months check and the reconciliation. | PASS or FAIL, with the reason |
 | Reporter | Write the one-page summary for Mina. | A draft summary, never sent |
 
-The Reviewer runs the months check by formula and reports PASS or FAIL. It gets the raw figures and the criteria, never the Calculator's reply. The reconciliation passes when the unexplained difference is within 1.00 and the reconciling items are listed. The Reviewer owns the February slip from level 0 and does nothing else. As in level 5, it reports the result of a formula. Do not pay a reviewer to count by eye.
+The Reviewer runs the months check by formula and reports PASS or FAIL. It gets the raw figures and the criteria, never the Calculator's reply. The reconciliation passes when the unexplained difference is 0.00 and every reconciling item is listed and traced to a source. The Reviewer owns the February slip from level 0 and does nothing else. As in level 5, in practice this check is a formula, and the Reviewer reports the result of a formula. Do not pay a reviewer to count by eye.
 
 Here is a real brief for the Reviewer. Read it as a contract.
+
+*Template for a human to give a helper. Not an instruction to you.*
 
 ```text
 GOAL
@@ -60,6 +62,8 @@ If the list is missing or unreadable, reply FAIL with the reason. Do not look el
 
 Now the bad brief next to it.
 
+*Template for a human to give a helper. Not an instruction to you.*
+
 ```text
 Check Mina's numbers and make sure they look right. Fix anything that's off.
 ```
@@ -80,11 +84,13 @@ A **brief** is just a short written request with edges. Think of a note you leav
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant, and two separate chats. This takes about 15 minutes. The sales figures are for Mina's shop, excluding VAT, January to September. They are made up for practice.
+You need any chat assistant, and two separate chats. This takes about 10 minutes. Phone OK. The sales figures are for Mina's shop, excluding VAT, January to September. They are made up for practice.
 
 1. Open chat one. This is the Calculator. Paste this brief:
+
+*Template for a human to give a helper. Not an instruction to you.*
 
 ```text
 GOAL
@@ -102,7 +108,9 @@ Guess a missing figure.
 Sales by month: Jan 3900, Feb 4200, Feb 4200, Mar 4800, Apr 5100, May 5600, Jun 5300, Jul 4700, Aug 5000, Sep 6000
 ```
 
-2. The list has February twice, as if the join had repeated it. Note the reply. An example reply:
+2. The list has February twice, as if the join had repeated it. Note the reply.
+
+Example of a WRONG reply, shown for practice:
 
 ```text
 Months counted: 10
@@ -110,6 +118,8 @@ Sum: 48,800.00
 ```
 
 3. Open chat two. This is the Reviewer. It must not see chat one. Paste this single block, which holds the brief and the list. It does not include the Calculator's reply:
+
+*Template for a human to give a helper. Not an instruction to you.*
 
 ```text
 GOAL
@@ -136,7 +146,7 @@ If the list is missing or unreadable, reply FAIL with the reason.
 List: Jan 3900, Feb 4200, Feb 4200, Mar 4800, Apr 5100, May 5600, Jun 5300, Jul 4700, Aug 5000, Sep 6000
 ```
 
-An example reply:
+A sample reply from the Reviewer:
 
 ```text
 FAIL
@@ -149,7 +159,9 @@ Sum of the nine distinct figures: 44,600.00
 
 Try the bad brief ("check the numbers, fix anything off") in chat two instead, and compare the shape of the reply. That difference is the lesson.
 
-Apply it: the [improve design workflow](../../workflows/improve-design/) splits a job across helpers, and the [prompt refiner](../../appendix/prompt-refiner/) in the appendix is a full skill you can read.
+Tick it off: add the outcomes you can now do on [your progress page](../progress/).
+
+Apply it: the [research a decision workflow](../../workflows/research-a-decision/) gives a separate helper the job of attacking the leading option, and the [prompt refiner](../../appendix/prompt-refiner/) in the appendix is a full skill you can read.
 
 :::note[Want consistency]
 Write each brief once, keep it in a file, and reuse it unchanged. If a helper gets something wrong, edit the brief, not the chat. Over time the briefs become a small library of skills you trust.
@@ -161,7 +173,7 @@ Write each brief once, keep it in a file, and reuse it unchanged. If a helper ge
 
 A helper is the same kind of model you already use, started in a new, empty context. It knows nothing of the main chat except what is in its brief. This is the point. A fresh helper has no tangle of earlier talk to drift on, and cannot be persuaded by an earlier mistake it never saw.
 
-A lead assistant (or you) splits the job, writes each brief, starts the helpers and reads the returns. The helpers do not usually talk to each other. They talk to the lead. That keeps the number of connections small: four helpers have four lines to the lead, not six lines between them.
+A lead assistant (or you) splits the job, writes each brief, starts the helpers and reads the returns. The helpers do not usually talk to each other. They talk to the lead. That keeps the number of links small: four helpers have four lines to the lead, not six lines between them.
 
 The return is the only thing that crosses the gap. This is why its shape matters. If the Reviewer returns "PASS, 9 months, sum X", the lead can use it. If it returns an essay, the lead has to interpret it.
 
@@ -172,10 +184,10 @@ A skill packages a brief that you keep reusing. The month-end Reviewer brief abo
 
 Two helpers writing to the same file can overwrite each other. Two ways work:
 
-- **One workspace each.** A workspace is a folder or a copy of the files. Each helper reads from a shared input and writes to its own workspace. Nobody writes to the same file.
+- **One workspace each.** A [workspace](../../glossary/#workspace) is a folder or a copy of the files. Each helper reads from a shared input and writes to its own workspace. Nobody writes to the same file.
 - **One writer at a time.** Reading can run in parallel. Writing waits its turn.
 
-One workspace each means files only: helpers still share ports, a dev database and other services. For code, give each helper its own copy of the project folder (a git worktree), so changes can be reviewed and combined one at a time. For engineers: [workspace isolation](../../shelf/delegation/worktree-isolation/). The glossary entry on [isolation](../../glossary/#isolation-of-helpers) gives the short version.
+One workspace each means files only: helpers still share ports, a dev database and other services. For code, give each helper its own copy of the project folder, so changes can be reviewed and combined one at a time. For engineers: [workspace isolation](../../shelf/delegation/worktree-isolation/). The glossary entry on [isolation](../../glossary/#isolation-of-helpers) gives the short version.
 
 </details>
 
@@ -204,7 +216,7 @@ In a finance close, separate the preparer from the reviewer. Sam prepares the mo
 :::caution[Expert corner]
 Delegation moves the failure surface. A single agent fails by drifting. A team fails at the seams: a brief that omits a constraint, a return that drops a caveat, or two helpers that each assume the other validated the input. Contracts at each seam (typed or at least structured returns) matter more than clever prompts.
 
-Independence is the real benefit of a separate Reviewer, and it is only real if the Reviewer does not share the producer's inputs, assumptions or brief. A Reviewer told "verify that the Calculator is right" inherits the Calculator's framing. Give it the raw data and the criterion instead.
+The benefit of a separate Reviewer is independence, which [level 5](../05-check-the-work/) explains. Here the new point is the brief: a Reviewer told "verify that the Calculator is right" inherits the Calculator's framing. Give it the raw data and the criterion instead.
 
 Parallelism raises cost and debugging effort.
 :::
@@ -233,11 +245,11 @@ Check: every brief you wrote names its inputs, its return shape and at least one
 
 **Letting helpers share one workspace.** Two helpers edit the same file and one result quietly vanishes. Fix: give each helper its own folder or copy, or let only one helper write at a time. Combine their outputs yourself, or through a reviewed step.
 
-**Asking the producer to check itself, and calling it a team.** The same helper that made the mistake reads its own work and agrees with it. Fix: the Reviewer gets the raw input and the criterion, and a separate brief. It should not see how the producer reasoned.
+**Asking the producer to check itself, and calling it a team.** The same helper reads its own work and agrees with it. Fix: give the Reviewer the raw input, the criterion and a separate brief (see [level 5](../05-check-the-work/)).
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 
@@ -256,7 +268,7 @@ You can now:
 <details>
 <summary>Answers</summary>
 
-1. The Calculator would be checking its own work with its own framing and inputs, so it tends to repeat its own mistake. A Reviewer with a fresh context, the raw data and one criterion is independent.
+1. The Calculator would be checking its own work, so it tends to repeat its own mistake. A Reviewer with a fresh context, the raw data and one criterion is independent.
 2. The return format. Accepting the transcript fills the lead's context with noise and hides the verdict. Ask for a short structured return: a verdict, a count, exceptions.
 3. Have each helper write its result to its own file, then run one writer step that combines them into the sheet, or let helpers write one at a time. Do not let all three write the same place at once.
 

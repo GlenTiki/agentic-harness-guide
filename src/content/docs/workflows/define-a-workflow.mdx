@@ -5,6 +5,8 @@ description: Turn a repeated job into a written workflow with steps, checks and 
 
 ## Scene
 
+*Last time (workflow: small shop month-end): you worked a close with owners, checks and a sign-off.*
+
 Someone says, "make our onboarding process run itself." It is a sentence everyone nods at. Then you ask what "run itself" covers, and the room goes quiet. Does it create accounts? Send the welcome message? Chase people who are late? A job that nobody has written down cannot be handed to an assistant, or to a new colleague. This page takes that one rough sentence and turns it into a written workflow you could actually run.
 
 ## The idea
@@ -15,9 +17,11 @@ The method is the [six-step method](../../journey/08-design-anything/) from leve
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant. This takes about 15 minutes.
+You need any chat assistant. This takes about 10 minutes.
+
+The refiner is optional. Do not paste confidential material into it, because it works on the shape of your ask and not on your data. Read its output before you use it, and see [the injection result](../../appendix/prompt-refiner/#the-seven-evals) in the appendix.
 
 1. Paste this, then send it. It refines in passes by hand. The appendix has [refiner lite](../../appendix/prompt-refiner/#refiner-lite), a shorter plain prompt, and the full version.
 
@@ -51,7 +55,7 @@ Done means all of these are true by the start date:
 - a week-one plan exists and has an item for every working day;
 - a named buddy is confirmed;
 - the manager has ticked each item;
-- a named person who is not the preparer has reviewed and approved the result.
+- a named person who is not the preparer, or the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/), has reviewed and approved the result.
 ```
 
 What changed: "run itself" became six items someone could tick. The vague outcome became a done you can check.
@@ -85,8 +89,9 @@ Human checkpoints:
 
 If a step fails:
 - Steps 1 to 3: stop, tell the manager what is missing, wait.
-- Step 6: send the plan back with the problems listed, once. If it fails again, give it to the manager as is, marked "unchecked".
+- Step 6: send the plan back with the problems listed, once. If it fails again, hold the plan, pass nothing on, and tell the manager the same day which checks failed.
 - Step 8: if the watcher cannot read the ledger, say so. Do not report "all clear".
+- Step 5: if it fails, retry once. Building a plan twice is safe, because it writes a draft and sends nothing. A step that sends or grants would need a record check first, so a retry cannot do it twice.
 
 Log: one line per step with the run identity, status and reason. The run identity is a code the assistant generates once at the start of the run and repeats on every log line.
 ```
@@ -101,8 +106,8 @@ What changed: every weak step has a check, every risky step has a human checkpoi
 | 2 Validate | Assistant | Form | Missing list or "complete" | Start date in the future | None | Stop, tell manager |
 | 3 Draft requests | Assistant | Form, role list | Draft requests | Matches role list | None | Stop, flag extras |
 | 4 Approve and grant | Manager, system owners | Drafts | Accounts, equipment | Owner confirms | Human yes | Hold, no partial grants |
-| 5 Build plan | Assistant | Form, template | Plan | None here | None | Retry once |
-| 6 Check plan | Reviewer, script | Plan, start date | Pass or problems | Every day has an item | None | Return once, then mark "unchecked" |
+| 5 Build plan | Assistant | Form, template | Plan | None here | None | Retry once (safe: it writes a draft only) |
+| 6 Check plan | Reviewer, script | Plan, start date | Pass or problems | Every day has an item | None | Return once, then hold and tell the manager the same day |
 | 7 Send welcome | Manager | Draft | Sent message | Manager reads it | Human yes | Do not send |
 | 8 Watch | Assistant | Ledger | Flag | Reads ledger | None | Say "cannot read" |
 
@@ -127,7 +132,7 @@ Each pass does one kind of work, and that is why the result is better than askin
 
 The "What changed" lines are the part that makes the refinement reviewable. You do not have to trust the final text. You can read three short lines and decide whether each change is right. If a pass changed something you did not want, say so and redo that pass only.
 
-A spec like this also makes the later work easier. The table is close to a brief for each helper. The diagram shows where the human checkpoints sit. The log line format is already decided. And the "if it fails" column is the answer to the question most designs leave blank. The [workflows shelf](../) pairs this page with others that refine other kinds of ask.
+A spec like this also makes the later work easier. The table is close to a brief for each helper. The diagram shows where the human checkpoints sit. The log line format is already decided. And the "if it fails" column is the answer to the question most designs leave blank. The [workflows section](../) pairs this page with others that refine other kinds of ask.
 
 ## Expert corner
 
@@ -146,7 +151,7 @@ The risk is a spec that is thorough and never run. Test it once by walking a rea
 
 When asked to define a workflow, produce it in passes: outcome and done, then steps with owners, inputs and outputs, then checks, human checkpoints and failure behaviour. After each pass, write what changed in plain words.
 
-Do not invent owners, systems or policies. List each assumption and ask the user to confirm.
+Do not invent owners, systems or policies. List each assumption and ask the user to confirm. Ask once per task, in one message, with every open item and your default for each (at most five items). If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action.
 
 Mark every risky step. Give each risky step a human checkpoint. Give no step the right to grant access or send a message unless the user says so.
 
@@ -165,7 +170,7 @@ Check: every step has an owner, an input, an output, a failure rule and, where r
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 

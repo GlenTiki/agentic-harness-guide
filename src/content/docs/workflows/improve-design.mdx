@@ -5,7 +5,9 @@ description: Critique a design against named goals and an audience, get two opti
 
 ## Scene
 
-Mina says her shop's signup page "looks cheap". Sam types: "Make our signup page look more professional." The assistant happily produces a navy-blue gradient, a stock photo of a handshake and a slogan about enterprise solutions. Mina's customers are people who sell candles at markets. None of them has asked for an enterprise solution.
+*Last time (workflow: improve code): you wrote tests first and gave a reviewer only the spec and the diff.*
+
+Mina says her shop's signup page "looks cheap". Sam types: "Make our signup page look more professional." The assistant happily produces a navy-blue gradient, a stock photo of a handshake and a slogan about enterprise solutions. Mina's customers are people who buy candles online, mostly on their phones. None of them has asked for an enterprise solution.
 
 ## The idea
 
@@ -21,9 +23,11 @@ A [constraint](../../glossary/#constraint) in design is something like brand rul
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant and, for the last step, five people and a phone. The replies below are examples recorded on 2026-10-22; the tool and model were not recorded. Your tool will answer differently.
+You need any chat assistant and, for the last step, five people and a phone. The replies below are example replies, written for teaching. They are not a record of any run, and your tool will answer differently.
+
+The refiner is optional. Do not paste confidential material into it, because it works on the shape of your ask and not on your data. Read its output before you use it, and see [the injection result](../../appendix/prompt-refiner/#the-seven-evals) in the appendix.
 
 ### Pass 0: the rough ask
 
@@ -46,7 +50,7 @@ What changed, in plain words: "professional" is still undefined, but the page, t
 **Human checkpoint 1.** Sam answers what only the business knows, and sets the limits:
 
 ```text
-Visitors are owners of small shops, on their phones, seeing us for the first time. Professional means calm, clear and trustworthy. The brand has one teal colour and one typeface. Meet WCAG AA contrast. Keep the three fields exactly as they are. Give me two options, not one.
+Visitors are people who buy candles online, on their phones, seeing the shop for the first time. Professional means calm, clear and trustworthy. The brand has one teal colour and one typeface. Meet WCAG AA contrast. Keep the three fields exactly as they are. Give me two options, not one.
 ```
 
 WCAG is the Web Content Accessibility Guidelines, a public standard. Level AA sets the contrast that text needs against its background.
@@ -67,7 +71,7 @@ It kept the file path and the colour values as [NEEDED], because Sam had not giv
 
 ### The critique
 
-Before options, Sam asks for a critique of the current page against the stated goals. If your tool accepts images, attach a screenshot or an exported frame, and say that you did. Without one, the critique is feedback on your description, not on the page. Sam has no image here, so Sam describes the page in words: three fields with labels that vanish when you type, a bright orange "Submit" button, a heading "Sign up now!!", and a line of small grey text under the button. The teal appears only in the logo.
+Before options, Sam asks for a critique of the current page against the stated goals. Without an image, the assistant cannot judge hierarchy, rhythm or whether the page feels like the brand. So make the screenshot route the default: attach a screenshot or an exported frame whenever your tool accepts images, and say that you did. A description is the fallback, and then the critique is feedback on your description, not on the page. Sam has no image here, so Sam describes the page in words: three fields with labels that vanish when you type, a bright orange "Submit" button, a heading "Sign up now!!", and a line of small grey text under the button. The teal appears only in the logo.
 
 An example reply opened with what was missing, then listed corrections both options share:
 
@@ -90,12 +94,37 @@ Each option listed layout, type, colour, states and copy. For each unknown it wr
 
 ### Check the numbers: the assistant was wrong
 
-The options included contrast ratios for the neutral greys. Sam does not trust numbers from the assistant, so Sam calculates them. The contrast ratio comes from a formula in the [WCAG standard](https://www.w3.org/TR/WCAG21/), applied to the two colours. The figures below were calculated with a short script that applies the WCAG relative luminance and contrast formulas. Any checker that implements the same formulas gives the same ratios, to one decimal place.
+The options included contrast ratios for the neutral greys. Sam does not trust numbers from the assistant, so Sam calculates them. The contrast ratio comes from a formula in the [WCAG standard](https://www.w3.org/TR/WCAG21/), applied to the two colours. This short script applies the WCAG relative luminance and contrast formulas:
 
-| Colour on white | The assistant said | Calculated |
+```python
+def luminance(hex_colour):
+    channels = [int(hex_colour[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    linear = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in channels]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+def contrast(first, second):
+    light, dark = sorted((luminance(first), luminance(second)), reverse=True)
+    return (light + 0.05) / (dark + 0.05)
+
+for grey in ("4A4A4A", "5C5C5C"):
+    print(grey, round(contrast(grey, "FFFFFF"), 2))
+```
+
+It prints:
+
+```text
+4A4A4A 8.86
+5C5C5C 6.69
+```
+
+Any checker that implements the same formulas gives the same ratios.
+
+*Illustrative numbers, made up for teaching. They are not measurements.* The "assistant said" column is an example. The "calculated" column is the script output above.
+
+| Colour on white | The assistant said (illustrative) | Calculated |
 | --- | --- | --- |
-| #4A4A4A | 8.3:1 | 8.9:1 |
-| #5C5C5C | 6.3:1 | 6.7:1 |
+| #4A4A4A | 8.3:1 | 8.86:1 |
+| #5C5C5C | 6.3:1 | 6.69:1 |
 
 Both numbers pass AA, which needs 4.5:1 for normal text. The assistant's figures were wrong anyway. The lesson is not that the design fails. The lesson is that a number from an assistant is a claim to check, not a measurement.
 
@@ -103,21 +132,21 @@ Both numbers pass AA, which needs 4.5:1 for normal text. The assistant's figures
 
 A page can meet every limit and still confuse a real visitor. So test it. First write the protocol, before the first person arrives:
 
-- **The task.** "Create an account for your shop."
+- **The task.** "Create an account."
 - **Success.** The person reaches the confirmation screen without help.
 - **A recording sheet.** One row per person: where they paused, what they tapped, what they said, and a severity. Use 1 for "could not finish", 2 for "finished but slowed" and 3 for "minor annoyance".
 - **The owner of the ship decision.** Name the person who decides whether to ship. Here it is Mina. Sam brings the sheet and a recommendation.
 
 Then run it:
 
-1. Find five people who look like your visitors. Small-shop owners, in this case. Not colleagues.
+1. Find five people who look like your visitors. People who buy candles or gifts online, in this case. Not colleagues.
 2. Give each a phone with the page open. Give the task, not a tour.
 3. Say nothing else. Watch. Do not help, point or explain.
 4. Fill in one row per person.
 5. Look for the same trouble spot across several people. One person's quirk is a quirk. Three people stalling on the same field is a finding.
 6. Fix the most repeated problem, then test again.
 
-Five people is enough to spot repeated, obvious problems. It is not a measurement of how well the page performs, and nobody should quote a percentage from it.
+A common rule of thumb says five people are enough to spot repeated, obvious problems. It is not a measurement of how well the page performs, and nobody should quote a percentage from it.
 
 ### The final specification
 
@@ -126,7 +155,7 @@ After the choice and the test, the spec has these parts:
 - **Goal:** a calm, clear, trustworthy signup page for first-time visitors on phones.
 - **Constraints:** brand teal and typeface only; neutral greys; AA contrast; the three fields untouched; the diff stays on this page.
 - **Chosen direction:** the option Sam picked, with Sam's reason.
-- **Done when:** the page works end to end with the same three fields; every text and control passes the contrast check Sam ran; five people finish the task, and the most repeated trouble spot has been fixed and re-tested; the work is reviewed and approved by a named person who is not the preparer.
+- **Done when:** the page works end to end with the same three fields; every text and control passes the contrast check Sam ran; five people finish the task, and the most repeated trouble spot has been fixed and re-tested; the work is reviewed and approved by a named person who is not the preparer, or by the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/).
 
 ### Try it yourself
 
@@ -161,9 +190,9 @@ Accessibility is wider than contrast. AA also covers things like focus visibilit
 :::note[Agent note]
 **Topic: improving a design.**
 
-When asked to improve a design, ask for the audience, the goal and the limits first. If you are not given them, state your assumptions at the top of the reply.
+When asked to improve a design, you need the audience, the goal and the limits. Ask once per task, in one message, with every open item and your default for each (at most five items). If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action.
 
-Offer at least two options when the user asks for options. Do not write code until the user has chosen.
+Offer options and wait for a choice only when the user asked for options. Do not write code until the user has chosen.
 
 Do not invent brand colours, fonts or copy. Mark each as [NEEDED].
 
@@ -184,7 +213,7 @@ Check: every contrast ratio states how it was calculated, and the reply says whe
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 
@@ -202,7 +231,7 @@ You can now:
 <details>
 <summary>Answers</summary>
 
-1. Calculate it with a contrast checker from the two colour values. In the run above, the assistant's figures for two greys were off by a few tenths.
+1. Calculate it with a contrast checker from the two colour values. In the example above, the assistant's figures for two greys were off by about half a point.
 2. The field is a finding, because three people hit the same problem. The one who loves it is a reminder that opinions differ, not a reason to ignore the three.
 3. All three. Name the audience and goal, ask for two directions, and test with real readers. Contrast and reading size still matter on paper.
 
@@ -210,6 +239,6 @@ You can now:
 
 ## Bridge
 
-A design needs people to check it, and the next job is a connection that needs a written specification before anything is plugged in.
+A design needs people to check it, and the next job is a connector that needs a written specification before anything is plugged in.
 
 **Next:** [Workflow: connect systems](../connect-systems/)

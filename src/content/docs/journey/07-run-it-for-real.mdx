@@ -5,7 +5,7 @@ description: Predict where a many-step job fails first, and add an audit log, li
 
 ## Scene
 
-*Last time: you split Mina's month-end into Reader, Calculator, Reviewer and Reporter helpers, each with a bounded brief. If you arrive here directly: Sam does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
+*Last time: you split Mina's month-end into Reader, Calculator, Reviewer and Reporter helpers, each with a bounded brief. If you arrive here directly: Sam does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
 *Only use a chat window? You can skip to [level 8](../08-design-anything/) and come back when you run jobs for real.*
 
@@ -21,22 +21,20 @@ A restaurant kitchen at the Saturday rush has no time for heroics. Every order t
 
 ### Why many steps hurt
 
-Roll ten twenty-sided dice. A 1 on any die counts as a failure. Each die is fine 19 times in 20, which is 95%. About six rolls in ten show no 1 at all. That is a job of ten steps, each right 95 times in 100: about six runs in ten come out fully right. This is **[compounding error](../../glossary/#compounding-error)**: small error rates multiply along a chain. In a spreadsheet, type `=0.95^10` to check.
+Roll ten twenty-sided dice. A 1 on any die counts as a failure. Each die is fine 19 times in 20, which is 95%. About six rolls in ten show no 1 at all. That is a job of ten steps, each right 95 times in 100: about six runs in ten come out fully right. This is **[compounding error](../../glossary/#compounding-error)**: small error rates multiply along a chain. In a spreadsheet, type `=0.95^10` to check. It gives 0.599.
 
-The table uses made-up numbers to show the shape of the effect. They are illustrative, not measurements of any real system. A retry is trying a failed step again. The last two columns say how many of 100 runs come out fully right when a check catches a failure and the retry always works, and when the retry works half the time.
+In plain words: one weak step drags the whole job down. The table below uses made-up numbers to show the shape of the effect.
 
-| Case | Setup | 100 runs, retry always works | 100 runs, retry works half the time |
-| --- | --- | --- | --- |
-| A | Ten steps, each right 95 in 100 | 60 (59.9) | 60 |
-| B | Nine steps at 95%, one at 80% | 50 (50.4) | 50 |
-| C | As B, plus a 90% check on the weak step | 62 (61.8) | 56 (56.1) |
-| D | That check after every step | 95 (95.1) | 76 (75.7) |
+*Illustrative numbers, made up for teaching. They are not measurements of any real system.*
 
-Treat these as the best case: a wrong source file feeding every step breaks the multiplication, because the steps are no longer independent.
+| Case | Setup | Out of 100 runs fully right |
+| --- | --- | --- |
+| A | Ten steps, each right 95 in 100 | 60 (59.9) |
+| B | Nine steps at 95 in 100, one step at 80 in 100 | 50 (50.4) |
 
-The arithmetic: nine steps at 95% give 0.95^9 = 0.630. A weak step at 80% brings that to 0.630 x 0.80 = 0.504. A check on the weak step with a perfect retry makes it 0.80 + 0.20 x 0.90 = 0.98, so 0.630 x 0.98 = 0.618. With a half-working retry it is 0.80 + 0.20 x 0.90 x 0.5 = 0.89, so 0.630 x 0.89 = 0.561. A check after every step makes each step 0.995 with a perfect retry and 0.9725 with a half-working one. Then 0.995^10 = 0.951 and 0.9725^10 = 0.757.
+Case B has one weak step, and about ten runs in a hundred are lost for it. The arithmetic for B: nine steps at 95% give 0.95^9 = 0.630, and the weak step brings that to 0.630 x 0.80 = 0.504. Treat these as the best case: a wrong source file feeding every step breaks the multiplication, because the steps are no longer independent.
 
-Read the table like this. Case B shows one weak step drags the whole job below the average step. Case C shows that a single check on the worst step gives back about eleven runs in a hundred. Case D shows that checks everywhere help most, but each check costs time and money, and a check that is itself wrong has its own error rate. A check that fails good work (a false positive) adds retries and cost. The numbers say where to look first. They do not say the real answer.
+A check on the weak step, and a retry, wins runs back. The full table is in the first Go deeper block under "Under the bonnet".
 
 To get real numbers, run the job many times on cases where you know the answer, and count. [Evals](../../glossary/#eval) from level 5 are the tool. Count per step if you can, so you know which one is weak.
 
@@ -51,7 +49,9 @@ When the run goes odd on Friday, you need to look at what each step did. An audi
 | 09:14:14 | check | Failed: repeated month, February. |
 | 09:14:14 | stop | Held. Waiting for a person. |
 
-Software writes the same record as one line per step, with the time first and one run identity (a string made once at the start) on every line:
+These steps match the helpers from level 6: read is the Reader, calculate is the Calculator, and check is the Reviewer.
+
+Software writes the same record as one line per step, with the time first and one [run identity](../../glossary/#run-identity) (a string made once at the start) on every line:
 
 ```text
 t=2026-10-02T09:14:03Z run=2026-10-02-0412 step=read      status=ok   files=4 rows=9 months=9 secs=3 cost=0.01
@@ -66,10 +66,10 @@ Automation tools show something similar as a run history: a list of runs and the
 
 A run with no limits can run forever or spend without bound. Set these before you leave it alone:
 
-- **Time cap.** A step that takes more than, say, two minutes is treated as failed.
+- **Time cap.** A step that takes longer than a set time, say 120 seconds, is treated as failed.
 - **[Spend cap](../../glossary/#spend-cap).** A run stops when it has used its budget of paid usage.
 - **Step cap.** A run stops after a fixed number of steps, so a loop cannot go round forever.
-- **Bounded retries.** A failed step may retry at most twice (three attempts in all), with a pause that grows. Then it stops and reports.
+- **Bounded [retries](../../glossary/#retry).** A failed step may retry at most twice (three attempts in all), with a pause that grows. Then it stops and reports.
 
 :::tip[New to this]
 A **retry** helps when the failure was a hiccup, such as a slow network. It does not help when the failure is a wrong answer, because the same wrong answer often comes back. That is why you cap retries and add a check.
@@ -77,9 +77,9 @@ A **retry** helps when the failure was a hiccup, such as a slow network. It does
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant and, ideally, a spreadsheet. This takes about 10 minutes. No special tools are needed.
+You need any chat assistant and, ideally, a spreadsheet. This takes about 10 minutes. Phone OK. No special tools are needed.
 
 1. Work out the arithmetic yourself. A job has eight steps. Seven are 97% right. One is 85% right. Calculate the chance of a fully right run. Paper arithmetic is optional: in a spreadsheet, type `=0.97^7*0.85`. The answer is 68.7%.
 2. Ask an assistant to check your working and then explore the check. Paste this:
@@ -105,7 +105,9 @@ An example reply:
 3. Check each number against your own working. Did the assistant get the arithmetic right? It is a good habit to compute these yourself.
 4. Now write down your own audit log for a three-step job of your choice, as a list with three columns: time, step, what happened. Give each step a name, a status and one detail.
 
-Apply it: the [small shop month-end](../../workflows/small-shop-month-end/) workflow runs Mina's September close with these limits. For engineers: [adoption path](../../shelf/foundations/adoption-path/) and [observability](../../shelf/operations/observability/).
+Tick it off: add the outcomes you can now do on [your progress page](../progress/).
+
+Apply it: [define a workflow](../../workflows/define-a-workflow/) ends with a finished spec that names a log line and a failure rule for every step. The [small shop month-end](../../workflows/small-shop-month-end/) workflow pairs with level 5. For engineers: [adoption path](../../shelf/foundations/adoption-path/) and [observability](../../shelf/operations/observability/).
 
 ## Under the bonnet
 
@@ -116,9 +118,36 @@ Reliability maths only works if steps are independent, which they rarely are. If
 An audit log is useful only if it is written as the step happens, not reconstructed afterwards. It records what the step was asked, what it returned in short form, whether it passed its check, how long it took, and what it cost. It does not need to hold the full text of every document. Keep personal data out of it. The log should let a stranger answer "what happened in run 0412?" without opening the original chat. For engineers: the shelf page on [cost and resources](../../shelf/operations/cost-and-resources/).
 
 <details class="go-deeper">
-<summary>Go deeper: what to monitor</summary>
+<summary>Go deeper: the full reliability table (cases C and D)</summary>
 
-Keep it to a handful of numbers per run:
+In plain words: a check on the weak step wins back most of the lost runs, and a check after every step wins back more, at the cost of time and money. A retry is trying a failed step again. The two columns say how many of 100 runs come out fully right when the check catches a failure and the retry always works, and when the retry works half the time.
+
+*Illustrative numbers, made up for teaching. They are not measurements of any real system.*
+
+| Case | Setup | 100 runs, retry always works | 100 runs, retry works half the time |
+| --- | --- | --- | --- |
+| A | Ten steps, each right 95 in 100 | 60 (59.9) | 60 |
+| B | Nine steps at 95%, one at 80% | 50 (50.4) | 50 |
+| C | As B, plus a 90% check on the weak step | 62 (61.8) | 56 (56.1) |
+| D | As B, plus that check after every step | 94 (93.7) | 69 (69.2) |
+
+The arithmetic. A check that catches 90% of errors turns a step that is right with chance p into p + (1 - p) x 0.90 with a perfect retry, or p + (1 - p) x 0.90 x 0.5 with a half-working retry.
+
+- Case C, perfect retry: the weak step becomes 0.80 + 0.20 x 0.90 = 0.98, so 0.630 x 0.98 = 0.618.
+- Case C, half-working retry: the weak step becomes 0.80 + 0.20 x 0.90 x 0.5 = 0.89, so 0.630 x 0.89 = 0.561.
+- Case D, perfect retry: each good step becomes 0.95 + 0.05 x 0.90 = 0.995 and the weak step is 0.98, so 0.995^9 x 0.98 = 0.937.
+- Case D, half-working retry: each good step becomes 0.9725 and the weak step is 0.89, so 0.9725^9 x 0.89 = 0.692.
+
+Case C shows that a single check on the worst step gives back about eleven runs in a hundred. Case D shows that checks everywhere help most, but each check costs time and money, and a check that is itself wrong has its own error rate. A check that fails good work (a false positive) adds retries and cost. The numbers say where to look first. They do not say the real answer.
+
+</details>
+
+*Finance and editing readers: read the audit log and the limits above. The Go deeper blocks that follow are mostly for people building the automation.*
+
+<details class="go-deeper">
+<summary>Go deeper: engineers' extras (monitoring, and restart after a failure)</summary>
+
+**What to monitor.** Keep it to a handful of numbers per run:
 
 | Signal | Why it matters |
 | --- | --- |
@@ -129,12 +158,7 @@ Keep it to a handful of numbers per run:
 | Spend per run | Catches a runaway before the bill |
 | Time waiting for a human | An unanswered checkpoint is a stuck job |
 
-</details>
-
-<details class="go-deeper">
-<summary>Go deeper: restart and partial failure</summary>
-
-What if the run dies after step 6 of ten? Without planning, you rerun from step 1, which costs time and may repeat side effects (changes outside the run, such as a sent message). A run you can leave alone has these properties:
+**Restart and partial failure.** What if the run dies after step 6 of ten? Without planning, you rerun from step 1, which costs time and may repeat side effects (changes outside the run, such as a sent message). A run you can leave alone has these properties:
 
 1. **Each step saves its output** to a named place, with the run identity. Write to a temporary file, then rename it, so a crash never leaves a half-written file that looks complete.
 2. **On restart, the run finds the last completed step** and resumes from the next one.
@@ -151,14 +175,18 @@ So if Mina's run dies after the calculate step, the saved totals are still there
 <details class="go-deeper">
 <summary>Go deeper: how many runs is enough?</summary>
 
-Zero failures in n runs only bounds the failure rate near 3 in n (the rule of three, at about 95% confidence). Thirty clean runs still allow a failure rate of about one in ten. Three runs cannot separate a 67% job from a 95% one: a 95% job passes all three runs 85.7% of the time, and a 67% job does so 30.1% of the time. Three runs cannot establish reliability either way. For small n, use a binomial interval and report the interval, not just the pass count.
+In plain words: a few good runs prove little. The sampling rule and its other numbers are in [using an assistant at work](../professional-guardrails/#checking-and-sampling).
+
+Thirty clean runs in a row means the failure rate is probably below about 1 in 10 (the rule of three: 3 divided by 30; exact upper bound 9.5% at 95% confidence). That is a loose bound.
 
 </details>
 
 <details class="go-deeper">
 <summary>Go deeper: what counts as a failure at month-end</summary>
 
-Set the tolerance before the run. An unexplained difference of up to 1.00 in the reconciliation is noted. More is investigated before sign-off. A budget line that is more than 5% and more than 50.00 from budget needs an explanation. That threshold is the materiality: the size below which a difference does not change the decision. For a long list of items, review every item above a set amount and a random sample of the rest, and write down how you chose the sample. The [professional guardrails](../professional-guardrails/) page has the full rule.
+Set the tolerance before the run. A reconciliation clears to 0.00 with every item named and traced to a source. A rounding difference of up to 1.00 is allowed only as a named rounding item that the approver initials. Any other difference stops the close.
+
+A budget line past the [investigation threshold](../../glossary/#investigation-threshold) needs an explanation. In this guide's example that is a line more than 5% and more than 50.00 from budget. The threshold is the size below which a difference does not need an explanation. The size of error that would change a reader's decision about the whole accounts is a different idea, and the accountant judges it. For a long list of items, review every item above a set amount and a random sample of the rest, and write down how you chose the sample. Never sample final totals or reconciling items. The [professional guardrails](../professional-guardrails/) page has the full rule.
 
 </details>
 
@@ -169,7 +197,7 @@ In a finance close this is the close checklist with completed-by and date column
 ## Expert corner
 
 :::caution[Expert corner]
-Independence is the weak assumption in the chain. Correlated failures, such as one bad input feeding several steps, make the real end-to-end rate differ from the product, and a check that shares the producer's model and prompt often shares its blind spots. A check is worth its cost only if its errors are mostly independent of the thing it checks, so a cheap deterministic check (a count, a schema, a sum against the bank statement) beats a second model asking "does this look right?".
+Independence is the weak assumption in the chain. Correlated failures, such as one bad input feeding several steps, make the real end-to-end rate differ from the product, and a check that shares the producer's model and prompt often shares its blind spots (see [level 5](../05-check-the-work/)). A check is worth its cost only if its errors are mostly independent of the thing it checks, so a cheap deterministic check (a count, a schema, a sum against the bank statement) beats a second model asking "does this look right?".
 
 Bounded retries need backoff (a pause that grows) and a failure class. Retrying a deterministic wrong answer burns spend. Retrying a timeout is sensible. Cap total attempts per run, not only per step.
 
@@ -181,15 +209,15 @@ Idempotency keys on side-effecting steps make a restart safe where the provider 
 :::note[Agent note]
 **Topic: running many steps with a log and limits.**
 
-If no cap is given for a multi-step run, ask for one before you start. Use a run identity: a string you generate once at the start and reuse on every log line.
+If no cap is given for a multi-step run, ask for one before you start. Ask once per task, in one message, with every open item and your default for each (at most five items). If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action. Use a run identity: a string you generate once at the start and reuse on every log line.
 
-Write one audit log line per step, as the step completes. Put `t=` first, in UTC with seconds. Include the run identity, step name, status, a short reason on failure, duration and cost. Do not log secrets or full personal data.
+Write one audit log line per step, as the step completes. Put `t=` first, in UTC with seconds. Include the run identity, step name, status and a short reason on failure. The wrapper or harness writes the duration and the cost. The model supplies the step name and the status. Do not log secrets or full personal data.
 
 Enforce the time, spend, step and retry caps given to you. When a cap is reached, stop and report. Do not extend a cap yourself.
 
 Retry only failures that look transient. Do not retry a failed check. Retry at most the number of times you are told.
 
-Before a step that changes something outside the run, check whether it already ran for this run identity. If it did, skip it. On restart, resume from the last completed step and report the step you resumed from.
+Before a step that has a side effect outside the run, check whether it already ran for this run identity. If it did, skip it. On restart, resume from the last completed step and report the step you resumed from.
 
 Check: after any run, the log lets someone name the step that produced a given output.
 :::
@@ -204,7 +232,7 @@ Check: after any run, the log lets someone name the step that produced a given o
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 

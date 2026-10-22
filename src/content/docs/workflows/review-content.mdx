@@ -15,7 +15,7 @@ Sam writes a proposal for a new market stall for Mina's shop and asks the assist
 
 This workflow uses [the prompt refiner](../../appendix/prompt-refiner/). Sharpen the ask in visible passes by hand, using [refiner lite](../../appendix/prompt-refiner/#refiner-lite) if you have no skill installed. The end product is a review brief you can reuse on any proposal, blog post or report. The pieces come from [level 5](../../journey/05-check-the-work/): a checkable done, and a reviewer who is not the author.
 
-**Start with your house style.** If you have a style sheet and a log of past corrections, paste them as the rubric. Fact claims are a separate pass with source tracing. Legal and sensitive review are not delegated to the assistant.
+**Start with your house style.** If you have a style sheet and a log of past corrections, paste them as the rubric. The second pass below shows a four-line example, and a fact-claims table. Legal and sensitive review are not delegated to the assistant.
 
 Four parts make the review worth having:
 
@@ -26,9 +26,25 @@ Four parts make the review worth having:
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant. This takes about 15 minutes. Use a short piece of your own, or the small paragraph below.
+You need any chat assistant. This takes about 20 minutes. Use a short piece of your own, or the ten-line draft below. The draft is an example, written for teaching.
+
+The refiner is optional. Do not paste confidential material into it, because it works on the shape of your ask and not on your data. Read its output before you use it, and see [the injection result](../../appendix/prompt-refiner/#the-seven-evals) in the appendix.
+
+```text
+1. Why your candle shop should try a market stall
+2. Market stalls are a simple way to meet customers face to face.
+3. A stall is a very, very small step compared with opening a second shop.
+4. Last spring I took a stall at the Saturday market in town.
+5. People stopped, smelled the candles and asked questions.
+6. So I think you should book a stall for next month.
+7. Pitches are paid by the day, and the best spots are near the entrance.
+8. Arrive early to get one, and bring a float for change.
+9. Stalls always sell well.
+10. Book a pitch this week and see for yourself.
+```
+
 
 **The rough ask**
 
@@ -38,7 +54,7 @@ Check my blog post is good.
 
 ### Pass 0: see what you get
 
-Paste the ask with a short draft and read the reply. An example reply:
+Paste the ask with the draft and read the reply. An example reply:
 
 ```text
 Your post is well written and engaging. The structure is clear and the tone is friendly. Consider adding a stronger conclusion.
@@ -116,10 +132,10 @@ Draft:
 An example reply:
 
 ```text
-Scores: 1 ask 2/3 (the ask arrives in line 6), 2 evidence 1/3 ("Stalls always sell well", line 9, has no figure), 3 fit 3/3, 4 structure 2/3 (lines 11 to 14 mix price and location), 5 risks 1/3 (none named).
+Scores: 1 ask 2/3 (the ask arrives in line 6), 2 evidence 1/3 ("Stalls always sell well", line 9, has no figure), 3 fit 3/3, 4 structure 2/3 (lines 7 to 8 mix price, location and advice), 5 risks 1/3 (none named).
 Findings:
 [Major] line 9, "Stalls always sell well": a claim with no reason or figure. Missing: one example from Mina's own sales.
-[Major] lines 11-14: price and location share a paragraph. Missing: a split.
+[Major] lines 7-8: price, location and advice share a paragraph. Missing: a split.
 [Minor] line 3, "very, very small": the repeat adds nothing.
 Check: 3 findings, each with a citation and a severity. None dropped.
 ```
@@ -132,6 +148,28 @@ Now check the check. Open the draft and read line 9. If the reviewer quoted it c
 Keep the final brief in a notes app. Reuse it for every proposal, changing only the goal and the rubric lines.
 :::
 
+### Second pass: house style and facts
+
+The first pass uses a general rubric. Real editing has levels: structural (does the piece work), copy (clarity, style and consistency) and proof (typos). Tell the assistant which level it does. Here it does a copy-level read against the house style, and it does not do the structural or proof levels.
+
+A house-style rubric of four lines (an example, so use your own):
+
+```text
+1. Numerals: spell out one to nine, use figures from 10.
+2. Attribution: every quote and every figure names its source in the same sentence.
+3. Headline claim: the claim in the headline is supported in the body.
+4. Sensitive wording: flag any wording that could defame a named person or business. Do not fix it.
+```
+
+Fact claims need a separate pass with source tracing. Ask the assistant to list every claim as a table. You fill in the source column, because the assistant must not supply sources:
+
+| Line | Claim as written | Source (you fill this in) | Checked by |
+| --- | --- | --- | --- |
+| 4 | Last spring I took a stall at the Saturday market in town | Sam's diary entry | Sam |
+| 9 | Stalls always sell well | None found: needs a source or a rewrite | Sam |
+
+Legal and sensitive review stay with a person.
+
 ## Under the bonnet
 
 The vague ask failed because it gave the assistant no standard to measure against, so it reached for a pleasant average. Each pass adds a standard. The goal sets what good means, the rubric breaks it into testable parts, the role removes the author's intentions, and the severity scale sorts the findings.
@@ -140,14 +178,14 @@ Requiring a citation does three jobs. It forces the reviewer to point at real te
 
 The voice constraint works as an [allowlist](../../glossary/#allowlist) for the reviewer's output: it may point, score and explain what is missing, and it may not write replacement text. Without it, many assistants rewrite your paragraph to be tidier and quietly remove what made it yours.
 
-The checks that say the review is done: every finding has a citation and a severity, you checked at least one citation by hand, and the review was reviewed and approved by a named person who is not the preparer.
+The checks that say the review is done: every finding has a citation and a severity, you checked at least one citation by hand, and the review was reviewed and approved by a named person who is not the preparer, or by the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/).
 
 ## Expert corner
 
 :::caution[Expert corner]
 A rubric score from a model is a noisy measurement, which is why the main exercise runs the review twice. Do not average scores to make the noise look like a number.
 
-Reviewer independence has limits: a fresh context removes the author's reasoning, and a different model removes some shared habits. Neither removes your rubric's own blind spots. Add a check by a human on a [sample](../../glossary/#sampling).
+Reviewer independence has limits, which [level 5](../../journey/05-check-the-work/) explains. Neither a fresh context nor a different model removes your rubric's own blind spots. Add a check by a human on a [sample](../../glossary/#sampling).
 
 Hold the rubric still when comparing two drafts or two review briefs. If you edit the rubric after seeing a score you dislike, you have moved the ruler. Change the rubric in its own step, then re-score both.
 
@@ -159,7 +197,7 @@ An editorial team's version is a style guide with a second reader who has no sta
 :::note[Agent note]
 **Topic: reviewing a draft.**
 
-When asked to review, use only the draft and the rubric you are given. If the rubric is missing, ask for one.
+When asked to review, use only the draft and the rubric you are given. If the rubric is missing, ask for one. Ask once per task, in one message, with every open item and your default for each (at most five items). If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action.
 
 Return findings with: severity, citation, what is wrong, what is missing. Drop any finding without a citation.
 
@@ -180,7 +218,7 @@ Check: the reply states the finding count, and each finding has a citation and a
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 

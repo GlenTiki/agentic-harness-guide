@@ -5,6 +5,8 @@ description: Refine a piece of code in small, tested passes with an independent 
 
 ## Scene
 
+*Last time (level 5): you wrote a checkable "done" and had someone other than the author check it.*
+
 Mina's shop site has a four-line function that adds up a basket. It works. Nobody wants to touch it, because nobody is sure what `i[1]` and `i[2]` are. Sam types the obvious thing: "Make this function better."
 
 "Better" could mean faster, shorter, safer or prettier. The assistant will pick one. It may pick the wrong one, and then it will hand back a confident rewrite that looks fine.
@@ -27,9 +29,11 @@ This is [level 5](../../journey/05-check-the-work/) in practice: a checkable [de
 
 ## Try it
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant. Python is optional: you can follow the passes without running anything. The examples below are examples recorded on 2026-10-22; the tool and model were not recorded. Your tool will word things differently.
+You need any chat assistant. Python is optional: you can follow the passes without running anything. The replies and the test output below are example replies, written for teaching. They are not a record of any run, and your tool will word things differently.
+
+The refiner is optional. Do not paste confidential code or data into it, because it works on the shape of your ask and not on your data. Read its output before you use it, and see [the injection result](../../appendix/prompt-refiner/#the-seven-evals) in the appendix.
 
 ### The function, before
 
@@ -138,7 +142,11 @@ Verdict: CHANGES NEEDED
 Test I would add: an item with an extra trailing field must return exactly what the old function returned.
 ```
 
-Sam checks finding 3 rather than trusting it. The Python 3.12 release notes say `sum()` now uses compensated (Neumaier) summation for floats. On Python 3.13, `sum([0.1] * 10)` gives `1.0`, and the old loop gives `0.9999999999999999`. The finding is true. The spec pins Python 3.11, which is the version the suite targets, so it does not block this change. It goes on the list for Mina's developer: money held as floats is a separate job, and the fix there is `Decimal` (Python's exact decimal type) or whole cents. In tests, compare floats with a tolerance, as the decimals test above does.
+Sam checks finding 3 rather than trusting it. The Python 3.12 What's New page says `sum()` now uses Neumaier summation for floats. On Python 3.13, `sum([0.1] * 10)` gives `1.0`, and the old loop gives `0.9999999999999999`.
+
+<p class="verified">Docs page fetched on 2026-10-22: https://docs.python.org/3/whatsnew/3.12.html. Quoted line: "sum() now uses Neumaier summation to improve accuracy and commutativity when summing floats or mixed ints and floats." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+
+The finding is true. The spec pins Python 3.11, which is the version the suite targets, so it does not block this change. It goes on the list for Mina's developer: money held as floats is a separate job, and the fix there is `Decimal` (Python's exact decimal type) or whole cents. In tests, compare floats with a tolerance, as the decimals test above does.
 
 Sam accepts finding 2. Both callers pass well-formed tuples, so the change from `IndexError` to `ValueError` hurts nobody, and the diff notes say so.
 
@@ -187,14 +195,14 @@ The checks that say when it is done:
 - All seven tests pass on the old and the new function.
 - The reviewer's findings are fixed, or listed as out of scope with a reason.
 - A person who has not seen the old code can say what the function does.
-- Reviewed and approved by a named person who is not the preparer.
+- Reviewed and approved by a named person who is not the preparer, or by the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/).
 
 ## Expert corner
 
 :::caution[Expert corner]
 Characterisation tests pin accidents as well as intentions. The old function accepted rows with extra fields. That may be a feature or an accident, and the test now makes it a promise. Decide on purpose, and say so in the test name.
 
-The reviewer is only independent if it lacks the author's context. Give it the spec and the diff. If you give it the whole chat, it inherits the same assumptions. A diff is the list of lines a change adds and removes.
+Give the reviewer the spec and the diff only, as [level 5](../../journey/05-check-the-work/) explains. A diff is the list of lines a change adds and removes.
 
 Do not widen scope during the review. The float summation finding is real and was left out, because it needs its own spec. In a release team's terms, this is the line between a fix that ships today and a ticket that gets its own change.
 :::
@@ -227,7 +235,7 @@ Check: the tests passed on the original code before any change, and the report l
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
 
 You can now:
 
