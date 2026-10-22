@@ -5,11 +5,13 @@ description: What an agent should remember across sessions, what it should forge
 
 *Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
 
+*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+
 **Recommendation:** persist durable facts and corrected behaviour, never session state. When memory is wrong, edit the existing entry. Do not append a correction below it. Add a recall step so memory is read before a risky action, not only at session start.
 
 ## Why it matters
 
-A new session starts with no history. Memory is how corrections survive. It is also a second, silent source of instructions. A stale or wrong entry misleads every later session, so memory needs the same care as code.
+A new session starts with no history. Memory is how corrections survive. It is also a second, silent source of instructions, so a wrong entry works like a wrong rule in an instruction file ([level 2](../../../journey/02-house-rules/)). A stale or wrong entry misleads every later session, so memory needs the same care as code.
 
 ## What to enable
 
@@ -33,21 +35,23 @@ Never store secrets or personal data in memory files that are committed or share
 
 **3. Refine, do not append.** When a session disproves or narrows an entry, rewrite the entry where it stands. Merge duplicates into the older file and delete the leftover. An appended correction leaves the wrong claim in place, and recall will inject the wrong claim by itself.
 
-**4. Cap what loads at startup.** Claude Code loads the first 200 lines or 25 KB of its auto-generated memory index at the start of each session, so keep the index to short one-line pointers and put detail in topic files that load on demand.
+**4. Cap what loads at startup.** Claude Code behaviour: it loads the first 200 lines or 25 KB of its auto-generated memory index at the start of each session, so keep the index to short one-line pointers and put detail in topic files that load on demand.
 
 **5. Add recall hooks.** Search memory against the text of an outgoing action. A pre-tool hook can take the prompt for a sub-agent, or the content of an edit, run a keyword search over memory and add the top matches to context. Make it advisory. A wrong match should cost a glance, not a block.
 
 **6. Date entries and cite sources.** Record the date and where the fact came from. A future reader can then judge whether to trust it.
 
-## Failure modes it prevents
+## Failure modes it reduces
 
 - The agent repeats a mistake you corrected last month.
 - A correction is appended below a wrong claim, and the wrong claim is the one that gets recalled.
 - Memory fills with session chatter and the useful rules drown.
 - A remembered fact outlives the system it described.
 
-## Start here
+## First step for the maintainer
 
 Create one `memory/` directory with an index file of one-line entries. Add an entry the next time you correct the agent. Review the index monthly and delete what is no longer true.
 
-<p class="verified">Verified against the Claude Code memory documentation (code.claude.com/docs/en/memory) and hooks reference on 2026-10-22.</p>
+<p class="verified">Verified against the Claude Code memory documentation (code.claude.com/docs/en/memory) and hooks reference on 2026-10-22. Tool: Claude Code. Version not recorded.</p>
+
+**Next:** [Hooks](../../control/hooks/)

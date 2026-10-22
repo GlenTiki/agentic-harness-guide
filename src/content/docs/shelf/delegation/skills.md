@@ -5,15 +5,17 @@ description: Package a repeatable procedure as a skill so it loads only when nee
 
 *Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
 
+*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+
 **Recommendation:** write a skill for any procedure you explain to the agent more than twice and that has a clear trigger. Keep the description precise, keep the body short, and move detail into supporting files that load on demand. Use a plain prompt for one-off work.
 
 ## Why it matters
 
-Instruction files load every session, so everything in them costs context all the time. A skill splits that cost in two. Only a short description is always present. The full body loads when the task matches. This lets you hold many procedures without paying for them on every turn.
+Instruction files load every session, so everything in them costs context all the time, as [level 2](../../../journey/02-house-rules/) explains. A skill splits that cost in two. Only a short description is always present. The full body loads when the task matches. This lets you hold many procedures without paying for them on every turn.
 
 ## What to enable
 
-**1. One directory per skill.** In Claude Code a skill is a directory with a `SKILL.md` file, in `.claude/skills/<name>/` for a project or `~/.claude/skills/<name>/` for all your projects. The file has YAML frontmatter and markdown instructions:
+**1. One directory per skill.** Claude Code behaviour: a skill is a directory with a `SKILL.md` file, in `.claude/skills/<name>/` for a project or `~/.claude/skills/<name>/` for all your projects. The file has YAML frontmatter and markdown instructions:
 
 ```markdown
 ---
@@ -35,14 +37,16 @@ description: Draft release notes from merged pull requests since the last tag. U
 
 **6. Treat third-party skills as code.** A skill can include scripts and can pre-approve tools. Read it before you install it, and pin the version.
 
-## Failure modes it prevents
+## Failure modes it reduces
 
 - A long procedure sits in the instruction file and dilutes every session.
 - Each person on the team prompts the same task slightly differently and gets different results.
 - A vague description causes the skill to load for unrelated tasks, or never.
 
-## Start here
+## First step for the maintainer
 
 Take the one multi-step task you most often retype. Move it into `.claude/skills/<name>/SKILL.md` with a trigger-style description, then test it in a fresh session.
 
-<p class="verified">Verified against the Claude Code skills documentation (code.claude.com/docs/en/skills) on 2026-10-22.</p>
+<p class="verified">Verified against the Claude Code skills documentation (code.claude.com/docs/en/skills) on 2026-10-22. Tool: Claude Code. Version not recorded.</p>
+
+**Next:** [MCP servers](../mcp-servers/)

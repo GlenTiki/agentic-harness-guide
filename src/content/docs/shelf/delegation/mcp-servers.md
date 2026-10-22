@@ -5,22 +5,24 @@ description: Connect tools through the Model Context Protocol with least privile
 
 *Deep dive for [level 3: Give it hands](../../../journey/03-give-it-hands/).*
 
+*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+
 **Recommendation:** add an MCP server only when it replaces a manual step you do often. Prefer a read-only server. Pin its version, read its tool descriptions before enabling it, and treat everything it returns as untrusted data.
 
 ## Why it matters
 
-An MCP server adds tools to the agent. Each tool is a new capability and a new source of text that reaches the model. A tool description is itself text the model reads and may follow, so a malicious or compromised server can steer the agent through its descriptions as well as through its output. Claude Code's own documentation says to verify that you trust each server before connecting it, and warns that servers which fetch external content can expose you to prompt injection.
+An MCP server (a connector, as [level 3](../../../journey/03-give-it-hands/) calls it) adds tools to the agent. Each tool is a new capability and a new source of text that reaches the model. A tool description is itself text the model reads and may follow, so a malicious or compromised server can steer the agent through its descriptions as well as through its output. Claude Code's own documentation says to verify that you trust each server before connecting it, and warns that servers which fetch external content can expose you to prompt injection.
 
 ## What to enable
 
-**1. Choose the scope on purpose.** In Claude Code, `claude mcp add` takes a scope. `local` is the default and applies to you in one project. `project` writes to a `.mcp.json` file at the repository root, which you commit to share the server with the team. `user` applies to all your projects. Share a server through the project scope only after the team has reviewed it.
+**1. Choose the scope on purpose.** Claude Code behaviour: `claude mcp add` takes a scope. `local` is the default and applies to you in one project. `project` writes to a `.mcp.json` file at the repository root, which you commit to share the server with the team. `user` applies to all your projects. Share a server through the project scope only after the team has reviewed it.
 
 ```bash
 claude mcp add --transport http docs-search --scope project https://example.com/mcp
 claude mcp list
 ```
 
-**2. Expect an approval prompt.** Interactive Claude Code asks you to approve project-scoped servers before use. Non-interactive runs and SDK sessions cannot prompt, so project servers load without asking there. If that matters, block a server explicitly with `disabledMcpjsonServers`, or limit which settings sources load.
+**2. Expect an approval prompt.** Claude Code behaviour: interactive Claude Code asks you to approve project-scoped servers before use. Non-interactive runs and SDK sessions cannot prompt, so project servers load without asking there. If that matters, block a server explicitly with `disabledMcpjsonServers`, or limit which settings sources load.
 
 **3. Use the full tool name in rules.** MCP tools are named `mcp__<server>__<tool>`. Write permission rules, skill `allowed-tools` and sub-agent `tools` lists with those names. Allow a read tool and leave the write tool to ask:
 
@@ -43,15 +45,17 @@ claude mcp list
 
 **8. Treat output as data.** A search result, a ticket body or a page the server returns can contain injected instructions. See [Untrusted input](../../control/untrusted-input/).
 
-## Failure modes it prevents
+## Failure modes it reduces
 
 - A tool description tells the agent to send data to another tool.
 - An upgraded server silently adds a write tool.
 - A personal token with wide scope leaks through a server's logs.
 - A committed `.mcp.json` from a cloned repository starts a server you never reviewed.
 
-## Start here
+## First step for the maintainer
 
 List your configured servers. Remove any you have not used this month. For each one that stays, write down the credential scope and the pinned version in the repository.
 
-<p class="verified">Verified against the Claude Code MCP documentation (code.claude.com/docs/en/mcp) and sandboxing documentation on 2026-10-22.</p>
+<p class="verified">Verified against the Claude Code MCP documentation (code.claude.com/docs/en/mcp) and sandboxing documentation on 2026-10-22. Tool: Claude Code. Version not recorded.</p>
+
+**Next:** [Spec-driven development](../../quality/spec-driven-development/)

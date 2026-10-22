@@ -7,11 +7,13 @@ import ReviewGate from '../../../../components/ReviewGate.astro';
 
 *Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
 
+*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+
 **Recommendation:** review every change with a reviewer that did not write it, starts from a fresh context and, where you can, runs on a different model or provider. Record the verdict against a digest of the exact diff. Treat any later edit as voiding the approval.
 
 ## Why it matters
 
-The author of a change shares its assumptions. An agent reviewing its own work in the same context tends to confirm what it just reasoned. A fresh context sees only the artefact. A different provider has different blind spots, so what one misses the other can catch. A same-provider fresh reviewer is useful, but it does not give you that second pair of blind spots.
+The author of a change shares its assumptions. An agent reviewing its own work in the same context tends to confirm what it just reasoned. A fresh context sees only the artefact. [Level 5](../../../journey/05-check-the-work/) explains why independence matters. A different model may make different mistakes, so measure it. Seed known defects into a test change, then record the catch rate for each reviewer and for the two together. A same-provider fresh reviewer is useful. Whether a second provider adds anything is a result you measure, not a fact you assume.
 
 <ReviewGate />
 
@@ -27,11 +29,13 @@ Drop vague findings. Do not edit files. Do not start other work.
 
 **2. A short checklist.** Include correctness, tests that would fail without the change, failure modes (concurrency, retries, partial writes, restart), security and secrets, and unnecessary scope. Keep it under twenty lines.
 
-**3. Compute a digest of the candidate.** Hash the exact diff and record it with the verdict:
+**3. Compute a digest of the candidate.** Hash the exact diff between two explicit commits and record the digest with the verdict:
 
 ```bash
-git diff main...HEAD | shasum -a 256
+git diff --binary --no-ext-diff --no-color -U3 <base-sha> <head-sha> | shasum -a 256
 ```
+
+Use full commit ids, not branch names. A rebase or a moved base changes the diff, so it changes the digest. That is the intended behaviour: the old approval no longer matches. Turn on the setting your code host offers that dismisses approvals when new commits arrive, and pin required checks to the head commit. CI should compare the digest recorded with the verdict to the digest of the diff it is about to merge, and fail the merge if they differ. A rule that nobody compares is a note, not a control.
 
 **4. Record the review.** Store reviewer, model, digest, findings, resolutions and verdict in one file in the repository or the pull request. Never report a second-model review when only one model ran.
 
@@ -43,13 +47,17 @@ git diff main...HEAD | shasum -a 256
 
 **8. Keep a human decision at the merge.** Reviewer agreement is evidence, not authority. See [Human-in-the-loop](../../operations/human-in-the-loop/).
 
-## Failure modes it prevents
+**9. Mind where the diff goes.** Sending a diff to a reviewer from another provider sends your code and data to another processor. Check what the tool keeps and whether it trains on what you send, and read [using an assistant at work](../../../journey/professional-guardrails/) before you send client material.
+
+## Failure modes it reduces
 
 - The author approves a change it cannot see clearly.
 - A reviewer approves, the author makes a last tweak, and the tweak is what breaks.
 - A review that covered "the PR" in general is cited for a different commit.
-- Both reviewer and author miss the same issue because they are the same model.
+- Both reviewer and author miss the same issue because they share a context, or a model, and nobody measured the overlap.
 
-## Start here
+## First step for the maintainer
 
 Pick the next change. Hash its diff. Ask a fresh agent, in another tool if you have one, to review it with the three-line brief above. Put the digest and verdict in the pull request description.
+
+**Next:** [Evals for LLM-driven steps](../evals/)

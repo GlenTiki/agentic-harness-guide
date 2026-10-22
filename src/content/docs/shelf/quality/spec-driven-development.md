@@ -5,11 +5,13 @@ description: Write a short spec before the agent writes code, and make the spec 
 
 *Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
 
+*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+
 **Recommendation:** for any change larger than a few lines, write a one-page spec first. Put it in the repository, have a second agent or person challenge it, and trace every test and commit back to it. Skip the spec for trivial edits.
 
 ## Why it matters
 
-An agent produces plausible code from whatever it is given. When the request is vague, the code is plausible and wrong in ways that are hard to see in a diff. A spec forces the decisions into text that you can review before any code exists, when changing your mind is cheap.
+[Level 5](../../../journey/05-check-the-work/) calls this the definition of done. An agent produces plausible code from whatever it is given. When the request is vague, the code is plausible and wrong in ways that are hard to see in a diff. A spec forces the decisions into text that you can review before any code exists, when changing your mind is cheap.
 
 ## What to enable
 
@@ -46,13 +48,15 @@ One paragraph: what changes for whom, and why.
 
 **7. Keep the spec where agents read it.** A path in the instruction file is enough: "Specs live in `docs/specs/`. Read the relevant one before changing code."
 
-## Failure modes it prevents
+## Failure modes it reduces
 
 - The agent solves a different problem from the one you meant.
 - Scope grows silently during implementation.
 - Tests assert whatever the code does, because nothing else defined correct.
 - A reviewer cannot tell whether a behaviour is a bug or a decision.
 
-## Start here
+## First step for the maintainer
 
 For the next non-trivial change, write only the Intent and Acceptance criteria sections, and ask the agent to turn each criterion into a failing test before it writes the implementation.
+
+**Next:** [Test-first and quality gates](../test-first-and-gates/)

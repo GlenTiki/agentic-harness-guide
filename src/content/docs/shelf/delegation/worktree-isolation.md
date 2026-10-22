@@ -5,11 +5,15 @@ description: Give every agent that writes files its own checkout so parallel wor
 
 *Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
 
+*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+
 **Recommendation:** run each write-capable agent in its own git worktree on its own branch. Read-only agents can share the main checkout. Name the base branch explicitly and check it before you merge.
 
 ## Why it matters
 
 Two agents in one working directory share the same files, the same index and the same `HEAD`. One agent's `git checkout` or `git stash` changes what the other sees. The symptoms are confusing: edits that disappear, commits on the wrong branch, tests that fail for a reason nobody introduced. A worktree is a second checkout of the same repository, so each agent gets its own files and branch while sharing history.
+
+A worktree isolates files. It does not isolate ports, development databases, containers, package caches, lockfile installs, environment files or external services. Two agents in two worktrees can still start a server on the same port, migrate the same database or install over the same cache. Give each worktree its own port range, its own database name suffix and its own ephemeral containers. [Level 6](../../../journey/06-hire-a-team/) makes the same point for helpers.
 
 ## What to enable
 
@@ -20,9 +24,9 @@ git worktree add ../repo-feature-a -b agent/feature-a main
 git worktree add ../repo-feature-b -b agent/feature-b main
 ```
 
-**2. Let the harness do it if it can.** In Claude Code, a sub-agent with `isolation: worktree` in its frontmatter runs in a temporary worktree. The worktree is cleaned up automatically if the agent makes no changes. When it does make changes, you get the branch and path back to review.
+**2. Let the harness do it if it can.** Claude Code behaviour: a sub-agent with `isolation: worktree` in its frontmatter runs in a temporary worktree. The worktree is cleaned up automatically if the agent makes no changes. When it does make changes, you get the branch and path back to review.
 
-**3. Know where the worktree branches from.** In Claude Code the worktree branches from your default branch, not from the parent session's current `HEAD`. If the lead agent is on an unmerged feature branch, the isolated agent does not see that work. Either merge first, or tell the agent the base in the brief and check it afterwards:
+**3. Know where the worktree branches from.** Claude Code behaviour: the worktree branches from your default branch, not from the parent session's current `HEAD`. If the lead agent is on an unmerged feature branch, the isolated agent does not see that work. Either merge first, or tell the agent the base in the brief and check it afterwards:
 
 ```bash
 git merge-base --is-ancestor <base-commit> <agent-branch> && echo "based on the right commit"
@@ -36,15 +40,18 @@ git merge-base --is-ancestor <base-commit> <agent-branch> && echo "based on the 
 
 **7. Merge deliberately, then clean up.** Review each branch like any other change. A squash merge does not make the agent branch an ancestor of main, so judge "merged" by the pull request, not by ancestry. Remove the worktree with `git worktree remove`, and delete the branch separately.
 
-## Failure modes it prevents
+## Failure modes it reduces
 
 - Parallel agents overwrite each other's edits.
 - An agent works from a stale base and its changes conflict with everything.
 - A cleanup command run in the wrong directory deletes someone else's work.
 - A leftover worktree holds a branch you want to reuse.
+- Two worktrees collide on a port or a database that the checkout did not isolate.
 
-## Start here
+## First step for the maintainer
 
 Before the next parallel task, create two worktrees by hand, point one agent at each, and merge both back. You will see the base-branch behaviour first-hand.
 
-<p class="verified">Verified against the Claude Code sub-agents documentation (code.claude.com/docs/en/sub-agents) on 2026-10-22.</p>
+<p class="verified">Verified against the Claude Code sub-agents documentation (code.claude.com/docs/en/sub-agents) on 2026-10-22. Tool: Claude Code. Version not recorded.</p>
+
+**Next:** [Skills](../skills/)
