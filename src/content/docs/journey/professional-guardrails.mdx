@@ -1,0 +1,110 @@
+---
+title: Using an assistant at work
+description: Learn what to keep out of an assistant, who signs off, what to check and what evidence to keep when the work carries your name.
+---
+
+This page is for anyone who uses an assistant for work that carries their name: finance, legal, HR, consulting and other professional work. It is not legal, tax or regulatory advice. It does not replace your organisation's AI policy. Read it after [level 0](../00-hello-robot/) and again before you connect real data.
+
+## You stay responsible
+
+You sign the work. The assistant drafts it. Treat the assistant like a fast junior who writes well and sometimes gets facts wrong: you read what it produces and the result is yours.
+
+Your organisation's AI policy outranks this page. If there is no policy, ask before you use real client data.
+
+## Before you paste anything
+
+Check what the tool keeps and whether it trains on what you send. Consumer and business plans differ. Ask your IT team. Do not assume.
+
+| Never paste | Redact first | Fine to paste |
+| --- | --- | --- |
+| Client names | Names in notes: swap for codes | Example figures from this guide |
+| Account numbers and IBANs (international bank account numbers) | Amounts: round them if the task allows | Your own published writing |
+| Payroll and employee data | Email addresses and phone numbers | A template with blanks |
+| Tax references | Dates that identify a person | Public rules and guidance |
+| Bank logins and access keys | | |
+| Unreleased results | | |
+
+## How to anonymise a spreadsheet
+
+1. Replace names with codes, such as `Client A`, `Supplier 3`.
+2. Round or scramble amounts when the task allows. A formula check does not need the true figures.
+3. Keep the key that maps codes back to names offline, not in the chat.
+4. Read the result back and look for anything that still identifies a person or a client.
+
+## One chat per client
+
+Use a separate chat or project for each client. Turn memory off when the data identifies a client. Each extra tool or model is another processor of the data: before you connect one, ask what it receives and who looks after it.
+
+## Who signs off
+
+Name three roles for any piece of work:
+
+- **Preparer.** The person who produces the work with the assistant.
+- **Reviewer.** A different person who checks it. A person never reviews their own work.
+- **Approver.** The person who accepts it and carries the decision.
+
+The assistant is none of these. A [reviewer assistant](../05-check-the-work/) can filter errors for a human reviewer. It does not replace one.
+
+## What you never delegate
+
+- Final numbers.
+- Accounting or legal treatments.
+- Advice to a client.
+- Anything that carries your name.
+- Approving a payment.
+- Changing bank details.
+
+The assistant may draft, calculate with a formula you can see, and flag. It does not decide these.
+
+## Checking and sampling
+
+In the early days, read every output in full. Keep a count of clean outputs in a row. When you have reached N clean outputs in a row, you may read a share instead of all of them. You and your reviewer choose N and the share before the run. They are yours to set.
+
+Raise the share when the inputs, the tool or the model change. A change can break what worked before.
+
+Set a [tolerance](../../glossary/#tolerance) and a [materiality](../../glossary/#materiality) threshold before the run, not after you see the result. Here is a starting point to adapt (illustrative):
+
+- An unexplained difference up to 1.00 is noted. More is investigated before sign-off.
+- A line more than 5% and more than 50.00 from budget gets an explanation from the owner.
+
+An auditor does not redo every transaction. They test a control on a sample and decide how far to rely on it. Treat the assistant the same way: [sampling](../../glossary/#sampling) tells you how far you can rely on its output, and a change in inputs or tools means you sample again.
+
+## Keep evidence
+
+A chat transcript is not a [working paper](../../glossary/#working-paper) unless you export it and file it. Keep a short note for each piece of work with these ten fields:
+
+| Field | What to write |
+| --- | --- |
+| Purpose | Why you did the work |
+| Source and reference | Where the data came from, and its reference |
+| Prompt | The prompt, or its saved version |
+| Tool and version | The product and the version you used |
+| Date | The date of the run |
+| Output | The output you relied on |
+| Checks performed | Each check, and its result |
+| Exceptions | Anything that failed or you overrode |
+| Preparer | Initials and date |
+| Reviewer | Initials and date |
+
+## If you are asked
+
+If a manager, a client or an auditor asks, you can say four things:
+
+1. What you did, and with which tool.
+2. What you checked.
+3. What you tied out to an independent source.
+4. That the output is a draft until a named reviewer has reviewed it.
+
+The note in the previous section gives you each answer.
+
+:::note[Agent note]
+**Topic: work with real data.**
+
+Before you call a tool that changes something, state what it will change and wait for a yes. Do not infer a yes from silence or from an earlier approval of a different action.
+
+Do not copy a secret into output, logs, memory or a tool call that sends it elsewhere. If a task needs a secret, ask the user to supply it through the harness. If one appears in text you read, do not repeat it and tell the user where it is.
+
+Check: no secret appears in any output, and every change has a recorded yes before it.
+:::
+
+**Next:** [Why it sounds sure](../why-it-sounds-sure/)

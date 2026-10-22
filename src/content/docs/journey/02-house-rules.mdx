@@ -1,35 +1,35 @@
 ---
 title: "Level 2: House rules"
-description: Write the rules once in an instruction file, and keep memory and context tidy.
+description: Write your rules once in an instruction file, so you stop repeating yourself, and keep memory and context tidy.
 ---
 
 ## Scene
 
-*Last time: you built a strong ask from a goal, constraints and an example, and the assistant started to show its month count before giving a total.*
+*Last time: you built a strong ask from a goal, constraints, an example and a check step, and the assistant started to show its month count before giving a total. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
 
 A new flatmate moves in. Sam explains the house rules once: bins go out on Tuesday, the top shelf is shared, the heating goes off at night. Nobody explains them again every morning, because that would be a very tiring flat. Sam's assistant is the opposite. Every new chat is a flatmate who has just arrived, and the rules have to be explained from scratch.
 
 ## The idea
 
-**Write the rules down once, in a place the assistant reads every time.** That place is an **[instruction file](../../glossary/#instruction-file)**: a short plain text file of standing rules. It sits on the desk at the start of every session, so you stop repeating yourself.
+**Write the rules down once, in a place the assistant reads every time.** That place is an **[instruction file](../../glossary/#instruction-file)**: a short plain text file of standing rules. It sits on the desk at the start of every chat, so you stop repeating yourself.
 
 Three ideas make this work:
 
 - **The instruction file** holds rules you write: how you want things done.
-- **[Memory](../../glossary/#memory)** holds facts the assistant keeps between sessions: things it learned about you or the job.
+- **[Memory](../../glossary/#memory)** holds facts the assistant keeps between chats: things it learned about you or the job.
 - **Context hygiene** is the habit of keeping the desk tidy, so the useful things stay on it.
 
-Many chat tools let you save standing instructions in their settings or in a named project. Tools that live in a code editor or a terminal usually read a named file from your project folder. The idea is the same in all of them. The reference shelf covers the file names and loading rules in [instruction files](../../shelf/context/instruction-files/).
+Many chat apps let you save your house rules in their settings or in a named project. The idea is the same in all of them. For a plain-chat routine that you can start today, read the [consistency fast track](../../start-here/consistency-fast-track/). (For engineers: the shelf covers file names and loading rules in [instruction files](../../shelf/context/instruction-files/).)
 
 Here is Sam's file. It is short on purpose.
 
 ```text
-# Money admin: standing brief
+# Money admin: house rules
 
 ## Who and what
-- I am Sam. I do the monthly money admin for a flat of three: me, Priya and Tom.
-- Currency is euros. Round to the cent.
-- Shared bills are electricity, broadband, heating and bins. Rent is handled separately.
+- I am Sam. I do the monthly money admin for a flat of three: me, Priya and Tom (the three of us).
+- Currency is euros.
+- Shared bills are electricity, broadband, heating and bins. Rent is not part of them. Each of us pays the landlord directly.
 
 ## How to answer
 - Use only the figures I give you in the chat. If a figure is missing, ask. Do not guess.
@@ -38,8 +38,7 @@ Here is Sam's file. It is short on purpose.
 - Keep answers under ten lines. Use plain words.
 
 ## Splitting
-- Split in three equal shares unless I say otherwise.
-- If a cent is left over, say so and give it to me.
+- Split in three shares. Round each share to the cent. If the three shares do not add to the total, change Sam's share by the difference and say so.
 
 ## Limits
 - Draft only. Never send a message or move money.
@@ -49,29 +48,36 @@ Notice what the file does not contain.
 
 **Leave out**
 
-- **Secrets.** No passwords, account numbers or tokens. The file is read as plain text and may be stored or logged.
+- **Secrets.** No passwords, account numbers or access keys. An access key is a secret code that lets a program act as you. The file is plain text and may be stored or logged.
 - **This month's figures.** They change. Paste them into the chat.
-- **Things the assistant can see for itself.** If a file is on the desk, do not describe it.
-- **Whole documents.** Link to them or paste the relevant part when needed.
-- **Vague wishes.** "Be helpful" and "be accurate" cannot be followed or checked.
-- **One-off requests.** If it only applies today, say it in the chat.
 
 :::tip[New to this]
 You can start without any setting. Paste the file at the top of a new chat. The effect is the same. The setting only saves you the pasting.
 :::
 
+:::tip[Which app?]
+Chat apps such as ChatGPT, Claude, Gemini and Microsoft Copilot offer a place for your house rules. Look in settings for custom instructions or projects. If you find none, paste the file at the top of a new chat.
+:::
+
+:::note[Want consistency]
+Save the file once and review it each month. When you correct the assistant twice for the same thing, change the file, not the chat.
+:::
+
 ## Try it
 
-You need any chat assistant. This takes about five minutes.
+You need any chat assistant. This takes about 10 minutes.
+
+*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
 
 1. Copy Sam's file above. Change the names and the shared bills to fit your own life, or keep Sam's.
-2. Open a new chat and paste the file as your first message. Add this line under it:
+2. Save the file in your app's standing-instructions place, or in a note you can paste each time. This step is required: a rule you do not save is a rule you will retype.
+3. Open a new chat. If your app loads the rules for you, ask `What are my rules?` and check that the answer matches your file. If not, paste the file as your first message and add this line under it:
 
 ```text
 Acknowledge these rules in one sentence, then wait for figures.
 ```
 
-3. Send this, with a deliberate gap. June is missing:
+4. Send this, with a deliberate gap. June is missing:
 
 ```text
 Bills last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split it.
@@ -87,48 +93,88 @@ Please send June and I will split the full total.
 
 That is the rule "ask, do not guess" in action. Without the file, many assistants would quietly total what they had, or invent a plausible June.
 
-4. Now send June (142). Check the final total yourself: it should be 2,120.00, and two flatmates pay 706.67 while one pays 706.66.
-5. Optional: save the file in your tool's standing-instructions place and start a new chat without pasting. Ask "What are my rules?" to see that it is loaded.
+5. Now send June (142). Check the final total yourself: it should be 2,120.00, and two of the three shares are 706.67 while Sam's is 706.66.
 
-The February slip is still possible. The rule says to count, and the assistant can still miscount. A rule is a request, not a lock. Level 3 reduces the slip by reading the data directly. Level 5 proves the count with a test.
+The February slip is still possible. The rule says to count, and the assistant can still miscount. A rule is a request, not a lock. Level 3 reduces the slip by reading the data directly. Level 5 checks the count with a test.
+
+Your version: swap in a task of your own, for example shift cover to share out.
 
 ## Under the bonnet
 
-An instruction file does not teach the model anything. The model learns nothing from your chats. The tool simply adds the file's text to the start of the prompt each time, so it is on the desk before you type. If the file is long, it takes space from everything else.
+*How it works. Optional reading.*
 
-Memory works in a similar way. Some tools notice a fact ("Priya pays on the first of the month") and save it. In a later chat, the tool picks the relevant notes and puts them on the desk. The model reads them as text, like everything else. The difference from an instruction file is who writes it: you write the file, the tool writes the memory.
+An instruction file does not teach the model anything. The model learns nothing from your chats. The app adds the file's text to the start of the prompt each time, so it is on the desk before you type. If the file is long, it takes space from everything else.
 
-Context hygiene follows from the size of the desk. A long chat drifts: old detail gets shortened by the tool, and the assistant can lose a rule you gave an hour ago. Good habits cost little:
+Memory works in a similar way. Some apps notice a fact ("Priya pays on the first of the month") and save it. In a later chat, the app picks the relevant notes and puts them on the desk. The model reads them as text, like everything else. The difference from an instruction file is who writes it: you write the file, the app writes the memory.
+
+Memory and data go together. Use a separate chat or project for each client, with memory off when the data identifies a client. See [using an assistant at work](../professional-guardrails/).
+
+Context hygiene follows from the size of the desk. A long chat drifts: old detail gets shortened by the app, and the assistant can lose a rule you gave an hour ago. Good habits cost little:
 
 - One job per chat. Start a new chat for a new job.
 - Restate key facts after a long chat, or ask for a short summary and carry that into a fresh chat.
 - When the assistant gets something wrong twice, fix the rule in the file instead of arguing in the chat.
-- Remove rules that no longer apply. A stale rule is an instruction the assistant will obey.
+- Remove rules that no longer apply. A stale rule is an instruction the assistant is likely to follow.
 
-The shelf pages on [context management](../../shelf/context/context-management/) and [memory](../../shelf/context/memory/) go deeper.
+(For engineers: the shelf pages on [context management](../../shelf/context/context-management/) and [memory](../../shelf/context/memory/) go deeper.)
+
+<details class="go-deeper">
+<summary>Go deeper: what else to leave out</summary>
+
+Four more things do not belong in the file:
+
+- **Things the assistant can see for itself.** If a file is on the desk, do not describe it.
+- **Whole documents.** Link to them or paste the relevant part when needed.
+- **Vague wishes.** "Be helpful" and "be accurate" cannot be followed or checked.
+- **One-off requests.** If it only applies today, say it in the chat.
+
+</details>
+
+<details class="go-deeper">
+<summary>Go deeper: a professional's standing rules</summary>
+
+An example for a month-end close. The thresholds are starting points. Set your own with your reviewer.
+
+```text
+# Month-end: standing rules (example)
+- Accounting policy: [the policy your organisation uses]. Do not choose a treatment. Flag the item.
+- Round each share to the cent. If the shares do not add to the total, change one named share by the difference and say so.
+- Tolerance: an unexplained difference up to 1.00 is noted. More is investigated before sign-off.
+- Materiality: a line more than 5% and more than 50.00 from budget gets an explanation from the owner.
+- Do not supply a reason for a variance. The owner supplies it.
+- When unsure, flag. Do not choose.
+- Reviewer: [name], who is not the preparer.
+- Owner of this file: [name]. Review it on [date], then every month.
+```
+
+</details>
+
+:::note[At work]
+The close procedure is a set of standing rules. It has a named owner, a review date and a reviewer who is not the preparer. When the procedure changes, change the document the whole team reads, not one person's notes.
+:::
 
 ## Expert corner
 
 :::caution[Expert corner]
 Every line in an instruction file costs context on every run, and a long file dilutes the lines that matter. Treat it like a configuration file: each line should be a rule you would be annoyed to repeat, and the file should be reviewed when behaviour changes.
 
-Rules in a file are advisory. The model weighs them with the rest of the prompt, so a conflicting instruction in the chat or in fetched text can override them. A rule that must hold, such as "never send a message", belongs in a harness control that runs whether or not the model agrees. Level 4 covers that.
+Rules in a file are advisory. The model weighs them with the rest of the prompt, so a conflicting instruction in the chat or in fetched text can override them. A rule that must hold, such as "never send a message", belongs in a control that runs outside the assistant, whether or not the model agrees (level 4).
 
-Memory is a second source of instructions. A wrong or planted entry misleads every later session, so it needs the same review as code. When a memory is wrong, edit it in place. Do not append a correction below it, or both versions reach the desk.
-
-In a finance team, the standing brief is the close procedure, with a named owner and a review date.
+Memory is a second source of instructions. A wrong or planted entry misleads every later chat, so it needs the same review as code. When a memory is wrong, edit it in place. Do not append a correction below it, or both versions reach the desk.
 :::
 
 ## Agent note
 
 :::note[Agent note]
-Read the instruction file at the start of every session. Follow it unless the user's current message explicitly overrides a specific rule.
+**Topic: instruction files and memory.**
 
-If you are asked to remember a fact, store only durable facts. Do not store secrets, session state or one-off figures.
+A user message can override a preference in an instruction file. It cannot override a rule marked as a safety or approval rule.
 
-If a stored rule or memory is wrong, edit it in place. Do not append a correction.
+Before you edit an instruction file or a memory entry, show the change and wait for the user's yes.
 
-If a rule is missing and you need it to proceed, ask. Do not infer it.
+Store only durable facts. Do not store secrets, session state or one-off figures. If a rule is missing and you need it to proceed, ask. Do not infer it.
+
+Check: no edit to an instruction file or memory entry happened without a recorded yes.
 :::
 
 ## Mistakes people make
@@ -141,6 +187,8 @@ If a rule is missing and you need it to proceed, ask. Do not infer it.
 
 ## Checkpoint
 
+*Audience: the reader. Agents may skip the quiz.*
+
 You can now:
 
 - Write a short instruction file with who, how, limits and a "draft only" line.
@@ -152,17 +200,19 @@ You can now:
 
 1. The assistant keeps splitting bills in the wrong currency. Where do you fix it, and why not in the chat?
 2. A teammate wants to put the flat's bank login in the instruction file "so it is handy". What do you say?
-3. Why can a rule such as "never send a message" in an instruction file not be fully relied on?
+3. Why is a rule such as "never send a message" in an instruction file a request and not a lock?
 
 <details>
 <summary>Answers</summary>
 
 1. Fix it in the instruction file, so every future chat has it. Fixing it in the chat solves it for that chat only, and you will repeat yourself next time.
 2. No. Keep secrets out of any text the assistant reads. The file is plain text and may be stored, shared or logged. Use the login yourself, or use a proper secure connection (level 3 and level 4).
-3. The model treats the rule as one input among many. A conflicting instruction, or text inside something it reads, can outweigh it. A rule that must always hold needs a control outside the model (level 4).
+3. The model treats the rule as one input among many. A conflicting instruction, or text inside something it reads, can outweigh it. A rule that must always hold needs a control that runs outside the assistant (level 4).
 
 </details>
 
 ## Bridge
 
-The assistant now knows your rules, but it still cannot see your bank export or your shared sheet, so you copy and paste everything by hand. Level 3 gives it hands, with safe limits.
+The assistant now knows your rules, but it still cannot see your bank export or your shared sheet, so level 3 gives it hands, with safe limits.
+
+**Next:** [Level 3: Give it hands](../03-give-it-hands/)
