@@ -16,15 +16,13 @@ What to do if unsure: Ask me. Do not guess an owner.
 
 ## A good refinement must
 
-- Say plainly that the ask is already strong.
-- Change very little. Wording changes are small and each is explained.
-- Ask no questions, or at most one.
-- Leave the sections, limits and voice as the user wrote them.
-- In the diff, list what it left alone.
+- Begin the reply with "This ask is already good."
+- Output the Refined prompt unchanged from the input.
+- Ask no questions.
+- In "What changed", list what it left alone.
 
 ## It fails if
 
-- It rewrites the whole prompt.
-- It adds constraints the user did not imply.
+- It asks any question.
+- It rewrites the prompt, or adds constraints the user did not imply.
 - It invents the notes.
-- It asks three questions to look useful.
