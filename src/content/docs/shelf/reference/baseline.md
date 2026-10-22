@@ -5,7 +5,7 @@ description: The minimum viable harness as one checklist.
 
 *Deep dive for [level 8: Design anything](../../../journey/08-design-anything/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** treat this list as the floor for any repository where an agent can edit code. Each item links to the page that explains it. Add the rest of the guide as your risk grows.
 
@@ -30,7 +30,7 @@ description: The minimum viable harness as one checklist.
 - [ ] **BL-09** A post-tool hook formats or lints edited files. [Hooks](../../control/hooks/)
 - [ ] **BL-10** A pre-tool hook blocks the one action you fear most, using exit code 2 or a deny decision (Claude Code behaviour). It covers the paths the hook sees; see [Hooks](../../control/hooks/).
 - [ ] **BL-11** A stop hook runs the test suite.
-- [ ] **BL-12** An action log is written by a hook. [Observability](../../operations/observability/)
+- [ ] **BL-12** An audit log is written by a hook. [Observability](../../operations/observability/)
 
 ### Quality
 
@@ -60,6 +60,6 @@ Each unchecked box corresponds to a row in [Anti-patterns](../anti-patterns/), w
 
 The maintainer checks what the repository already has. The maintainer does the first unchecked item under Boundaries, then Enforcement, then Quality.
 
-<p class="verified">Verified against the Claude Code hooks reference (code.claude.com/docs/en/hooks) on 2026-10-22: exit code 2 blocks a pre-tool call. Tool: Claude Code. Version not recorded.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
 
 **Next:** [Anti-patterns](../anti-patterns/)

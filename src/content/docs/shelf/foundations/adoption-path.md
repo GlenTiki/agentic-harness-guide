@@ -5,7 +5,7 @@ description: A staged checklist for building a harness, ordered by effort and no
 
 *Deep dive for [level 7: Run it for real](../../../journey/07-run-it-for-real/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** adopt in the order below. Each stage is cheap relative to the risk it removes, and each assumes the previous one is in place. Do not wait for a calendar. Move on when the exit check of a stage passes.
 
@@ -16,7 +16,7 @@ description: A staged checklist for building a harness, ordered by effort and no
 ## Stage 1: bound the blast radius
 
 - [ ] Run the agent in a repository with a clean working tree and a remote.
-- [ ] Set a deny list for secrets files and a short allow list for routine commands. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
+- [ ] Set a deny list for secrets files and a short allow list for routine commands (an allow rule only skips the prompt; other calls still ask unless you use `dontAsk` mode). See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
 - [ ] Turn on the sandbox for shell commands if your harness has one.
 
 Exit check: you tried to read your secrets file and the read was refused, and you tried to reach a host you did not list and the call failed.
@@ -52,7 +52,7 @@ Exit check: two agents work in parallel and neither changes the other's files.
 
 ## Stage 6: operate
 
-- [ ] Keep an action log. See [Observability and audit trail](../../operations/observability/).
+- [ ] Keep an audit log. See [Observability and audit log](../../operations/observability/).
 - [ ] Cap loops and heavy jobs. See [Cost and resource discipline](../../operations/cost-and-resources/).
 - [ ] Write down which actions always need a person. See [Human-in-the-loop](../../operations/human-in-the-loop/).
 

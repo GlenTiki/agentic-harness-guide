@@ -7,7 +7,7 @@ import HookLifecycle from '../../../../components/HookLifecycle.astro';
 
 *Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** use a hook for each rule that you want the harness to apply on every call it covers. Start with three: a pre-tool hook that blocks one dangerous action, a post-tool hook that formats edited files, and a stop hook that runs your tests. Make a hook block only when a wrong action is costly or irreversible. Make every other hook advise.
 
@@ -29,7 +29,7 @@ An instruction file is advice. The model may forget it or read it another way, a
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "hooks": [{ "type": "command", "command": "./scripts/format-changed.sh" }]
+        "hooks": [{ "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/format-changed.sh" }]
       }
     ]
   }
@@ -38,42 +38,59 @@ An instruction file is advice. The model may forget it or read it another way, a
 
 **3. Choose blocking or advising deliberately.** Claude Code behaviour: for command hooks, exit code 0 means success. Exit code 2 blocks the action on events that can block, and feeds standard error back to the model as the reason. Any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not block anything. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
 
-**4. Parse the command. Do not match text.** A hook that looks for the string `push --force` misses `git push origin main -f`, because the flag comes later. The hook below splits the command into words with `shlex` and looks at the flags. It reads the tool call as JSON on standard input and blocks when a `git push` carries `--force`, `--force-with-lease`, `--delete`, a refspec that starts with `+` or `:`, or a short flag group that contains `f`.
+**4. Parse the command. Do not match text.** A hook that looks for the string `push --force` misses `git push origin main -f`, because the flag comes later. The sample below splits the command into words with `shlex` and looks at the flags. It reads the tool call as JSON on standard input. It is a teaching sample, not a security boundary.
+
+The sample blocks a `git push` that carries any of these: `--force`, `--force-with-lease`, `--force-if-includes`, `--delete`, `--mirror` or `--prune`; any abbreviation of those that is five or more characters long counting the two dashes (so `--del` and `--forc` are blocked); a short flag group that contains `f` or `d`; or a refspec that starts with `+` or `:`. It recognises `git` by its file name, so `/usr/bin/git` and `env git` count. It also looks inside a quoted string, so `sh -c "git push -f"` and `bash -c '...'` are blocked. It exits 2 when it cannot read the call. It blocks nothing else.
 
 ```python
 #!/usr/bin/env python3
 import json
+import os
 import shlex
 import sys
 
-FORCE_LONG = {"--force", "--force-with-lease", "--delete"}
+RISKY_LONG = ("--force", "--force-with-lease", "--force-if-includes", "--delete", "--mirror", "--prune")
+RISKY_SHORT = "fd"
+
+
+def is_risky_flag(token):
+    if token.startswith("--"):
+        name = token.split("=")[0]
+        return len(name) >= 5 and any(long.startswith(name) for long in RISKY_LONG)
+    if token.startswith("-"):
+        return any(letter in token[1:] for letter in RISKY_SHORT)
+    return token.startswith(("+", ":"))
 
 
 def is_risky_push(tokens):
-    if "git" not in tokens or "push" not in tokens:
-        return False
-    flags = tokens[tokens.index("push") + 1:]
-    for token in flags:
-        if token in FORCE_LONG or token.startswith(("--force-with-lease=", "--delete=")):
+    for index, token in enumerate(tokens):
+        if " " in token and is_risky_push(shlex.split(token)):
             return True
-        if token.startswith(("+", ":")):
-            return True
-        if token.startswith("-") and not token.startswith("--") and "f" in token:
-            return True
+        if os.path.basename(token) == "git" and "push" in tokens[index:]:
+            after_push = tokens[tokens.index("push", index) + 1:]
+            return any(is_risky_flag(flag) for flag in after_push)
     return False
 
 
-command = json.load(sys.stdin).get("tool_input", {}).get("command", "")
-try:
-    tokens = shlex.split(command)
-except ValueError:
-    tokens = command.split()
-if is_risky_push(tokens):
-    print("Blocked: this push can overwrite or delete remote history. Ask the user to run it themselves.", file=sys.stderr)
-    sys.exit(2)
+def main():
+    try:
+        command = json.load(sys.stdin)["tool_input"]["command"]
+        risky = is_risky_push(shlex.split(command))
+    except (ValueError, KeyError, TypeError, AttributeError) as error:
+        print(f"Blocked: the hook could not read this call ({error}).", file=sys.stderr)
+        sys.exit(2)
+    if risky:
+        print("Blocked: this push can overwrite or delete remote history. Ask the user to run it themselves.", file=sys.stderr)
+        sys.exit(2)
+
+
+if __name__ == "__main__":
+    main()
 ```
 
-Register it on `Bash` in your own settings file:
+The same file is at `examples/hook-sample/block_force_push.py`. A test file next to it, `test_matrix.py`, runs it on every row of the table below and prints one line per row.
+
+**Where to put it and how to register it.** Save the script as `.claude/hooks/block_force_push.py` in your project. Register it with the project-root variable, not a relative path. The hooks reference defines it in these words: "`${CLAUDE_PROJECT_DIR}`: the project root where the session started." Its own examples use the form `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.sh`. The same page says that handlers "run in the current directory", so a relative path breaks when the session moves to another directory.
 
 ```json
 {
@@ -81,14 +98,30 @@ Register it on `Bash` in your own settings file:
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [{ "type": "command", "command": "python3 ./scripts/block_force_push.py" }]
+        "hooks": [{ "type": "command", "command": "python3 ${CLAUDE_PROJECT_DIR}/.claude/hooks/block_force_push.py" }]
       }
     ]
   }
 }
 ```
 
-This page's author ran the script on each command below with the JSON shape the hooks reference shows. The exit codes are the real results.
+**A broken hook can block every Bash call.** Run on a script that does not exist, `python3` exits with code 2. Code 2 is the blocking code, so a missing Python script blocks every Bash call. Run on a missing shell script, `sh` exits 127. That code is a non-blocking error, so the hook silently does nothing. Both results are real runs from 2026-10-22: `python3 ./missing.py; echo $?` printed 2 and `sh ./missing.sh; echo $?` printed 127.
+
+**Fail safe, and what it costs.** The sample exits 2 when it cannot read the call, because a guard that quietly lets everything through is worse. The cost is that if the harness ever changes the shape of the JSON it sends, every Bash call is blocked until you fix the script or switch the hook off. To switch hooks off, the hooks reference says: "To temporarily disable all hooks without removing them, set `"disableAllHooks": true` in your settings file." You can also delete the entry. Keep a second window open while you test, so you can undo the change.
+
+**Test it in this order.**
+
+1. Check that the file exists: `test -f .claude/hooks/block_force_push.py`.
+2. Pipe a call to it by hand: `echo '{"tool_input":{"command":"git status"}}' | python3 .claude/hooks/block_force_push.py; echo $?` must print 0. Then try `git push --force` and expect 2 and the block message.
+3. Register it in a throwaway repository first, not your real settings.
+4. In that session, run `git status` and confirm it is allowed.
+5. Ask the assistant for `git push --force` to a local bare repository you created for the test, and confirm you see the block message.
+6. Only then register it in your real settings.
+
+The table below is the output of `python3 examples/hook-sample/test_matrix.py` on 2026-10-22. It ran on the script, not on the harness. It shows what the script does with a given input. It does not show that the harness calls the script.
+
+<details>
+<summary>The 30 command rows and 6 malformed-input rows</summary>
 
 | Command | Exit code | Result |
 | --- | --- | --- |
@@ -97,22 +130,66 @@ This page's author ran the script on each command below with the JSON shape the 
 | `git push origin main -f` | 2 | blocked |
 | `git push origin +main` | 2 | blocked |
 | `git push --force-with-lease` | 2 | blocked |
+| `git push origin -d feature` | 2 | blocked |
+| `git push --del origin feature` | 2 | blocked |
+| `git push --delete origin feature` | 2 | blocked |
+| `git push --mirror` | 2 | blocked |
+| `git push --prune origin` | 2 | blocked |
+| `git push --force-if-includes` | 2 | blocked |
+| `/usr/bin/git push -f` | 2 | blocked |
+| `git -C . push --force` | 2 | blocked |
+| `status; git push -f` | 2 | blocked |
+| `git push origin :feature` | 2 | blocked |
+| `sh -c "git push -f"` | 2 | blocked |
+| `bash -c 'git push --force'` | 2 | blocked |
+| `git push origin main --force` | 2 | blocked |
+| `git push --forc origin` | 2 | blocked |
+| `git push -fu origin main` | 2 | blocked |
+| `git push origin HEAD:main --force` | 2 | blocked |
+| `GIT_SSH_COMMAND=x git push -f` | 2 | blocked |
+| `env git push -f` | 2 | blocked |
+| `git push origin $(echo +main)` | 2 | blocked |
 | `git status` | 0 | allowed |
+| `git push origin main` | 0 | allowed |
+| `git push -u origin feature-fix` | 0 | allowed |
+| `git log --grep push` | 0 | allowed |
+| `git commit -m 'push -f docs'` | 0 | allowed |
+| `echo hello` | 0 | allowed |
+| malformed input: empty stdin | 2 | blocked |
+| malformed input: not json | 2 | blocked |
+| malformed input: json null | 2 | blocked |
+| malformed input: no tool_input | 2 | blocked |
+| malformed input: command is a list | 2 | blocked |
+| malformed input: tool_input null | 2 | blocked |
 
-The script blocks `--force-with-lease` too. That flag is safer than `--force`, but it can still overwrite remote work, so this sample sends the decision back to a person. Change that line if your team decides otherwise. Test your own version on the same six commands before you rely on it.
+</details>
+
+The script blocks `--force-with-lease` too. That flag is safer than `--force`, but it can still overwrite remote work, so this sample sends the decision back to a person. Change that line if your team decides otherwise.
 
 **5. Write good block messages.** The message is the only thing the model sees. Say what was blocked, why, and what to do instead.
 
 **6. Keep hooks fast and quiet.** A slow hook slows every tool call. Set a timeout on each handler. Print nothing on success.
 
-**7. Use hooks for the audit log.** A post-tool hook that appends one line per action gives you a trail without relying on the model to report. See [Observability and audit trail](../../operations/observability/).
+**7. Use hooks for the audit log.** A post-tool hook that appends one line per action gives you a trail without relying on the model to report. See [Observability and audit log](../../operations/observability/).
 
 ## What this hook does not cover
 
-The hook sees one thing: a Bash tool call whose command text names `git push`. It does not see these routes:
+The hook sees one thing: a Bash tool call whose command text, once split into words, shows `git` followed by `push` and a risky flag. The matrix above covers none of the routes below. Each row in this table is a real run of the sample on 2026-10-22, and exit code 0 means the sample let it through.
 
-- A script that wraps git. The hook sees the script name, not the push inside it.
-- A shell alias or function that expands to a push.
+| Command | Exit code | Result |
+| --- | --- | --- |
+| `F=-f; git push $F` | 0 | allowed |
+| `git push origin main $'\x2df'` | 0 | allowed |
+| `python3 -c 'import os;os.system("git push -f")'` | 0 | allowed |
+| `git p -f` | 0 | allowed |
+| `./deploy.sh` | 0 | allowed |
+
+In words:
+
+- Variable expansion: `F=-f; git push $F`. The script sees the text `$F`, not `-f`.
+- ANSI-C quoting: `$'\x2df'` is the text `-f` to the shell and a different word to the script.
+- Code that runs a push: `python3 -c` with `os.system`, and any wrapper script such as `./deploy.sh`. The hook sees the script name, not the push inside it.
+- An alias or function that expands to a push without the word `push` in the command, such as `git p -f`.
 - Another tool, or an MCP server, that makes the same push by its own means.
 - The agent editing the hook script or `settings.json`. Deny writes to those files with permission rules, and see [Permissions and sandboxing](../permissions-and-sandboxing/).
 
@@ -124,12 +201,13 @@ Treat the hook as one layer. It reduces the common routes. It does not close eve
 - Unformatted or unlinted code reaches review.
 - The agent stops with failing tests and reports success.
 - A hook script exits 1 and the team believes it blocks a rule.
+- A hook path that no longer resolves blocks every Bash call, or silently does nothing, depending on the script type.
 - A text-matching hook misses the same command written in another order.
 
 ## First step for the maintainer
 
 Add one `PostToolUse` hook on `Edit|Write` that runs your formatter. Add one `PreToolUse` hook on `Bash` that blocks the single command you fear most. Trigger both on purpose to confirm they fire.
 
-<p class="verified">Verified against the Claude Code hooks reference (code.claude.com/docs/en/hooks) on 2026-10-22. Tool: Claude Code. Version not recorded. The Python sample was run on 2026-10-22 against the six commands in the table.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.308. The docs page states no version of its own. The sample and matrix were run on 2026-10-22 with Python 3 and are in the repository.</p>
 
 **Next:** [Permissions and sandboxing](../permissions-and-sandboxing/)

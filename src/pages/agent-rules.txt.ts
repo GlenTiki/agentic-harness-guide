@@ -14,9 +14,19 @@ const workflowOrder = [
   'design-reps',
 ];
 
+const writeScope =
+  'Ask before you do something that changes anything outside your own working files: sending, paying, deleting, posting, granting access, pushing, installing, or editing a file the user did not ask you to change. Record the yes as the user\'s chat message or a ledger line.';
+const questionBudget =
+  'Ask once per task, in one message, with every open item and your default for each (at most five items). If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action.';
+const budgetPointer = 'Every question in this section counts against the question budget at the top of this file.';
+
 const preamble = `# Agent rules
 
-Every Agent note from the journey and the workflows, one rule per line, each page ending with its Check line. Each rule comes from the page named in its heading. If two rules conflict, the narrower and safer rule wins; ask the user. Read the shelf baseline for context only. Do not apply it unless the user asks.`;
+Every Agent note from the journey, the workflows and the appendix, one rule per line, each page ending with its Check line. Each rule comes from the page named in its heading. If two rules conflict, follow the rule that does less. Read the shelf baseline for context only. Do not apply it, and do not run any install, add, config, worktree or MCP command from the shelf, unless the user asks for it in the current session.
+
+Scope of "changes something": ${writeScope}
+
+Question budget: ${questionBudget}`;
 
 const agentNote = /:::note\[Agent note\]\n([\s\S]*?)\n:::/;
 
@@ -28,6 +38,7 @@ const ruleLines = (note: string) =>
 
 const order = (id: string) => {
   if (id.startsWith('journey/')) return [0, id];
+  if (id.startsWith('appendix/')) return [2, id];
   const slug = id.replace('workflows/', '');
   return [1, String(workflowOrder.indexOf(slug) + 1).padStart(3, '0')];
 };
@@ -35,11 +46,15 @@ const order = (id: string) => {
 export const GET: APIRoute = async () => {
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const sections = (await getCollection('docs'))
-    .filter((entry) => /^(journey|workflows)\/./.test(entry.id))
+    .filter((entry) => /^(journey|workflows|appendix)\/./.test(entry.id))
     .map((entry) => ({ entry, note: entry.body?.match(agentNote)?.[1] }))
     .filter((item): item is { entry: (typeof item)['entry']; note: string } => Boolean(item.note))
     .sort((a, b) => order(a.entry.id).join('|').localeCompare(order(b.entry.id).join('|')))
-    .map(({ entry, note }) => `## ${entry.data.title} (${base}/${entry.id}/)\n${ruleLines(note).join('\n')}`);
+    .map(({ entry, note }) => {
+      const lines = ruleLines(note);
+      if (lines.some((line) => /\bask\b/i.test(line))) lines.push(budgetPointer);
+      return `## ${entry.data.title} (${base}/${entry.id}/)\n${lines.join('\n')}`;
+    });
 
   return new Response(`${preamble}\n\n${sections.join('\n\n')}\n`, {
     headers: { 'Content-Type': 'text/plain; charset=utf-8' },

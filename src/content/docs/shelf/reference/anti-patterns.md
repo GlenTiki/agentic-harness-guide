@@ -5,7 +5,7 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 
 *Deep dive for [level 8: Design anything](../../../journey/08-design-anything/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** use this table to diagnose a problem by its symptom. Each row has an id, names the mechanism behind it, then gives the fix. Rules that live only in a prompt are requests; [level 4](../../../journey/04-trust-but-verify/) explains why.
 
@@ -31,7 +31,7 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 | AP-18 | An MCP server starts doing something new | The version was unpinned and the server upgraded | Pin the version and review its tools |
 | AP-19 | A 3,000-line change is merged unread | The change was too large to review | [Slice work](../../quality/small-prs/) before you start |
 | AP-20 | A poll runs all night | No deadline on the wait | Cap [every loop](../../operations/cost-and-resources/) |
-| AP-21 | You cannot say what the agent did yesterday | No harness-written log | Add an [action log hook](../../operations/observability/) |
+| AP-21 | You cannot say what the agent did yesterday | No harness-written log | Add an [audit log hook](../../operations/observability/) |
 | AP-22 | Approvals are clicked without reading | Too many prompts for low-risk actions | Allow the safe majority, ask only for the [irreversible](../../operations/human-in-the-loop/) |
 | AP-23 | Bypass mode wipes a directory | Prompts were skipped on a machine with real data | Use that mode only in a disposable container |
 
@@ -39,6 +39,6 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 
 Find the three rows that match your current setup. Fix those first.
 
-<p class="verified">Verified against the Claude Code hooks reference (code.claude.com/docs/en/hooks) on 2026-10-22: exit code 2 blocks on events that can block, and other non-zero codes are non-blocking errors. Tool: Claude Code. Version not recorded.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead". Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
 
 **Next:** [The workflows](../../../workflows/)

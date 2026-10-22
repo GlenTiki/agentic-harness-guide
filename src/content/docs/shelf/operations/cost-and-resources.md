@@ -5,7 +5,7 @@ description: Bound loops, timeouts and heavy jobs so an agent has a limit on the
 
 *Deep dive for [level 7: Run it for real](../../../journey/07-run-it-for-real/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** put an explicit upper bound on every loop, poll, retry, timeout and background job. Run heavy local work at lower priority. Spend capability budgets deliberately, and record cost per session.
 

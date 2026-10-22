@@ -5,7 +5,7 @@ description: Keep decisions in files, not in the conversation, so compaction and
 
 *Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** treat the conversation as disposable and keep a durable ledger of intent and decisions in a file in the repository. Checkpoint it at phase boundaries. Brief sub-agents from the ledger, never from the chat.
 
@@ -50,6 +50,6 @@ Use second-resolution UTC timestamps. They sort, compare and survive time zones.
 
 Create `ledger.json` with the four keys above. Add one line to your instruction file: "Update the ledger after each decision and before ending a phase."
 
-<p class="verified">Verified against the Claude Code hooks reference (code.claude.com/docs/en/hooks) for the compaction event names on 2026-10-22. Tool: Claude Code. Version not recorded.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "`PreCompact` | Before context compaction". Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
 
 **Next:** [Memory](../memory/)

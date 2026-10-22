@@ -5,7 +5,7 @@ description: Decide in advance which actions always need a person, and batch the
 
 *Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** run reversible, local work unattended and require a person for irreversible or outward-facing actions. Write the list down. Batch routine questions into one form, and ask a person only for what an agent cannot decide.
 
@@ -50,6 +50,6 @@ Approval has a cost, and [level 4](../../../journey/04-trust-but-verify/) names 
 
 Copy the confirm list above into your instruction file. Then add an `ask` rule for `git push` so the harness prompts for the first item.
 
-<p class="verified">Verified against the Claude Code permissions documentation (code.claude.com/docs/en/permissions) on 2026-10-22: content-scoped `ask` rules such as `Bash(git push *)` force a prompt. Tool: Claude Code. Version not recorded.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
 
 **Next:** [Recommended baseline](../../reference/baseline/)

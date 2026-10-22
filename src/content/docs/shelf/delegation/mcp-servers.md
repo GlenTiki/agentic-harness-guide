@@ -5,7 +5,7 @@ description: Connect tools through the Model Context Protocol with least privile
 
 *Deep dive for [level 3: Give it hands](../../../journey/03-give-it-hands/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** add an MCP server only when it replaces a manual step you do often. Prefer a read-only server. Pin its version, read its tool descriptions before enabling it, and treat everything it returns as untrusted data.
 
@@ -17,12 +17,14 @@ An MCP server (a connector, as [level 3](../../../journey/03-give-it-hands/) cal
 
 **1. Choose the scope on purpose.** Claude Code behaviour: `claude mcp add` takes a scope. `local` is the default and applies to you in one project. `project` writes to a `.mcp.json` file at the repository root, which you commit to share the server with the team. `user` applies to all your projects. Share a server through the project scope only after the team has reviewed it.
 
+Example, do not run:
+
 ```bash
 claude mcp add --transport http docs-search --scope project https://example.com/mcp
 claude mcp list
 ```
 
-**2. Expect an approval prompt.** Claude Code behaviour: interactive Claude Code asks you to approve project-scoped servers before use. Non-interactive runs and SDK sessions cannot prompt, so project servers load without asking there. If that matters, block a server explicitly with `disabledMcpjsonServers`, or limit which settings sources load.
+**2. Expect an approval prompt.** Claude Code behaviour: interactive Claude Code asks you to approve project-scoped servers before use. The MCP documentation says: "In `claude -p` runs, Agent SDK sessions, and cloud sessions outside a project's threads, Claude Code can't show that prompt: it loads project-scoped servers without asking." To keep a server out anyway, add it to `disabledMcpjsonServers`, which blocks it in every permission mode. You can also exclude project settings entirely with `--setting-sources`, or start the session with `--strict-mcp-config` so that only the servers you pass with `--mcp-config` load. Skipping the approval prompt for the project servers a strict session does not load needs Claude Code v2.1.246 or later.
 
 **3. Use the full tool name in rules.** MCP tools are named `mcp__<server>__<tool>`. Write permission rules, skill `allowed-tools` and sub-agent `tools` lists with those names. Allow a read tool and leave the write tool to ask:
 
@@ -56,6 +58,6 @@ claude mcp list
 
 List your configured servers. Remove any you have not used this month. For each one that stays, write down the credential scope and the pinned version in the repository.
 
-<p class="verified">Verified against the Claude Code MCP documentation (code.claude.com/docs/en/mcp) and sandboxing documentation on 2026-10-22. Tool: Claude Code. Version not recorded.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/mcp. Quoted line: "Verify you trust each server before connecting it. Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.308. The docs page states no version of its own. The sandboxing page: Not checked against current docs.</p>
 
 **Next:** [Spec-driven development](../../quality/spec-driven-development/)

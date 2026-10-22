@@ -5,7 +5,7 @@ description: Package a repeatable procedure as a skill so it loads only when nee
 
 *Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** write a skill for any procedure you explain to the agent more than twice and that has a clear trigger. Keep the description precise, keep the body short, and move detail into supporting files that load on demand. Use a plain prompt for one-off work.
 
@@ -47,6 +47,6 @@ description: Draft release notes from merged pull requests since the last tag. U
 
 Take the one multi-step task you most often retype. Move it into `.claude/skills/<name>/SKILL.md` with a trigger-style description, then test it in a fresh session.
 
-<p class="verified">Verified against the Claude Code skills documentation (code.claude.com/docs/en/skills) on 2026-10-22. Tool: Claude Code. Version not recorded.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/skills. Quoted line: "Skills extend what Claude can do. Create a `SKILL.md` file with instructions, and Claude adds it to its toolkit." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
 
 **Next:** [MCP servers](../mcp-servers/)

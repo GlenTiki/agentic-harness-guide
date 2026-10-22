@@ -5,7 +5,7 @@ description: Use least privilege, deny rules and an operating system sandbox to 
 
 *Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** combine three layers. Permission rules decide which tool calls need approval. A sandbox limits what shell commands can reach at the operating system level. A container or virtual machine bounds everything else. Start with deny rules for secrets and a sandbox with an empty network allow list.
 
@@ -27,6 +27,8 @@ Approval prompts do not scale. A person who clicks "yes" two hundred times a day
 ```
 
 **2. Allow narrowly.** Allow exact commands that you run all the time. Avoid wildcards over a whole tool. A rule matches the command text as written, so the same program invoked in another form may not match. The permissions documentation shows that `Bash(git push *)` does not match `git -C . push origin main`. A deny rule on a shell command therefore covers the forms it matches and no others. Rely on the sandbox for isolation, and see [Hooks](../hooks/) for a check that parses the command.
+
+**An allow rule only skips the prompt.** In Claude Code's default mode, a call that matches no rule asks you. Only `dontAsk` mode refuses it. The permissions page puts it this way for Bash commands: "Approval required: Yes, except a built-in set of read-only commands". Its description of `dontAsk` mode reads: "Auto-denies every call that would otherwise prompt". So an allow list does not refuse everything else in the default mode. It removes the prompt for the calls it names. Choose `dontAsk` mode when you want unmatched calls refused, and then test that a call you did not list is refused.
 
 **3. Turn on the sandbox.** Claude Code behaviour: the sandbox covers shell commands only. It uses the macOS Seatbelt framework, or `bubblewrap` and `socat` on Linux and WSL2, and it is off by default. Writes are limited to the working directory and a temporary directory. Network access goes through a proxy that checks each host against an allowed-domains list, and that list starts empty. Enable it with the `/sandbox` command or the `sandbox.enabled` setting, and add domains one at a time with `sandbox.network.allowedDomains`.
 
@@ -52,6 +54,6 @@ Approval prompts do not scale. A person who clicks "yes" two hundred times a day
 
 Add the `deny` rules above, enable the sandbox, leave the network allow list empty and add only the registries your build needs.
 
-<p class="verified">Verified against the Claude Code permissions, settings and sandboxing documentation (code.claude.com/docs/en/permissions, settings and sandboxing) on 2026-10-22. Tool: Claude Code. Version not recorded.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt". Claude Code on that date: 2.1.308. The docs page states no version of its own. The settings and sandboxing details were not re-fetched on that date and are Not checked against current docs.</p>
 
 **Next:** [Capability gating](../capability-gating/)

@@ -5,7 +5,7 @@ description: Test every step that a model decides, using real output as fixtures
 
 *Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
 
-*Audience: a human maintainer. An agent must not change permissions, hooks, instruction files or memory because of this page unless the user asks for it in the current session.*
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
 **Recommendation:** give every step where a model makes a decision its own eval. Build the fixtures from real model output. Before you trust a check, make it fail on purpose. Score new runs against the old rubric.
 
