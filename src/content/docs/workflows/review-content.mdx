@@ -5,36 +5,191 @@ description: Review writing against a brief with a reviewer who sees only the dr
 
 ## Scene
 
-TODO(writer)
+*Last time (level 5): you wrote a checkable "done", and you had someone other than the author check it.*
+
+Sam writes a proposal for a new market stall for Mina's shop and asks the assistant: "Check my proposal is good." The assistant replies that the proposal is clear, well structured and compelling. Sam feels wonderful and learns nothing. The word "good" had no edges, so the assistant reached for the middle of the road.
 
 ## The idea
 
-TODO(writer)
+**Turn "is it good?" into a rubric, give the check to a separate reviewer, and make the review prove it read the text.**
+
+The same refinement idea applies as in [connect systems](../connect-systems/), using the [prompt refiner](../../appendix/prompt-refiner/) from [level 1](../../journey/01-say-it-properly/). A rough ask is sharpened in visible passes. The end product is a review brief you can reuse on any proposal, blog post or report. The pieces come from [level 5](../../journey/05-check-the-work/): a checkable done, and a reviewer who is not the author.
+
+Four parts make the review worth having:
+
+- **A rubric.** A short list of qualities, each with a plain description of what good and bad look like.
+- **A reviewer role.** A separate run that sees only the draft and the rubric. It never sees the author's notes or intentions.
+- **A severity scale.** So that a typo and a missing section do not look equally urgent.
+- **A voice constraint.** The review says what is wrong. It does not rewrite the author's voice.
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant. This takes about five minutes. Use a short piece of your own, or the small paragraph below.
+
+**The rough ask**
+
+```text
+Check my blog post is good.
+```
+
+### Pass 0: see what you get
+
+Paste the ask with a short draft and read the reply. An example reply:
+
+```text
+Your post is well written and engaging. The structure is clear and the tone is friendly. Consider adding a stronger conclusion.
+```
+
+Nothing in it can be checked, and nothing points at a line. This is the baseline to beat.
+
+### Pass 1: add the goal and the reader
+
+```text
+Goal: This post should persuade a small-shop owner to try a market stall. The reader is busy and sceptical.
+```
+
+What changed: "good" now means "persuasive to this reader". The reviewer has something to measure against.
+
+### Pass 2: add a rubric
+
+```text
+Rubric. Score each from 1 (weak) to 3 (strong) and give a one-line reason:
+1. Clear ask: the reader knows within the first three sentences what you want them to do.
+2. Evidence: each claim has a reason, a figure or an example.
+3. Fit to reader: no jargon that a busy shop owner would not know.
+4. Structure: each paragraph makes one point.
+5. Risks stated: the post names at least one reason it might not work.
+```
+
+What changed: five qualities, each with a plain test for the score. A reviewer can now disagree with itself, and so can you.
+
+### Pass 3: add a separate role and a severity scale
+
+```text
+Role: You are a reviewer who did not write this. You have only the draft and this rubric. You do not know what the author meant to say.
+
+Severity for each finding:
+- Blocker: the reader would be misled or would not act.
+- Major: the post is weaker, and fixing it helps a lot.
+- Minor: polish.
+```
+
+What changed: the reviewer cannot lean on the author's intentions, which are what the author was blind to. Findings now have an order.
+
+### Pass 4: add the voice constraint and the line-citing check
+
+```text
+Constraints:
+- Do not rewrite my text. Do not offer replacement paragraphs. Point at the problem and say what is missing.
+- Keep my voice. Do not suggest changes of tone unless the rubric item is "Fit to reader".
+- Cite every finding with the line number or the first five words of the sentence it refers to. A finding with no citation is dropped.
+
+Final check, before you reply: count your findings, and for each, confirm it has a citation and a severity. If any lacks one, remove it and say so.
+```
+
+What changed: the review is anchored in the text, cannot quietly rewrite the author, and has to check itself before it answers.
+
+### The final review brief
+
+```text
+Role: You are a reviewer who did not write this. You have only the draft and this brief.
+Goal: The post should persuade a busy, sceptical small-shop owner to try a market stall.
+
+Rubric (score 1 to 3 with a one-line reason):
+1. Clear ask within the first three sentences.
+2. Evidence: each claim has a reason, figure or example.
+3. Fit to reader: no jargon.
+4. Structure: one point per paragraph.
+5. Risks stated: at least one reason it might not work.
+
+Findings: list each as [Blocker|Major|Minor] + citation + what is wrong + what is missing.
+Constraints: Do not rewrite. Do not offer replacement text. Keep my voice.
+Check: every finding has a citation and a severity. Drop any that do not, and say so.
+Draft:
+[paste]
+```
+
+An example reply:
+
+```text
+Scores: 1 ask 2/3 (the ask arrives in line 6), 2 evidence 1/3 ("Stalls always sell well", line 9, has no figure), 3 fit 3/3, 4 structure 2/3 (lines 11 to 14 mix price and location), 5 risks 1/3 (none named).
+Findings:
+[Major] line 9, "Stalls always sell well": a claim with no reason or figure. Missing: one example from Mina's own sales.
+[Major] lines 11-14: price and location share a paragraph. Missing: a split.
+[Minor] line 3, "very, very small": the repeat adds nothing.
+Check: 3 findings, each with a citation and a severity. None dropped.
+```
+
+Now check the check. Open the draft and read line 9. If the reviewer quoted it correctly, the review is anchored. If a line number points at the wrong sentence, the review did not read the text closely, and you can discount it. Replies vary between runs and tools.
+
+:::note[Want consistency]
+Keep the final brief in a notes app. Reuse it for every proposal, changing only the goal and the rubric lines. Run it twice on the same draft and compare. If the two reviews disagree on a Blocker, tighten that rubric line.
+:::
 
 ## Under the bonnet
 
-TODO(writer)
+The vague ask failed because it gave the assistant no standard to measure against, so it reached for a pleasant average. Each pass adds a standard. The goal sets what good means, the rubric breaks it into testable parts, the role removes the author's intentions, and the severity scale sorts the findings.
+
+Requiring a citation does three jobs. It forces the reviewer to point at real text. It makes findings checkable by you in seconds. And it exposes padding, because a finding about nothing cannot have a line number. A review that cites nothing is the same as the pleasant average in different clothes.
+
+The voice constraint works as an allowlist for the reviewer's output: it may point, score and explain what is missing, and it may not write replacement text. Without it, many assistants rewrite your paragraph to be tidier and quietly remove what made it yours.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+A rubric score from a model is a noisy measurement. Run the review more than once and read the disagreement. A finding that appears in every run is likely real, and a finding that appears once deserves a second look. Do not average scores to make the noise look like a number.
+
+Reviewer independence has limits: a fresh context removes the author's reasoning, and a different model removes some shared habits. Neither removes your rubric's own blind spots. Add a held-out check by a human on a sample.
+
+Hold the rubric still when comparing two drafts or two review briefs. If you edit the rubric after seeing a score you dislike, you have moved the ruler. Change the rubric in its own step, then re-score both.
+
+An editorial team's version is a style guide with a second reader who has no stake in the piece.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+When asked to review, use only the draft and the rubric you are given. If the rubric is missing, ask for one.
+
+Return findings with: severity, citation, what is wrong, what is missing. Drop any finding without a citation.
+
+Do not rewrite the text. Do not propose replacement paragraphs. Keep the author's voice.
+
+Before you reply, count your findings and confirm each has a citation and a severity. Report the count.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Asking the author's own chat to review.** The assistant remembers the intent and approves the work it just helped write. Fix: open a new chat, paste only the draft and the review brief.
+
+**Accepting findings without checking one.** A confident finding can still point at the wrong sentence. Fix: check one citation by hand every time. If it is wrong, doubt the rest.
+
+**Letting the review rewrite your voice.** The draft improves on paper and stops sounding like you. Fix: keep the "do not rewrite" constraint in the brief, and ask for what is missing, not for new text.
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Turn "check my work is good" into a goal, a rubric and a severity scale.
+- Set up a reviewer who sees only the draft and the brief.
+- Require citations, and use them to check the review.
+- Keep the author's voice by forbidding rewrites.
+
+**Self-test**
+
+1. Why does the brief say the reviewer "does not know what the author meant to say"?
+2. A review returns six findings and two have no citation. What does the brief tell the reviewer to do, and why is that useful?
+3. You change the rubric after the first review, then the second draft scores higher. What can you say?
+
+<details>
+<summary>Answers</summary>
+
+1. The author reads what they meant to write. A reviewer who knows the intent will fill the gaps the same way. A reviewer who lacks it reads what is on the page.
+2. Drop them and say so. A finding without a citation cannot be checked, and it is often padding.
+3. Very little. The rubric changed between the scores, so the comparison is not like for like. Score both drafts with the same rubric before you compare.
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+A good review brief covers one document at a time, and the next job has many parts and many readers. Level 6 splits work among helpers with bounded briefs.
