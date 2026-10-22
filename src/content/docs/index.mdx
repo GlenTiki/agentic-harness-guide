@@ -5,9 +5,12 @@ template: splash
 hero:
   tagline: A model writes the code. The harness decides what it may touch, what it remembers, who checks it and what it costs.
   actions:
-    - text: Start with the principles
-      link: ./shelf/foundations/principles/
+    - text: Start the journey
+      link: ./journey/00-hello-robot/
       icon: right-arrow
+    - text: How to read this guide
+      link: ./start-here/how-to-read/
+      variant: secondary
     - text: Jump to the baseline
       link: ./shelf/reference/baseline/
       variant: minimal
@@ -16,6 +19,8 @@ hero:
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
 This guide argues for one position. Treat the harness as the product and the model as a replaceable part. A good harness limits what the agent can do, keeps its context small and durable, and puts an independent check between the agent and your main branch. Each page gives a recommendation first, the steps to enable it, the failure it prevents and a minimum to start with. The advice is vendor-neutral. Where a page names a tool setting, it was checked against that tool's documentation and dated.
+
+The journey has nine short levels. Each one starts from where the last one ended and adds at most three ideas. The sections below are the reference shelf for readers who already know the way.
 
 <CardGrid>
   <Card title="Foundations" icon="open-book">

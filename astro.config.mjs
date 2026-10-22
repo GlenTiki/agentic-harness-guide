@@ -15,7 +15,47 @@ export default defineConfig({
       disable404Route: true,
       sidebar: [
         {
+          label: 'Start here',
+          items: [{ slug: 'start-here/how-to-read' }, { slug: 'glossary' }],
+        },
+        {
+          label: 'The journey',
+          items: [
+            { slug: 'journey' },
+            { slug: 'journey/00-hello-robot' },
+            { slug: 'journey/01-say-it-properly' },
+            { slug: 'journey/02-house-rules' },
+            { slug: 'journey/03-give-it-hands' },
+            { slug: 'journey/04-trust-but-verify' },
+            { slug: 'journey/05-check-the-work' },
+            { slug: 'journey/06-hire-a-team' },
+            { slug: 'journey/07-run-it-for-real' },
+            { slug: 'journey/08-design-anything' },
+          ],
+        },
+        {
+          label: 'Workflows',
+          items: [
+            { slug: 'workflows' },
+            { slug: 'workflows/improve-code' },
+            { slug: 'workflows/improve-design' },
+            { slug: 'workflows/build-a-budget' },
+            { slug: 'workflows/connect-systems' },
+            { slug: 'workflows/review-content' },
+            { slug: 'workflows/define-a-workflow' },
+            { slug: 'workflows/research-a-decision' },
+          ],
+        },
+        {
+          label: 'Appendix: the prompt refiner',
+          items: [
+            { slug: 'appendix/prompt-refiner' },
+            { slug: 'appendix/prompt-refiner-line-by-line' },
+          ],
+        },
+        {
           label: 'Reference shelf',
+          collapsed: true,
           items: [
         {
           label: 'Foundations',
