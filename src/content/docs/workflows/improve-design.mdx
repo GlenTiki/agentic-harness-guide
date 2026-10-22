@@ -1,27 +1,29 @@
 ---
 title: "Workflow: improve a design"
-description: Critique a design against named goals and an audience, get options, and test them with real people.
+description: Critique a design against named goals and an audience, get two options, and test them with five real people. Chat only; the last step needs five people.
 ---
 
 ## Scene
 
-Mina says her shop's signup page "looks cheap". Sam types: "Make our signup page look more professional." The assistant happily produces a navy-blue gradient, a stock photo of a handshake and the word "synergy". Mina's customers are people who sell candles at markets. None of them has ever said "synergy" out loud.
+Mina says her shop's signup page "looks cheap". Sam types: "Make our signup page look more professional." The assistant happily produces a navy-blue gradient, a stock photo of a handshake and a slogan about enterprise solutions. Mina's customers are people who sell candles at markets. None of them has asked for an enterprise solution.
 
 ## The idea
 
 **Taste is not a goal. A named goal, a named audience and a list of limits turn "looks cheap" into something you can check.**
 
-This workflow uses [the prompt refiner](../../appendix/prompt-refiner/) for the ask, then adds three habits that design needs more than code does:
+This workflow uses [the prompt refiner](../../appendix/prompt-refiner/) for the ask (or [refiner lite](../../appendix/prompt-refiner/#refiner-lite), if you refine by hand), then adds three habits that design needs more than code does:
 
 1. **Critique against stated goals.** Say what the page is for and who uses it. Judge every change against that.
 2. **Options, not one answer.** Ask for two directions. A single answer hides the choice that was made for you.
 3. **Test with people.** A design has no unit test. Five real people trying the page is the nearest thing.
 
-A [constraint](../../glossary/#constraint) in design is something like brand rules or accessibility. It is not a preference. Write it down so the assistant cannot trade it away to look nicer.
+A [constraint](../../glossary/#constraint) in design is something like brand rules or accessibility. It is not a preference. Write it down so the assistant does not trade it away to look nicer.
 
 ## Try it
 
-You need any chat assistant and, for the last step, five people and a phone. The replies below come from real runs on 2026-10-22. They are examples. Your tool will answer differently.
+*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+
+You need any chat assistant and, for the last step, five people and a phone. The replies below are examples recorded on 2026-10-22; the tool and model were not recorded. Your tool will answer differently.
 
 ### Pass 0: the rough ask
 
@@ -65,7 +67,7 @@ It kept the file path and the colour values as [NEEDED], because Sam had not giv
 
 ### The critique
 
-Before options, Sam asks for a critique of the current page against the stated goals. Sam describes the page in words, since there is no code in the chat: three fields with labels that vanish when you type, a bright orange "Submit" button, a heading "Sign up now!!", and a line of small grey text under the button. The teal appears only in the logo.
+Before options, Sam asks for a critique of the current page against the stated goals. If your tool accepts images, attach a screenshot or an exported frame, and say that you did. Without one, the critique is feedback on your description, not on the page. Sam has no image here, so Sam describes the page in words: three fields with labels that vanish when you type, a bright orange "Submit" button, a heading "Sign up now!!", and a line of small grey text under the button. The teal appears only in the logo.
 
 An example reply opened with what was missing, then listed corrections both options share:
 
@@ -86,9 +88,9 @@ Each option listed layout, type, colour, states and copy. For each unknown it wr
 
 **Human checkpoint 2.** Sam reads both options against the goals. Sam does not pick the prettier one. Sam picks the one that best serves a first-time visitor on a phone, and notes why.
 
-### Check the numbers
+### Check the numbers: the assistant was wrong
 
-The options included contrast ratios for the neutral greys. Sam does not trust numbers from the assistant, so Sam calculates them. The contrast ratio comes from a formula in the WCAG standard, and any checker will compute it.
+The options included contrast ratios for the neutral greys. Sam does not trust numbers from the assistant, so Sam calculates them. The contrast ratio comes from a formula in the [WCAG standard](https://www.w3.org/TR/WCAG21/), applied to the two colours. The figures below were calculated with a short script that applies the WCAG relative luminance and contrast formulas. Any checker that implements the same formulas gives the same ratios, to one decimal place.
 
 | Colour on white | The assistant said | Calculated |
 | --- | --- | --- |
@@ -99,12 +101,19 @@ Both numbers pass AA, which needs 4.5:1 for normal text. The assistant's figures
 
 ### Test with five people
 
-A page can meet every limit and still confuse a real visitor. So test it.
+A page can meet every limit and still confuse a real visitor. So test it. First write the protocol, before the first person arrives:
+
+- **The task.** "Create an account for your shop."
+- **Success.** The person reaches the confirmation screen without help.
+- **A recording sheet.** One row per person: where they paused, what they tapped, what they said, and a severity. Use 1 for "could not finish", 2 for "finished but slowed" and 3 for "minor annoyance".
+- **The owner of the ship decision.** Name the person who decides whether to ship. Here it is Mina. Sam brings the sheet and a recommendation.
+
+Then run it:
 
 1. Find five people who look like your visitors. Small-shop owners, in this case. Not colleagues.
-2. Give each a phone with the page open. Give a task, not a tour: "Create an account for your shop."
+2. Give each a phone with the page open. Give the task, not a tour.
 3. Say nothing else. Watch. Do not help, point or explain.
-4. Write down where each person pauses, frowns, taps the wrong thing or asks a question.
+4. Fill in one row per person.
 5. Look for the same trouble spot across several people. One person's quirk is a quirk. Three people stalling on the same field is a finding.
 6. Fix the most repeated problem, then test again.
 
@@ -117,7 +126,7 @@ After the choice and the test, the spec has these parts:
 - **Goal:** a calm, clear, trustworthy signup page for first-time visitors on phones.
 - **Constraints:** brand teal and typeface only; neutral greys; AA contrast; the three fields untouched; the diff stays on this page.
 - **Chosen direction:** the option Sam picked, with Sam's reason.
-- **Done when:** the page works end to end with the same three fields; every text and control passes the contrast check Sam ran; five people finish the task, and the most repeated trouble spot has been fixed and re-tested.
+- **Done when:** the page works end to end with the same three fields; every text and control passes the contrast check Sam ran; five people finish the task, and the most repeated trouble spot has been fixed and re-tested; the work is reviewed and approved by a named person who is not the preparer.
 
 ### Try it yourself
 
@@ -142,9 +151,7 @@ The checks that say when it is done are the ones in the final specification abov
 ## Expert corner
 
 :::caution[Expert corner]
-Assistants judge a design from a description, not from pixels, unless your tool can look at an image. A critique from words alone is a critique of your description. Attach a screenshot if your tool supports it, and say that you did.
-
-Do not let the test shape the brief after the fact. Write the task and what counts as success before the first person arrives, or you will read every result as a win.
+Do not let the test shape the brief after the fact. The protocol above is written before the first person arrives, or you will read every result as a win.
 
 Accessibility is wider than contrast. AA also covers things like focus visibility, target size and not relying on colour alone. A passing contrast figure is one check, not an audit. In a product team's terms, this is a design review with acceptance criteria, followed by moderated usability sessions.
 :::
@@ -152,6 +159,8 @@ Accessibility is wider than contrast. AA also covers things like focus visibilit
 ## Agent note
 
 :::note[Agent note]
+**Topic: improving a design.**
+
 When asked to improve a design, ask for the audience, the goal and the limits first. If you are not given them, state your assumptions at the top of the reply.
 
 Offer at least two options when the user asks for options. Do not write code until the user has chosen.
@@ -160,7 +169,9 @@ Do not invent brand colours, fonts or copy. Mark each as [NEEDED].
 
 When you state a contrast ratio, say how you calculated it, or mark it as an estimate for the user to check.
 
-Do not claim a design is tested with people unless the user has told you they did it.
+Do not claim a design is tested with people unless the user has told you they did it. If you were given no image, say that your critique is of the description.
+
+Check: every contrast ratio states how it was calculated, and the reply says whether an image was supplied.
 :::
 
 ## Mistakes people make
@@ -172,6 +183,8 @@ Do not claim a design is tested with people unless the user has told you they di
 **Testing with colleagues.** They know the product, so they never get lost where a stranger would. Fix: test with people who look like your visitors, and do not help them.
 
 ## Checkpoint
+
+*Audience: the reader. Agents may skip the quiz.*
 
 You can now:
 
@@ -197,4 +210,6 @@ You can now:
 
 ## Bridge
 
-Design needed people to check it. A budget needs a different check: [the next workflow](../build-a-budget/) compares every total with a real statement.
+A design needs people to check it, and the next job is a connection that needs a written specification before anything is plugged in.
+
+**Next:** [Workflow: connect systems](../connect-systems/)

@@ -1,6 +1,6 @@
 ---
 title: "Workflow: review content"
-description: Review writing against a brief with a reviewer who sees only the draft. Pairs with level 5.
+description: Review a piece of writing against a brief, using a reviewer who sees only the draft, in a chat-only workflow.
 ---
 
 ## Scene
@@ -13,18 +13,22 @@ Sam writes a proposal for a new market stall for Mina's shop and asks the assist
 
 **Turn "is it good?" into a rubric, give the check to a separate reviewer, and make the review prove it read the text.**
 
-The same refinement idea applies as in [connect systems](../connect-systems/), using the [prompt refiner](../../appendix/prompt-refiner/) from [level 1](../../journey/01-say-it-properly/). A rough ask is sharpened in visible passes. The end product is a review brief you can reuse on any proposal, blog post or report. The pieces come from [level 5](../../journey/05-check-the-work/): a checkable done, and a reviewer who is not the author.
+This workflow uses [the prompt refiner](../../appendix/prompt-refiner/). Sharpen the ask in visible passes by hand, using [refiner lite](../../appendix/prompt-refiner/#refiner-lite) if you have no skill installed. The end product is a review brief you can reuse on any proposal, blog post or report. The pieces come from [level 5](../../journey/05-check-the-work/): a checkable done, and a reviewer who is not the author.
+
+**Start with your house style.** If you have a style sheet and a log of past corrections, paste them as the rubric. Fact claims are a separate pass with source tracing. Legal and sensitive review are not delegated to the assistant.
 
 Four parts make the review worth having:
 
 - **A rubric.** A short list of qualities, each with a plain description of what good and bad look like.
-- **A reviewer role.** A separate run that sees only the draft and the rubric. It never sees the author's notes or intentions.
-- **A severity scale.** So that a typo and a missing section do not look equally urgent.
+- **A reviewer role.** A separate run that sees only the draft and the rubric. It does not see the author's notes or intentions.
+- **A [severity scale](../../glossary/#severity-scale).** So that a typo and a missing section do not look equally urgent.
 - **A voice constraint.** The review says what is wrong. It does not rewrite the author's voice.
 
 ## Try it
 
-You need any chat assistant. This takes about five minutes. Use a short piece of your own, or the small paragraph below.
+*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+
+You need any chat assistant. This takes about 15 minutes. Use a short piece of your own, or the small paragraph below.
 
 **The rough ask**
 
@@ -74,7 +78,7 @@ Severity for each finding:
 - Minor: polish.
 ```
 
-What changed: the reviewer cannot lean on the author's intentions, which are what the author was blind to. Findings now have an order.
+What changed: the reviewer has no access to the author's intentions, which are what the author was blind to. Findings now have an order.
 
 ### Pass 4: add the voice constraint and the line-citing check
 
@@ -87,7 +91,7 @@ Constraints:
 Final check, before you reply: count your findings, and for each, confirm it has a citation and a severity. If any lacks one, remove it and say so.
 ```
 
-What changed: the review is anchored in the text, cannot quietly rewrite the author, and has to check itself before it answers.
+What changed: the review is anchored in the text, is told not to rewrite the author, and has to check itself before it answers.
 
 ### The final review brief
 
@@ -122,8 +126,10 @@ Check: 3 findings, each with a citation and a severity. None dropped.
 
 Now check the check. Open the draft and read line 9. If the reviewer quoted it correctly, the review is anchored. If a line number points at the wrong sentence, the review did not read the text closely, and you can discount it. Replies vary between runs and tools.
 
+**Run the review twice.** Open a second new chat, paste the same brief and draft, and compare the two reviews. A finding that appears in both is likely real. A finding that appears once deserves a second look. The 1 to 3 scores are labels, not measurements, so do not average them. If the two reviews disagree on a Blocker, tighten that rubric line.
+
 :::note[Want consistency]
-Keep the final brief in a notes app. Reuse it for every proposal, changing only the goal and the rubric lines. Run it twice on the same draft and compare. If the two reviews disagree on a Blocker, tighten that rubric line.
+Keep the final brief in a notes app. Reuse it for every proposal, changing only the goal and the rubric lines.
 :::
 
 ## Under the bonnet
@@ -132,14 +138,16 @@ The vague ask failed because it gave the assistant no standard to measure agains
 
 Requiring a citation does three jobs. It forces the reviewer to point at real text. It makes findings checkable by you in seconds. And it exposes padding, because a finding about nothing cannot have a line number. A review that cites nothing is the same as the pleasant average in different clothes.
 
-The voice constraint works as an allowlist for the reviewer's output: it may point, score and explain what is missing, and it may not write replacement text. Without it, many assistants rewrite your paragraph to be tidier and quietly remove what made it yours.
+The voice constraint works as an [allowlist](../../glossary/#allowlist) for the reviewer's output: it may point, score and explain what is missing, and it may not write replacement text. Without it, many assistants rewrite your paragraph to be tidier and quietly remove what made it yours.
+
+The checks that say the review is done: every finding has a citation and a severity, you checked at least one citation by hand, and the review was reviewed and approved by a named person who is not the preparer.
 
 ## Expert corner
 
 :::caution[Expert corner]
-A rubric score from a model is a noisy measurement. Run the review more than once and read the disagreement. A finding that appears in every run is likely real, and a finding that appears once deserves a second look. Do not average scores to make the noise look like a number.
+A rubric score from a model is a noisy measurement, which is why the main exercise runs the review twice. Do not average scores to make the noise look like a number.
 
-Reviewer independence has limits: a fresh context removes the author's reasoning, and a different model removes some shared habits. Neither removes your rubric's own blind spots. Add a held-out check by a human on a sample.
+Reviewer independence has limits: a fresh context removes the author's reasoning, and a different model removes some shared habits. Neither removes your rubric's own blind spots. Add a check by a human on a [sample](../../glossary/#sampling).
 
 Hold the rubric still when comparing two drafts or two review briefs. If you edit the rubric after seeing a score you dislike, you have moved the ruler. Change the rubric in its own step, then re-score both.
 
@@ -149,6 +157,8 @@ An editorial team's version is a style guide with a second reader who has no sta
 ## Agent note
 
 :::note[Agent note]
+**Topic: reviewing a draft.**
+
 When asked to review, use only the draft and the rubric you are given. If the rubric is missing, ask for one.
 
 Return findings with: severity, citation, what is wrong, what is missing. Drop any finding without a citation.
@@ -156,6 +166,8 @@ Return findings with: severity, citation, what is wrong, what is missing. Drop a
 Do not rewrite the text. Do not propose replacement paragraphs. Keep the author's voice.
 
 Before you reply, count your findings and confirm each has a citation and a severity. Report the count.
+
+Check: the reply states the finding count, and each finding has a citation and a severity.
 :::
 
 ## Mistakes people make
@@ -167,6 +179,8 @@ Before you reply, count your findings and confirm each has a citation and a seve
 **Letting the review rewrite your voice.** The draft improves on paper and stops sounding like you. Fix: keep the "do not rewrite" constraint in the brief, and ask for what is missing, not for new text.
 
 ## Checkpoint
+
+*Audience: the reader. Agents may skip the quiz.*
 
 You can now:
 
@@ -192,4 +206,6 @@ You can now:
 
 ## Bridge
 
-A good review brief covers one document at a time, and the next job has many parts and many readers. Level 6 splits work among helpers with bounded briefs.
+A review brief covers one document at a time, and the next job is improving code with tests and a reviewer who has only the spec and the diff.
+
+**Next:** [Workflow: improve code](../improve-code/)

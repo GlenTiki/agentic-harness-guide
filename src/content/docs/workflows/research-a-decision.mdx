@@ -1,21 +1,23 @@
 ---
 title: "Workflow: research a decision"
-description: Turn "should we move to X?" into criteria, sources, a comparison table and a decision memo.
+description: Turn "should we move to X?" into criteria, sources, a comparison table and a one-page decision memo, using chat only.
 ---
 
 ## Scene
 
-Mina wants a card reader for her market stall. She asks an assistant, "which card reader should I get?" It names one, with confidence, and a very tidy paragraph. Mina nearly orders it. Then she wonders what the answer was based on, and the paragraph has no way to tell her. A confident recommendation without criteria, sources or doubts is a coin toss in a nice jacket. This page turns a vague "should we" into a question that can be answered, checked and argued with.
+Mina wants a card reader for her market stall. She asks an assistant, "which card reader should I get?" It names one, with confidence, and a very tidy paragraph. Mina nearly orders it. Then she wonders what the answer was based on, and the paragraph has no way to tell her. A confident recommendation without criteria, sources or doubts gives Mina nothing to check. This page turns a vague "should we" into a question that can be answered, checked and argued with.
 
 ## The idea
 
 **Research a decision by fixing the question, the criteria and the sources first, then comparing, then trying to prove yourself wrong.** The output is a short memo that says what to do, how sure you are, and what would change your mind.
 
-The same shape fits "should we move to X?", "which laptop?" and "which vendor?". The refining is done with the [prompt refiner](../../appendix/prompt-refiner/), in passes you can read. The design follows the [six-step method](../../journey/08-design-anything/) from level 8: a checkable done, honest steps, a gate before anything risky, and a plan for failure.
+The same shape fits "should we move to X?", "which laptop?" and "which vendor?". This workflow uses [the prompt refiner](../../appendix/prompt-refiner/), or [refiner lite](../../appendix/prompt-refiner/#refiner-lite) if you refine by hand, in passes you can read. The design follows the [six-step method](../../journey/08-design-anything/) from level 8: a checkable done, honest steps, a human checkpoint before anything risky, and a plan for failure.
 
 ## Try it
 
-You need any chat assistant with the ability to search or read pages (or one where you paste the sources yourself). This takes about five minutes.
+*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+
+You need any chat assistant with the ability to search or read pages (or one where you paste the sources yourself). This takes about 15 minutes.
 
 1. Paste this refiner prompt, then send it:
 
@@ -74,6 +76,8 @@ Assumptions: she sells in person only; she has a phone; she sells under about 40
 
 The weighted score is each score times its weight, added up. For Option B: 3 x 30 + 5 x 25 + 3 x 15 + 4 x 15 + 4 x 15 = 90 + 125 + 45 + 60 + 60 = 380 out of 500. For A it is 120 + 75 + 75 + 45 + 45 = 360. For C it is 150 + 50 + 60 + 30 + 30 = 320. B leads, but only by 20 over A, and C's low confidence rows could change its score a lot. A narrow lead with thin evidence is a reason to look further, not to celebrate.
 
+**Test the weights.** Change the weights by five points and see whether the leader changes. Move five points from "Works with a poor signal" to "Ease of use", so the weights are 30, 20, 20, 15 and 15. Option A scores 120 + 60 + 100 + 45 + 45 = 370. Option B scores 90 + 100 + 60 + 60 + 60 = 370. Option C scores 150 + 40 + 80 + 30 + 30 = 330. The lead has gone. Now also move five points from "Support when it breaks" to "Total yearly cost", so the weights are 35, 20, 20, 15 and 10. Option A scores 140 + 60 + 100 + 45 + 30 = 375. Option B scores 105 + 100 + 60 + 60 + 40 = 365. Option C scores 175 + 40 + 80 + 30 + 20 = 345. Option A now leads. Two small changes in the weights flip the leader, so the memo must say that B's lead depends on the weights, and Mina decides how much each criterion matters.
+
 **The disconfirming step.** Before the memo, the assistant (or better, a separate helper with a fresh brief) tries to prove the leader wrong:
 
 ```text
@@ -115,20 +119,24 @@ Not found: <list of things searched for and absent>.
 Decision needed from: Mina, by <date>.
 ```
 
+**Check that the page says what the memo says it says.** For every claim, keep two columns: the claim as the memo states it, and the passage you quoted from the page. For a number, the quote must be verbatim. Beside each, record where the source sits in your source hierarchy (primary or independent) and the date you read it.
+
+The memo is done when each claim has both columns filled, each linked page was opened, and a named person who is not the preparer has reviewed and approved it.
+
 ## Under the bonnet
 
 The reason to fix the question, criteria and sources before searching is that an assistant, like a person, will otherwise find evidence for whatever it leans towards. Writing the weights first removes the temptation to adjust them after you see which option wins. This is the same logic as a definition of done: decide what good looks like before the work.
 
 The confidence column is there so a number does not sound surer than it is. A score backed by a primary source and a score backed by one anonymous review are not the same, and the table should show it. Weighted totals combine scores into one number, and the number hides that mixing. The memo's "what would change this" is what keeps the number honest.
 
-The disconfirming step exists because the first plausible answer tends to attract support. Asking for the three best reasons the answer is wrong gives the evidence a fair hearing. It works better as a separate task with a clean brief, as in [level 6](../../journey/06-hire-a-team/), because a helper that has just written the case is poorly placed to attack it. For the reasoning behind independent review, see the [independent review](../../shelf/quality/independent-review/) page.
+The disconfirming step exists because the first plausible answer tends to attract support. Asking for the three best reasons the answer is wrong gives the evidence a fair hearing. It works better as a separate task with a clean brief, as in [level 6](../../journey/06-hire-a-team/), because a helper that has just written the case is poorly placed to attack it. For the reasoning behind independent review, see the [independent review](../../shelf/quality/independent-review/) page (for engineers).
 
 **Never let it invent a source.** An assistant that cannot find a source may produce a plausible one: a real-looking title, author, link or quote that does not exist. This is a [hallucination](../../glossary/#hallucination), and research tasks invite it. Require a link or a quoted passage for every claim in the memo. Open each link yourself before you rely on it. If a source cannot be opened, mark the claim "unverified" or remove it. Prefer "not found" over a guess, and tell the assistant that "not found" is an acceptable answer.
 
 ## Expert corner
 
 :::caution[Expert corner]
-Weighted scoring is a model of preferences, and it is sensitive to the weights. Check robustness: change each weight by a few points and see whether the leader changes. If it does, the decision is closer than the table suggests and the memo should say so. Scores on different scales also need care: a 1 to 5 score from a cost number and a 1 to 5 score from an opinion carry different information.
+Weighted scoring is a model of preferences, and it is sensitive to the weights, as the worked flip above shows. Scores on different scales also need care: a 1 to 5 score from a cost number and a 1 to 5 score from an opinion carry different information.
 
 Retrieval is not verification. An assistant that reads a page can still misread it, and a search can surface the SEO-optimised answer rather than the primary one. Spot-check claims against the cited page, especially numbers and negations.
 
@@ -138,6 +146,8 @@ Beware anchoring on the order of options and on the first source read. Randomise
 ## Agent note
 
 :::note[Agent note]
+**Topic: researching a decision.**
+
 When asked to research a decision, first state the question, the criteria with weights and the sources policy. Ask the user to confirm them before you search.
 
 Prefer primary sources. Record the date you read each source. When sources disagree, report both and mark the claim uncertain.
@@ -148,7 +158,7 @@ Add a confidence level to each score. Run a disconfirming step against the leadi
 
 Finish with a memo: recommendation, confidence, what it rests on, what would change it, open questions. The user decides.
 
-To check: every claim in the memo has a source, a date and a confidence.
+Check: every claim in the memo has a source, a date, a confidence and a quoted passage.
 :::
 
 ## Mistakes people make
@@ -160,6 +170,8 @@ To check: every claim in the memo has a source, a date and a confidence.
 **Skipping the attack on the winner.** The first good-looking answer wins, and nobody looks for the reason it fails. Fix: give a separate helper the leader and ask for the three best reasons it is wrong. Put what survives in the memo under "what would change this".
 
 ## Checkpoint
+
+*Audience: the reader. Agents may skip the quiz.*
 
 You can now:
 
@@ -186,4 +198,6 @@ You can now:
 
 ## Bridge
 
-A decision made well still has to be carried out, which means more steps, owners and checks; that is the work of [define a workflow](../define-a-workflow/).
+A decision made well still has to be carried out, and the last workflow page gives you five practice jobs to design for yourself.
+
+**Next:** [Workflow: design reps](../design-reps/)

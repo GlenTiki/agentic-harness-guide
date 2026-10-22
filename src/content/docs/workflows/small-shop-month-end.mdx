@@ -1,0 +1,236 @@
+---
+title: "Workflow: small shop month-end"
+description: Work through one shop's September close, from the sales-to-bank reconciliation to a signed variance table, using chat and a spreadsheet.
+---
+
+## Scene
+
+*Last time (levels 5 and 7): you wrote a checkable done, and you ran a many-step job with a log and a stop.*
+
+*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
+
+Month-end for the shop is Wednesday 30 September 2026. Sam prepares the close on Friday 2 October. Mina reviews it on Monday 5 October. Sam types "check the totals match the bank" and the assistant answers "they match". Match what, and by how much? Two records that were made independently almost never agree to the cent, and the gap is the interesting part. This page works the September close with real arithmetic, so "match" gets a meaning.
+
+## The idea
+
+**A month-end close is a set of checks that each have an owner, a figure to agree to and a tolerance. The preparer writes it. A different person reviews it.** Four checks do most of the work:
+
+1. **Reconcile sales to the bank.** Start from the sales in Mina's records and the receipts on the bank statement. List every item that explains the gap. A [bank reconciliation](../../glossary/#bank-reconciliation) is done when the unexplained difference is within the [tolerance](../../glossary/#tolerance).
+2. **Get the cut-off right.** A cost belongs in the month the goods arrived, not the month the invoice is dated. The [cut-off](../../glossary/#cut-off) check finds invoices on the wrong side of the line.
+3. **Explain the variances.** Compare the actual with the budget. Any line more than 5% and more than 50.00 from budget gets an explanation from Mina. The assistant does not supply reasons.
+4. **Separate preparer and reviewer.** Sam prepares. Mina reviews and approves. Nobody reviews their own work.
+
+All amounts are in euros and are illustrative figures for the example. The tolerance is an unexplained difference of up to 1.00, which is noted. More than that is investigated before sign-off.
+
+## Try it
+
+*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+
+You need any chat assistant and a spreadsheet such as Sheets or Excel. This takes about 25 minutes. Use the figures below. Replies vary between runs and tools.
+
+Before you paste real figures from a real business, read [confidentiality and sign-off](../../journey/professional-guardrails/). The figures here are made up, so you can paste them freely.
+
+### Step 1: reconcile sales to the bank
+
+Mina's records give the sales. The bank statement gives the receipts. Prices include VAT (value added tax) at an example rate of 23%.
+
+| Sales per Mina's records | Amount |
+| --- | --- |
+| Online orders, gross | 5,400.00 |
+| Refunds (three of 50.00) | (150.00) |
+| Online, net of refunds | 5,250.00 |
+| Market card takings | 1,720.00 |
+| Market cash takings | 410.00 |
+| Total sales, VAT included | 7,380.00 |
+
+| Bank receipts in September | Amount |
+| --- | --- |
+| Online payment processor payouts | 5,040.00 |
+| Card reader payouts | 1,694.00 |
+| Cash paid in (29 September) | 330.00 |
+| Total receipts per bank | 7,064.00 |
+
+Ask the assistant to build the reconciliation from these figures and nothing else:
+
+```text
+Using only the figures below, reconcile total sales to total bank receipts. List each reconciling item with its amount and a one-line reason that comes from the figures I give you. If you need a figure I have not given, write [NEEDED]. State the item count and the sum for each list. Show the unexplained difference.
+
+Total sales per records: 7,380.00
+Receipts per bank: 7,064.00
+Online processor fees: 160.00
+Card reader fees: 26.00
+September online sales paid out in October (in transit): 340.00
+August online sales paid out in September: 290.00
+Cash takings still in the tin: 80.00
+```
+
+The correct answer is below. Sam works it with a formula, not by trusting the reply.
+
+| Reconciliation | Amount |
+| --- | --- |
+| Total sales per records | 7,380.00 |
+| Less online processor fees | (160.00) |
+| Less card reader fees | (26.00) |
+| Less September online sales paid out in October (in transit) | (340.00) |
+| Add August online sales paid out in September | 290.00 |
+| Less cash takings still in the tin | (80.00) |
+| Expected receipts | 7,064.00 |
+| Receipts per bank | 7,064.00 |
+| Unexplained difference | 0.00 |
+
+The five reconciling items total 316.00, which is 7,380.00 minus 7,064.00. Each channel also agrees on its own: online 5,250.00 less 160.00 less 340.00 plus 290.00 is 5,040.00; card 1,720.00 less 26.00 is 1,694.00; cash 410.00 less 80.00 is 330.00.
+
+### Step 2: see what a forgotten refund looks like
+
+Run the same request with the refunds left out, so sales read 7,530.00. The unexplained difference becomes 150.00, exactly the three refunds. A difference with a recognisable size points at its cause. A difference of 150.00 above the 1.00 tolerance stops the close until someone finds it.
+
+### Step 3: the cut-off and the accrual
+
+Invoice 1042 is from Wick & Wax Supplies, for wax (25 kg, 82.00) and wicks (a box of 200, 18.00). The net is 100.00, the VAT is 23.00 and the total due is 123.00. The goods were delivered on Tuesday 29 September 2026. The invoice is dated Friday 2 October 2026.
+
+The cost belongs in September, because that is when the goods arrived. Sam records an [accrual](../../glossary/#accrual) of 100.00 to materials. The VAT on purchases goes to Mina's accountant, who files the VAT return.
+
+Materials actual is 1,530.00. That is 1,430.00 invoiced in September plus the 100.00 accrual.
+
+**The seeded error.** Suppose Sam leaves invoice 1042 out of September. Materials would read 1,430.00 and profit 3,402.00, which is 100.00 too high. Nothing in the bank reconciliation shows it, because nothing has been paid yet. The reviewer finds it by checking delivery notes against invoices: a delivery dated 29 September has no cost in September. Arithmetic is the easy case. This kind of error needs a check that compares two different kinds of record.
+
+### Step 4: the prepayment
+
+The website and software subscription cost 540.00, paid on 1 September 2026 for 12 months. The monthly charge is 45.00. At 30 September, 495.00 (11 months) is carried forward as a [prepayment](../../glossary/#prepayment). The September charge is 45.00, which matches the budget line.
+
+### Step 5: budget against actual
+
+This table excludes VAT. Profit is before the owner's pay.
+
+| Line | Budget | Actual | Variance | % |
+| --- | --- | --- | --- | --- |
+| Sales (net of refunds) | 5,800.00 | 6,000.00 | +200.00 | +3.4 |
+| Materials | 1,400.00 | 1,530.00 | +130.00 | +9.3 |
+| Postage and packaging | 640.00 | 665.00 | +25.00 | +3.9 |
+| Market stall fees | 160.00 | 160.00 | 0.00 | 0.0 |
+| Payment fees | 180.00 | 186.00 | +6.00 | +3.3 |
+| Software and website | 45.00 | 45.00 | 0.00 | 0.0 |
+| Other costs | 100.00 | 112.00 | +12.00 | +12.0 |
+| Total costs | 2,525.00 | 2,698.00 | +173.00 | +6.9 |
+| Profit before the owner's pay | 3,275.00 | 3,302.00 | +27.00 | +0.8 |
+
+Sales of 7,380.00 include VAT of 1,380.00 (7,380.00 times 23 over 123), which leaves 6,000.00 excluding VAT. Payment fees of 186.00 are 160.00 plus 26.00, and agree to the reconciliation.
+
+The investigation rule asks for two things at once: more than 5% and more than 50.00 from budget. Only materials qualifies (9.3% and 130.00). Other costs is 12.0%, but only 12.00, so it does not. Sales are 200.00 over, but 3.4% is under 5%.
+
+Sam asks Mina why materials is high. Mina says the wax supplier raised its price on 1 September. That reason is an example supplied by Mina. The assistant must not supply reasons, because the reasons are not in the figures. Ask it for the figures and leave a marked blank for the reason:
+
+```text
+Using only the table above, write two sentences on the materials variance. Quote each figure as it appears. Write "Reason needed from Mina" where a reason would go. Do not suggest a reason.
+```
+
+### Step 6: the spreadsheet and the sign-off
+
+Put each figure in its own cell and let the formulas do the arithmetic. These examples assume labels in column A and amounts in column B. For the variance, the budget is in column B and the actual in column C of the same row.
+
+| Task | Formula |
+| --- | --- |
+| Total of the sales lines | `=SUM(B2:B5)` |
+| Total for one channel | `=SUMIF(A2:A5,"Online*",B2:B5)` |
+| Variance for a line | `=C3-B3` |
+
+The [spreadsheet Monday](../spreadsheet-monday/) page shows how to ask an assistant to write these formulas.
+
+A close is done when all of these hold:
+
+1. Sales per records agree to the sum of the channels, 7,380.00.
+2. Receipts per bank agree to the statement, 7,064.00.
+3. The reconciling items are listed and total 316.00, and the unexplained difference is within 1.00.
+4. Every variance line over 5% and 50.00 has an explanation from Mina.
+5. The preparer and the reviewer are different people, with initials and date.
+6. Reviewed and approved by a named person who is not the preparer.
+
+The sign-off block:
+
+```text
+Prepared by: Sam    Initials: __   Date: 2 October 2026
+Reviewed by: Mina   Initials: __   Date: 5 October 2026
+Preparer and reviewer are different people: yes
+Unexplained difference: 0.00 (tolerance 1.00)
+Variance lines explained: materials
+```
+
+## Under the bonnet
+
+*How it works. Optional reading.*
+
+The reconciliation works because the two records are independent. Mina's records come from her orders and market tallies. The bank statement comes from the bank. Where two independent sources agree after the known items, an error would have to hit both in the same way. That is a stronger claim than a total that adds up inside one record.
+
+The reviewer needs different material from the preparer. A reviewer who sees only the preparer's table can check the arithmetic. A reviewer who sees the delivery notes can find the missing invoice. Give the reviewer the sources and the done list, not the preparer's reasoning.
+
+The tolerance is a rule fixed before the close. If you set it after you see the difference, you have moved the ruler.
+
+:::note[At work]
+The close here has four parts: a bank reconciliation, a cut-off check, a variance review and a sign-off. The preparer does not review. The reviewer works from sources. The signed block is the working paper that shows who checked what, and when.
+:::
+
+## Expert corner
+
+:::caution[Expert corner]
+Materiality decides how much effort a difference deserves. The 5% and 50.00 rule is Mina's example rule for this shop, not a standard. Set the rule for your own business before the close, and write it down.
+
+A reconciliation proves less than it seems. Receipts can agree because two errors offset each other. The per-channel check narrows that, and a delivery-note check covers the cost side that the bank cannot show.
+
+Accounting treatment is a decision for the owner and the accountant. The assistant may lay out a calculation. It must not choose cash or accrual treatment, or decide that a cost is a prepayment.
+:::
+
+## Agent note
+
+:::note[Agent note]
+**Topic: month-end close.**
+
+State a figure only if it came from supplied data, a cited source or a computation you show. When you total a list, state the item count and the sum. Print the items only if there are 50 or fewer.
+
+If you can start a separate reviewer, send it the output and the definition of done. You may report the result of a mechanical check you ran, with its output. Do not report a pass based only on your own reading.
+
+Before you call a tool that changes something, state what it will change and wait for a yes. Do not infer a yes from silence or from an earlier approval of a different action.
+
+Do not supply a reason for a variance. Do not choose an accounting treatment.
+
+Check: every figure in your reply appears in the supplied data or in a calculation you show, and the reviewer is not the preparer.
+:::
+
+## Mistakes people make
+
+**Treating "match" as a yes or no.** A total either agrees or does not, and the useful part is the list of items between. Fix: list every reconciling item and show the unexplained difference.
+
+**Letting the assistant explain a variance.** It writes a plausible reason for materials, and the reason goes into the file as fact. Fix: ask for the figures and a marked blank. Mina supplies the reason.
+
+**Checking only the bank.** The bank shows what was paid, so an unpaid invoice dated next month never appears. Fix: compare delivery notes with invoices for cut-off.
+
+## Checkpoint
+
+*Audience: the reader. Agents may skip the quiz.*
+
+You can now:
+
+- Reconcile sales to the bank with listed reconciling items and an unexplained difference.
+- Apply a cut-off check and record an accrual and a prepayment.
+- Apply an investigation rule to a budget against actual table.
+- Separate the preparer from the reviewer and sign off.
+
+**Self-test**
+
+1. Sales are 7,380.00 and the bank shows 7,064.00. The five reconciling items total 316.00. What is the unexplained difference?
+2. A reviewer sees materials of 1,430.00 and a delivery dated 29 September with no matching cost. What is the likely problem?
+3. Other costs are 12.0% over budget. Does it need an explanation from Mina?
+
+<details>
+<summary>Answers</summary>
+
+1. 7,380.00 minus 316.00 is 7,064.00, so the difference is 0.00. It is within the 1.00 tolerance.
+2. Invoice 1042 was left out of September. The goods arrived in September, so 100.00 should be accrued to materials.
+3. No. It is more than 5% over, but only 12.00, and the rule needs more than 50.00 as well.
+
+</details>
+
+## Bridge
+
+A single close shows the checks, and the next job is writing down a repeated process so anyone can run it.
+
+**Next:** [Workflow: define a workflow](../define-a-workflow/)

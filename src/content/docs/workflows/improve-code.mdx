@@ -1,6 +1,6 @@
 ---
 title: "Workflow: improve code"
-description: Refine a piece of code in small, tested passes with an independent review. Pairs with level 5.
+description: Refine a piece of code in small, tested passes with an independent review, for a reader who has code and a way to run it.
 ---
 
 ## Scene
@@ -27,7 +27,9 @@ This is [level 5](../../journey/05-check-the-work/) in practice: a checkable [de
 
 ## Try it
 
-You need any chat assistant. Python is optional: you can follow the passes without running anything. The examples below come from real runs on 2026-10-22. Your tool will word things differently.
+*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+
+You need any chat assistant. Python is optional: you can follow the passes without running anything. The examples below are examples recorded on 2026-10-22; the tool and model were not recorded. Your tool will word things differently.
 
 ### The function, before
 
@@ -45,7 +47,7 @@ def total(items):
 Make this function better.
 ```
 
-Sam pastes that, plus the function, into the refiner. Nothing has run yet.
+Sam pastes that, plus the function, into [the refiner](../../appendix/prompt-refiner/) (or [refiner lite](../../appendix/prompt-refiner/#refiner-lite), if you refine by hand). Nothing has run yet.
 
 ### Pass 1: the refiner asks, and states its guesses
 
@@ -91,14 +93,14 @@ What to do if unsure: State the assumption at the top. Do not silently change wh
 
 ### Tests first
 
-Before the assistant touches the function, Sam asks for tests that describe what it does today. These are called characterisation tests: they pin down current behaviour, right or wrong. Here are two of the first six. The empty case and the decimal case are the ones people forget.
+Before the assistant touches the function, Sam asks for tests that describe what it does today. These are called [characterisation tests](../../glossary/#characterisation-test): they pin down current behaviour, right or wrong. Here are two of the first six. The empty case and the decimal case are the ones people forget.
 
 ```python
 def test_empty_basket_is_zero(self):
     self.assertEqual(total([]), 0)
 
 def test_decimals_match_the_old_result(self):
-    self.assertEqual(total([("a", 0.1, 3), ("b", 0.2, 3)]), 0.1 * 3 + 0.2 * 3)
+    self.assertAlmostEqual(total([("a", 0.1, 3), ("b", 0.2, 3)]), 0.9)
 ```
 
 Sam runs them against the original function. They must pass first. A test that fails on the old code is testing a guess.
@@ -136,7 +138,9 @@ Verdict: CHANGES NEEDED
 Test I would add: an item with an extra trailing field must return exactly what the old function returned.
 ```
 
-Sam checks finding 3 rather than trusting it. In Python 3.13, `sum([0.1] * 10)` gives `1.0`, and the old loop gives `0.9999999999999999`. The finding is true. The spec said Python 3.11, so it does not block this change. It goes on the list for Mina's developer: money held as floats is a separate job.
+Sam checks finding 3 rather than trusting it. The Python 3.12 release notes say `sum()` now uses compensated (Neumaier) summation for floats. On Python 3.13, `sum([0.1] * 10)` gives `1.0`, and the old loop gives `0.9999999999999999`. The finding is true. The spec pins Python 3.11, which is the version the suite targets, so it does not block this change. It goes on the list for Mina's developer: money held as floats is a separate job, and the fix there is `Decimal` (Python's exact decimal type) or whole cents. In tests, compare floats with a tolerance, as the decimals test above does.
+
+Sam accepts finding 2. Both callers pass well-formed tuples, so the change from `IndexError` to `ValueError` hurts nobody, and the diff notes say so.
 
 Sam adds the missing test first, and it fails on the proposed change:
 
@@ -152,7 +156,7 @@ def total(items):
     return sum(price * quantity for _name, price, quantity, *_rest in items)
 ```
 
-Seven tests pass on the original and on the final version.
+Seven tests pass on the original and on the final version. The seventh is the extra-fields test.
 
 **Human checkpoint 3.** Sam reads the final diff and the notes. The change is small enough to read in a minute. Sam merges it.
 
@@ -183,13 +187,14 @@ The checks that say when it is done:
 - All seven tests pass on the old and the new function.
 - The reviewer's findings are fixed, or listed as out of scope with a reason.
 - A person who has not seen the old code can say what the function does.
+- Reviewed and approved by a named person who is not the preparer.
 
 ## Expert corner
 
 :::caution[Expert corner]
 Characterisation tests pin accidents as well as intentions. The old function accepted rows with extra fields. That may be a feature or an accident, and the test now makes it a promise. Decide on purpose, and say so in the test name.
 
-The reviewer is only independent if it lacks the author's context. Give it the spec and the diff. If you give it the whole chat, it inherits the same assumptions.
+The reviewer is only independent if it lacks the author's context. Give it the spec and the diff. If you give it the whole chat, it inherits the same assumptions. A diff is the list of lines a change adds and removes.
 
 Do not widen scope during the review. The float summation finding is real and was left out, because it needs its own spec. In a release team's terms, this is the line between a fix that ships today and a ticket that gets its own change.
 :::
@@ -197,6 +202,8 @@ Do not widen scope during the review. The float summation finding is real and wa
 ## Agent note
 
 :::note[Agent note]
+**Topic: improving code.**
+
 When asked to improve code, treat "improve" as "same behaviour, easier to read" unless the user says otherwise.
 
 Write tests first, and run them against the original code. They must pass before you change anything. Do not edit a test to make a change pass without telling the user.
@@ -206,6 +213,8 @@ Make one small change at a time. Run the tests after each. Do not add validation
 Report each change with its reason. If you find an unrelated problem, list it. Do not fix it in the same change.
 
 State what you did not check.
+
+Check: the tests passed on the original code before any change, and the report lists every change with its reason.
 :::
 
 ## Mistakes people make
@@ -217,6 +226,8 @@ State what you did not check.
 **Fixing everything the reviewer mentions.** Each fix changes more code and needs its own review. Fix: sort findings into "blocks this change" and "own ticket", and keep the change small.
 
 ## Checkpoint
+
+*Audience: the reader. Agents may skip the quiz.*
 
 You can now:
 
@@ -242,4 +253,6 @@ You can now:
 
 ## Bridge
 
-Code has tests to say when it is right. A design has no test, so [the next workflow](../improve-design/) uses named goals and real people instead.
+Code has tests to say when it is right, and a design has no test, so the next workflow uses named goals and real people instead.
+
+**Next:** [Workflow: improve a design](../improve-design/)

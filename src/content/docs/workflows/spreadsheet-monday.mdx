@@ -1,0 +1,203 @@
+---
+title: "Workflow: spreadsheet Monday"
+description: Ask an assistant for spreadsheet formulas, check them with a TRUE or FALSE cell, and draft a variance note where every figure is traceable.
+---
+
+## Scene
+
+*Last time (level 1): you made a request clear enough to check.*
+
+*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
+
+Monday morning. Sam pastes twelve months of shared bills into a chat and asks for the total. The assistant answers with a confident figure. It is the sum of thirteen numbers, because February is in the list twice. A person adding the column in a spreadsheet would have seen thirteen rows. An assistant adding in prose sees none of that.
+
+## The idea
+
+**Never ask the assistant to add. Ask it to write the formula, then let the spreadsheet add.** A formula is a rule you can read, run and check. A total in prose is a claim.
+
+Three habits keep the Monday routine safe:
+
+1. **Formula, not sum.** The assistant writes the formula. The spreadsheet computes it.
+2. **A check cell.** One cell shows TRUE or FALSE, so a wrong total shows itself.
+3. **Traceable commentary.** Any sentence about the numbers uses only figures in the sheet, each with its cell reference.
+
+Anonymise first. Replace names with codes, round figures if the task allows, and keep the key that links codes to names offline.
+
+## Try it
+
+*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+
+You need any chat assistant and a spreadsheet. This takes about 20 minutes. Replies vary between runs and tools. The figures are made up for the example.
+
+:::tip[Which app?]
+Excel and Google Sheets both take the formulas below. Paste a formula into a cell and compare the result with the figure given on this page. If your result differs, check the formula syntax in your spreadsheet's help.
+:::
+
+*Verified against the official docs on 2026-10-22: SUMPRODUCT is documented for Excel at [SUMPRODUCT function](https://support.microsoft.com/en-us/excel/functions/sumproduct-function) and for Google Sheets at [SUMPRODUCT](https://support.google.com/docs/answer/3094294). The other formulas on this page were not checked against the docs.*
+
+### Part 1: the flat's shared bills
+
+Put the months in A2:A13 and the amounts in B2:B13.
+
+| Month | Amount |
+| --- | --- |
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+Ask the assistant to write the formulas. Do not give it the numbers to add.
+
+```text
+My sheet has months in A2:A13 and amounts in B2:B13. Write spreadsheet formulas for these, one per line, and do not calculate any answers:
+1. the total of the amounts;
+2. the number of months listed;
+3. the number of distinct months;
+4. a cell that says OK if the two counts agree and REPEAT if they do not;
+5. each person's share of the total split three ways, rounded to the cent;
+6. Sam's share, which is the total minus the other two shares, so the three shares add to the total exactly.
+```
+
+An example reply, and the result each formula should give:
+
+| Task | Formula | Result |
+| --- | --- | --- |
+| Total | `=SUM(B2:B13)` | 2,120 |
+| Months listed | `=COUNTA(A2:A13)` | 12 |
+| Distinct months | `=SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13))` | 12 |
+| Repeat flag | `=IF(COUNTA(A2:A13)=SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13)),"OK","REPEAT")` | OK |
+| Share for Priya or Tom | `=ROUND(B14/3,2)` | 706.67 |
+| Sam's share | `=B14-2*ROUND(B14/3,2)` | 706.66 |
+
+Here B14 holds the total. The rounding rule is the owner's. Round each share to the cent. If the three shares do not add to the total, change Sam's share by the difference and say so. Three shares of 706.67 would add to 2,120.01, so Sam's share is 706.66. The assistant applies the owner's rule. It does not choose one.
+
+The distinct-months formula divides by zero if a cell in A2:A13 is blank, so fill every row first.
+
+**Make the check fail.** Insert a second February row with 198, and extend the ranges to row 14. The total becomes 2,318, the count becomes 13, the distinct count stays 12, and the flag says REPEAT. A check that cannot turn red proves nothing, so run this once.
+
+### Part 2: the shop's September
+
+Mina's September sales, with a label in column A, a type in column B and the amount in column C:
+
+| Line | Type | Amount (VAT included) |
+| --- | --- | --- |
+| Online orders, gross | Online | 5,400.00 |
+| Refunds (three of 50.00) | Online | -150.00 |
+| Market card takings | Market | 1,720.00 |
+| Market cash takings | Market | 410.00 |
+
+| Task | Formula | Result |
+| --- | --- | --- |
+| Total sales | `=SUM(C2:C5)` | 7,380.00 |
+| Online, net of refunds | `=SUMIF(B2:B5,"Online",C2:C5)` | 5,250.00 |
+| Market total | `=SUMIF(B2:B5,"Market",C2:C5)` | 2,130.00 |
+| Check cell | `=ABS(SUM(C2:C5)-7380)<=1` | TRUE |
+
+The 7,380.00 in the check cell is Mina's own total from her records, typed in by her. If the cell says FALSE, the sheet and Mina's records disagree by more than 1.00, and you stop and find out why.
+
+Next, budget in column B, actual in column C, variance in D and percentage in E:
+
+| Line | Budget | Actual | Variance | % |
+| --- | --- | --- | --- | --- |
+| Materials | 1,400.00 | 1,530.00 | `=C3-B3` gives 130.00 | `=D3/B3` gives 9.3% |
+| Other costs | 100.00 | 112.00 | `=C8-B8` gives 12.00 | `=D8/B8` gives 12.0% |
+
+In the full table, sales is row 2, materials row 3 and other costs row 8. A flag for lines that need an explanation: `=AND(ABS(D3)>50,ABS(E3)>0.05)`. The percentage is a fraction, so 5% is 0.05. It gives TRUE for materials (130.00 and 9.3%) and FALSE for other costs (12.00 is under 50.00). The rule comes from the [small shop month-end](../small-shop-month-end/) page.
+
+### Part 3: the commentary
+
+```text
+Using only the figures in the table below, write two sentences on the materials variance. Quote each figure with its cell reference, for example "actual 1,530.00 (C3)". Write "Reason needed from Mina" where a reason would go. Do not suggest a reason.
+
+[paste the table]
+```
+
+Check every figure in the reply against its cell. A figure with no cell is an invented figure.
+
+Before you paste real figures from a real business, anonymise them and read [confidentiality and sign-off](../../journey/professional-guardrails/). Definition of done: the formulas give the results above, the check cell shows TRUE, every figure in the commentary has a cell reference, and the work is reviewed and approved by a named person who is not the preparer.
+
+## Under the bonnet
+
+*How it works. Optional reading.*
+
+An assistant produces text one piece at a time. When it adds a long list "in its head", it writes a likely-looking total, and a likely total can be wrong. A formula moves the arithmetic to a tool that does it the same way every time.
+
+Asking for the formula also gives you something to read. You can see that the range is A2:A13 and not A2:A12. You can test the formula on a case where you know the answer. That is a check you can run, and a total in prose is not.
+
+The check cell turns the rule into a signal. A person skimming a sheet will not notice a wrong total, but will notice a red FALSE.
+
+:::note[At work]
+Keep the check cell, the source figures and the reviewer's initials on the sheet. That is a working paper: it shows where each number came from and who checked it. A total typed over a formula, or a range that stops one row short, are the usual ways a sheet goes wrong.
+:::
+
+## Expert corner
+
+:::caution[Expert corner]
+The distinct-count trick compares text exactly, so "Feb" and "Feb " (with a trailing space) count as different months. Clean the column first. Floating-point sums can leave tiny differences, so compare money with a tolerance, as in the check cell, not with exact equality.
+
+An assistant can write a formula that looks right and refers to the wrong range. Test every formula on a case with a known answer before you trust it on the real data.
+
+Anonymising reduces what leaves your machine. It does not remove the need for permission to use the data.
+:::
+
+## Agent note
+
+:::note[Agent note]
+**Topic: spreadsheet arithmetic.**
+
+State a figure only if it came from supplied data, a cited source or a computation you show. When you total a list, state the item count and the sum. Print the items only if there are 50 or fewer.
+
+When asked for a total, give the formula and say what range it uses. Do not report a result you did not compute with a tool.
+
+Quote each figure in commentary with its cell reference. Do not supply a reason for a variance.
+
+Check: the reply states the item count and the sum, and every figure in the commentary has a cell reference.
+:::
+
+## Mistakes people make
+
+**Asking the assistant to add.** It returns a tidy total with no way to inspect it. Fix: ask for the formula, run it in the sheet and compare.
+
+**Never making the check fail.** A check that has only ever shown TRUE may be checking nothing. Fix: break the data on purpose once, and watch the cell change.
+
+**Trusting commentary with loose figures.** A sentence says materials rose "about 130" and nobody can find the cell. Fix: require a cell reference for each figure.
+
+## Checkpoint
+
+*Audience: the reader. Agents may skip the quiz.*
+
+You can now:
+
+- Ask an assistant for a formula instead of a total.
+- Build a check cell that shows TRUE or FALSE, and make it fail on purpose.
+- Ask for commentary in which every figure points at a cell.
+- Anonymise a range before you paste it.
+
+**Self-test**
+
+1. The repeat flag says REPEAT. What do you do first?
+2. Why does Sam's share use the total minus the other two shares?
+3. A commentary sentence says "costs rose 14%". The table has no 14%. What do you do?
+
+<details>
+<summary>Answers</summary>
+
+1. Look for a month listed twice. Count the rows, then find the duplicate. Fix the data, not the flag.
+2. Three shares of 706.67 would add to 2,120.01. Taking Sam's share as the total minus the other two makes the shares add to the total, as the rounding rule requires.
+3. Treat it as an invented figure. Remove it, or ask for the calculation and cell references.
+
+</details>
+
+## Bridge
+
+A formula and a check cell make the numbers safe, and the next job is checking words with a reviewer who sees only the draft.
+
+**Next:** [Workflow: review content](../review-content/)
