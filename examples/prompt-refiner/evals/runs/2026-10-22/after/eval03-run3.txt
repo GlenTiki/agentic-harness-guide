@@ -1,0 +1,60 @@
+## Questions
+
+1. **Scope:** Should the change be visual only (layout, spacing, typography, color), or also cover copy, form fields and flow? *Recommended default: visual only, with no changes to fields, validation or behavior.*
+2. **Brand constraints:** Are there brand guidelines, a design system or existing components to follow? *Recommended default: reuse whatever styles and components already exist in the codebase, and add no new dependencies.*
+3. **Where's the page?** Which file or route is the signup page, and what stack is it built on? *Recommended default: the assistant locates it in the repo and states which file it found before changing anything.*
+
+## Assumptions
+
+- "Professional" means clean, consistent and trustworthy-looking, not a full redesign.
+- The page already works, so functionality must not change.
+- The work happens in the current working directory, which is not a git repository, so there is no history to fall back on.
+- The page should stay usable on both desktop and mobile.
+- Accessibility basics (contrast, labels, focus states) count as part of looking professional.
+
+## Refined prompt
+
+```text
+Goal:
+Make our signup page look more professional.
+
+Context:
+This is our signup page. "Professional" here means clean, consistent and trustworthy-looking. It does not mean a full redesign. Brand guidelines or design system: [NEEDED: link or description, or "none"].
+
+Inputs:
+- The signup page code: [NEEDED: file path or route, and the framework/stack]
+- Existing styles, components or design tokens in the codebase (find and reuse them)
+- A screenshot or description of what looks unprofessional today: [NEEDED: optional but helpful]
+
+Constraints:
+- Visual changes only: layout, spacing, typography, color, alignment, and responsive behavior.
+- Do not change form fields, validation, copy, routes or submission behavior.
+- Reuse existing styles and components. Add no new dependencies.
+- Keep it usable on desktop and mobile, with readable contrast, visible labels and clear focus states.
+- This folder is not a git repository, so back up or clearly list each file before editing it.
+
+Output format:
+1. The file(s) you found and plan to change.
+2. The edits themselves.
+3. A short list of what you changed and why, in plain words.
+
+Definition of done:
+- The page looks consistent and polished on desktop and mobile.
+- Signup still works exactly as before.
+- Every changed file is listed, with no unrelated edits.
+
+What to do if unsure:
+Ask me, or mark the gap as [NEEDED]. Do not guess at brand colors, copy or behavior. If you cannot find the signup page, say so and stop.
+```
+
+## What changed
+
+- **Added:** all seven sections, a definition of done, and constraints that keep this to visual work only, so "professional" doesn't grow into a redesign.
+- **Added:** an instruction to reuse existing styles and add no dependencies, plus a backup note because the folder has no git history.
+- **Added:** [NEEDED] markers for the page location and stack, brand guidelines and an optional screenshot. None of these were in your ask, and I didn't invent them.
+- **Changed:** your one-line request became the Goal, with its wording unchanged.
+- **Left alone:** your intent and plain tone. I didn't prescribe specific colors, fonts or layouts.
+
+## Second pass
+
+Once you answer the three questions, I'd tighten the Constraints (for example, naming the exact design system) and make the definition of done more concrete, such as target screen widths or an accessibility standard like WCAG AA.

@@ -1,0 +1,59 @@
+## Questions
+
+1. **Tone?** Default: polite and professional, with a clear request to pay.
+2. **One template or one email per customer?** Default: one template with merge fields (name, amount, due date), since you have no customer data yet.
+3. **Should it mention late fees or next steps if payment doesn't arrive?** Default: no, because I can't invent your terms.
+
+## Assumptions
+
+- This is a first reminder, not a final notice.
+- The sender is a business writing to its own customers.
+- The email is in English.
+- The amount owed and due date differ per customer.
+- The assistant should write the email only, not send it.
+- A short email is wanted, with a subject line.
+
+## Refined prompt
+
+```text
+Goal:
+Write a reminder email to customers who have not paid their invoice. The email must say how much they owe and when the payment was due.
+
+Context:
+The sender is a business writing to its own customers about an overdue invoice. This is a first reminder. The relationship with the customer should stay friendly. [NEEDED: business name and sender name/role]
+
+Inputs:
+- Customer name: [NEEDED]
+- Invoice number: [NEEDED, if it should be mentioned]
+- Amount owed, with currency: [NEEDED]
+- Original due date: [NEEDED]
+- How the customer can pay (link, bank details, or reply contact): [NEEDED]
+- Late fee or next-step terms: [NEEDED, or state "do not mention"]
+
+Constraints:
+- Polite, professional and firm, with no threats or accusatory wording.
+- Write one reusable template with placeholders for the inputs above, unless real customer data is supplied.
+- Use only the facts supplied. Do not invent amounts, dates, fees, policies or payment details.
+- Keep it short, around 100 to 150 words.
+- Include a line inviting the customer to get in touch if they have already paid or think there is an error.
+
+Output format:
+A subject line, then the email body, ready to copy. Use [PLACEHOLDER] markers for anything not supplied.
+
+Definition of done:
+The email states the amount owed and the original due date, asks for payment, says how to pay or who to contact, and contains no invented facts.
+
+What to do if unsure:
+Ask me, or mark the gap with [NEEDED]. Do not guess.
+```
+
+## What changed
+
+- **Added:** Context (first reminder, friendly relationship), an Inputs list, constraints on tone, length and no invented facts, an output format, a definition of done, and an "if unsure" rule.
+- **Added:** a line for customers who have already paid or dispute the invoice. This is a risk the original didn't cover. Remove it if you don't want it.
+- **Changed:** "the customers" became a reusable template with placeholders, since no customer data was given.
+- **Left alone:** your core ask, which is a reminder email stating the amount owed and the due date.
+
+## Second pass
+
+Next I would check the tone against your relationship with these customers and decide whether a later reminder needs a firmer version. If you share the real fields (amount, due date, payment method), I can fill in the [NEEDED] markers.

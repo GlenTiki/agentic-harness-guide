@@ -1,0 +1,62 @@
+## Questions
+
+1. **What does "better" mean here?** Readability, speed, error handling, or all three? *Default: readability and clearer naming, with behavior unchanged.*
+2. **What is in each item?** What do `i[1]` and `i[2]` represent, and what is `i[0]`? *Default: leave as [NEEDED] and have the assistant ask rather than guess.*
+3. **May the function's signature or return type change?** *Default: no, keep `total(items)` as is.*
+
+## Assumptions
+
+- The language is Python 3.
+- "Better" means a cleaner version of the same function, not a rewrite of what it computes.
+- Each item is an indexable sequence with at least three elements.
+- You want the improved function plus a short explanation of the changes.
+- No test suite or style guide was mentioned, so none is required.
+
+## Refined prompt
+
+```text
+Goal:
+Improve this Python function so it is better. Keep what it computes the same.
+
+Context:
+It is a small helper that sums a value across a list of items. [NEEDED: what the items represent and where this function is used]
+
+Inputs:
+def total(items):
+    t = 0
+    for i in items:
+        t = t + i[1] * i[2]
+    return t
+
+[NEEDED: what i[0], i[1] and i[2] mean in each item]
+[NEEDED: example input and expected output, if available]
+
+Constraints:
+- Python 3.
+- Keep the function name and the single `items` parameter.
+- Do not change the result for valid input.
+- Do not add dependencies.
+- Keep it short, and in the style of the code above.
+- [NEEDED: what "better" means to me: readability, speed, error handling, or all three]
+
+Output format:
+The improved function in one code block, then a short list of what you changed and why.
+
+Definition of done:
+The new function returns the same result as the original for every valid input. Each change is explained in one line.
+
+What to do if unsure:
+If something is unclear, such as what the item fields mean or what "better" should cover, ask me or mark the gap. Do not guess. If you spot behavior that looks like a bug, tell me instead of silently changing it.
+```
+
+## What changed
+
+- **Added:** all seven sections, with the original code moved into Inputs.
+- **Added:** constraints that keep behavior and the signature unchanged, since "better" could otherwise mean anything.
+- **Added:** an output format and a definition of done so the result can be checked.
+- **Added:** [NEEDED] marks for the item structure, the meaning of "better", and example data. I did not guess what the indexes stand for.
+- **Left alone:** your wording ("better") and the code itself, untouched.
+
+## Second pass
+
+Once you answer the three questions, I would tighten the Constraints (for example, whether to handle empty or malformed items) and add a concrete example input and output to Definition of done.

@@ -1,0 +1,62 @@
+## Questions
+
+1. **What should "better" mean?** Readability, speed, error handling, or all three? *Default: readability and basic robustness, with the same result for valid input.*
+2. **What is in each item?** Index 1 and index 2 are multiplied, but I don't know what they represent (for example price and quantity) or what index 0 is. *Default: leave them unnamed and ask the assistant to flag the gap.*
+3. **Can the name and signature change?** *Default: no, keep `total(items)` as is.*
+
+## Assumptions
+
+- The code is Python 3.
+- Each item is an indexable sequence with at least three elements, and indexes 1 and 2 are numbers.
+- The function should keep returning 0 for an empty list.
+- You want the improved code and a short explanation, not a long review.
+- Nothing is known about the Python version, a style guide, or whether the function is performance-critical.
+
+## Refined prompt
+
+```text
+Goal:
+Make this function better. Return the improved version and briefly explain what you changed.
+
+Context:
+This is a Python function that sums a value across a list of items. Where it is used, and what each item represents, is [NEEDED: what the items are, e.g. what index 0, 1 and 2 mean].
+
+Inputs:
+The function:
+
+    def total(items):
+        t = 0
+        for i in items:
+            t = t + i[1] * i[2]
+        return t
+
+Also needed: [NEEDED: Python version, if it matters], [NEEDED: example input, if available].
+
+Constraints:
+- Keep the function name and signature unless you tell me why a change is needed.
+- Keep the result the same for valid input, including 0 for an empty list.
+- Focus on readability and robustness. Do not add features I did not ask for.
+- If you change behavior in any edge case, say so explicitly.
+
+Output format:
+1. The improved function in a code block.
+2. A short list of the changes and the reason for each.
+
+Definition of done:
+The function is clearer and does the same thing for valid input. Every change is explained. Any edge-case behavior change is called out.
+
+What to do if unsure:
+If something is unclear, such as what the items contain, ask me or mark it as a gap. Do not guess.
+```
+
+## What changed
+
+- **Added:** all seven sections, so the assistant knows the goal, inputs, limits, output shape and when it is finished.
+- **Added:** a constraint to keep the name, signature and results the same, since "better" could otherwise mean a rewrite.
+- **Added:** [NEEDED] markers for what the items represent and the Python version. I did not invent names like "price" or "quantity".
+- **Changed:** "Make this function better" now says what to return and how to present it.
+- **Left alone:** your wording of the goal and the code itself, exactly as you gave it.
+
+## Second pass
+
+If you answer the three questions, I would tighten the Constraints (for example, whether to add type hints or input validation) and fill in the [NEEDED] items.

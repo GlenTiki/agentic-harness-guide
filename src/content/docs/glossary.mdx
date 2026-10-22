@@ -9,7 +9,7 @@ Each entry gives one sentence a beginner can follow. Some add a sentence for exp
 
 ### Access key
 
-A secret string that proves who you are to a system, such as a password or an API key. Never paste one into a chat, an instruction file or a log.
+A password or similar secret code that proves who you are to a system. An API key is one kind. Never paste one into a chat, an instruction file or a log.
 
 *For experts:* This guide says "access key" for a credential, so that "token" only ever means a chunk of text. Level 4 calls a stored one a "secret".
 
@@ -23,11 +23,21 @@ An assistant that works in a loop and can use tools until it decides it is done.
 
 *For experts:* An agent is a model plus a loop plus tools. A page that says "assistant" means the thing you talk to. A page that says "agent" means the loop and the tools are the point. An Agent note holds rules for AI software that reads the page. People can skip it.
 
+### Agree to source
+
+Tying one figure to the document it came from, such as a total to a bank statement or an invoice. It is not a [reconciliation](#reconciliation).
+
 ### Allowlist
 
-A list of what is permitted, where everything not listed is refused.
+A list of what is permitted without asking. Whether anything not on the list is refused depends on the tool.
 
-*For experts:* It fails safe, because a new tool or request is refused until someone decides.
+*For experts:* In Claude Code's default mode a call that matches no rule asks you, and `dontAsk` mode refuses it. An allow rule only skips the prompt.
+
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt" (the `dontAsk` row). Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+
+### Approval fatigue
+
+What happens when a checkpoint fires for everything: people stop reading and click yes. Gate the few actions that matter, and make those prompts specific. Level 4 covers it.
 
 ### Assistant
 
@@ -41,17 +51,23 @@ A record of what the assistant did, step by step, with the time of each step, so
 
 *For experts:* Make it append-only and write it outside the assistant's control, or the assistant can edit its own history.
 
-### Bank reconciliation
+### Bounded brief
 
-Comparing the bank statement with your own records of money in and out, then listing the items that explain every difference, such as a payment made but not yet cleared. When the two balances agree apart from those listed items, the reconciliation is done.
-
-*For experts:* This guide uses "reconcile" only for this. Tying one figure to the document it came from is "agreeing to source".
+A [brief](#brief) that says what to do, where to look, what to return and what not to touch, with a rule for when to stop. Level 6 uses it.
 
 ### Brief
 
 The written task you give to a helper. It is the only thing the helper knows about the job.
 
 *For experts:* A good brief names the goal, the inputs, the limits and what to hand back.
+
+### Caps
+
+Limits you set before you leave a run alone: a time cap, a [spend cap](#spend-cap), a step cap and bounded [retries](#retry). When a limit is reached, the run stops and reports.
+
+### Check cell
+
+One spreadsheet cell that shows TRUE or FALSE for a test, such as whether the sheet total matches the total in your own records. A wrong figure then shows itself.
 
 ### Check step
 
@@ -107,6 +123,10 @@ A place in a job where you put a check, a limit or a human yes.
 
 The rule that decides which month a transaction belongs to. An item for goods received on 29 September belongs to September, even if the invoice is dated in October. Checking cut-off means testing the items near the end of the period.
 
+### Data processing agreement
+
+A written contract in which a provider agrees how it will handle personal data for you. Check that one exists before you paste data that identifies people. This guide cannot name the law that applies in your country.
+
 ### Decomposition
 
 Breaking a job into steps small enough to give each one an owner and a check.
@@ -125,9 +145,13 @@ Handing one job to a [helper](#helper) with a written [brief](#brief), so the le
 
 ### Denylist
 
-A list of what is forbidden, where everything else is permitted.
+A list of what is forbidden, where everything else is permitted unless another rule says otherwise.
 
 *For experts:* It covers only the bad cases someone thought of.
+
+### Diff
+
+A list of what changed between two versions of a text or file: what was added, removed or changed.
 
 ### Eval
 
@@ -140,6 +164,14 @@ A repeatable check of how well the assistant does a task, scored the same way ea
 A sample of the answer you want, shown to the assistant so it can copy the pattern.
 
 *For experts:* Two or three varied examples usually steer format better than a paragraph of description.
+
+### Fallback reviewer
+
+A stand-in for the independent [reviewer](#reviewer) when you work alone. Re-read the work the next working day against the written definition of done, rerun the formulas from scratch, and check the first and last ten per cent of items. Add a peer swap or a different tool where you can. This is weaker than an independent reviewer.
+
+### False positive
+
+A check that flags good work as bad. It adds retries and cost. A check that passes bad work is a false negative.
 
 ### Fan-out and gather
 
@@ -189,6 +221,10 @@ A plain text file the assistant reads at the start of every session, holding the
 
 *For experts:* Keep it short and current. Every line costs context on every run.
 
+### Investigation threshold
+
+The size of a difference from plan or from last period above which you must explain it. In the shop example it is over 5% and over 50.00. The "and" is an example: you may choose "or", or other figures. It decides where to look. It is not [materiality](#materiality).
+
 ### Isolation (of helpers)
 
 Giving each helper its own [workspace](#workspace), or letting one write at a time, so helpers do not overwrite each other.
@@ -207,7 +243,7 @@ A running list of what was asked, decided, tried and found, kept in a file so wo
 
 ### Materiality
 
-How big an error has to be before it changes a decision. You set the line before you check. In the shop example, a difference from budget gets an explanation only when it is over 5% and over 50.00.
+How large an error or omission has to be before it could change a decision by someone who relies on the accounts. The person responsible for the accounts judges it before the work starts. This guide does not use the word for its own trigger for explaining a difference. For that, see [investigation threshold](#investigation-threshold).
 
 ### Mechanical check
 
@@ -259,7 +295,7 @@ Text inside something the assistant reads, such as an email or web page, that tr
 
 ### Prompt refiner
 
-A [skill](#skill) that improves your ask and never does the task. [Refiner lite](../appendix/prompt-refiner/#refiner-lite) is a ten-line version you can paste into any chat.
+A [skill](#skill) that improves your ask and never does the task. [Refiner lite](../appendix/prompt-refiner/#refiner-lite) is a short version you can paste into any chat. It was never evaluated.
 
 ### Read, draft, write with confirmation, write alone
 
@@ -273,7 +309,19 @@ Access that lets the assistant look but not change anything.
 
 ### Reconciliation
 
-Checking a set of figures against an outside record, such as a bank statement, and explaining every difference. See [bank reconciliation](#bank-reconciliation).
+<a id="bank-reconciliation"></a>
+
+Checking a set of figures against an outside record, such as a bank statement, and naming every item that explains a difference, such as a payment made but not yet cleared. This guide uses "reconcile" only for this. A reconciliation clears to 0.00 with every item named and traced to a source. A rounding difference of up to 1.00 is allowed only as a named rounding item that the approver initials. Any other difference stops the close.
+
+*For experts:* Tying one figure to the document it came from is [agree to source](#agree-to-source), not reconciling. A bank reconciliation compares the bank balance with the cash book. A [sales-to-bank-receipts proof](#sales-to-bank-receipts-proof) is a different check.
+
+### Recorded run
+
+A reply kept as raw text with the model, the tool and its version, and the date, so a reader can see what was actually said. A recorded run shows what happened once. It does not give a rate. The raw replies in this guide are in `examples/recorded-runs/`.
+
+### Red run
+
+Running a check once on work you know is wrong, to see it fail. A check that has never failed may not be checking anything.
 
 ### Refinement loop
 
@@ -303,9 +351,13 @@ A short list of qualities with a plain description of good and bad for each, use
 
 A string made once at the start of a run and reused on every log line, so you can find every line of one run and skip a step that already ran.
 
+### Sales-to-bank-receipts proof
+
+A check that the sales you recorded for a period explain the money that reached the bank, once timing differences, fees and cash not yet banked are named. It is not a bank reconciliation, which compares the bank balance with the cash book. See [reconciliation](#reconciliation).
+
 ### Sampling
 
-Checking a chosen subset instead of every item. Pick the items by a rule written before you look, and say how many you checked out of how many.
+Checking a chosen subset instead of every item. Pick the items by a rule written before you look, and say how many you checked out of how many. A sample tells you whether the process is still working. It does not clear any single item, and it is never used for final totals, reconciling items or anything signed. It is not the random choice a model makes when it writes text.
 
 *For experts:* A sample says something about the whole only if the choice was not biased. Report what was and was not covered.
 
@@ -315,6 +367,14 @@ A closed space where the assistant can run things without touching the rest of y
 
 *For experts:* Enforce it at the operating system level, not by asking the model to behave.
 
+### Script
+
+A small program that does one fixed job the same way every time. A mechanical step, one with a single right answer, often belongs in a script and not in an assistant.
+
+### Segregation of duties
+
+The person who prepares a piece of work is not the person who approves it. The assistant prepares only. Level 4 uses it.
+
 ### Sensitivity
 
 How much an answer changes when one input changes. Moving each input by the same amount shows which one matters most.
@@ -322,6 +382,10 @@ How much an answer changes when one input changes. Moving each input by the same
 ### Severity scale
 
 A fixed ordering of findings (blocker, major, minor) so that serious problems do not look like polish.
+
+### Six-step method
+
+The order in which level 8 designs any system: name the outcome and its checkable done; list the steps a careful human would take; mark each step as judgement, mechanical or risky; assign roles and tools with [least privilege](#least-privilege); place checks and [human checkpoints](#human-checkpoint); decide how it fails safely and how you will know.
 
 ### Skill
 
@@ -363,9 +427,9 @@ A chunk of text, usually a word or part of a word, which is the unit the model r
 
 ### Tolerance
 
-The size of a difference you accept without investigating. In the shop reconciliation, an unexplained difference within 1.00 is accepted.
+The size of a difference you accept without investigating. In the month-end reconciliation the tolerance is zero. A rounding difference of up to 1.00 is allowed only as a named rounding item that the approver initials.
 
-*For experts:* Materiality is about what changes a decision. A tolerance is the allowed gap on one specific check.
+*For experts:* A tolerance is the allowed gap on one specific check. It is not [materiality](#materiality), and it is not the [investigation threshold](#investigation-threshold).
 
 ### Tool
 
@@ -373,9 +437,13 @@ An action the assistant can ask the harness to perform, such as reading a file, 
 
 *For experts:* The model only emits a request. The harness decides whether to run it.
 
+### Untrusted input
+
+Any text the assistant reads that you did not write. Treat it as data, not as orders. When it tries to give orders anyway, that is [prompt injection](#prompt-injection).
+
 ### Variance
 
-In accounting, the gap between what you planned or budgeted and what actually happened. A variance over the [materiality](#materiality) line gets an explanation.
+In accounting, the gap between what you planned or budgeted and what actually happened. A variance over the [investigation threshold](#investigation-threshold) gets an explanation.
 
 ### Watcher
 
@@ -383,7 +451,7 @@ Something that checks a condition on a schedule and raises a flag. It reports. I
 
 ### Working paper
 
-A record of what you checked, how you checked it, what you found and who signed it off, kept so another person can follow it later. In accounting this is the audit trail. For the record of an assistant's steps, see [audit log](#audit-log).
+A record of what you checked, how you checked it, what you found and who signed it off, kept so another person can follow it later. It provides part of the audit trail. For the record of an assistant's steps, see [audit log](#audit-log).
 
 ### Workspace
 
@@ -421,7 +489,7 @@ The block of settings at the top of a file, between two `---` lines. In a skill 
 
 Three things in one assistant that are unsafe together: access to private data, exposure to content you do not control, and a way to send data out. With all three, a [prompt injection](#prompt-injection) can leak the private data.
 
-*For experts:* Remove any one of the three and that leak path closes.
+*For experts:* Removing any one of the three closes the cheapest route out. It does not make the assistant safe: a read-only assistant can still be steered into wrong output, and a rendered link or a search request can carry data out.
 
 ### MCP server
 
@@ -449,6 +517,6 @@ The guide uses one word for one thing. This table maps the words we avoid to the
 | ledger, for accounting | the books, the general ledger | Here a [ledger](#ledger) is a record of work. |
 | token, for a password or key | [access key](#access-key) | Token only means a chunk of text. |
 | tool, for the chat product in levels 0 to 2 | chat app, your assistant | [Tool](#tool) is the level 3 meaning. |
-| reconcile, for tying a figure to a document | agree to source | [Bank reconciliation](#bank-reconciliation) is the only reconcile. |
+| reconcile, for tying a figure to a document | [agree to source](#agree-to-source) | [Reconciliation](#reconciliation) is the only reconcile. |
 | test, for a human glance | check | A [test](#test) gives a clear pass or fail. |
 | connection, as a noun | [connector](#connector-mcp) | One name for the plug into another system. |

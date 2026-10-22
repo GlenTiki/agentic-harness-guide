@@ -1,0 +1,62 @@
+## Questions
+
+1. **Which part of the page matters most?** Default: overall visual design (layout, spacing, typography, colors) rather than copy or functionality changes.
+2. **Are there brand guidelines or a design system to follow?** Default: none given, so the assistant should keep the existing colors and fonts and ask before introducing new ones.
+3. **Should the assistant change code directly or propose changes first?** Default: propose a short list of changes, then apply them once you approve.
+
+## Assumptions
+
+- "Signup page" is a page in a codebase the assistant can read and edit.
+- "Professional" means clean, consistent, and trustworthy-looking, not a full redesign.
+- Existing form behavior, fields, validation, and backend calls must not break.
+- The page should work on both desktop and mobile.
+- Accessibility (contrast, labels, focus states) counts as part of looking professional.
+- No framework, file path, or brand details were given, so these are marked [NEEDED].
+
+## Refined prompt
+
+```text
+Goal:
+Make our signup page look more professional.
+
+Context:
+This is the signup page for our product. "Professional" here means clean, consistent, and trustworthy-looking: tidy layout, sensible spacing, clear typography, and a polished form. [NEEDED: product name and who signs up (e.g. consumers, business users), so the tone fits.]
+
+Inputs:
+- Path to the signup page files: [NEEDED: file path(s)]
+- Framework and styling approach (e.g. React, Tailwind, plain CSS): [NEEDED]
+- Brand colors, fonts, logo, or design system, if any: [NEEDED, or "none"]
+- Screenshot or URL of the current page, if available: [NEEDED, optional]
+
+Constraints:
+- Do not change form fields, validation logic, or what is sent to the backend.
+- Keep the existing brand colors and fonts unless I say otherwise.
+- Do not add new dependencies without asking.
+- Keep it working on desktop and mobile.
+- Keep the page accessible: readable contrast, labeled inputs, visible focus states.
+- Do not rewrite the page copy unless something is clearly broken or inconsistent. Flag it instead.
+
+Output format:
+First, a short list of the visual problems you see and the changes you propose. Wait for my approval. Then make the edits and give a brief summary of what changed in each file.
+
+Definition of done:
+- The page looks consistent and polished on desktop and mobile.
+- The form still works exactly as before.
+- Accessibility basics are met (contrast, labels, focus states).
+- I have a summary of every file changed.
+
+What to do if unsure:
+If anything is missing or ambiguous, ask me or mark it as [NEEDED]. Do not guess at brand details, file locations, or behavior you cannot see.
+```
+
+## What changed
+
+- **Added:** all seven sections, since the original had only a goal. The inputs list names what the assistant needs to find and edit the page.
+- **Added constraints** protecting form behavior, brand identity, dependencies, and accessibility, because "more professional" could otherwise lead to risky rewrites.
+- **Added a propose-then-apply output format** and a definition of done, so the result is checkable.
+- **Marked gaps** as [NEEDED]: file paths, framework, brand details, audience. I did not invent any of them.
+- **Left alone:** your goal sentence, word for word.
+
+## Second pass
+
+Once you answer the questions or fill in the [NEEDED] items, I would tighten the Context section (audience and tone) and make the definition of done more concrete, for example naming specific screen widths or a reference page whose look you want to match.

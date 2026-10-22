@@ -1,0 +1,64 @@
+## Questions
+
+1. **What does "professional" mean for your brand?** Default: clean, modern, minimal. Neutral palette, one accent colour, generous whitespace, no decorative effects.
+2. **Is this a visual restyle only, or may the assistant change the form's fields, copy and flow?** Default: visual and layout changes only. Fields, copy and behaviour stay as they are.
+3. **Are there existing brand assets, such as a logo, colours, fonts or a design system?** Default: none supplied. The assistant keeps the page's current colours and fonts, and tidies spacing and hierarchy.
+
+## Assumptions
+
+- "Our signup page" is an existing page in a codebase the assistant can read and edit.
+- "Professional" means visual polish, not a functional redesign.
+- The page must keep working, including validation, submission and accessibility.
+- The page should work on both desktop and mobile.
+- I don't know the framework, file paths or current styling, so they are marked [NEEDED].
+
+## Refined prompt
+
+```text
+Goal:
+Make our signup page look more professional.
+
+Context:
+This is the page new users see when they create an account. [NEEDED: product name and audience, e.g. B2B vs consumer.] "Professional" here means clean, modern and trustworthy: consistent spacing, clear visual hierarchy, tidy form styling and a polished feel.
+
+Inputs:
+- The signup page's source files. [NEEDED: file paths or framework, e.g. React, plain HTML/CSS]
+- Brand assets, if any: logo, colours, fonts, design system. [NEEDED: or confirm there are none, in which case keep the existing colours and fonts]
+- A screenshot or URL of the current page, if available. [NEEDED, optional]
+
+Constraints:
+- Visual and layout changes only. Do not change form fields, field names, copy, validation logic, submission behaviour or backend calls unless I say so.
+- Do not add new dependencies or frameworks without asking first.
+- Keep it responsive (mobile and desktop) and accessible (labels, focus states, sufficient contrast).
+- Match the conventions of the existing code.
+- Keep changes focused on this page. Do not restyle the rest of the site.
+
+Output format:
+- First, a short list of the problems you see in the current page and the changes you plan.
+- Then make the edits.
+- Finish with a summary of what you changed, by file.
+
+Definition of done:
+- The page looks consistent and polished on desktop and mobile.
+- The form works exactly as before.
+- Nothing outside the signup page is affected.
+- Text and controls meet basic contrast and keyboard-focus requirements.
+
+What to do if unsure:
+If something is unclear, such as brand direction or whether a change would affect behaviour, ask me or mark it as an open question. Don't guess.
+```
+
+## What changed
+
+- **Added:** the seven sections, with the goal, constraints, output format and definition of done spelled out, since "more professional" gave nothing to check against.
+- **Added:** a definition of "professional" (clean, consistent, trustworthy). It comes from the Question 1 default, so please confirm or correct it.
+- **Added:** guardrails that keep behaviour, copy, dependencies and other pages unchanged, plus responsive and accessibility requirements. These are my assumptions and are listed above.
+- **Marked as [NEEDED]:** framework or file paths, brand assets, product and audience, and an optional screenshot. None of these were in your ask.
+- **Left alone:** your sentence "Make our signup page look more professional." is kept word for word as the Goal.
+
+## Second pass
+
+If you answer the three questions, I'd look at these next:
+- Tighten the constraints to match your answers.
+- Name a visual reference, such as a competitor or site you like, to make "professional" more concrete.
+- Add specifics if you care about particular elements, such as the button, the form layout or a social-login row.

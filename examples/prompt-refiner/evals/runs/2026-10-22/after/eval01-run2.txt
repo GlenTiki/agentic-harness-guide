@@ -1,0 +1,50 @@
+## Questions
+
+1. **Whose budget is it?** Personal or household, a small business, or a project or event? *Default: personal or household monthly budget.*
+2. **What do you want the budget to do?** For example: track spending, save for a goal, pay off debt, or cut costs. *Default: get a clear picture of income and spending, and find room to save.*
+3. **What format do you want back?** A table, a spreadsheet layout, or a step-by-step walkthrough? *Default: a table plus a short list of next steps.*
+
+## Assumptions
+
+- The budget is for a person or household, not a business.
+- It covers one month and repeats monthly.
+- You want help building the budget, so the assistant should ask for your numbers rather than assume them.
+- You haven't given any income, expense, currency, or location details, so those are marked [NEEDED].
+
+## Refined prompt
+
+```text
+Goal: Help me build a monthly budget I can actually stick to.
+
+Context: This is a personal or household budget. My main aim is [NEEDED: e.g. save more, pay off debt, cover bills, track spending]. I'm in [NEEDED: country or currency].
+
+Inputs:
+- Monthly income after tax: [NEEDED]
+- Fixed expenses (rent or mortgage, utilities, insurance, loan payments): [NEEDED]
+- Variable expenses (groceries, transport, eating out, subscriptions, other): [NEEDED]
+- Debts, with balances and interest rates: [NEEDED, if any]
+- Savings goals, with amounts and dates: [NEEDED, if any]
+
+Constraints:
+- Use only the figures I give you. Do not invent amounts.
+- Keep it simple enough to maintain without special software.
+- Tell me which budgeting method you're using (for example 50/30/20 or zero-based) and why it suits my situation.
+
+Output format: A table of income and expense categories with planned amounts and a total, then 3 to 5 plain-language next steps.
+
+Definition of done: Income minus expenses and savings equals zero or a stated surplus. Every category has an amount, and I know what to do first.
+
+What to do if unsure: If any input is missing or unclear, ask me or mark it [NEEDED]. Do not guess.
+```
+
+## What changed
+
+- **Added:** all seven sections, with your goal narrowed to a monthly personal budget (a default you can correct).
+- **Added:** a list of the inputs the assistant will need, each marked [NEEDED].
+- **Added:** a definition of done (the numbers balance) and a rule not to guess.
+- **Changed:** "Help me make a budget" became "Help me build a monthly budget I can actually stick to." The wording is still yours, just more specific.
+- **Left alone:** your core ask. I didn't add any figures, names or facts.
+
+## Second pass
+
+Send me your answers to the three questions and I'll replace the [NEEDED] markers where you've given details. I'd look next at whether the output format and budgeting method fit how you like to track money.

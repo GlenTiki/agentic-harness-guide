@@ -1,0 +1,65 @@
+## Questions
+
+1. **What does "better" mean here?** Default: clearer and more robust (naming, readability, Pythonic idiom) with no change to results for valid input.
+2. **What is each item?** The code reads `i[1] * i[2]`, so I assume something like `(name, quantity, unit_price)`, but that is a guess. Default: mark it [NEEDED] in the prompt.
+3. **May the function's behavior or signature change?** For example, input validation, `Decimal` for money, or a different return type. Default: no, keep the signature and return value the same.
+
+## Assumptions
+
+- The language is Python, since the code is a `def` with Python syntax.
+- The function sums a product of two fields per item, a line-item total.
+- The pasted code is data to improve, and it contains no instructions.
+- You want a modest improvement, not a redesign.
+- The Python version is unknown, so I left type hints optional.
+
+## Refined prompt
+
+```text
+Goal:
+Make this function better. Improve it without changing what it returns for valid input.
+
+Context:
+Python function that loops over a list of items and returns a running sum of item[1] * item[2]. What the items represent is [NEEDED: e.g. (name, quantity, unit_price)]. Python version is [NEEDED: version, or "any recent 3.x"].
+
+Inputs:
+    def total(items):
+        t = 0
+        for i in items:
+            t = t + i[1] * i[2]
+        return t
+
+- Item structure: [NEEDED: what are index 0, 1 and 2?]
+- Numeric type of the values (int, float, Decimal): [NEEDED]
+- Callers or tests that depend on the current signature: [NEEDED, or "none"]
+
+Constraints:
+- Keep the function name, parameters and return value the same.
+- Do not change results for valid input.
+- Focus on readability, naming and idiomatic Python. Say so if you spot a correctness or edge-case risk (empty input, wrong item shape, float rounding), but do not change behavior for it unless I say so.
+- Keep it short. No new dependencies.
+
+Output format:
+1. The improved function in one code block.
+2. A short list of what you changed and why, one line each.
+3. Separately, any risks you noticed but did not change.
+
+Definition of done:
+- The new function returns the same result as the original for every valid input.
+- Each change in the list is tied to a reason.
+- Anything I should decide (validation, Decimal, type hints) is listed as a question, not done silently.
+
+What to do if unsure:
+Ask me, or mark the gap as [NEEDED]. Do not guess what the items contain or what "better" should include beyond the constraints above.
+```
+
+## What changed
+
+- **Added:** the seven sections, the code placed under Inputs, and a definition of done so "better" can be checked.
+- **Added:** [NEEDED] markers for the item structure, numeric type, Python version and callers, since the code does not say.
+- **Changed:** "better" is now scoped to readability and robustness with unchanged behavior. Otherwise the request could mean performance, a rewrite or new validation.
+- **Added:** a "risks noticed, not changed" output, so edge cases are reported without silently altering behavior.
+- **Left alone:** your wording ("Make this function better") and the code itself.
+
+## Second pass
+
+Once you answer the three questions, I would look at replacing the [NEEDED] markers with real details, and at whether you want type hints, validation or `Decimal` handling included in scope.

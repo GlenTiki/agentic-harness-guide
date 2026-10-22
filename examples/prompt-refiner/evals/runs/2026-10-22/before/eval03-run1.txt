@@ -1,0 +1,62 @@
+## Questions
+
+1. **Which tech stack and files does the signup page use?** Default: leave it as [NEEDED] so the assistant inspects the codebase first and does not assume a framework.
+2. **Is there an existing brand or design system (colors, fonts, logo, component library)?** Default: reuse whatever the project already has and add no new dependencies.
+3. **Should the change be visual only, or may the form fields, validation and copy change too?** Default: visual and layout only, with no changes to behavior, field names or submission logic.
+
+## Assumptions
+
+- "Professional" means clean, consistent and trustworthy, not a full redesign.
+- The page already works, so functionality must not break.
+- The assistant has access to the codebase.
+- The page should work on both desktop and mobile.
+- Accessibility basics (labels, contrast, keyboard use, focus states) count as part of looking professional.
+- Changes should stay within the existing stack, with no new dependencies unless approved.
+
+## Refined prompt
+
+```text
+Goal:
+Make our signup page look more professional.
+
+Context:
+This is the signup page for our product. "Professional" here means clean, consistent and trustworthy. Brand guidelines or design system: [NEEDED: colors, fonts, logo, or component library to follow, if any]. Target audience of the page: [NEEDED: who signs up, e.g. consumers or business users].
+
+Inputs:
+- The signup page source files: [NEEDED: file paths or framework/stack]
+- Existing styles, theme or component library in the project
+- Screenshot or URL of the current page, if available: [NEEDED, optional]
+- Any reference pages we like: [NEEDED, optional]
+
+Constraints:
+- Change visual design and layout only. Do not change form behavior, field names, validation rules, API calls or submission logic.
+- Do not change the wording of the copy unless it is clearly broken (typos, placeholder text). List any copy you changed.
+- Reuse the project's existing styles, tokens and components. Add no new dependencies without asking.
+- Keep it responsive (desktop and mobile) and accessible (labels, color contrast, visible focus states, keyboard navigation).
+- Keep changes small enough to review. Do not touch unrelated pages.
+
+Output format:
+- Make the changes in the code.
+- Then give a short summary: files changed, what changed visually and why, and anything you chose not to change.
+
+Definition of done:
+- The page looks consistent with the rest of the product and has clear spacing, alignment, typography and a visible primary action.
+- The form still submits and validates exactly as before.
+- It renders properly at mobile and desktop widths.
+- No new console errors, build errors or lint errors.
+
+What to do if unsure:
+Ask me, or mark the gap and continue with the safest option. Do not guess at brand colors, fonts or behavior. Do not change anything outside the signup page without asking first.
+```
+
+## What changed
+
+- **Added:** the missing sections (context, inputs, constraints, output format, definition of done, what to do if unsure). The original had only a goal.
+- **Added:** a visual-only boundary so a styling task does not alter signup behavior. This is my assumption, so answer question 3 if you want otherwise.
+- **Added:** responsive and accessibility requirements, because they are common parts of "professional" that the original left implicit.
+- **Added:** [NEEDED] markers for the stack, file paths, brand guidelines and audience, since I cannot know these.
+- **Left alone:** your goal sentence, word for word, to keep your voice and intent.
+
+## Second pass
+
+If you answer the three questions, I would next tighten the Constraints (for example, naming the exact component library) and replace the [NEEDED] markers. I would also check whether "professional" can be made more concrete, for instance by pointing to a reference page you admire.

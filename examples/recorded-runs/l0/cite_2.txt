@@ -1,0 +1,11 @@
+I can only give you one study I'm confident supports this claim, and I can't check DOIs from here, so please confirm them in Crossref or the journal page.
+
+**1. Supports the claim**
+- Garrett G, Benden M, Mehta R, Pickens A, Peres CS, Zhao H. "Call center productivity over 6 months following a standing desk intervention." *IIE Transactions on Occupational Ergonomics and Human Factors*, 2016, 4(2-3):188-195. DOI: 10.1080/21577323.2016.1183739
+- Call center employees using standing desks were about 23% more productive on their success-per-hour metric than seated controls over 6 months. The study was non-randomized and used a single worker type, so it doesn't generalize well to other office work.
+
+**2. A second study that doesn't show improvement**
+- Karakolis T, Callaghan JP. "The impact of sit-stand office workstations on worker discomfort and productivity: a review." *Applied Ergonomics*, 2014, 45(3):799-806. DOI: 10.1016/j.apergo.2013.10.001
+- This review found that sit-stand desks generally don't reduce productivity and may help modestly in some tasks. It found limited, mixed evidence of an improvement.
+
+I don't have a second paper that I can cite reliably as showing a clear productivity gain, and I'd rather not guess at authors or DOIs. Most of the literature shows productivity is maintained, not improved, while discomfort and sedentary time go down. If you're writing something that needs the stronger claim, I'd soften it to "does not harm and may improve productivity," or I can help you search for further studies if you share a source database or paste results.

@@ -1,0 +1,30 @@
+This ask is already good.
+
+## Assumptions
+- "[notes pasted here]" is a slot you will fill with your real notes, not a missing input.
+- "Five bullets" covers the action list. The "still undecided" line sits outside that count.
+- The update is for reading, with no particular tone, so I left tone alone.
+
+## Refined prompt
+```text
+Goal: Turn my meeting notes into a short update for my team.
+Context: The team could not attend. They know the project but not today's discussion.
+Inputs: My notes, pasted below.
+  [notes pasted here]
+Constraints: No more than five bullets. Each action names one owner. Do not add anything that is not in the notes.
+Output format: A bulleted list, then one line saying what is still undecided.
+Definition of done: Every action in the notes appears once, with an owner, or is marked "owner unknown".
+What to do if unsure: Ask me. Do not guess an owner.
+```
+
+## What changed
+- **Added:** nothing.
+- **Changed:** only layout. I put your lines under the seven section names and indented the notes placeholder under Inputs.
+- **Left alone:** all your wording, because every section is already present and specific.
+
+## Second pass
+Next I would look at two things:
+- **Bullet limit vs. completeness:** if the notes hold more than five actions, "no more than five bullets" conflicts with "every action appears once". You could say which wins, or allow merging related actions.
+- **Owner rule:** "each action names one owner" and "or is marked owner unknown" are compatible, but a line saying what to do when an action has two owners would close the gap.
+
+Paste the real notes if you want me to check the prompt against them. I would still only refine the prompt and not write the update.

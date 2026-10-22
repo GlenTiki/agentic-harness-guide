@@ -1,0 +1,56 @@
+## Questions
+
+1. **Whose budget is this?** Personal or household, or a business or project? *Recommended default: personal monthly budget.*
+2. **What is the budget for?** For example, cutting spending, saving for something, paying off debt, or just tracking. *Recommended default: get a clear picture of spending and set limits, with no specific goal.*
+3. **How should the assistant get your numbers?** You can paste them, upload a statement, or answer questions one at a time. *Recommended default: it asks you questions one at a time.*
+
+## Assumptions
+
+- The budget is personal and monthly.
+- You have no budgeting method in mind (50/30/20, zero-based, envelope), so the assistant may suggest one.
+- You haven't shared any income or expense figures yet.
+- You want a usable budget plan, not just general tips.
+- Currency and location are unknown and left as gaps.
+
+## Refined prompt
+
+```text
+Goal:
+Help me make a budget.
+
+Context:
+This is a personal budget for [NEEDED: me alone, or a household, and how many people]. I'm [NEEDED: new to budgeting, or have tried before]. My main reason for budgeting is [NEEDED: e.g. save more, pay down debt, control spending, or just track].
+
+Inputs:
+- Monthly income after tax: [NEEDED]
+- Fixed expenses (rent or mortgage, utilities, insurance, subscriptions, loan payments): [NEEDED]
+- Variable expenses (food, transport, fun, etc.): [NEEDED, rough estimates are fine]
+- Debts and balances, if relevant: [NEEDED]
+- Savings goals and target dates, if any: [NEEDED]
+- Currency and country: [NEEDED]
+
+Constraints:
+- Use only the numbers I give you. Do not invent or assume figures.
+- Keep it simple enough for me to maintain every month.
+- Plain language, no jargon without a short explanation.
+
+Output format:
+A budget table with categories, planned amounts and percent of income, followed by a short list of the 3 changes that would help most. Mention which budgeting method you used and why.
+
+Definition of done:
+The budget covers all my income and expenses, adds up with no unexplained gaps, matches my stated goal, and I can use it next month without further help.
+
+What to do if unsure:
+Ask me, one question at a time, for any missing input. If I can't answer, mark the gap clearly as [NEEDED] and don't guess.
+```
+
+## What changed
+
+- **Added:** the seven sections, a list of the inputs a budget needs, a no-guessing rule, and a definition of done.
+- **Changed:** nothing in your intent. "Help me make a budget" stays as the Goal.
+- **Left alone:** your casual, short wording in the Goal line.
+- **Why:** the original gave the assistant no income, expenses, goal or format, so it would have had to guess or reply with generic advice. Every missing fact is marked [NEEDED] rather than filled in.
+
+## Second pass
+
+Once you answer the three questions, I would tighten the Context and Inputs, and choose a budgeting method that fits your goal. I would also check whether the output format should be a spreadsheet layout instead of a table.

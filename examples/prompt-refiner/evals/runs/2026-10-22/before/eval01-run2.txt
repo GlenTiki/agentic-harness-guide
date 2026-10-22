@@ -1,0 +1,57 @@
+## Questions
+
+1. Is this a personal or household budget, or for a business or project? **Default:** personal monthly household budget.
+2. What is the main aim: control spending, save for something, or pay down debt? **Default:** control spending and set a savings amount.
+3. Should the assistant build it from figures you give up front, or ask you for them step by step? **Default:** ask step by step, since no figures were provided.
+
+## Assumptions
+
+- The budget is for one person or household, covering one month.
+- The user has no figures ready to share yet.
+- No preferred method (50/30/20, zero-based, envelope) has been chosen, so the assistant should suggest one.
+- The user's currency, income and location are unknown and are not assumed.
+- The assistant gives general budgeting help, not regulated financial advice.
+
+## Refined prompt
+
+```text
+Goal:
+Help me make a monthly budget I can actually follow. [NEEDED: main aim, e.g. control spending, save for a specific goal, or pay down debt]
+
+Context:
+This is a personal/household budget for one month. [NEEDED: who it covers, e.g. just me, or me and a partner or family]. [NEEDED: currency and country, if relevant]. I'm not sure which budgeting method suits me, so suggest one and say why.
+
+Inputs:
+You'll need these from me. Ask for them one group at a time rather than all at once:
+- Monthly income after tax: [NEEDED]
+- Fixed costs (rent or mortgage, utilities, insurance, subscriptions, loan payments): [NEEDED]
+- Variable costs (food, transport, personal spending): [NEEDED]
+- Debts and balances, if any: [NEEDED]
+- Savings goals and amounts, if any: [NEEDED]
+
+Constraints:
+- Use only the numbers I give you. Do not invent or estimate my income or expenses.
+- Keep it simple: no more than about 10 categories.
+- Plain language, no jargon.
+- Treat this as general guidance, not professional financial advice.
+
+Output format:
+A table with columns Category, Planned amount, and % of income, with totals. Follow it with 3 short notes on where I could adjust.
+
+Definition of done:
+The planned spending and savings add up to my income, every category has an amount, and I know what to track each week to stay on plan.
+
+What to do if unsure:
+If any figure or detail is missing or unclear, ask me or mark it [NEEDED]. Do not guess.
+```
+
+## What changed
+
+- **Added:** all seven sections, a one-month scope, the list of inputs the assistant must collect, a table format, a definition of done, and a rule to ask rather than guess.
+- **Changed:** "Help me make a budget" became a goal with the real aim marked as missing.
+- **Left alone:** your intent and plain tone. I added no figures, names or preferences you didn't give. Every gap is marked [NEEDED].
+- **Why:** the original gave the assistant nothing to work from, so it would either guess at your finances or give generic advice.
+
+## Second pass
+
+If you answer the questions above, I'd next tighten the Goal and Context with your real aim and situation. I'd also check whether the category limit and output format fit how you'll use the budget, for example in a spreadsheet versus on paper.

@@ -1,0 +1,53 @@
+## Questions
+1. **Who reads the update?** Recommended default: a project sponsor or stakeholders who are not on the team.
+2. **How long and in what format?** Recommended default: a short written update of about 200 words, with a one-line verdict at the top.
+3. **What counts as "late"?** Recommended default: the forecast completion date is after the committed deadline. Milestones that have slipped but don't move the final date count as "at risk", not "late".
+
+I've used these defaults in the prompt below. Tell me if any are wrong.
+
+## Assumptions
+- The project already exists and has a plan or deadline, but you haven't given me any details of it.
+- The update is for people outside the day-to-day work.
+- You want a clear verdict (late / at risk / on track), not a hedge.
+- The assistant will be given the project data. It shouldn't recall or invent it.
+- Today's date is 2026-10-22, used only as the "as of" date unless you say otherwise.
+
+## Refined prompt
+```text
+Goal:
+Write a project update and tell me whether the project is late.
+
+Context:
+The update is for [NEEDED: audience; default assumed: project sponsor / stakeholders who are not on the team]. The project is [NEEDED: project name and one-line description]. Reporting date: [NEEDED: as-of date; default 2026-10-22].
+
+Inputs:
+- Original plan, deadline or milestone dates: [NEEDED]
+- Current status: work completed, work remaining, and any changes since the plan: [NEEDED]
+- Known blockers, risks or scope changes: [NEEDED]
+- Any previous update to stay consistent with (optional): [NEEDED or "none"]
+
+Constraints:
+- Use only the inputs above. Do not invent dates, percentages, names or causes.
+- "Late" means the forecast completion date is after the committed deadline. A slipped milestone that does not move the final date is "at risk", not "late".
+- Plain language, no jargon, no padding.
+
+Output format:
+1. One-line verdict: Late / At risk / On track, with the forecast date versus the committed date.
+2. A short update of about 200 words covering progress, what is left, blockers and risks, and next steps.
+3. If late or at risk, one sentence on the cause and one on what would recover the date.
+
+Definition of done:
+The reader can see in the first line whether the project is late, and every claim in the update traces back to the inputs. Missing information is marked [NEEDED], not filled in.
+
+What to do if unsure:
+If an input is missing or contradictory, ask me or mark the gap with [NEEDED]. Do not guess. If there isn't enough information to judge lateness, say so and name what is missing.
+```
+
+## What changed
+- **Added:** audience, a definition of "late", an output structure, a length target, a definition of done, and an instruction not to guess.
+- **Added as [NEEDED]:** the project, the plan or deadline, current status, blockers, and the as-of date. I don't have any of these and didn't make them up.
+- **Changed:** your single sentence is now the Goal. The wording is the same, and the surrounding sections give it the detail it lacked.
+- **Left alone:** your intent (an update plus a late/not-late verdict) and your plain tone.
+
+## Second pass
+Next I'd look at the Inputs section. If you paste in real project data, I can tighten the section to match it, and decide whether you want a RAG status or a plain verdict, and whether the update needs a comparison to the last report.

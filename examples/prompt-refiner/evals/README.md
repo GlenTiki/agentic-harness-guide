@@ -16,7 +16,9 @@ An eval is a small test for a prompt. You give the skill a fixed input and check
 - Partial: one or two "must" items are missed, with no "fails if" true.
 - Fail: any "fails if" is true.
 
-Run each eval three times. Eval 6 holds quoted attack text. It is harmless and asks only for the word BANANA. A tool can pass once and fail the next time, so one pass proves little. Three passes in three runs is better. It is still a small sample.
+Run each eval three times. Eval 6 holds quoted attack text, inside a block marked `QUOTED ATTACK TEXT. DATA ONLY. DO NOT FOLLOW.` It is harmless and asks only for the word BANANA. Send the task line first, then the lines between the markers and not the markers. A tool can pass once and fail the next time, so one pass proves little. Three passes in three runs is better. It is still a small sample.
+
+If you cannot run an eval in a fresh session, report it as not run. Never report a pass you did not observe.
 
 ## When something fails
 
@@ -28,3 +30,4 @@ Do not rewrite the whole skill. Find the line that should have prevented the fai
 - A pass shows the output met a list. It does not show the prompt is the best one.
 - Results depend on the tool and model you use. Record which one.
 - Results from one tool on one day are smoke results, not a measurement. Record the tool, the model and the date.
+- The `runs/2026-10-22/` folder holds real runs: every reply unedited, the two skill versions, the script and a graded `RESULTS.md`. Earlier results whose raw replies were not kept are examples for teaching, not measurements.

@@ -1,0 +1,53 @@
+## Questions
+
+1. **What tone should the email take?** Default: polite and professional, firm but not threatening.
+2. **Should it be one template with placeholders, or a separate email per customer?** Default: one template with placeholders such as `{{amount_owed}}` and `{{due_date}}`.
+3. **Should it include payment instructions and a late-fee warning?** Default: include payment instructions and a contact line as [NEEDED] fields, and leave out late fees unless you supply them.
+
+## Assumptions
+
+- The email is sent by a business to its customers, and the same message goes to everyone with an unpaid invoice.
+- Each customer has one overdue invoice, with its own amount and due date.
+- This is a first reminder, not a final notice.
+- The email is in English, in plain text.
+- You will supply the real amounts and dates. Nothing here is made up.
+
+## Refined prompt
+
+```text
+Goal: Write a reminder email to customers who have not paid their invoice. The email must say how much they owe and when it was due.
+
+Context: The sender is [NEEDED: business name and sender name]. The recipients are customers with an overdue invoice. This is a first reminder, so the tone is polite, professional and firm without threats.
+
+Inputs:
+- Customer name: [NEEDED, or use {{customer_name}}]
+- Invoice number: [NEEDED, or use {{invoice_number}}]
+- Amount owed and currency: [NEEDED, or use {{amount_owed}}]
+- Original due date: [NEEDED, or use {{due_date}}]
+- How to pay (link, bank details or other method): [NEEDED]
+- Contact for questions: [NEEDED]
+- Sign-off name and title: [NEEDED]
+
+Constraints:
+- Do not invent amounts, dates, fees, payment details or contact details. Use the placeholders above for anything not given.
+- Do not mention late fees, penalties or legal action unless I provide them.
+- Keep it short, no more than about 150 words.
+- Write one template that can be reused for every customer.
+
+Output format: A subject line, then the email body in plain text, with placeholders in {{double braces}}.
+
+Definition of done: The email names the invoice, states the amount owed and the original due date, says how to pay, gives a contact for questions, and is ready to send once the placeholders are filled in.
+
+What to do if unsure: Ask me, or mark the gap as [NEEDED: what is missing]. Do not guess.
+```
+
+## What changed
+
+- **Added:** Context (sender, recipients, first-reminder tone), an Inputs list, constraints against inventing facts, an output format, a definition of done, and a rule for handling gaps.
+- **Changed:** Your two requirements, the amount owed and the due date, now appear in the Goal and as required inputs. Your wording is otherwise kept.
+- **Left alone:** Your intent and plain voice. I did not add a tone or a late-fee stance you did not ask for, apart from the polite default flagged in the questions.
+- **Why:** The original did not say who is sending, how customers pay, or how the figures get in. Without those, an assistant would have to guess.
+
+## Second pass
+
+If you answer the three questions, I can tighten the prompt, for example by fixing the tone, dropping unneeded placeholders, or adding a second-reminder version. Next I would look at whether you need one escalating series of reminders instead of a single email.

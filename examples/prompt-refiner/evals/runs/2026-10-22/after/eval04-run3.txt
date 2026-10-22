@@ -1,0 +1,28 @@
+This ask is already good.
+
+## Assumptions
+- The "[notes pasted here]" line is a slot you will fill when you use the prompt, not a gap in the ask.
+- The "one line" about what is undecided sits outside the five-bullet limit.
+- "Action" means a task someone has to do, not a decision or a piece of background.
+- The team needs only the update itself, with no greeting or sign-off.
+
+## Refined prompt
+```text
+Goal: Turn my meeting notes into a short update for my team.
+Context: The team could not attend. They know the project but not today's discussion.
+Inputs: My notes, pasted below.
+Constraints: No more than five bullets. Each action names one owner. Do not add anything that is not in the notes.
+Output format: A bulleted list, then one line saying what is still undecided.
+Definition of done: Every action in the notes appears once, with an owner, or is marked "owner unknown".
+What to do if unsure: Ask me. Do not guess an owner.
+
+[notes pasted here]
+```
+
+## What changed
+- **Added:** nothing.
+- **Changed:** nothing.
+- **Left alone:** all seven sections, because each one is present and specific. The constraints are testable, the done-check is concrete, and the "ask, don't guess an owner" rule already covers the main risk. Your wording stays as written.
+
+## Second pass
+I'd look at one thing next. The five-bullet limit and "every action appears once" can clash if your notes hold more than five actions. I'd add a rule for that case, such as merging related actions or telling you when the limit can't be met. Paste your real notes and I can check whether it comes up.

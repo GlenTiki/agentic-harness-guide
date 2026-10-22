@@ -1,0 +1,59 @@
+## Questions
+
+1. **Scope:** Should this cover visual styling only, or also layout, copy and form UX? *Recommended default: visual styling and layout only. No changes to form fields, validation or behavior.*
+2. **Brand:** Is there a brand guide, design system or existing palette to follow? *Recommended default: reuse whatever colors, fonts and components the site already uses.*
+3. **Responsiveness:** Does it need to work on mobile and desktop? *Recommended default: yes, both.*
+
+## Assumptions
+
+- "Our signup page" is an existing page in a codebase the assistant can access.
+- "Professional" means clean, consistent, trustworthy-looking, not a full redesign.
+- Functionality, routes and backend stay unchanged.
+- The user wants the changes made directly, not just suggested.
+- Accessibility basics (contrast, labels, focus states) count as part of looking professional.
+
+## Refined prompt
+
+```text
+Goal:
+Make our signup page look more professional.
+
+Context:
+This is our product's signup page. "Professional" here means clean, consistent and trustworthy-looking, as seen by new visitors deciding whether to sign up. [NEEDED: product/company type and the audience, if it affects tone]
+
+Inputs:
+- Location of the signup page code: [NEEDED: file path or repo]
+- Framework/styling approach in use: [NEEDED: e.g. React + Tailwind, plain CSS]
+- Brand guidelines, design system, logo, colors, fonts: [NEEDED: or "none, reuse what the site already uses"]
+- Screenshot or URL of the current page: [NEEDED, optional]
+
+Constraints:
+- Change visual styling and layout only. Do not change form fields, validation, submission logic, routes or backend code.
+- Reuse existing colors, fonts and components where they exist.
+- Work well on mobile and desktop.
+- Keep basic accessibility intact or improved: contrast, labels, focus states.
+- Do not add new dependencies without asking.
+
+Output format:
+- Make the changes directly in the code.
+- Then give a short summary of what you changed and why, listed by file.
+
+Definition of done:
+- The page looks visually consistent with the rest of the site and is clearly more polished (spacing, alignment, typography, color, button and input styling).
+- It renders correctly at mobile and desktop widths.
+- The signup flow works exactly as before.
+
+What to do if unsure:
+If anything above is missing or ambiguous, ask me or mark it clearly. Do not guess at brand choices, file locations or behavior changes.
+```
+
+## What changed
+
+- **Added:** All seven sections, a scope limit (styling only, no behavior changes), responsive and accessibility expectations, and a concrete definition of done.
+- **Marked as [NEEDED]:** The page location, framework, brand assets and audience, since none were given and I won't invent them.
+- **Changed:** "Look more professional" is now spelled out as spacing, alignment, typography, color and component styling, so the result can be checked.
+- **Left alone:** Your wording of the goal, "Make our signup page look more professional."
+
+## Second pass
+
+Once you answer the questions and fill in the [NEEDED] items, I'd look next at whether you want a specific look (for example minimal, corporate or friendly) and whether trust elements such as a privacy note or social proof are in scope.

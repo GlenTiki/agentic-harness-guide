@@ -1,0 +1,64 @@
+## Questions
+
+1. **What does "better" mean here?** Readability, speed, error handling, or all of these? *Default: readability and clearer naming, with the same results for valid input.*
+2. **What is in each item?** The code uses positions 1 and 2 but never says what they are, or what position 0 holds. *Default: unknown, so I marked it [NEEDED] and told the assistant not to guess names.*
+3. **Should bad input be handled** (missing fields, non-numbers, `None`)? *Default: no, keep current behavior and let the assistant mention risks instead of changing them.*
+
+## Assumptions
+
+- The language is Python, based on `def` and the syntax.
+- "Better" means a cleaner version of the same function, not a redesign.
+- The function name `total` and its single `items` parameter should stay, since other code may call it.
+- Each item is an indexable sequence with at least three elements, and `total` sums `item[1] * item[2]`.
+- The Python version is unknown.
+
+## Refined prompt
+
+```text
+Goal:
+Make this function better.
+
+Context:
+Python function that sums a value across a list of items. Other code may already call it. What "better" should prioritise: [NEEDED: readability / speed / error handling / all]. If not specified, prioritise readability and clearer naming.
+
+Inputs:
+- The function:
+
+  def total(items):
+      t = 0
+      for i in items:
+          t = t + i[1] * i[2]
+      return t
+
+- What each item contains (what positions 0, 1 and 2 mean): [NEEDED]
+- Python version: [NEEDED]
+
+Constraints:
+- Keep the function name `total` and the single `items` parameter.
+- Return the same result as the original for valid input.
+- Do not add error handling or change behavior on bad input unless asked. Mention any risks you notice instead.
+- Do not invent meanings for item positions. If they are not given, use neutral names or leave the indexing as is.
+
+Output format:
+The improved function in one code block, followed by a short list of what you changed and why.
+
+Definition of done:
+- The function returns the same total as the original for valid input, including an empty list.
+- Each change is explained in one line.
+- Any risks you saw but did not change are listed.
+
+What to do if unsure:
+Ask, or mark the gap as [NEEDED]. Do not guess what the items contain or what "better" means.
+```
+
+## What changed
+
+- **Added:** Context, Inputs, Constraints, Output format, Definition of done and What to do if unsure. The original ask had only the goal.
+- **Added:** [NEEDED] markers for what "better" means, what each item position holds, and the Python version, since none were given.
+- **Added:** constraints to keep the name, signature and results, so the assistant does not break callers.
+- **Changed:** nothing in your wording. "Make this function better." is the Goal verbatim.
+- **Left alone:** your code, pasted unchanged as data under Inputs.
+
+## Second pass
+
+Once you answer the three questions, I would tighten the Context and Constraints. I would also check whether you want tests or type hints in the output.

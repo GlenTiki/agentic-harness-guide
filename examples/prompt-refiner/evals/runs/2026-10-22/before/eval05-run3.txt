@@ -1,0 +1,56 @@
+## Questions
+
+1. **How firm should the tone be?** Default: a polite, friendly first reminder, with no late fees or threats.
+2. **One template or one email per customer?** Default: one template with placeholders for customer name, amount owed and due date, so you can merge in your data.
+3. **Should the email say how to pay?** Default: yes, with a placeholder for payment instructions and a contact for questions.
+
+## Assumptions
+
+- This is a first reminder, not a final notice.
+- The email is sent from a business to its customers, in English.
+- The amount and due date differ per customer, so they are placeholders.
+- You will supply sender details and payment instructions.
+- No late fees or legal consequences are mentioned unless you say so.
+
+## Refined prompt
+
+```text
+Goal:
+Write a reminder email to customers who have not paid their invoice. It must say how much they owe and when the invoice was due.
+
+Context:
+The sender is a business reminding customers about an overdue invoice. Business name: [NEEDED: business name]. Sender name and role: [NEEDED: who the email is from]. The tone is a polite, friendly first reminder.
+
+Inputs:
+- Customer name: [NEEDED: name, or use a placeholder like {{customer_name}}]
+- Amount owed: [NEEDED: amount and currency, or use {{amount_owed}}]
+- Original due date: [NEEDED: date, or use {{due_date}}]
+- Invoice number: [NEEDED: optional, or use {{invoice_number}}]
+- How to pay: [NEEDED: payment link, bank details or instructions]
+- Contact for questions: [NEEDED: email or phone]
+
+Constraints:
+- State the amount owed and the due date clearly.
+- Keep it short and courteous. Do not threaten or mention late fees or legal action unless I add that.
+- Use the placeholders above for details that differ per customer. Do not invent any figures, dates or names.
+
+Output format:
+A subject line and the email body, ready to send once the placeholders are filled in.
+
+Definition of done:
+The email names the amount owed and the original due date, tells the customer how to pay or whom to contact, and has no invented facts. Every missing detail is a clear placeholder.
+
+What to do if unsure:
+If a detail is missing, ask me or leave a clearly marked placeholder. Do not guess.
+```
+
+## What changed
+
+- **Added:** Context (sender, tone), Inputs (the details the email needs), Constraints (no invented facts, no threats), Output format, Definition of done and What to do if unsure. Your ask had none of these.
+- **Changed:** "the customers" became placeholders for the per-customer details (name, amount, due date).
+- **Left alone:** your core request, which is a reminder email stating the amount owed and the due date.
+- **Why:** the assistant can't know the amounts, dates or payment method, so each one is marked rather than guessed.
+
+## Second pass
+
+Once you answer the questions, I'd tighten the tone and check whether you need a firmer follow-up version for customers who are still unpaid after this reminder.
