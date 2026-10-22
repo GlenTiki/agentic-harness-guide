@@ -5,36 +5,184 @@ description: Turn a repeated job into a written workflow with steps, checks and 
 
 ## Scene
 
-TODO(writer)
+Someone says, "make our onboarding process run itself." It is a sentence everyone nods at. Then you ask what "run itself" covers, and the room goes quiet. Does it create accounts? Send the welcome message? Chase people who are late? A job that nobody has written down cannot be handed to an assistant, or to a new colleague. This page takes that one rough sentence and turns it into a written workflow you could actually run.
 
 ## The idea
 
-TODO(writer)
+**Refine a rough ask in visible passes until it becomes a written workflow: steps, owners, inputs, outputs, checks, gates and failure behaviour.** The result is a short spec you can review, hand over and test.
+
+The method is the six questions from [level 8](../../journey/08-design-anything/). The tool that does the refining is the [prompt refiner](../../appendix/prompt-refiner/), an instruction that improves a weak ask in passes you can see and compare. Each pass changes one kind of thing, and you read the difference in plain words before you accept it.
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant. This takes about five minutes.
+
+1. Paste this, then send it. It is a short form of the refiner. The appendix has the full version.
+
+```text
+You are a refiner. Improve my rough ask in three visible passes. Do not do the task.
+
+Pass 1: state the outcome and a checkable done.
+Pass 2: list the steps, and for each say the owner (a person or an assistant), the input and the output. Mark any step that is risky or hard to undo.
+Pass 3: add a check for each weak step, a human gate for each risky step, and what happens when a step fails.
+
+After each pass, write "What changed:" in one or two plain sentences. Ask me a question only if you cannot continue without the answer. Keep every pass short.
+
+My rough ask: make our onboarding process run itself.
+```
+
+2. Answer any question it asks. If it asks nothing, carry on.
+3. Read each "What changed" line. Then read the final pass against the example below.
+
+### The three passes, worked
+
+**Rough ask.** "Make our onboarding process run itself."
+
+**Pass 1: outcome and done.**
+
+```text
+Outcome: when someone joins, they have what they need to start work, and their manager knows it is ready.
+
+Done means all of these are true by the start date:
+- an account exists for each system on the role's standard list;
+- an equipment request is approved and placed;
+- a week-one plan exists and has an item for every working day;
+- a named buddy is confirmed;
+- the manager has ticked each item.
+```
+
+What changed: "run itself" became five items someone could tick. The vague outcome became a done you can check.
+
+**Pass 2: steps, owners, inputs and outputs.**
+
+```text
+1. Capture details. Owner: manager. Input: nothing. Output: a completed form.
+2. Validate details. Owner: assistant. Input: the form. Output: a list of missing fields, or "complete".
+3. Draft requests (accounts, equipment). Owner: assistant. Input: the form and the role's standard list. Output: draft requests. Risky: no, drafts only.
+4. Approve and grant. Owner: manager and system owners. Input: the drafts. Output: accounts and equipment. Risky: yes.
+5. Build week-one plan. Owner: assistant. Input: the form and a template. Output: a plan.
+6. Check the plan. Owner: a separate reviewer and a script. Input: the plan and the start date. Output: pass or a list of problems.
+7. Send welcome. Owner: manager. Input: a draft message. Output: a sent message. Risky: yes.
+8. Watch progress. Owner: assistant on a schedule. Input: the ledger. Output: a flag to the manager if an item is stalled.
+```
+
+What changed: the job became eight steps with a named owner for each. Two risky steps (4 and 7) are marked and given to people. The assistant never creates accounts.
+
+**Pass 3: checks, gates and failure.**
+
+```text
+Checks:
+- Step 2: required fields present, start date is in the future.
+- Step 3: requested access matches the role's standard list. Extras are flagged.
+- Step 6: every working day has at least one item; nothing is dated before the start date.
+
+Gates:
+- Step 4: the manager approves every request. Systems are changed by their owners only.
+- Step 7: the manager sends. The assistant only drafts.
+
+If a step fails:
+- Steps 1 to 3: stop, tell the manager what is missing, wait.
+- Step 6: send the plan back with the problems listed, once. If it fails again, give it to the manager as is, marked "unchecked".
+- Step 8: if the watcher cannot read the ledger, say so. Do not report "all clear".
+
+Log: one line per step with the run identity, status and reason.
+```
+
+What changed: every weak step has a check, every risky step has a gate, and each failure has a defined result. A restart can resume from the ledger instead of starting over.
+
+### The finished spec, as a table
+
+| Step | Owner | Input | Output | Check | Gate | If it fails |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 Capture details | Manager | None | Form | Required fields | None | Ask again |
+| 2 Validate | Assistant | Form | Missing list or "complete" | Start date in the future | None | Stop, tell manager |
+| 3 Draft requests | Assistant | Form, role list | Draft requests | Matches role list | None | Stop, flag extras |
+| 4 Approve and grant | Manager, system owners | Drafts | Accounts, equipment | Owner confirms | Human yes | Hold, no partial grants |
+| 5 Build plan | Assistant | Form, template | Plan | None here | None | Retry once |
+| 6 Check plan | Reviewer, script | Plan, start date | Pass or problems | Every day has an item | None | Return once, then mark "unchecked" |
+| 7 Send welcome | Manager | Draft | Sent message | Manager reads it | Human yes | Do not send |
+| 8 Watch | Assistant | Ledger | Flag | Reads ledger | None | Say "cannot read" |
+
+### The one-page diagram, in text
+
+```text
+[1 Form] -> [2 Validate] -> [3 Draft requests] -> (4 APPROVE) -> [5 Build plan]
+                 |                                                   |
+           missing? stop                                       [6 Check plan]
+                                                                     |
+                                                       (7 SEND WELCOME, manager)
+                                                                     |
+                                              [8 Watch: day 3 and day 10 flags]
+
+Legend: [ ] assistant or script step   ( ) human gate
+Every step writes one line to the log. Every run has an identity.
+```
 
 ## Under the bonnet
 
-TODO(writer)
+Each pass does one kind of work, and that is why the result is better than asking for "a good spec" in one go. Pass 1 fixes the target. Pass 2 breaks the target into steps without yet worrying about checks. Pass 3 adds the safety. If you ask for everything at once, the assistant tends to polish the wording and skip the hard decisions, such as who owns a step.
+
+The "What changed" lines are the part that makes the refinement reviewable. You do not have to trust the final text. You can read three short lines and decide whether each change is right. If a pass changed something you did not want, say so and redo that pass only.
+
+A spec like this also makes the later work easier. The table is close to a brief for each helper. The diagram shows where the gates sit. The log line format is already decided. And the "if it fails" column is the answer to the question most designs leave blank. The [workflows shelf](../) pairs this page with others that refine other kinds of ask.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+A refiner shows its edits, but it does not know your organisation. It will confidently invent an owner, a system or a policy that does not exist. Treat each invented detail as a question for a person, and have the refiner list its assumptions at the end of each pass.
+
+A workflow spec is a contract that drifts. Steps get skipped, owners change and checks go stale. Keep it in the same place as the work, version it, and review it when the failure log shows a pattern.
+
+The risk is a spec that is thorough and never run. Test it once by walking a real case through by hand before automating any step. In a people-operations team, this is the process document with named owners. In an engineering team, it is the runbook.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+When asked to define a workflow, produce it in passes: outcome and done, then steps with owners, inputs and outputs, then checks, gates and failure behaviour. After each pass, write what changed in plain words.
+
+Do not invent owners, systems or policies. List each assumption and ask the user to confirm.
+
+Mark every risky step. Give each risky step a human gate. Give no step the right to grant access or send a message unless the user says so.
+
+Finish with a table, a text diagram and the log format.
+
+To check: every step has an owner, an input, an output, a failure rule and, where risky, a gate.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Accepting a spec with no failure column.** It reads well and says nothing about the bad day. Fix: ask, for every step, "what happens if this fails?" and write the answer in the table.
+
+**Letting the assistant pick the owners.** It assigns the assistant to everything, including steps that are risky or need a person's authority. Fix: you decide the owner of each step, then ask for the rest. Keep access changes and sends with people.
+
+**Refining once and filing it away.** The spec matches how the process worked on the day, and drifts after that. Fix: walk one real case through by hand, fix what breaks, and review the spec when the log shows repeated failures.
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Turn a rough ask into a written workflow in three visible passes.
+- Write each step with an owner, an input and an output.
+- Mark risky steps and give them human gates.
+- Describe failure behaviour and a log format.
+- Draw the workflow as a one-page diagram in text.
+
+**Self-test**
+
+1. Why does the refiner write "What changed" after each pass?
+2. In the worked spec, why is the assistant not given step 4?
+3. Take the rough ask "make our weekly report run itself". What would you ask in pass 1?
+
+<details>
+<summary>Answers</summary>
+
+1. So you can review each change in plain words and redo one pass, instead of trusting a finished text you have not checked.
+2. Step 4 grants access, which is risky and hard to undo, and it needs a person's authority. The assistant drafts the request and a person approves it.
+3. What does the report contain, who reads it, when is it due, and what would make it wrong? The answers become a checkable done, such as "every figure traces to a source, and the reader has the report by Monday at nine".
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+Defining a workflow turns "do it for me" into a plan you can run; [research a decision](../research-a-decision/) does the same for a decision, where the risk is not a missed step but a confident answer built on weak evidence.

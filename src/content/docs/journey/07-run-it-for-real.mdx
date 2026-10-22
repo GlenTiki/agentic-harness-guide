@@ -1,40 +1,189 @@
 ---
 title: "Level 7: Run it for real"
-description: Predict where a many-step job fails first, keep an audit trail and cap the spend.
+description: Predict where a many-step job fails first, and add an audit trail, limits and safe restarts.
 ---
 
 ## Scene
 
-TODO(writer)
+*Last time: you split Mina's month-end into reader, calculator, checker and reporter helpers, each with a bounded brief.*
+
+A restaurant kitchen at the Saturday rush has no time for heroics. Every order ticket is pinned up. Every dish passes the pass, where someone looks at it before it leaves. When the fryer breaks, a person calls it out loud, and nobody keeps cooking chips into a cold fryer. A good kitchen is not one where nothing goes wrong. It is one where you can see what went wrong, and where a problem stays small. Mina's month-end run works on Tuesday. On Friday it does something odd, and nobody can say what.
 
 ## The idea
 
-TODO(writer)
+**A job with many steps fails more often than any one of its steps, so you measure it, record it and put limits on it.** Three ideas turn a clever demo into something you can leave alone:
+
+- **Reliability maths** tells you how often a many-step job succeeds, and which step to fix first.
+- **An [audit log](../../glossary/#audit-log)** is a written record of every step, so you can see what happened afterwards.
+- **Limits** cap time, spend and retries, so a bad run stays small.
+
+### Why many steps hurt
+
+Suppose each step is right 95 times out of 100. That sounds good. A job has ten steps in a row, and one wrong step spoils the result. The chance that all ten are right is 0.95 multiplied by itself ten times.
+
+```text
+0.95 x 0.95 x ... (ten times) = 0.95^10 = 0.599
+```
+
+About six runs in ten are right. This is **compounding error**: small error rates multiply along a chain.
+
+The table uses made-up numbers to show the shape of the effect. They are illustrative, not measurements of any real system.
+
+| Case | Setup | Arithmetic | Runs fully right |
+| --- | --- | --- | --- |
+| A | Ten steps, each 95% right | 0.95^10 | 59.9% |
+| B | Nine steps at 95%, but step 6 is the weak one at 80% | 0.95^9 = 0.630, then 0.630 x 0.80 | 50.4% |
+| C | As B, plus a check on step 6 that catches 90% of its errors and triggers a good retry | Step 6 becomes 0.80 + (0.20 x 0.90) = 0.98, then 0.630 x 0.98 | 61.8% |
+| D | A check with the same 90% catch rate after every step | Each step becomes 0.95 + (0.05 x 0.90) = 0.995, then 0.995^10 | 95.1% |
+
+Read the table like this. Case B shows one weak step drags the whole job below the average step. Case C shows that a single check on the worst step gives back about eleven points. Case D shows that checks everywhere help most, but each check costs time and money, and a check that is itself wrong has its own error rate. The numbers say where to look first. They do not say the real answer.
+
+To get real numbers, run the job many times on cases where you know the answer, and count. [Evals](../../glossary/#eval) from level 5 are the tool. Count per step if you can, so you know which one is weak.
+
+### The audit trail
+
+When the run goes odd on Friday, you need to look at what each step did. An audit log is a plain list of events, one per step, written as the step happens. Here is an example from Mina's run, with one line per step.
+
+```text
+run=2026-09-30-0412  step=read      status=ok    rows=412   secs=3    cost=0.01
+run=2026-09-30-0412  step=calculate status=ok    months=13  secs=9    cost=0.04
+run=2026-09-30-0412  step=check     status=FAIL  reason="repeated month: Feb" secs=2 cost=0.01
+run=2026-09-30-0412  step=stop      status=held  waiting_for=human
+```
+
+You can now trace the February slip. The calculator step reports thirteen months. The check step failed, and the run stopped there. The duplicate was produced at "calculate", not "read". That is a different fix from re-exporting the data.
+
+Over many runs, the same log answers a second question: how often. Counting the check failures per step across, say, twenty runs might show that "calculate" failed the months check three times, and "read" never did. That is an example, not a measurement, but it is the shape of a result that tells you which brief to fix.
+
+### Limits
+
+A run with no limits can run forever or spend without bound. Set these before you leave it alone:
+
+- **Time cap.** A step that takes more than, say, two minutes is treated as failed.
+- **Spend cap.** A run stops when it has used its budget of paid usage.
+- **Step cap.** A run stops after a fixed number of steps, so a loop cannot go round forever.
+- **Bounded retries.** A failed step may retry twice, with a pause. Then it stops and reports.
+
+:::tip[New to this]
+A **retry** is trying a failed step again. It helps when the failure was a hiccup, such as a slow network. It does not help when the failure is a wrong answer, because the same wrong answer often comes back. That is why you cap retries and add a check.
+:::
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant. This takes about five minutes. No special tools are needed.
+
+1. Work out the arithmetic yourself on paper. A job has eight steps. Seven are 97% right. One is 85% right. Calculate the chance of a fully right run. (Seven steps: 0.97^7 = 0.808. Then 0.808 x 0.85 = 0.687.)
+2. Ask an assistant to check your working and then explore the check. Paste this:
+
+```text
+A job has eight steps in a row. Seven steps are each right 97 percent of the time. One step is right 85 percent of the time. All eight must be right for the run to be right.
+
+1. Show the arithmetic for the chance that a run is fully right.
+2. Now add a check on the weak step that catches 90 percent of its errors and retries successfully. Show the new chance.
+3. Say in one sentence which change helped more: fixing the weak step to 95 percent, or adding the check. Show the arithmetic for both.
+
+These numbers are made up. Do not claim they describe any real system.
+```
+
+An example reply:
+
+```text
+1. Seven steps: 0.97^7 = 0.808. Times 0.85 = 0.687, so about 68.7 percent.
+2. Weak step becomes 0.85 + (0.15 x 0.90) = 0.985. 0.808 x 0.985 = 0.796, so about 79.6 percent.
+3. Fixing the weak step to 0.95 gives 0.808 x 0.95 = 0.768, about 76.8 percent. The check helps more here (79.6 versus 76.8).
+```
+
+3. Check each number against your own working. Did the assistant get the arithmetic right? It is a good habit to compute these yourself.
+4. Now write down your own audit log for a three-step job of your choice, in the style above. Give each step a name, a status and one detail.
 
 ## Under the bonnet
 
-TODO(writer)
+Reliability maths only works if steps are independent, which they rarely are. If the first step reads the wrong file, every later step is wrong in the same direction. Errors can also cancel, so the real number may be higher or lower than the multiplied one. Treat the multiplication as a rough guide to which part of the chain is fragile, then measure.
+
+An audit log is useful only if it is written as the step happens, not reconstructed afterwards. It records what the step was asked, what it returned in short form, whether it passed its check, how long it took, and what it cost. It does not need to hold the full text of every document. Keep personal data out of it. The log should let a stranger answer "what happened in run 0412?" without opening the original chat. The shelf pages on [observability](../../shelf/operations/observability/) and [cost and resources](../../shelf/operations/cost-and-resources/) go deeper.
+
+**What to monitor.** Keep it to a handful of numbers per run:
+
+| Signal | Why it matters |
+| --- | --- |
+| Runs started and runs finished | A gap means runs are dying quietly |
+| Check failures per step | Shows the weak step |
+| Retries per step | Rising retries mean a step is going bad |
+| Time per run and per step | Slow steps warn of trouble before a failure |
+| Spend per run | Catches a runaway before the bill does |
+| Time spent waiting for a human | A gate nobody answers is a stuck job |
+
+**Restart and partial failure.** What if the run dies after step 6 of ten? Without planning, you rerun from step 1, which costs time and may repeat side effects, such as sending a message twice. A run you can leave alone has these properties:
+
+1. **Each step saves its output** to a named place, with the run identity.
+2. **On restart, the run finds the last completed step** and resumes from the next one.
+3. **Steps with side effects are safe to repeat**, or they check a record first ("did I already send this?"). A step that can be run twice with the same result is called idempotent. Reading and calculating usually are. Sending and paying usually are not.
+4. **Steps that cannot be undone sit behind a human gate**, after the checks, as in level 4.
+5. **A half-finished run says so.** It leaves a status of "stopped at step 6, waiting" and never a half-written report that looks complete.
+
+So if Mina's run dies after the calculate step, the saved totals are still there. The restart skips reading and calculating, runs the check on the saved totals, and carries on. Nothing was sent, because sending is the last step, behind a gate.
+
+There is a more thorough method for turning per-step numbers into an end-to-end prediction, including the uncertainty. If you need it, a reliability-explainer approach models the whole pipeline and shows which step to fix first. The ideas above are the hand version of it.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+Independence is the weak assumption in the chain. Correlated failures, such as one bad input feeding several steps, make the real end-to-end rate differ from the product, and a check that shares the producer's model and prompt often shares its blind spots. A check is worth its cost only if its errors are mostly independent of the thing it checks, so a cheap deterministic check (a count, a schema, a sum against the bank) beats a second model asking "does this look right?".
+
+Bounded retries need backoff and a failure class. Retrying a deterministic wrong answer burns spend. Retrying a timeout is sensible. Cap total attempts per run, not only per step.
+
+Idempotency keys on side-effecting steps are the difference between a safe restart and a double payment. In a finance close, this is the run book and its journal entries. In an engineering release, it is the pipeline's resumable stages and its change log.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+Write one audit log line per step, as the step completes. Include the run identity, step name, status, a short reason on failure, duration and cost. Do not log secrets or full personal data.
+
+Enforce the time, spend, step and retry caps given to you. When a cap is reached, stop and report. Do not extend a cap yourself.
+
+Retry only failures that look transient. Do not retry a failed check. Retry at most the number of times you are told.
+
+Before a side-effecting step, check whether it already ran for this run identity. If it did, skip it.
+
+On restart, resume from the last completed step. Report the step you resumed from.
+
+To check: after any run, the log lets someone name the step that produced a given output.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Trusting the average step.** Each step looks fine, so the job looks fine. Fix: multiply, then find the weakest step. Put a check there first. Measure with known cases, as in level 5.
+
+**Logging nothing, or logging everything.** With no log, Friday's odd result is a mystery. With a full transcript of everything, nobody reads it and it holds data it should not. Fix: log one short line per step, with status, reason, duration and cost.
+
+**Setting no limits because "it has never run away".** The first runaway is the one that costs real money or sends the same message forty times. Fix: set time, spend, step and retry caps before you leave the run alone. Put anything irreversible behind a human gate.
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Work out the chance a many-step job is fully right, and say what the number does and does not tell you.
+- Put a check on the weakest step and explain what it buys.
+- Write an audit log line for a step, and use the log to trace a bad output.
+- Set time, spend, step and retry limits.
+- Say how a run behaves when it dies after step 6.
+
+**Self-test**
+
+1. A five-step job has every step at 90%. Roughly what share of runs are fully right, and what is the first thing you would do about it?
+2. Mina's run stopped after the check failed. The log shows the duplicate month first appears in the calculate step. Where do you look, and where do you not?
+3. A run sends a summary email as its final step, then crashes while writing the log. You restart it. What must be true so Mina does not get two emails?
+
+<details>
+<summary>Answers</summary>
+
+1. 0.9^5 = 0.59, about six in ten. Find the weakest step by counting on known cases, then add a check there or improve that step. Do not assume all five are equally weak.
+2. Look at the calculate step's brief and inputs. Do not re-export the data, because the read step produced twelve distinct months. The log has narrowed the search.
+3. The send step checks a record before sending, keyed on the run identity, and skips if it already ran. The send also sits behind a human gate, so a restart does not send without a person agreeing.
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+You can now run a known job safely, but a new job arrives and you do not know where to put the helpers, checks and gates; level 8 gives you a method for that.

@@ -5,36 +5,207 @@ description: Split a job across helpers with bounded briefs so they do not trip 
 
 ## Scene
 
-TODO(writer)
+*Last time: you wrote a checkable "done" for the money admin, and a separate reviewer ran a test that says "twelve distinct months, no repeats".*
+
+Moving house goes badly when one person does everything. By the fourth hour they are carrying a lamp, arguing with the van driver and have lost the kettle. It goes well when friends each get one job: one packs the kitchen, one drives, one holds the clipboard. Nobody needs to know the whole move. Mina's shop now has the same problem. Sam's month-end run for her has grown into one long chat that reads exports, adds up sales, checks fees and writes a summary. It is slow, and it forgets things halfway through.
 
 ## The idea
 
-TODO(writer)
+**Split a big job into small jobs, and give each helper a brief it can finish without you.** A helper here is a [sub-agent](../../glossary/#sub-agent): a second assistant that takes one task, works on it with its own fresh [context window](../../glossary/#context-window), and hands back a short result.
+
+Three ideas make this work:
+
+- **Delegation** is giving one task to one helper, with only what that task needs.
+- **A bounded [brief](../../glossary/#brief)** says what to do, where to look, what to return and what not to touch.
+- **A packaged [skill](../../glossary/#skill)** is a recipe you write once and any helper can follow.
+
+Sam splits Mina's month-end into four helpers.
+
+| Helper | One job | Returns |
+| --- | --- | --- |
+| Reader | Read the sales export and the fees file. Tidy the rows. | A clean table and a row count |
+| Calculator | Add up sales and fees by month. | Totals per month, and the month count |
+| Checker | Run the months check and the bank match. | Pass or fail, with the reason |
+| Reporter | Write the one-page summary for Mina. | A draft summary, never sent |
+
+The checker owns the months check. That is the February slip from level 1 onwards, now with a dedicated owner who does nothing else.
+
+Here is a real brief for the checker. Read it as a contract.
+
+```text
+GOAL
+Check that the monthly totals for last year cover twelve distinct months, each once.
+
+SCOPE
+Read only: monthly_totals.csv (in the shared folder, from the calculator).
+
+RETURN
+Reply in at most six lines:
+1. PASS or FAIL.
+2. The number of distinct months you counted.
+3. If FAIL: the month names that repeat or are missing.
+4. The sum of the twelve figures, to the cent.
+Do not paste the table back.
+
+DO NOT
+- Edit any file.
+- Fix a duplicate yourself. Report it.
+- Contact anyone or send anything.
+- Guess a missing figure. Say it is missing.
+
+IF STUCK
+If the file is missing or unreadable, reply FAIL with the reason. Do not look elsewhere.
+```
+
+Now the bad brief next to it.
+
+```text
+Check Mina's numbers and make sure they look right. Fix anything that's off.
+```
+
+That brief has no scope (which numbers, which file?), no return shape (a paragraph? a table?), no stop rule and an open licence to edit. A helper given it will wander, and will report in whatever shape it likes. You cannot check the result because you never said what "right" means.
+
+Helpers return **summaries, not transcripts**. A helper may read forty pages to find one answer. If it pastes all forty back, your own context window fills with noise and the lead assistant loses track of the job. A good return is short and checkable: a verdict, a count, a list of exceptions, and a pointer to where the details live.
+
+**Isolation.** Helpers must not trip over each other. Two ways work:
+
+- **One workspace each.** Each helper reads from a shared input and writes to its own folder or copy. Nobody writes to the same file.
+- **One writer at a time.** Reading can run in parallel. Writing waits its turn.
+
+Here is the honest question: do you need a team at all?
+
+| | One assistant | A team of helpers |
+| --- | --- | --- |
+| Best when | The job is short and fits in one sitting | The job has separable parts, or is long enough to blur |
+| Context | One window holds everything, until it fills | Each helper starts fresh with only its inputs |
+| Checking | The same assistant marks its own homework | A different helper can check, so errors are less likely to be shared |
+| Speed | Steps run one after another | Independent steps can run at once |
+| Cost of coordination | None | Writing briefs, merging results, more runs to pay for and to debug |
+| Failure | One long chat drifts quietly | Hand-offs fail loudly or lose detail between helpers |
+
+A team is not free. Every hand-off is a place for something to be lost. Use a team when the parts are really separate, or when you want an independent check. Use one assistant for a three-line job.
+
+:::tip[New to this]
+A **brief** is just a short written request with edges. Think of a note you leave a friend who is minding your flat: what to do, which rooms, what to leave alone, and what to tell you afterwards.
+:::
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant, and two separate chats. This takes about five minutes.
+
+1. Open chat one. This is the calculator. Paste this brief:
+
+```text
+GOAL
+Add up the monthly figures below and give me totals.
+
+SCOPE
+Use only these figures. Do not look anything up.
+
+RETURN
+At most four lines: the number of months you counted, then the sum, to the cent.
+
+DO NOT
+Guess a missing figure.
+
+Sales by month: Jan 410, Feb 380, Feb 380, Mar 455, Apr 520, May 610, Jun 590, Jul 470, Aug 430, Sep 515, Oct 660, Nov 790, Dec 1020
+```
+
+2. The list has February twice. Note the reply. An example reply:
+
+```text
+Months counted: 13
+Sum: 7,230.00
+```
+
+3. Open chat two. This is the checker. It must not see chat one. Paste the checker brief above, then add the calculator's reply and this line: "The figures are in the list below." Paste the same list.
+
+An example reply:
+
+```text
+FAIL
+Distinct months counted: 12 (13 rows)
+Repeated: Feb
+Sum of the twelve distinct figures: 6,850.00
+```
+
+4. Compare. The first chat counted thirteen months and did not mind. The second chat, with one job and fresh eyes, caught it. You have just built a two-person team with a hand-off.
+
+Try the bad brief ("check the numbers, fix anything off") in chat two instead, and compare the shape of the reply. That difference is the lesson.
 
 ## Under the bonnet
 
-TODO(writer)
+A helper is the same kind of model you already use, started in a new, empty context. It knows nothing of the main chat except what is in its brief. This is the point. A fresh helper has no tangle of earlier talk to drift on, and cannot be persuaded by an earlier mistake it never saw.
+
+A lead assistant (or you) splits the job, writes each brief, starts the helpers and reads the returns. The helpers do not usually talk to each other. They talk to the lead. That keeps the number of connections small: four helpers have four lines to the lead, not six lines between them.
+
+The return is the only thing that crosses the gap. This is why its shape matters. If the checker returns "PASS, 12 months, sum X", the lead can use it. If it returns an essay, the lead has to interpret it.
+
+Isolation matters because two helpers writing to the same file can overwrite each other. The usual fix is one workspace per helper. For code, that often means a separate copy of the project folder for each helper, so changes can be reviewed and merged one at a time. The shelf pages on [sub-agents](../../shelf/delegation/sub-agents/) and [workspace isolation](../../shelf/delegation/worktree-isolation/) go deeper.
+
+A skill packages a brief that you keep reusing. The month-end checker brief above is a good candidate. You write it once, name it, and any helper can be told "run the months check skill". Many tools let you save such recipes as named files, so the instructions load only when needed. The shelf page on [skills](../../shelf/delegation/skills/) covers how to write one well. The reader, calculator and reporter each get a skill too, and Sam's month-end run becomes four named recipes.
+
+:::note[Want consistency]
+Write each brief once, keep it in a file, and reuse it unchanged. If a helper gets something wrong, edit the brief, not the chat. Over time the briefs become a small library of recipes you trust.
+:::
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+Delegation moves the failure surface. A single agent fails by drifting. A team fails at the seams: a brief that omits a constraint, a return that drops a caveat, or two helpers that each assume the other validated the input. Contracts at each seam (typed or at least structured returns) matter more than clever prompts.
+
+Independence is the real benefit of a separate checker, and it is only real if the checker does not share the producer's inputs, assumptions or brief. A checker told "verify that the calculator is right" inherits the calculator's framing. Give it the raw data and the criterion instead.
+
+Parallelism raises cost and debugging effort. In a finance close, the equivalent is separating preparer and reviewer duties. In an engineering release, it is the author and the reviewer.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+When you delegate, write a brief with these fields: goal, scope, return format, prohibited actions, stop rule. Give the helper only the inputs it needs.
+
+Require a short structured return. Do not accept a transcript. If a return is missing a field, ask once, then report the gap.
+
+Do not let two helpers write to the same path. Give each its own workspace, or run writers one at a time.
+
+Never delegate a decision that needs a human gate. Pass the helper's result to the human.
+
+To check: every brief you wrote names its inputs, its return shape and at least one prohibition.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Writing a brief that says "make it good".** It happens because the writer knows what they mean. The helper does not. Fix: write the goal, the scope, the exact return shape and what not to touch. If you cannot say how you would check the result, the brief is not finished.
+
+**Letting helpers share one workspace.** Two helpers edit the same file and one result quietly vanishes. Fix: give each helper its own folder or copy, or let only one helper write at a time. Merge their outputs yourself, or through a reviewed step.
+
+**Asking the producer to check itself, and calling it a team.** The same helper that made the mistake reads its own work and agrees with it. Fix: the checker gets the raw input and the criterion, and a separate brief. It should not see how the producer reasoned.
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Split a job into helper tasks that each have one purpose.
+- Write a bounded brief with goal, scope, return, prohibitions and a stop rule.
+- Explain why a helper returns a summary and not a transcript.
+- Choose between one assistant and a team, and name the cost of the team.
+- Keep helpers from overwriting each other by isolation.
+
+**Self-test**
+
+1. Why does Sam give the months check to a dedicated checker instead of asking the calculator to "double check"?
+2. A helper returns six pages of reasoning. Which of the brief's fields was missing, and what is the cost of accepting it?
+3. You must update one shared sheet from three helpers' results. How do you stop them clobbering each other?
+
+<details>
+<summary>Answers</summary>
+
+1. The calculator would be checking its own work with its own framing and inputs, so it tends to repeat its own mistake. A checker with a fresh context, the raw data and one criterion is independent.
+2. The return format. Accepting the transcript fills the lead's context with noise and hides the verdict. Ask for a short structured return: a verdict, a count, exceptions.
+3. Have each helper write its result to its own file, then run one writer step that merges them into the sheet, or let helpers write one at a time. Never let all three write the same place at once.
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+The team works on Tuesday, but you have no record of what each helper did, and no limit on what a bad run costs; level 7 makes the run safe to leave alone.

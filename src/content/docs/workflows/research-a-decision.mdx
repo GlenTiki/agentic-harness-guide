@@ -1,40 +1,189 @@
 ---
 title: "Workflow: research a decision"
-description: Research a choice with sources, a comparison table and a stated recommendation. Pairs with level 6.
+description: Turn "should we move to X?" into criteria, sources, a comparison table and a decision memo.
 ---
 
 ## Scene
 
-TODO(writer)
+Mina wants a card reader for her market stall. She asks an assistant, "which card reader should I get?" It names one, with confidence, and a very tidy paragraph. Mina nearly orders it. Then she wonders what the answer was based on, and the paragraph has no way to tell her. A confident recommendation without criteria, sources or doubts is a coin toss in a nice jacket. This page turns a vague "should we" into a question that can be answered, checked and argued with.
 
 ## The idea
 
-TODO(writer)
+**Research a decision by fixing the question, the criteria and the sources first, then comparing, then trying to prove yourself wrong.** The output is a short memo that says what to do, how sure you are, and what would change your mind.
+
+The same shape fits "should we move to X?", "which laptop?" and "which vendor?". The refining is done with the [prompt refiner](../../appendix/prompt-refiner/), in passes you can read. The design follows the [six-step method](../../journey/08-design-anything/) from level 8: a checkable done, honest steps, a gate before anything risky, and a plan for failure.
 
 ## Try it
 
-TODO(writer)
+You need any chat assistant with the ability to search or read pages (or one where you paste the sources yourself). This takes about five minutes.
+
+1. Paste this refiner prompt, then send it:
+
+```text
+You are a refiner. Improve my rough ask in three visible passes. Do not answer the question.
+
+Pass 1: turn the ask into one clear question with a decision date and what "decided" means.
+Pass 2: propose criteria with weights that add up to 100, and a sources policy (what counts as a good source, how to handle dates, what to do when sources disagree).
+Pass 3: add a disconfirming step (what evidence would change the answer), and a memo format.
+
+After each pass, write "What changed:" in one or two plain sentences. List any assumption you made. Never invent a source or a figure.
+
+My rough ask: which card reader should Mina get for her market stall?
+```
+
+2. Answer its questions about what matters to Mina. Be honest: cost, working without a signal, how fast money arrives.
+3. Read the three "What changed" lines. Compare the result with the worked example below.
+
+An example of pass 1:
+
+```text
+Question: Which of three card readers should Mina buy for market days, by the end of the month?
+Decided means: one reader chosen, with a reason she can say in two sentences and a named review date.
+Assumptions: she sells in person only; she has a phone; she sells under about 40 items a day. (Confirm.)
+```
+
+### The worked refinement
+
+**Criteria and weights.** Weights add up to 100. Each criterion says how it is judged, so two people would score it the same way.
+
+| Criterion | Weight | How it is judged |
+| --- | --- | --- |
+| Total yearly cost at Mina's sales level | 30 | Fees plus device cost, worked out from published prices |
+| Works with a poor signal | 25 | Official statement of offline mode, plus user reports |
+| Ease of use at a busy stall | 15 | Setup steps, time to take a payment |
+| Money arrives quickly | 15 | Published payout time |
+| Support when it breaks | 15 | Support channels and hours, as published |
+
+**Sources policy.**
+
+- Prefer **primary sources**: the vendor's own price page and terms, the regulator, official documentation. They say what the vendor promises.
+- Add **independent sources** for claims a vendor will not make against itself, such as reliability in practice. Treat reviews as opinions, not facts.
+- **Date every source.** Write the date you read it. Prices and terms change. Ignore a source with no date for anything that can change.
+- **When sources conflict**, do not average them. Report both, say which is primary, and mark the claim as uncertain.
+- **If you cannot find a source, say so.** Write "not found". Never fill a gap with a guess.
+
+**Comparison table.** The numbers below are placeholders to show the layout. They are not real products or real prices. Scores are 1 (poor) to 5 (strong). Confidence says how well the score is supported.
+
+| Criterion (weight) | Option A | Conf. | Option B | Conf. | Option C | Conf. |
+| --- | --- | --- | --- | --- | --- | --- |
+| Cost (30) | 4 | High: published price | 3 | High: published price | 5 | Medium: price page undated |
+| Poor signal (25) | 3 | Medium: vendor claim only | 5 | High: official docs and two independent reports | 2 | Low: no source found |
+| Ease (15) | 5 | Medium: one reviewer | 3 | Medium: one reviewer | 4 | Low: marketing page |
+| Payout (15) | 3 | High: official terms | 4 | High: official terms | 2 | High: official terms |
+| Support (15) | 3 | Medium | 4 | Medium | 2 | Low |
+
+The weighted score is each score times its weight, added up. For Option B: 3 x 30 + 5 x 25 + 3 x 15 + 4 x 15 + 4 x 15 = 90 + 125 + 45 + 60 + 60 = 380 out of 500. For A it is 120 + 75 + 75 + 45 + 45 = 360. For C it is 150 + 50 + 60 + 30 + 30 = 320. B leads, but only by 20 over A, and C's low confidence rows could change its score a lot. A narrow lead with thin evidence is a reason to look further, not to celebrate.
+
+**The disconfirming step.** Before the memo, the assistant (or better, a separate helper with a fresh brief) tries to prove the leader wrong:
+
+```text
+Assume Option B is the wrong choice. Find the three strongest reasons it could be wrong for Mina. For each:
+- say what evidence would show it, and where you looked;
+- say whether you found it, did not find it, or could not look;
+- change no scores yourself. Report only.
+```
+
+An example reply:
+
+```text
+1. Offline payments may be held until the signal returns, delaying the payout. Looked in: official terms. Found: terms say offline payments are stored and sent later. Not found: any limit on how long.
+2. The device may cost more than it seems once accessories are added. Looked in: the price page. Found: a charger is sold separately.
+3. Support may be email only. Could not look: the support page was not available.
+```
+
+Item 3 becomes an open question in the memo. Item 1 lowers confidence in B's payout score.
+
+**The decision memo.** Keep it to one page.
+
+```text
+DECISION MEMO: Card reader for market days. Date: <date>. Review: <date>.
+
+Recommendation: Option B.
+Confidence: medium.
+Why, in two sentences: <reason tied to the top two weighted criteria>.
+
+What it rests on:
+- <claim> (source, date read)
+- <claim> (source, date read)
+
+What would change this:
+- If offline payments are held for longer than <limit>, choose A.
+- If support turns out to be email only, reconsider.
+
+Open questions: <list, each with who can answer>.
+Not found: <list of things searched for and absent>.
+Decision needed from: Mina, by <date>.
+```
 
 ## Under the bonnet
 
-TODO(writer)
+The reason to fix the question, criteria and sources before searching is that an assistant, like a person, will otherwise find evidence for whatever it leans towards. Writing the weights first removes the temptation to adjust them after you see which option wins. This is the same logic as a definition of done: decide what good looks like before the work.
+
+The confidence column is there so a number does not sound surer than it is. A score backed by a primary source and a score backed by one anonymous review are not the same, and the table should show it. Weighted totals combine scores into one number, and the number hides that mixing. The memo's "what would change this" is what keeps the number honest.
+
+The disconfirming step exists because the first plausible answer tends to attract support. Asking for the three best reasons the answer is wrong gives the evidence a fair hearing. It works better as a separate task with a clean brief, as in [level 6](../../journey/06-hire-a-team/), because a helper that has just written the case is poorly placed to attack it. For the reasoning behind independent review, see the [independent review](../../shelf/quality/independent-review/) page.
+
+**Never let it invent a source.** An assistant that cannot find a source may produce a plausible one: a real-looking title, author, link or quote that does not exist. This is a [hallucination](../../glossary/#hallucination), and research tasks invite it. Require a link or a quoted passage for every claim in the memo. Open each link yourself before you rely on it. If a source cannot be opened, mark the claim "unverified" or remove it. Prefer "not found" over a guess, and tell the assistant that "not found" is an acceptable answer.
 
 ## Expert corner
 
-TODO(writer)
+:::caution[Expert corner]
+Weighted scoring is a model of preferences, and it is sensitive to the weights. Check robustness: change each weight by a few points and see whether the leader changes. If it does, the decision is closer than the table suggests and the memo should say so. Scores on different scales also need care: a 1 to 5 score from a cost number and a 1 to 5 score from an opinion carry different information.
+
+Retrieval is not verification. An assistant that reads a page can still misread it, and a search can surface the SEO-optimised answer rather than the primary one. Spot-check claims against the cited page, especially numbers and negations.
+
+Beware anchoring on the order of options and on the first source read. Randomise the order for the disconfirming pass if you can. In a procurement team, this is the evaluation matrix with an audit trail. In an engineering team, it is the design decision record.
+:::
 
 ## Agent note
 
-TODO(writer)
+:::note[Agent note]
+When asked to research a decision, first state the question, the criteria with weights and the sources policy. Ask the user to confirm them before you search.
+
+Prefer primary sources. Record the date you read each source. When sources disagree, report both and mark the claim uncertain.
+
+Never invent a source, quote or figure. If you cannot find evidence, write "not found". Include a link or a quoted passage for each claim.
+
+Add a confidence level to each score. Run a disconfirming step against the leading option. Do not change scores during that step.
+
+Finish with a memo: recommendation, confidence, what it rests on, what would change it, open questions. The user decides.
+
+To check: every claim in the memo has a source, a date and a confidence.
+:::
 
 ## Mistakes people make
 
-TODO(writer)
+**Asking "which is best?" with no criteria.** The assistant picks its own criteria and does not tell you. Fix: write the criteria and weights first, and say how each is judged.
+
+**Trusting a citation you have not opened.** It looks like a source, and it may not exist or may say something else. Fix: open every link before you rely on it. Mark anything unopened as unverified. Allow "not found" as a valid answer.
+
+**Skipping the attack on the winner.** The first good-looking answer wins, and nobody looks for the reason it fails. Fix: give a separate helper the leader and ask for the three best reasons it is wrong. Put what survives in the memo under "what would change this".
 
 ## Checkpoint
 
-TODO(writer)
+You can now:
+
+- Turn a vague "should we" into a question with a decision date and a meaning of "decided".
+- Write criteria with weights and say how each is judged.
+- Set a sources policy covering primary sources, dates and conflicts.
+- Build a comparison table with a confidence column.
+- Run a disconfirming step and write a one-page decision memo.
+
+**Self-test**
+
+1. Why are the weights written before the search, and what could go wrong if they are not?
+2. Two sources disagree about a price. One is the vendor's price page, read today. The other is a review from last year. What goes in the memo?
+3. An assistant gives you a quote and a link for a claim, and you cannot open the link. What do you do?
+
+<details>
+<summary>Answers</summary>
+
+1. Writing them first stops the weights drifting to favour whichever option you already like. Without that, the process can end up justifying a decision made by instinct.
+2. The vendor's page is the primary source and is current, so use it, with its date. Mention the review's different figure as a conflict and mark the claim as checked against the vendor. Do not average them.
+3. Treat the claim as unverified. Search for the claim yourself, or remove it from the memo. Do not accept the quote because it sounds right.
+
+</details>
 
 ## Bridge
 
-TODO(writer)
+A decision made well still has to be carried out, which means more steps, owners and checks; that is the work of [define a workflow](../define-a-workflow/).
