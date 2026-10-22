@@ -54,6 +54,6 @@ Approval prompts do not scale. A person who clicks "yes" two hundred times a day
 
 Add the `deny` rules above, enable the sandbox, leave the network allow list empty and add only the registries your build needs.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt". Claude Code on that date: 2.1.308. The docs page states no version of its own. The settings and sandboxing details were not re-fetched on that date and are Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt". Claude Code on that date: 2.1.309. The docs page states no version of its own. The settings and sandboxing details were not re-fetched on that date and are Not checked against current docs.</p>
 
 **Next:** [Capability gating](../capability-gating/)

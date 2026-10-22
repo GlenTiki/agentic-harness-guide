@@ -13,12 +13,11 @@ A friend asks Sam to read over their cover letter. Sam finds three typos in a mi
 
 **Say what "done" means in a way a stranger could check, and let a formula or someone other than the author do the checking.**
 
-Four ideas carry this:
+Three ideas carry this:
 
 - **A checkable [definition of done](../../glossary/#definition-of-done).** A short list of facts that are true when the work is finished, each one something you can test by looking, counting or comparing.
 - **A [test](../../glossary/#test).** A check that gives pass or fail. A formula gives the same answer every time, so trust it over a second chat.
 - **An independent [reviewer](../../glossary/#reviewer).** A second pair of eyes that is not the author. Use one where a formula cannot do the job.
-- **[Evals](../../glossary/#eval).** A small set of fixed cases you run every time you change the ask or the instruction file, so you can see whether the change helped.
 
 ### Writing a done a stranger could check
 
@@ -53,7 +52,7 @@ A reviewer in the same chat as the author carries the author's reasoning. It rea
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant and a spreadsheet. This takes about 20 minutes. Needs a laptop. You will get some work, check it with a formula, practise a review in a fresh chat, and prove each check can fail.
+You need any chat assistant and a spreadsheet. This takes about 30 minutes. Needs a laptop. You will get some work, check it with a formula, practise a review in a fresh chat, and prove each check can fail.
 
 No spreadsheet? Skip step 2 and step 3. Ask the assistant to list the twelve figures one per line, count the lines yourself, and add the figures with a calculator. Steps 4 and 5 then work on a phone.
 
@@ -174,7 +173,9 @@ Tests give a check three useful properties. They give the same answer each time,
 Each extra chat app or model you use for a review is another processor of the data. Use a separate chat or project for each client, with memory off when the data identifies a client. The [professional guardrails](../professional-guardrails/) page covers sampling and the working paper that records a review.
 
 <details class="go-deeper">
-<summary>Go deeper: hold the rubric still, and keep a held-out case</summary>
+<summary>Go deeper: evals, the rubric and a held-out case</summary>
+
+An [eval](../../glossary/#eval) is a small set of fixed cases you run every time you change the ask or the instruction file, so you can see whether the change helped. The tiny eval table at the end of Try it is one.
 
 When you compare two versions of your ask, score both on the same three cases with the same pass rule. Use the same scoring rules both times. If you change the rubric because the new version looks better, you have moved the ruler and the comparison means nothing. Change the [rubric](../../glossary/#rubric) in its own step, and re-score the old version too.
 

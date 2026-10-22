@@ -58,6 +58,6 @@ claude mcp list
 
 List your configured servers. Remove any you have not used this month. For each one that stays, write down the credential scope and the pinned version in the repository.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/mcp. Quoted line: "Verify you trust each server before connecting it. Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.308. The docs page states no version of its own. The sandboxing page: Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/mcp. Quoted line: "Verify you trust each server before connecting it. Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.309. The docs page states no version of its own. The sandboxing page: Not checked against current docs.</p>
 
 **Next:** [Spec-driven development](../../quality/spec-driven-development/)

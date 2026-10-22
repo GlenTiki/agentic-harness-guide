@@ -54,6 +54,6 @@ git merge-base --is-ancestor <base-commit> <agent-branch> && echo "based on the 
 
 Before the next parallel task, create two worktrees by hand, point one agent at each, and merge both back. You will see the base-branch behaviour first-hand.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/sub-agents. Quoted line: "Set to `worktree` to run the subagent in a temporary git worktree, giving it an isolated copy of the repository branched by default from your default branch rather than the parent session's `HEAD`." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/sub-agents. Quoted line: "Set to `worktree` to run the subagent in a temporary git worktree, giving it an isolated copy of the repository branched by default from your default branch rather than the parent session's `HEAD`." Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
 
 **Next:** [Skills](../skills/)

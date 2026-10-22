@@ -16,7 +16,8 @@ SHOULD_BLOCK = [
     "git push --force-if-includes", "/usr/bin/git push -f", "git -C . push --force", "status; git push -f",
     "git push origin :feature", 'sh -c "git push -f"', "bash -c 'git push --force'", "git push origin main --force",
     "git push --forc origin", "git push -fu origin main", "git push origin HEAD:main --force",
-    "GIT_SSH_COMMAND=x git push -f", "env git push -f", "git push origin $(echo +main)",
+    "GIT_SSH_COMMAND=x git push -f", "env git push -f", "git push origin $(echo +main)", "(git push -f)",
+    "echo $(git push --force)",
 ]
 SHOULD_ALLOW = [
     "git status", "git push origin main", "git push -u origin feature-fix", "git log --grep push",

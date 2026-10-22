@@ -40,7 +40,7 @@ An instruction file is advice. The model may forget it or read it another way, a
 
 **4. Parse the command. Do not match text.** A hook that looks for the string `push --force` misses `git push origin main -f`, because the flag comes later. The sample below splits the command into words with `shlex` and looks at the flags. It reads the tool call as JSON on standard input. It is a teaching sample, not a security boundary.
 
-The sample blocks a `git push` that carries any of these: `--force`, `--force-with-lease`, `--force-if-includes`, `--delete`, `--mirror` or `--prune`; any abbreviation of those that is five or more characters long counting the two dashes (so `--del` and `--forc` are blocked); a short flag group that contains `f` or `d`; or a refspec that starts with `+` or `:`. It recognises `git` by its file name, so `/usr/bin/git` and `env git` count. It also looks inside a quoted string, so `sh -c "git push -f"` and `bash -c '...'` are blocked. It exits 2 when it cannot read the call. It blocks nothing else.
+The sample blocks a `git push` that carries any of these: `--force`, `--force-with-lease`, `--force-if-includes`, `--delete`, `--mirror` or `--prune`; any abbreviation of those that is five or more characters long counting the two dashes (so `--del` and `--forc` are blocked); a short flag group that contains `f` or `d`; or a refspec that starts with `+` or `:`. It recognises `git` by its file name, so `/usr/bin/git` and `env git` count, and a leading `(`, `{`, `$(` or backtick is ignored. It also looks inside a quoted string, so `sh -c "git push -f"` and `bash -c '...'` are blocked. It exits 2 when it cannot read the call. It blocks nothing else.
 
 ```python
 #!/usr/bin/env python3
@@ -54,6 +54,7 @@ RISKY_SHORT = "fd"
 
 
 def is_risky_flag(token):
+    token = token.rstrip(")}`")
     if token.startswith("--"):
         name = token.split("=")[0]
         return len(name) >= 5 and any(long.startswith(name) for long in RISKY_LONG)
@@ -66,7 +67,7 @@ def is_risky_push(tokens):
     for index, token in enumerate(tokens):
         if " " in token and is_risky_push(shlex.split(token)):
             return True
-        if os.path.basename(token) == "git" and "push" in tokens[index:]:
+        if os.path.basename(token.lstrip("({$`")) == "git" and "push" in tokens[index:]:
             after_push = tokens[tokens.index("push", index) + 1:]
             return any(is_risky_flag(flag) for flag in after_push)
     return False
@@ -121,7 +122,7 @@ The same file is at `examples/hook-sample/block_force_push.py`. A test file next
 The table below is the output of `python3 examples/hook-sample/test_matrix.py` on 2026-10-22. It ran on the script, not on the harness. It shows what the script does with a given input. It does not show that the harness calls the script.
 
 <details>
-<summary>The 30 command rows and 6 malformed-input rows</summary>
+<summary>The 32 command rows and 6 malformed-input rows</summary>
 
 | Command | Exit code | Result |
 | --- | --- | --- |
@@ -149,6 +150,8 @@ The table below is the output of `python3 examples/hook-sample/test_matrix.py` o
 | `GIT_SSH_COMMAND=x git push -f` | 2 | blocked |
 | `env git push -f` | 2 | blocked |
 | `git push origin $(echo +main)` | 2 | blocked |
+| `(git push -f)` | 2 | blocked |
+| `echo $(git push --force)` | 2 | blocked |
 | `git status` | 0 | allowed |
 | `git push origin main` | 0 | allowed |
 | `git push -u origin feature-fix` | 0 | allowed |
@@ -208,6 +211,6 @@ Treat the hook as one layer. It reduces the common routes. It does not close eve
 
 Add one `PostToolUse` hook on `Edit|Write` that runs your formatter. Add one `PreToolUse` hook on `Bash` that blocks the single command you fear most. Trigger both on purpose to confirm they fire.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.308. The docs page states no version of its own. The sample and matrix were run on 2026-10-22 with Python 3 and are in the repository.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.309. The docs page states no version of its own. The sample and matrix were run on 2026-10-22 with Python 3 and are in the repository.</p>
 
 **Next:** [Permissions and sandboxing](../permissions-and-sandboxing/)

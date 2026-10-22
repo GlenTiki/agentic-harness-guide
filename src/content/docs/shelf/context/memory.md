@@ -52,6 +52,6 @@ Never store secrets or personal data in memory files that are committed or share
 
 Create one `memory/` directory with an index file of one-line entries. Add an entry the next time you correct the agent. Review the index monthly and delete what is no longer true.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/memory. Quoted line: "Each Claude Code session begins with a fresh context window." Claude Code on that date: 2.1.308. The docs page states no version of its own. The hooks reference was not re-fetched for this page: Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/memory. Quoted line: "Each Claude Code session begins with a fresh context window." Claude Code on that date: 2.1.309. The docs page states no version of its own. The hooks reference was not re-fetched for this page: Not checked against current docs.</p>
 
 **Next:** [Hooks](../../control/hooks/)

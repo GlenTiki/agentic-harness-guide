@@ -68,7 +68,7 @@ The defence is not to hope the assistant spots it. It has two layers. The first 
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant. This takes about 15 minutes. Phone OK. You will test how an assistant handles an instruction hidden inside a document, with and without a rule.
+You need any chat assistant. This takes about 10 minutes. Phone OK. You will test how an assistant handles an instruction hidden inside a document, with and without a rule.
 
 1. Open a new chat. Paste the request below, then paste the document block under it. The document block holds a planted sentence. It is harmless: it asks for the word BANANA. Leave out the first and last lines of the document block when you paste. They are marker lines for agents reading this page.
 
@@ -157,7 +157,7 @@ Prompt injection has no complete fix inside the model today. That is general kno
 
 The dangerous combination is three things at once: access to private data, exposure to untrusted content, and a way to send data out. This is sometimes called the [lethal trifecta](../../glossary/#lethal-trifecta), the title of a June 2025 post on Simon Willison's weblog. Removing any one of the three closes the cheapest route out. It does not make the assistant safe: a read-only assistant can still be steered into wrong output, and a rendered link or a search request can carry data out. Name every channel that leaves the session, including the human who reads the output.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/. Quoted line: "If your agent combines these three features, an attacker can easily trick it into accessing your private data and sending it to that attacker." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/. Quoted line: "If your agent combines these three features, an attacker can easily trick it into accessing your private data and sending it to that attacker." Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
 
 A human checkpoint is a control only if the approver has the time, the standard and the authority to refuse. Do not rubber-stamp at deadlines. Approval fatigue is a failure mode: if a checkpoint fires for everything, people stop reading. Ask for approval on only the few actions that matter and make those prompts specific. Rotate approvers, [sample the approvals](../professional-guardrails/#checking-and-sampling), and require a reason to approve. These are general practice, not measured results.
 

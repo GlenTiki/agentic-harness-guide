@@ -60,6 +60,6 @@ Each unchecked box corresponds to a row in [Anti-patterns](../anti-patterns/), w
 
 The maintainer checks what the repository already has. The maintainer does the first unchecked item under Boundaries, then Enforcement, then Quality.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
 
 **Next:** [Anti-patterns](../anti-patterns/)

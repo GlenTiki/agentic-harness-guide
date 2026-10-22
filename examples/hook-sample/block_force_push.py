@@ -9,6 +9,7 @@ RISKY_SHORT = "fd"
 
 
 def is_risky_flag(token):
+    token = token.rstrip(")}`")
     if token.startswith("--"):
         name = token.split("=")[0]
         return len(name) >= 5 and any(long.startswith(name) for long in RISKY_LONG)
@@ -21,7 +22,7 @@ def is_risky_push(tokens):
     for index, token in enumerate(tokens):
         if " " in token and is_risky_push(shlex.split(token)):
             return True
-        if os.path.basename(token) == "git" and "push" in tokens[index:]:
+        if os.path.basename(token.lstrip("({$`")) == "git" and "push" in tokens[index:]:
             after_push = tokens[tokens.index("push", index) + 1:]
             return any(is_risky_flag(flag) for flag in after_push)
     return False

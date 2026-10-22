@@ -39,6 +39,6 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 
 Find the three rows that match your current setup. Fix those first.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead". Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead". Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
 
 **Next:** [The workflows](../../../workflows/)

@@ -52,6 +52,6 @@ Substitute your own tools. The principle is the same set everywhere.
 
 Create the single `check` command. Wire it to a pre-commit hook and to your CI workflow. Add one line to your instruction file: "Run `make check` before declaring any task done."
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.308. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
 
 **Next:** [Independent review](../independent-review/)

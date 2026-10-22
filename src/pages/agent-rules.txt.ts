@@ -51,7 +51,11 @@ export const GET: APIRoute = async () => {
     .filter((item): item is { entry: (typeof item)['entry']; note: string } => Boolean(item.note))
     .sort((a, b) => order(a.entry.id).join('|').localeCompare(order(b.entry.id).join('|')))
     .map(({ entry, note }) => {
-      const lines = ruleLines(note);
+      const lines = ruleLines(note).map((line) =>
+        line
+          .replace(writeScope, 'Apply the scope of "changes something" defined at the top of this file.')
+          .replace(questionBudget, 'Apply the question budget at the top of this file.'),
+      );
       if (lines.some((line) => /\bask\b/i.test(line))) lines.push(budgetPointer);
       return `## ${entry.data.title} (${base}/${entry.id}/)\n${lines.join('\n')}`;
     });
