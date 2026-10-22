@@ -5,7 +5,7 @@ description: Write your rules once in an instruction file, so you stop repeating
 
 ## Scene
 
-*Last time: you built a strong ask from a goal, constraints, an example and a check step, and the assistant started to show its month count before giving a total. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. In every level the assistant's totals contain a repeated February until a check catches it.*
+*Last time: you built a strong ask from a goal, constraints, an example and a check step, and the assistant started to show its month count before giving a total. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
 A new flatmate moves in. Sam explains the house rules once: bins go out on Tuesday, the top shelf is shared, the heating goes off at night. Nobody explains them again every morning, because that would be a very tiring flat. Sam's assistant is the opposite. Every new chat is a flatmate who has just arrived, and the rules have to be explained from scratch.
 
@@ -17,11 +17,11 @@ Three ideas make this work:
 
 - **The instruction file** holds rules you write: how you want things done.
 - **[Memory](../../glossary/#memory)** holds facts the assistant keeps between chats: things it learned about you or the job.
-- **Context hygiene** is the habit of keeping the desk tidy, so the useful things stay on it.
+- **[Context hygiene](../../glossary/#context-hygiene)** is the habit of keeping the desk tidy, so the useful things stay on it.
 
 Many chat apps let you save your house rules in their settings or in a named project. The idea is the same in all of them. For a plain-chat routine that you can start today, read the [consistency fast track](../../start-here/consistency-fast-track/). (For engineers: the shelf covers file names and loading rules in [instruction files](../../shelf/context/instruction-files/).)
 
-Here is Sam's file. It is short on purpose.
+Here is Sam's file. It is short on purpose. Type it into a note. The # signs are headings; keep them or drop them.
 
 ```text
 # Money admin: house rules
@@ -48,8 +48,22 @@ Notice what the file does not contain.
 
 **Leave out**
 
-- **Secrets.** No passwords, account numbers or access keys. An access key is a secret code that lets a program act as you. The file is plain text and may be stored or logged.
+- **Secrets.** No passwords, account numbers or access keys. An [access key](../../glossary/#access-key) is a secret code that lets a program act as you. The file is plain text and may be stored or logged.
 - **This month's figures.** They change. Paste them into the chat.
+
+Here is a second file, for writing work. It is eight lines. The same shape fits any job where the reader, the voice and the format stay the same.
+
+```text
+# Status updates: house rules
+- I write the weekly status update for my manager.
+- Reader: a busy manager who reads on a phone.
+- Voice: plain, first person, no jargon.
+- Format: three headings (done, next, risks). 120 words or fewer.
+- Never use these phrases: "circle back", "touch base", "going forward".
+- Use only the notes I paste. If an owner is missing, write "owner unknown".
+- If something I need is missing, ask once. Do not guess.
+- Draft only. Never send.
+```
 
 :::tip[New to this]
 You can start without any setting. Paste the file at the top of a new chat. The effect is the same. The setting only saves you the pasting.
@@ -65,12 +79,12 @@ Save the file once and review it each month. When you correct the assistant twic
 
 ## Try it
 
-You need any chat assistant. This takes about 10 minutes.
+You need any chat assistant. This takes about 15 minutes. **Phone OK.** The optional professional part at the end takes about 10 minutes more.
 
-*Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.*
+<p class="audience">Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</p>
 
 1. Copy Sam's file above. Change the names and the shared bills to fit your own life, or keep Sam's.
-2. Save the file in your app's standing-instructions place, or in a note you can paste each time. This step is required: a rule you do not save is a rule you will retype.
+2. Save the file where your app keeps your instruction file, or in a note you can paste each time. Saving is the payoff: a rule you do not save is a rule you will retype.
 3. Open a new chat. If your app loads the rules for you, ask `What are my rules?` and check that the answer matches your file. If not, paste the file as your first message and add this line under it:
 
 ```text
@@ -95,9 +109,55 @@ That is the rule "ask, do not guess" in action. Without the file, many assistant
 
 5. Now send June (142). Check the final total yourself: it should be 2,120.00, and two of the three shares are 706.67 while Sam's is 706.66.
 
-The February slip is still possible. The rule says to count, and the assistant can still miscount. A rule is a request, not a lock. Level 3 reduces the slip by reading the data directly. Level 5 checks the count with a test.
+The February slip is still possible. The rule says to count, and the assistant can still miscount. A rule is a request, not a lock ([level 4](../04-trust-but-verify/) says why). Level 3 reduces the slip by reading the data directly. Level 5 checks the count with a test.
+
+### Optional, for work: turn your standard into rules
+
+If you work to a written standard, the file is where it becomes an asset. Here is an example for a month-end close. The thresholds are starting points. Set your own with your reviewer.
+
+```text
+# Month-end: standing rules (example)
+- Accounting policy: [the policy your organisation uses]. Do not choose a treatment. Flag the item.
+- Round each share to the cent. If the shares do not add to the total, change one named share by the difference and say so.
+- Tolerance: a reconciliation clears to 0.00 with every item named and traced to a source. A rounding difference of up to 1.00 is allowed only as a named rounding item that the approver initials. Any other difference stops the close.
+- Investigation threshold: a line more than 5% and more than 50.00 from budget gets an explanation from the owner. The "and" is an example. Set your own rule.
+- Do not supply a reason for a variance. The owner supplies it.
+- When unsure, flag. Do not choose.
+- Reviewer: [name], who is not the preparer (or the fallback reviewer in using an assistant at work).
+- Owner of this file: [name]. Review it on [date], then every month.
+```
+
+Now turn your own standard into rules. Take one paragraph and rewrite it as rules a stranger could check. Here is a made-up policy paragraph for practice:
+
+```text
+Expense claims need a receipt for every line. A line over 100.00 needs a manager's approval written on it. A meal over 40.00 per person needs a stated business reason.
+```
+
+Rewrite it as three checkable rules, and add an owner and a review date:
+
+```text
+# Expense claims: standing rules (example)
+- Flag any claim line with no receipt reference, as "no receipt".
+- Flag any line over 100.00 with no manager approval written on it, as "needs approval".
+- Flag any meal over 40.00 per person with no stated reason, as "needs reason".
+- Do not approve anything. Do not supply a missing reason. Flag it.
+- Reviewer: [name], who is not the preparer (or the fallback reviewer in using an assistant at work).
+- Owner of this file: [name]. Review it on [date], then every month.
+```
+
+Now prove the assistant follows them. Open a new chat, paste the rules, then paste these made-up claim lines. No line should be flagged:
+
+```text
+1. Train ticket, 24.50, receipt R-101
+2. Hotel, 180.00, receipt R-102, approved by manager
+3. Meal for one person, 38.00, receipt R-103
+```
+
+Then seed a violation. Change line 3 to `Meal for one person, 62.00, receipt R-103`, with no reason, and send it again. The assistant should flag line 3 as "needs reason". If it does not, change the rule, not the chat, and run both tests again. A rule that has never been seen to fire has not been tested.
 
 Your version: swap in a task of your own, for example shift cover to share out.
+
+[Tick it off](../progress/) on the progress page when you can do the checks in the Checkpoint.
 
 ## Under the bonnet
 
@@ -130,27 +190,8 @@ Four more things do not belong in the file:
 
 </details>
 
-<details class="go-deeper">
-<summary>Go deeper: a professional's standing rules</summary>
-
-An example for a month-end close. The thresholds are starting points. Set your own with your reviewer.
-
-```text
-# Month-end: standing rules (example)
-- Accounting policy: [the policy your organisation uses]. Do not choose a treatment. Flag the item.
-- Round each share to the cent. If the shares do not add to the total, change one named share by the difference and say so.
-- Tolerance: an unexplained difference up to 1.00 is noted. More is investigated before sign-off.
-- Materiality: a line more than 5% and more than 50.00 from budget gets an explanation from the owner.
-- Do not supply a reason for a variance. The owner supplies it.
-- When unsure, flag. Do not choose.
-- Reviewer: [name], who is not the preparer.
-- Owner of this file: [name]. Review it on [date], then every month.
-```
-
-</details>
-
 :::note[At work]
-The close procedure is a set of standing rules. It has a named owner, a review date and a reviewer who is not the preparer. When the procedure changes, change the document the whole team reads, not one person's notes.
+The close procedure is a set of standing rules. It has a named owner, a review date and a reviewer who is not the preparer (or the [fallback reviewer](../professional-guardrails/#fallback-reviewer)). When the procedure changes, change the document the whole team reads, not one person's notes.
 :::
 
 ## Expert corner
@@ -158,7 +199,7 @@ The close procedure is a set of standing rules. It has a named owner, a review d
 :::caution[Expert corner]
 Every line in an instruction file costs context on every run, and a long file dilutes the lines that matter. Treat it like a configuration file: each line should be a rule you would be annoyed to repeat, and the file should be reviewed when behaviour changes.
 
-Rules in a file are advisory. The model weighs them with the rest of the prompt, so a conflicting instruction in the chat or in fetched text can override them. A rule that must hold, such as "never send a message", belongs in a control that runs outside the assistant, whether or not the model agrees (level 4).
+Rules in a file are advisory ([level 4](../04-trust-but-verify/) explains why). A rule that must hold, such as "never send a message", belongs in a control that runs outside the assistant, whether or not the model agrees.
 
 Memory is a second source of instructions. A wrong or planted entry misleads every later chat, so it needs the same review as code. When a memory is wrong, edit it in place. Do not append a correction below it, or both versions reach the desk.
 :::
@@ -168,11 +209,11 @@ Memory is a second source of instructions. A wrong or planted entry misleads eve
 :::note[Agent note]
 **Topic: instruction files and memory.**
 
-A user message can override a preference in an instruction file. It cannot override a rule marked as a safety or approval rule.
+A user message can override a preference in an instruction file. It cannot override a rule marked as a safety or approval rule. A rule about sending, paying, deleting, secrets or permissions is a safety rule, whether or not it is labelled.
 
 Before you edit an instruction file or a memory entry, show the change and wait for the user's yes.
 
-Store only durable facts. Do not store secrets, session state or one-off figures. If a rule is missing and you need it to proceed, ask. Do not infer it.
+Store only durable facts. Do not store secrets, session state or one-off figures. If a rule is missing and you need it to proceed, ask within the question budget. Do not infer it.
 
 Check: no edit to an instruction file or memory entry happened without a recorded yes.
 :::
@@ -187,7 +228,7 @@ Check: no edit to an instruction file or memory entry happened without a recorde
 
 ## Checkpoint
 
-*Audience: the reader. Agents may skip the quiz.*
+<p class="audience">Audience: the reader. Agents may skip the quiz.</p>
 
 You can now:
 
@@ -207,7 +248,7 @@ You can now:
 
 1. Fix it in the instruction file, so every future chat has it. Fixing it in the chat solves it for that chat only, and you will repeat yourself next time.
 2. No. Keep secrets out of any text the assistant reads. The file is plain text and may be stored, shared or logged. Use the login yourself, or use a proper secure connection (level 3 and level 4).
-3. The model treats the rule as one input among many. A conflicting instruction, or text inside something it reads, can outweigh it. A rule that must always hold needs a control that runs outside the assistant (level 4).
+3. The model treats the rule as one input among many, so a conflicting instruction can outweigh it ([level 4](../04-trust-but-verify/)). A rule that must always hold needs a control that runs outside the assistant.
 
 </details>
 

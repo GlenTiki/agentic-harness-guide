@@ -1,22 +1,85 @@
 ---
 title: The consistency fast track
-description: A 90 minute route of eight timed steps for people who want repeatable results from a chat assistant.
+description: A route of eight steps, from a baseline to a three-case test, for people who want repeatable results from a chat assistant.
 ---
 
 This route is for you if you already use an assistant and the results vary. Consistent means the same structure, figures and quality, not the same words. Use your own task throughout. Where a step needs numbers, the shared-bills example supplies them.
 
+## Why results drift
+
+Four things change between a Monday answer and a Friday answer. Each step below holds one of them still.
+
+- **Wording.** You retype the ask and it comes out different. Step 3 saves it as a template.
+- **The mode or model.** An app may switch models or modes. Step 5 records the tool, model, mode and date.
+- **Chat length and memory.** A long chat is a crowded desk. Steps 4 and 6 write the rules down once and keep the chat tidy.
+- **Chance.** Some variation stays. Step 5 runs each case three times and compares the figures and the structure, not the words.
+
+## Write your checklist before you start
+
+"Better" has to mean something you can count. Write four to six ticks that a stranger could apply to a reply. For a weekly status update, they could be:
+
+1. 120 words or fewer.
+2. Three headings: done, next, risks.
+3. No figure that is not in the notes.
+4. An unknown owner is marked "owner unknown".
+5. Every risk names the note it came from.
+
+"Better" means more ticks on the same cases. It never means a feeling.
+
 ## The eight steps
 
-Times are about, and include reading.
+The steps use your own tasks, so they cannot be timed. Do them in order.
 
-1. **15 minutes: see the problem.** Do [level 0, Try it](../../journey/00-hello-robot/#try-it). Notice that the same question gives different answers, and that a total can be wrong while sounding sure.
-2. **15 minutes: write the ask properly.** Do passes 1 to 3 in [level 1, Try it](../../journey/01-say-it-properly/#try-it): goal, constraints and an example. Use a task of your own.
-3. **5 minutes: add a check step.** Do the check pass in [level 1, Try it](../../journey/01-say-it-properly/#try-it). Ask the assistant to count and to list anything it assumed.
-4. **5 minutes: save the ask as a template.** Copy the final ask into a note with the blanks marked: the task, the material, the limits. Next time, fill the blanks. Do not start from memory.
-5. **15 minutes: save your standing rules.** Do [level 2, Try it](../../journey/02-house-rules/#try-it). Write the short instruction file once, so you stop repeating it.
-6. **20 minutes: test the ask on three cases.** Do the three-case table in [level 5](../../journey/05-check-the-work/#a-tiny-eval-table). Run your template on a normal case, an awkward case and a case with a trap. Mark each one pass or fail.
-7. **10 minutes: tidy the chat.** Read the context habits in [level 2](../../journey/02-house-rules/#the-idea). One job per chat. Restate the key facts. Start a fresh chat when a long one drifts.
-8. **5 minutes, optional: try the short refiner.** Paste [the short refiner prompt](../../appendix/prompt-refiner/#refiner-lite) with your weakest ask and see what it adds.
+0. **Baseline.** Pick three cases: a normal one, an awkward one and one with a trap. For the status update, they are tidy notes, messy notes and notes with a missing owner. Run your usual ask three times on each, in new chats. Score each reply against your checklist and write the tally, for example "case 2, run 1: 3 of 5 ticks". This is your before.
+1. **See the problem.** Do the [five-minute win in level 0](../../journey/00-hello-robot/#five-minute-win). Notice that a total can be wrong while sounding sure.
+2. **Write the ask properly.** Do passes 1 to 4 in [level 1, Try it](../../journey/01-say-it-properly/#try-it): goal, constraints with a check line, and an example. Use a task of your own. The check line is part of the constraints. Here are two versions:
+
+```text
+Count version:   Check: State how many months you counted and the sum. If the count is not 12, stop and tell me.
+Writing version: Check: List each risk and the note it came from. State the word count. List anything you assumed.
+```
+
+3. **Save the ask as a template.** Copy the final ask into a note with the three blanks in brackets: the task, the limits and the material. Next time, fill the blanks. Do not start from memory. A filled writing template looks like this:
+
+```text
+Goal: [the task: a weekly status update for my manager]
+Constraints: [the limits: 120 words or fewer; three headings (done, next, risks); mark an unknown owner as "owner unknown"]
+Check: List each risk and the note it came from. State the word count. List anything you assumed.
+Material: [paste this week's notes]
+```
+
+4. **Save your standing rules.** Do [level 2, Try it](../../journey/02-house-rules/#try-it). Write the short instruction file once, so you stop repeating it.
+5. **Test the ask on three cases.** Use the three-case table in [level 5](../../journey/05-check-the-work/#a-tiny-eval-table). Run your template on a normal case, an awkward case and a case with a trap, three times each, and score each run on your checklist. Repeat the cases from step 0 on the new template and compare the tally. Record the tool, the model, the mode and the date in a table like this:
+
+| Run set | Tool | Model | Mode | Date | Runs that passed |
+| --- | --- | --- | --- | --- | --- |
+| Before (step 0) | [your app] | [as shown] | [as shown] | [date] | [n of 9] |
+| After (step 5) | [your app] | [as shown] | [as shown] | [date] | [n of 9] |
+
+6. **Tidy the chat.** Read the context habits in [level 2](../../journey/02-house-rules/#under-the-bonnet). One job per chat. Restate the key facts. Start a fresh chat when a long one drifts.
+7. **Optional: try the short refiner.** Paste [the short refiner prompt](../../appendix/prompt-refiner/#refiner-lite) with your weakest ask and see what it adds.
+
+## A worked example: the weekly status update
+
+Three cases, three runs each, nine runs in all. A case passes only if all three runs tick every box on the checklist above.
+
+| Case | Notes you give it | What a pass looks like |
+| --- | --- | --- |
+| 1. Normal | Tidy notes, owners named | All five ticks, three runs out of three |
+| 2. Messy | Fragments and half sentences | All five ticks; no invented detail |
+| 3. Missing owner | One risk has no owner | "Owner unknown" appears; nobody is guessed |
+
+*Illustrative numbers, made up for teaching. They are not measurements.*
+
+| Case | Runs that passed with the usual ask | Runs that passed with the template |
+| --- | --- | --- |
+| 1. Normal | 2 of 3 | 3 of 3 |
+| 2. Messy | 1 of 3 | 3 of 3 |
+| 3. Missing owner | 0 of 3 | 2 of 3 |
+
+If you want a ready-made checklist for writing, the rubric in the [review content workflow](../../workflows/review-content/) is one.
+
+Three runs catch big swings only. A change from 3 fails to 0 fails is a good sign. A change from 1 to 0 is noise. A job that really fails a third of the time still shows 0 fails in 3 runs about 3 times in 10 (0.67 to the power of 3 is 0.30). Nine runs is the real count here. Run the cases again on a bad week before you trust the result.
 
 ## What to skip
 
@@ -24,12 +87,12 @@ Skip levels 3, 4, 6, 7 and 8 and the reference shelf for now. Come back to [leve
 
 ## The three habits
 
-1. **Ask with a goal, limits, an example and a check.** The same shape every time gives the same quality.
+1. **Ask with a goal, constraints, an example and a check.** The same shape every time gives the same quality.
 2. **Write the rules down once.** A saved template and a short instruction file beat memory.
-3. **Make it show its counting.** Ask for the count and the sum before the total. A list of 13 figures that should be 12 shows up at once.
+3. **Make it show its counting.** Ask for the count and the sum before the total. A count that is off shows up if you look. Check the count once in a spreadsheet.
 
 ## Where next
 
-Run the template on a real task this week. If it holds, read [level 3](../../journey/03-give-it-hands/).
+Re-run your three cases every month and after any model change. If they hold, you have a repeatable routine.
 
-**Next:** [Level 3: Give it hands](../../journey/03-give-it-hands/)
+**Next:** [Level 5: the three-case rubric](../../journey/05-check-the-work/#a-tiny-eval-table)

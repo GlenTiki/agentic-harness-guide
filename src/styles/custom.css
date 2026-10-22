@@ -23,6 +23,12 @@
   overflow-x: auto;
 }
 
+.audience {
+  font-size: var(--sl-text-sm);
+  color: var(--sl-color-gray-3);
+  font-style: italic;
+}
+
 .verified {
   font-size: var(--sl-text-sm);
   color: var(--sl-color-gray-3);
