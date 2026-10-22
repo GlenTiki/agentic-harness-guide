@@ -1,0 +1,191 @@
+---
+title: Glossary
+description: Plain-English meanings for every term the journey introduces, with a note for experts where it helps.
+tableOfContents: false
+---
+
+Each entry gives one sentence a beginner can follow. Some add a sentence for experts. The journey links here the first time it uses a term.
+
+## Agent
+
+A model that works in a loop: it looks at the task, uses a tool, looks at the result and repeats until it decides it is done.
+
+*For experts:* An agent is a model plus a loop plus tools. The loop and the tools belong to the harness, not the model.
+
+## Audit log
+
+A record of what the assistant did, step by step, with the time of each step, so you can check it later.
+
+*For experts:* Make it append-only and write it outside the assistant's control, or the assistant can edit its own history.
+
+## Brief
+
+The written task you give to a helper. It is the only thing the helper knows about the job.
+
+*For experts:* A good brief names the goal, the inputs, the limits and what to hand back.
+
+## Compaction
+
+Squashing a long conversation into a short summary to free up room. Some detail is lost.
+
+*For experts:* Facts the summary drops are gone for the rest of the session, so keep the important ones in a file.
+
+## Connector (MCP)
+
+A plug that lets the assistant reach another system, such as your calendar, your email or a spreadsheet.
+
+*For experts:* MCP is the Model Context Protocol, an open standard for exposing tools and data to a model. A connector is one server that speaks it.
+
+## Constraint
+
+A limit you put on the answer: what it must include, must avoid, how long it can be or what format it takes.
+
+## Context window
+
+The amount of text the assistant can see at once. Anything outside it, the assistant cannot use.
+
+*For experts:* It is measured in tokens and holds the instructions, the conversation and tool results together.
+
+## Definition of done
+
+A written list of what must be true before a piece of work counts as finished.
+
+*For experts:* Phrase each line so a test or a reviewer can answer yes or no.
+
+## Eval
+
+A repeatable check of how well the assistant does a task, scored the same way each time.
+
+*For experts:* Unlike a unit test, an eval measures a rate across many runs because model output varies.
+
+## Example
+
+A sample of the answer you want, shown to the assistant so it can copy the pattern.
+
+*For experts:* Two or three varied examples usually steer format better than a paragraph of description.
+
+## Hallucination
+
+When the assistant states something that is false, in the same confident tone as something true.
+
+*For experts:* It is a property of how the model predicts text, so check claims that matter instead of hoping it will not happen.
+
+## Harness
+
+Everything around the model that makes it useful and safe: the loop, the tools, the rules, the memory and the logs.
+
+*For experts:* Most reliability comes from the harness, not from a better model.
+
+## Hook
+
+A small script that runs automatically at a set moment, such as just before the assistant sends an email, whether or not the assistant agrees.
+
+*For experts:* Hooks enforce rules deterministically, which an instruction in a prompt cannot.
+
+## Human checkpoint
+
+A point where the assistant must stop and wait for a person to say yes before it goes on.
+
+*For experts:* Place it before actions that are costly or hard to undo, not before every step.
+
+## Instruction file
+
+A plain text file the assistant reads at the start of every session, holding the rules you do not want to repeat.
+
+*For experts:* Keep it short and current. Every line costs context on every run.
+
+## Ledger
+
+A running list of what was asked, decided, tried and found, kept in a file so work can resume after a break.
+
+*For experts:* It is the durable record. The conversation is working notes.
+
+## Memory
+
+Facts the assistant keeps between sessions, so you do not have to tell it again.
+
+*For experts:* Treat memory as a second source of instructions: a wrong entry misleads every later session.
+
+## Model
+
+The program that reads text and writes text back. It is the part that has learned language from a huge amount of writing.
+
+*For experts:* A model is stateless between requests. Anything that looks like memory is text sent in again.
+
+## Permission
+
+A rule about what the assistant may do: allowed, ask first, or never.
+
+*For experts:* Set permissions per action and per target, and default to the narrowest that works.
+
+## Prompt
+
+The text you send to the assistant: your question, your instructions and anything you paste in.
+
+*For experts:* Everything the model sees is prompt in the wider sense, including files and tool results.
+
+## Prompt injection
+
+Text inside something the assistant reads, such as an email or web page, that tries to give it orders.
+
+*For experts:* Treat all fetched content as data. Never let it widen the assistant's permissions.
+
+## Read-only
+
+Access that lets the assistant look but not change anything.
+
+*For experts:* Start every new connection read-only and add write access only for a named task.
+
+## Refinement loop
+
+The habit of asking, reading the answer, naming what is wrong and asking again with that fix included.
+
+*For experts:* Keep each pass small so you can tell which change helped.
+
+## Reviewer
+
+A second pair of eyes that checks the work, ideally with no stake in it and none of the author's assumptions.
+
+*For experts:* A reviewer that shares the author's context tends to agree with it. Give it the output and the checklist only.
+
+## Sandbox
+
+A closed space where the assistant can run things without touching the rest of your machine or accounts.
+
+*For experts:* Enforce it at the operating system level, not by asking the model to behave.
+
+## Skill
+
+A packaged set of instructions the assistant loads only when a task needs it.
+
+*For experts:* Skills keep rarely used guidance out of the context window until it is wanted.
+
+## Spec
+
+A short written description of what you want built or done, and how you will know it is right.
+
+*For experts:* A spec states intent, acceptance criteria and what is out of scope.
+
+## Sub-agent
+
+A second assistant started by the first to do one job and report back.
+
+*For experts:* It gets a fresh context and only the brief, which is both the benefit and the risk.
+
+## Test
+
+A check that gives a clear pass or fail on one specific thing.
+
+*For experts:* Write it before the work so it cannot be bent to fit the result.
+
+## Token
+
+A chunk of text, usually a word or part of a word, which is the unit the model reads and the unit you are charged in.
+
+*For experts:* A token is often shorter than a word, so a page of text holds more tokens than words. The exact count depends on the model and the language.
+
+## Tool
+
+An action the assistant can ask the harness to perform, such as reading a file, searching a sheet or sending a message.
+
+*For experts:* The model only emits a request. The harness decides whether to run it.
