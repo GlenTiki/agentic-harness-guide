@@ -1,0 +1,42 @@
+---
+title: The Agentic Harness Guide
+description: What to enable in a modern agentic coding harness, and why.
+template: splash
+hero:
+  tagline: A model writes the code. The harness decides what it may touch, what it remembers, who checks it and what it costs.
+  actions:
+    - text: Start with the principles
+      link: ./foundations/principles/
+      icon: right-arrow
+    - text: Jump to the baseline
+      link: ./reference/baseline/
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+This guide argues for one position. Treat the harness as the product and the model as a replaceable part. A good harness limits what the agent can do, keeps its context small and durable, and puts an independent check between the agent and your main branch. Each page gives a recommendation first, the steps to enable it, the failure it prevents and a minimum to start with. The advice is vendor-neutral. Where a page names a tool setting, it was checked against that tool's documentation and dated.
+
+<CardGrid>
+  <Card title="Foundations" icon="open-book">
+    The principles, a staged adoption path and a glossary. [Read the principles](./foundations/principles/).
+  </Card>
+  <Card title="Instructions and context" icon="document">
+    Instruction files, context management and memory. [Open the section](./context/instruction-files/).
+  </Card>
+  <Card title="Control" icon="warning">
+    Hooks, permissions, capability gating and untrusted input. [Open the section](./control/hooks/).
+  </Card>
+  <Card title="Delegation" icon="random">
+    Sub-agents, worktrees, skills and MCP servers. [Open the section](./delegation/sub-agents/).
+  </Card>
+  <Card title="Quality" icon="approve-check">
+    Specs, tests, independent review, evals and small pull requests. [Open the section](./quality/spec-driven-development/).
+  </Card>
+  <Card title="Operations" icon="setting">
+    Audit trail, cost discipline and human approval. [Open the section](./operations/observability/).
+  </Card>
+  <Card title="Reference" icon="list-format">
+    The minimum viable harness and a table of anti-patterns. [Open the section](./reference/baseline/).
+  </Card>
+</CardGrid>
