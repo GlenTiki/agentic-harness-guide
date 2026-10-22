@@ -3,3 +3,4 @@ dist
 .astro
 .build-notes.md
 .DS_Store
+.screenshots

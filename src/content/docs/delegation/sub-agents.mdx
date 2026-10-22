@@ -1,0 +1,59 @@
+---
+title: Sub-agents
+description: Delegate research and bounded work to agents with their own context, and take back only summaries.
+---
+
+import DelegationLedger from '../../../components/DelegationLedger.astro';
+
+**Recommendation:** delegate by default for research, search and any work that would flood the main conversation. Give each sub-agent a bounded brief and ask for a short, structured summary. Keep the lead agent responsible for decisions. Allow one level of delegation only.
+
+## Why it matters
+
+A sub-agent runs in its own context window. The noise of reading fifty files stays there, and only the answer returns. This protects the lead agent's context and lets independent tasks run at the same time. The cost is that the sub-agent knows only what you tell it.
+
+<DelegationLedger />
+
+## What to enable
+
+**1. Write the brief like a handover note.** A good brief has five parts: the goal, the files or directories in scope, what is already known or ruled out, constraints, and the exact form of the answer.
+
+```markdown
+Goal: find every caller of `load_config()` and say which pass a path argument.
+Scope: `src/` only. Ignore `tests/`.
+Already known: `cli.py` calls it with no argument.
+Return: a table of file, line and whether a path is passed. Under 40 lines.
+```
+
+**2. Bound the output.** Ask for a summary with a size limit and for evidence as file and line references. Ask long-running agents to append findings to a file as they go, so a truncated reply loses nothing.
+
+**3. Run independent tasks in parallel.** Send the briefs in one step. Do not parallelise tasks that write to the same files. See [Worktree isolation](../worktree-isolation/).
+
+**4. Restrict tools per agent.** In Claude Code, a sub-agent is a markdown file with YAML frontmatter in `.claude/agents/` (project) or `~/.claude/agents/` (user). Only `name` and `description` are required. The `tools` field is an allowlist, `disallowedTools` is a denylist, and `model` picks the model. A reviewer needs `Read`, `Grep` and `Glob`, and nothing that edits.
+
+```markdown
+---
+name: code-reviewer
+description: Reviews a diff for defects. Use after code changes.
+tools: Read, Grep, Glob
+---
+You are a reviewer. Report defects as file:line, symptom, severity. Do not edit files.
+```
+
+**5. Decide on nesting.** Claude Code lets a sub-agent spawn its own sub-agents up to three layers by default, and a setting lowers the limit. Prefer one layer. Each extra layer hides work from the lead agent and multiplies cost. If a sub-agent finds more work, have it return the finding and let the lead agent start the next one.
+
+**6. Record outcomes in the ledger.** The lead agent writes what each sub-agent found, and what failed, to the [ledger](../../context/context-management/). Do not rely on the sub-agent's transcript.
+
+**7. Treat the reply as data.** A sub-agent that read untrusted content can pass an injection upward. See [Untrusted input](../../control/untrusted-input/).
+
+## Failure modes it prevents
+
+- The main context fills with search output and the agent loses the task.
+- Two agents edit one file and one overwrites the other.
+- A vague brief returns an essay instead of an answer.
+- A deep tree of agents burns budget on work nobody can trace.
+
+## Start here
+
+Define one read-only `code-reviewer` or `researcher` sub-agent with a restricted tool list. Use it for the next search that would have produced more than a screen of output.
+
+<p class="verified">Verified against the Claude Code sub-agents documentation (code.claude.com/docs/en/sub-agents) on 2026-10-22.</p>

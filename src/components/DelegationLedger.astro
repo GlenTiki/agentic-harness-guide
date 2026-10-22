@@ -1,0 +1,53 @@
+<figure class="diagram">
+  <svg viewBox="0 0 480 440" role="img" aria-labelledby="dl-t dl-d" xmlns="http://www.w3.org/2000/svg">
+    <title id="dl-t">Delegation with a ledger</title>
+    <desc id="dl-d">A lead agent reads a durable ledger, writes a bounded brief for each of two sub-agents, and receives short summaries. The lead records outcomes in the ledger. The sub-agents do not talk to each other.</desc>
+    <defs>
+      <marker id="dl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow" />
+      </marker>
+    </defs>
+    <rect x="150" y="10" width="180" height="60" rx="8" class="box hot" />
+    <text x="240" y="36" class="label">Lead agent</text>
+    <text x="240" y="56" class="sub">decides and coordinates</text>
+
+    <rect x="20" y="170" width="190" height="64" rx="8" class="box" />
+    <text x="115" y="196" class="label">Sub-agent A</text>
+    <text x="115" y="216" class="sub">own context, own tools</text>
+
+    <rect x="270" y="170" width="190" height="64" rx="8" class="box" />
+    <text x="365" y="196" class="label">Sub-agent B</text>
+    <text x="365" y="216" class="sub">own context, own tools</text>
+
+    <rect x="90" y="340" width="300" height="76" rx="8" class="box" />
+    <text x="240" y="366" class="label">Durable ledger</text>
+    <text x="240" y="386" class="sub">intent, decisions, failures, findings</text>
+    <text x="240" y="404" class="sub">a file in the repository, not the chat</text>
+
+    <path d="M200 70L125 168" class="line" marker-end="url(#dl-a)" />
+    <path d="M280 70L355 168" class="line" marker-end="url(#dl-a)" />
+    <text x="120" y="112" class="side" text-anchor="end">brief</text>
+    <text x="360" y="112" class="side" text-anchor="start">brief</text>
+
+    <path d="M170 234L215 338" class="line dash" marker-end="url(#dl-a)" />
+    <path d="M310 234L265 338" class="line dash" marker-end="url(#dl-a)" />
+    <text x="150" y="300" class="side" text-anchor="end">summary</text>
+    <text x="330" y="300" class="side" text-anchor="start">summary</text>
+
+    <path d="M390 378H452V40H332" class="line" marker-end="url(#dl-a)" />
+    <text x="446" y="210" class="side" transform="rotate(90 446 210)">lead reads state back</text>
+  </svg>
+  <figcaption>The lead delegates with bounded briefs and records outcomes in a ledger. Sub-agents return summaries, not transcripts.</figcaption>
+</figure>
+
+<style>
+  svg { font-family: var(--sl-font-system); }
+  .box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
+  .hot { stroke: var(--sl-color-accent); stroke-width: 2; }
+  .label { fill: var(--sl-color-text); font-size: 15px; font-weight: 600; text-anchor: middle; }
+  .sub { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
+  .side { fill: var(--sl-color-gray-2); font-size: 12px; }
+  .line { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.8; }
+  .dash { stroke-dasharray: 5 4; stroke: var(--sl-color-accent); }
+  .arrow { fill: var(--sl-color-gray-3); }
+</style>

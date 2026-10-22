@@ -1,0 +1,53 @@
+---
+title: Independent review
+description: Review each change with a fresh-context reviewer, preferably from a different provider, and bind approval to the exact diff.
+---
+
+import ReviewGate from '../../../components/ReviewGate.astro';
+
+**Recommendation:** review every change with a reviewer that did not write it, starts from a fresh context and, where you can, runs on a different model or provider. Record the verdict against a digest of the exact diff. Treat any later edit as voiding the approval.
+
+## Why it matters
+
+The author of a change shares its assumptions. An agent reviewing its own work in the same context tends to confirm what it just reasoned. A fresh context sees only the artefact. A different provider has different blind spots, so what one misses the other can catch. A same-provider fresh reviewer is useful, but it does not give you that second pair of blind spots.
+
+<ReviewGate />
+
+## What to enable
+
+**1. A bounded, read-only brief.** Give the reviewer the spec, the diff and the callers of changed code, and ask for findings only:
+
+```markdown
+Review the attached diff against the attached spec and checklist.
+Return findings as: file:line - checklist item - symptom.
+Drop vague findings. Do not edit files. Do not start other work.
+```
+
+**2. A short checklist.** Include correctness, tests that would fail without the change, failure modes (concurrency, retries, partial writes, restart), security and secrets, and unnecessary scope. Keep it under twenty lines.
+
+**3. Compute a digest of the candidate.** Hash the exact diff and record it with the verdict:
+
+```bash
+git diff main...HEAD | shasum -a 256
+```
+
+**4. Record the review.** Store reviewer, model, digest, findings, resolutions and verdict in one file in the repository or the pull request. Never report a second-model review when only one model ran.
+
+**5. Re-review after changes.** If the author fixes a finding, the digest changes. The old approval does not cover the new diff. The reviewer checks the new candidate. A review that prompted a change remains history, not approval.
+
+**6. Review the review inputs.** Give the reviewer the complete spec and the exact diff, not a summary written by the author. A summary carries the author's framing.
+
+**7. Add a separate refactoring pass.** After functionality is accepted, ask a fresh reviewer only for clean-code opportunities. Apply the worthwhile ones, explain the rest, and repeat the gates.
+
+**8. Keep a human decision at the merge.** Reviewer agreement is evidence, not authority. See [Human-in-the-loop](../../operations/human-in-the-loop/).
+
+## Failure modes it prevents
+
+- The author approves a change it cannot see clearly.
+- A reviewer approves, the author makes a last tweak, and the tweak is what breaks.
+- A review that covered "the PR" in general is cited for a different commit.
+- Both reviewer and author miss the same issue because they are the same model.
+
+## Start here
+
+Pick the next change. Hash its diff. Ask a fresh agent, in another tool if you have one, to review it with the three-line brief above. Put the digest and verdict in the pull request description.

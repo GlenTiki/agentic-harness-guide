@@ -1,0 +1,65 @@
+---
+title: Hooks
+description: Run scripts at fixed points in the agent loop to enforce rules, format code and keep an audit log.
+---
+
+import HookLifecycle from '../../../components/HookLifecycle.astro';
+
+**Recommendation:** use hooks for every rule that must hold. Start with three: a pre-tool hook that blocks one dangerous action, a post-tool hook that formats edited files, and a stop hook that runs your tests. Make a hook block only when a wrong action is costly or irreversible. Make every other hook advise.
+
+## Why it matters
+
+An instruction file is advice that the model may forget or reinterpret. A hook is code the harness runs every time at a fixed event. Hooks turn "please do not" into "cannot", and they do it outside the model's context, so they cost no tokens and cannot be argued with.
+
+<HookLifecycle />
+
+## What to enable
+
+**1. Know the events.** Claude Code documents more than thirty hook events. The ones that matter first are `PreToolUse` (before a tool call), `PostToolUse` (after one), `Stop` (when the agent finishes), `UserPromptSubmit` (before a prompt is processed) and `SessionStart`. Others cover sub-agents, compaction, worktrees, configuration changes and permission requests. Other harnesses use different names for the same ideas.
+
+**2. Register hooks in a shared settings file.** In Claude Code, hooks live in `~/.claude/settings.json` (all projects), `.claude/settings.json` (shared with the team) or `.claude/settings.local.json` (yours only). The shape is event, then matcher group, then handler:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "./scripts/format-changed.sh" }]
+      }
+    ]
+  }
+}
+```
+
+**3. Choose blocking or advising deliberately.** For command hooks in Claude Code, exit code 0 means success, and exit code 2 blocks the action on events that can block and feeds standard error back to the model as the reason. Any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not enforce anything. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
+
+```bash
+#!/usr/bin/env bash
+# Block force pushes. Reads the tool call as JSON on stdin.
+set -euo pipefail
+command=$(jq -r '.tool_input.command // empty')
+if [[ "$command" == *"push --force"* || "$command" == *"push -f"* ]]; then
+  echo "Force pushes are blocked. Ask the user to run this themselves." >&2
+  exit 2
+fi
+```
+
+**4. Write good block messages.** The message is the only thing the model sees. Say what was blocked, why, and what to do instead.
+
+**5. Keep hooks fast and quiet.** A slow hook slows every tool call. Set a timeout on each handler. Print nothing on success.
+
+**6. Use hooks for the audit log.** A post-tool hook that appends one line per action gives you a trail without relying on the model to report. See [Observability and audit trail](../../operations/observability/).
+
+## Failure modes it prevents
+
+- The agent runs a destructive command because the instruction file said not to, and the rule was lost after compaction.
+- Unformatted or unlinted code reaches review.
+- The agent stops with failing tests and reports success.
+- A hook script exits 1 and the team believes it is enforcing a rule.
+
+## Start here
+
+Add one `PostToolUse` hook on `Edit|Write` that runs your formatter. Add one `PreToolUse` hook on `Bash` that blocks the single command you fear most. Trigger both on purpose to confirm they fire.
+
+<p class="verified">Verified against the Claude Code hooks reference (code.claude.com/docs/en/hooks) on 2026-10-22.</p>

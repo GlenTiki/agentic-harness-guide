@@ -1,0 +1,55 @@
+<figure class="diagram">
+  <svg viewBox="0 0 480 560" role="img" aria-labelledby="hl-t hl-d" xmlns="http://www.w3.org/2000/svg">
+    <title id="hl-t">Hook lifecycle</title>
+    <desc id="hl-d">A model proposes a tool call. A pre-tool hook can block it with exit code 2, otherwise the permission check and the tool run. A post-tool hook then reacts. A stop hook runs when the agent finishes.</desc>
+    <defs>
+      <marker id="hl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow" />
+      </marker>
+    </defs>
+    <g class="flow">
+      <rect x="130" y="10" width="220" height="44" rx="8" class="box" />
+      <text x="240" y="37" class="label">Model proposes a tool call</text>
+
+      <rect x="130" y="100" width="220" height="56" rx="8" class="box hot" />
+      <text x="240" y="124" class="label">PreToolUse hook</text>
+      <text x="240" y="144" class="sub">inspect, rewrite, allow or block</text>
+
+      <rect x="130" y="206" width="220" height="44" rx="8" class="box" />
+      <text x="240" y="233" class="label">Permission rules</text>
+
+      <rect x="130" y="300" width="220" height="44" rx="8" class="box" />
+      <text x="240" y="327" class="label">Tool runs</text>
+
+      <rect x="130" y="394" width="220" height="56" rx="8" class="box hot" />
+      <text x="240" y="418" class="label">PostToolUse hook</text>
+      <text x="240" y="438" class="sub">format, lint, log, warn</text>
+
+      <rect x="130" y="494" width="220" height="56" rx="8" class="box hot" />
+      <text x="240" y="518" class="label">Stop hook</text>
+      <text x="240" y="538" class="sub">final gate before the agent ends</text>
+
+      <path d="M240 54V98" class="line" marker-end="url(#hl-a)" />
+      <path d="M240 156V204" class="line" marker-end="url(#hl-a)" />
+      <path d="M240 250V298" class="line" marker-end="url(#hl-a)" />
+      <path d="M240 344V392" class="line" marker-end="url(#hl-a)" />
+      <path d="M240 450V492" class="line" marker-end="url(#hl-a)" />
+
+      <path d="M350 128H430V32H350" class="line dash" marker-end="url(#hl-a)" />
+      <text x="444" y="80" class="side" transform="rotate(90 444 80)">exit 2: reason to model</text>
+    </g>
+  </svg>
+  <figcaption>The hook lifecycle. A blocking exit code at the pre-tool step sends the reason back to the model instead of running the tool.</figcaption>
+</figure>
+
+<style>
+  svg { font-family: var(--sl-font-system); }
+  .box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
+  .hot { stroke: var(--sl-color-accent); stroke-width: 2; }
+  .label { fill: var(--sl-color-text); font-size: 15px; font-weight: 600; text-anchor: middle; }
+  .sub { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
+  .side { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
+  .line { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.8; }
+  .dash { stroke-dasharray: 5 4; stroke: var(--sl-color-accent); }
+  .arrow { fill: var(--sl-color-gray-3); }
+</style>

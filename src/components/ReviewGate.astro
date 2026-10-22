@@ -1,0 +1,51 @@
+<figure class="diagram">
+  <svg viewBox="0 0 480 560" role="img" aria-labelledby="rg-t rg-d" xmlns="http://www.w3.org/2000/svg">
+    <title id="rg-t">Review gate sequence</title>
+    <desc id="rg-d">The author agent produces a diff. Local gates run. A fresh-context reviewer, ideally from a different provider, reviews the exact diff and records a verdict bound to its digest. Any change to the diff invalidates the verdict and returns to the gates. CI runs on the final revision, then a human approves the merge.</desc>
+    <defs>
+      <marker id="rg-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow" />
+      </marker>
+    </defs>
+    <rect x="130" y="10" width="220" height="48" rx="8" class="box" />
+    <text x="240" y="40" class="label">Author produces a diff</text>
+
+    <rect x="130" y="108" width="220" height="48" rx="8" class="box" />
+    <text x="240" y="138" class="label">Local gates pass</text>
+
+    <rect x="130" y="206" width="220" height="64" rx="8" class="box hot" />
+    <text x="240" y="232" class="label">Fresh-context review</text>
+    <text x="240" y="252" class="sub">verdict bound to the diff digest</text>
+
+    <rect x="130" y="320" width="220" height="48" rx="8" class="box" />
+    <text x="240" y="350" class="label">CI on the final revision</text>
+
+    <rect x="130" y="418" width="220" height="48" rx="8" class="box hot" />
+    <text x="240" y="448" class="label">Human approves the merge</text>
+
+    <rect x="130" y="506" width="220" height="44" rx="8" class="box" />
+    <text x="240" y="534" class="label">Merge and verify</text>
+
+    <path d="M240 58V106" class="line" marker-end="url(#rg-a)" />
+    <path d="M240 156V204" class="line" marker-end="url(#rg-a)" />
+    <path d="M240 270V318" class="line" marker-end="url(#rg-a)" />
+    <path d="M240 368V416" class="line" marker-end="url(#rg-a)" />
+    <path d="M240 466V504" class="line" marker-end="url(#rg-a)" />
+
+    <path d="M130 238H50V34H128" class="line dash" marker-end="url(#rg-a)" />
+    <text x="40" y="140" class="side" transform="rotate(-90 40 140)">findings or any new edit: back to the author</text>
+  </svg>
+  <figcaption>The review gate. Any edit after the verdict changes the digest and sends the work back through the gates.</figcaption>
+</figure>
+
+<style>
+  svg { font-family: var(--sl-font-system); }
+  .box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
+  .hot { stroke: var(--sl-color-accent); stroke-width: 2; }
+  .label { fill: var(--sl-color-text); font-size: 15px; font-weight: 600; text-anchor: middle; }
+  .sub { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
+  .side { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
+  .line { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.8; }
+  .dash { stroke-dasharray: 5 4; stroke: var(--sl-color-accent); }
+  .arrow { fill: var(--sl-color-gray-3); }
+</style>
