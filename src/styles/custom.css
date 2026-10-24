@@ -111,3 +111,10 @@ details.go-deeper[open] > summary {
   overflow-wrap: anywhere;
   vertical-align: baseline;
 }
+
+@media (hover: none) {
+  .expressive-code pre[data-language='text'] code {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+}
