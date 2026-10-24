@@ -6,6 +6,8 @@ These are raw replies kept unedited. Pages in the guide cite a folder here when 
 - Model: `claude-sonnet-5-5`.
 - Date: 2026-10-22.
 
+The runs used Claude Code 2.1.308, and the guide text was checked against Claude Code 2.1.309.
+
 ## Folders
 
 - `l1/`: the level 1 bills list. `v0.txt` is the loose ask and `v4.txt` is the full ask. Replies are `v0_1.out` to `v0_5.out` and `v4_1.out` to `v4_5.out`. Five runs each.
