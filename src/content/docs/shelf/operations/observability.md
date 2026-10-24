@@ -76,6 +76,6 @@ Two limits matter. First, `head -c 200` only truncates. It does not redact, and 
 
 Add the action-log hook above on both events. Perform one edit and one command. Check that four lines appear, two `pre` and two `post`.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "`PreToolUse`, `PermissionRequest`, `PermissionDenied`, `PostToolUse`". Claude Code on that date: 2.1.309. The docs page states no version of its own. Transcript retention periods vary by tool and version, so this page names no figure. Check your tool's documentation.</p>
+<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "tool events (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`, `PermissionDenied`)". Claude Code on that date: 2.1.309. The docs page states no version of its own. Transcript retention periods vary by tool and version, so this page names no figure. Check your tool's documentation.</p>
 
 **Next:** [Cost and resource discipline](../cost-and-resources/)
