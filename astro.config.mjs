@@ -2,7 +2,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
 export default defineConfig({
-  site: 'https://glentiki.github.io',
+  site: 'https://glentiki.dev',
   base: '/agentic-harness-guide',
   integrations: [
     starlight({

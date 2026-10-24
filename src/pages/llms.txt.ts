@@ -38,7 +38,7 @@ const sortBy = (pages: Page[], order: string[]) =>
   [...pages].sort((a, b) => rank(a.id, order) - rank(b.id, order) || a.id.localeCompare(b.id));
 
 export const GET: APIRoute = async ({ site }) => {
-  const origin = (site ?? new URL('https://glentiki.github.io')).origin;
+  const origin = (site ?? new URL('https://glentiki.dev')).origin;
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const link = (page: Page) => {
     const path = page.id === 'index' ? `${base}/` : `${base}/${page.id}/`;

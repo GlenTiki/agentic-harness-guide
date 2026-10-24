@@ -13,7 +13,7 @@ Build with `npm run build` and preview the output with `npm run preview`.
 
 ## Deploy
 
-Pushing to `main` runs `.github/workflows/deploy.yml`, which builds the site and publishes it to GitHub Pages. In the repository settings, set Pages to use "GitHub Actions" as the source. The site is served from `https://glentiki.github.io/agentic-harness-guide/`.
+Pushing to `main` runs `.github/workflows/deploy.yml`, which builds the site and publishes it to GitHub Pages. In the repository settings, set Pages to use "GitHub Actions" as the source. The site is served from `https://glentiki.dev/agentic-harness-guide/`.
 
 ## Licence
 
