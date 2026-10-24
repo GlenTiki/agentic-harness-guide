@@ -104,3 +104,10 @@ details.go-deeper[open] > summary {
     padding-top: 3rem;
   }
 }
+
+.sl-markdown-content :not(pre) > code {
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  vertical-align: baseline;
+}
