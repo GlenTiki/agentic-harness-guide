@@ -177,24 +177,31 @@ The script blocks `--force-with-lease` too. That flag is safer than `--force`, b
 
 ## What this hook does not cover
 
-The hook sees one thing: a Bash tool call whose command text, once split into words, shows `git` followed by `push` and a risky flag. The matrix above covers none of the routes below. Each row in this table is a real run of the sample on 2026-10-22, and exit code 0 means the sample let it through.
+The hook sees one thing: a Bash tool call whose command text, once split into words, shows `git` followed by `push` and a risky flag. The matrix above covers none of the routes below. Each row in this table is a real run of the sample on 2026-10-24, and exit code 0 means the sample let it through. Against a throwaway repository on the same date, git also ran the rows for the variable command name, the command substitution, `--de`, the command-line alias and the dashed form.
 
 | Command | Exit code | Result |
 | --- | --- | --- |
 | `F=-f; git push $F` | 0 | allowed |
+| `g=git; $g push -f origin main` | 0 | allowed |
 | `git push origin main $'\x2df'` | 0 | allowed |
+| `git push origin main "$(echo --force)"` | 0 | allowed |
+| `git push --de origin x` | 0 | allowed |
+| `git -c alias.p=push p -f origin main` | 0 | allowed |
+| `/usr/libexec/git-core/git-push -f origin main` | 0 | allowed |
 | `python3 -c 'import os;os.system("git push -f")'` | 0 | allowed |
-| `git p -f` | 0 | allowed |
 | `./deploy.sh` | 0 | allowed |
 
 In words:
 
-- Variable expansion: `F=-f; git push $F`. The script sees the text `$F`, not `-f`.
+- Variable expansion: `F=-f; git push $F` and `g=git; $g push -f`. The script sees the text `$F` or `$g`, not `-f` or `git`.
 - ANSI-C quoting: `$'\x2df'` is the text `-f` to the shell and a different word to the script.
+- Command substitution inside quotes: `"$(echo --force)"` becomes `--force` only when the shell runs it. The script sees the unexpanded text.
+- A shortened long option: git accepts `--de` for `--delete` and deletes the branch. The sample only checks abbreviations of five or more characters.
+- An alias, here set on the command line, that expands to a push without the word `push` in the command, such as `git p -f`.
+- The dashed form of the command: the script looks for a word named `git`, and `git-push` is a different word.
 - Code that runs a push: `python3 -c` with `os.system`, and any wrapper script such as `./deploy.sh`. The hook sees the script name, not the push inside it.
-- An alias or function that expands to a push without the word `push` in the command, such as `git p -f`.
-- Another tool, or an MCP server, that makes the same push by its own means.
-- The agent editing the hook script or `settings.json`. Deny writes to those files with permission rules, and see [Permissions and sandboxing](../permissions-and-sandboxing/).
+- Another tool, or an MCP server, that makes the same push by its own means. The matrix does not run this one.
+- The agent editing the hook script or `settings.json`. The matrix does not run this one. Deny writes to those files with permission rules, and see [Permissions and sandboxing](../permissions-and-sandboxing/).
 
 Treat the hook as one layer. It reduces the common routes. It does not close every route.
 

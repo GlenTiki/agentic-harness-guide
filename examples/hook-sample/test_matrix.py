@@ -28,8 +28,10 @@ MALFORMED = [
     ("command is a list", '{"tool_input":{"command":["git","push","-f"]}}'), ("tool_input null", '{"tool_input":null}'),
 ]
 KNOWN_BYPASSES = [
-    "F=-f; git push $F", "git push origin main $'\\x2df'", "python3 -c 'import os;os.system(\"git push -f\")'",
-    "git p -f", "./deploy.sh",
+    "F=-f; git push $F", "g=git; $g push -f origin main", "git push origin main $'\\x2df'",
+    'git push origin main "$(echo --force)"', "git push --de origin x", "git -c alias.p=push p -f origin main",
+    "/usr/libexec/git-core/git-push -f origin main", "python3 -c 'import os;os.system(\"git push -f\")'",
+    "./deploy.sh",
 ]
 
 
