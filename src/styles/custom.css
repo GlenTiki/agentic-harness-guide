@@ -87,3 +87,9 @@ details.go-deeper[open] > summary {
     margin-block: 0.15rem;
   }
 }
+
+@media (hover: none) {
+  .expressive-code .frame:not(.has-title) pre {
+    padding-top: 3rem;
+  }
+}
