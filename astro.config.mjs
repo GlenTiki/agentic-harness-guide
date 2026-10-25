@@ -104,6 +104,7 @@ export default defineConfig({
             { slug: 'setup/personas' },
             { slug: 'setup/retros' },
             { slug: 'setup/monitor-and-showcase' },
+            { slug: 'setup/fast-feedback-and-alerts' },
             { slug: 'setup/connecting-surfaces' },
             { slug: 'setup/local-models' },
             { slug: 'setup/end-to-end-flows' },
