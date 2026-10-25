@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { findExamples, LABELS, REPO_BLOB, SLOTS } from './lib/example-parse.mjs';
+import { findExamples, LABELS, REPO_BLOB, REQUIRED_SLOTS, SLOTS } from './lib/example-parse.mjs';
 
 const root = path.resolve(process.argv[2] ?? 'src/content/docs');
 const repoRoot = path.resolve(process.argv[3] ?? '.');
@@ -44,7 +44,8 @@ function checkFile(file) {
     for (const name of Object.keys(slots)) if (!SLOTS.includes(name)) problems.push(`${at}: unknown slot ${name}`);
     if (!LABELS.includes(attrs.label)) problems.push(`${at}: label "${attrs.label ?? ''}" is not one of ${LABELS.join(', ')}`);
     if (!attrs.task?.trim()) problems.push(`${at}: task is empty`);
-    for (const slot of SLOTS) if (!slots[slot]) problems.push(`${at}: slot "${slot}" is missing or empty`);
+    for (const slot of REQUIRED_SLOTS) if (!slots[slot]) problems.push(`${at}: slot "${slot}" is missing or empty`);
+    if (slots.shows === '') problems.push(`${at}: slot "shows" is empty (leave the Fragment out when there is nothing to say)`);
     for (const slot of ['input', 'output']) {
       if (slots[slot] && !/^```/m.test(slots[slot])) problems.push(`${at}: slot "${slot}" has no fenced block (show it verbatim)`);
     }
