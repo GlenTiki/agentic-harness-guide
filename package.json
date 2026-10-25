@@ -8,13 +8,39 @@
     "build": "astro build",
     "preview": "astro preview",
     "check:links": "node scripts/check-links.mjs",
+    "check:next": "node scripts/check-next-links.mjs",
     "check:todos": "node scripts/check-todos.mjs",
+    "evidence": "node scripts/make-evidence.mjs",
+    "check:evidence": "node scripts/make-evidence.mjs --check && node scripts/check-evidence-selftest.mjs",
+    "words": "node scripts/words.mjs",
+    "check:examples": "node scripts/check-examples.mjs && node scripts/check-examples-selftest.mjs",
     "check:skill-coverage": "node scripts/check-skill-coverage.mjs",
     "check:llms": "node scripts/check-llms.mjs",
-    "check": "npm run build && npm run check:links && npm run check:skill-coverage && npm run check:todos && npm run check:llms"
+    "check": "npm run build && npm run check:links && npm run check:skill-coverage && npm run check:todos && npm run check:examples && npm run check:evidence && npm run check:llms && npm run check:contrast && npm run check:seo && npm run check:og && npm run check:layout && npm run check:orphans && npm run check:showcase && npm run check:health && npm run check:downloads && npm run check:feedback && npm run check:next",
+    "check:contrast": "node scripts/check-contrast.mjs",
+    "check:seo": "node scripts/check-seo.mjs",
+    "check:og": "node scripts/check-og.mjs",
+    "check:layout": "node scripts/check-layout.mjs",
+    "og": "node scripts/make-og.mjs",
+    "reviewed": "node scripts/update-reviewed.mjs",
+    "record:artefacts": "node scripts/record-artefacts.mjs",
+    "showcase:shots": "node scripts/make-showcase-shots.mjs",
+    "check:downloads": "node scripts/check-downloads.mjs",
+    "check:orphans": "node scripts/check-orphans.mjs",
+    "check:showcase": "node scripts/check-showcase.mjs",
+    "check:health": "node scripts/check-health.mjs && node scripts/check-health-selftest.mjs",
+    "health": "npm run build && node scripts/record-health.mjs",
+    "check:feedback": "node scripts/check-feedback.mjs && node --test scripts/feedback-digest.test.mjs",
+    "feedback": "node scripts/feedback-digest.mjs"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.5",
+    "@astrojs/sitemap": "3.7.4",
     "@astrojs/starlight": "0.42.6",
-    "astro": "7.4.2"
+    "astro": "7.4.2",
+    "satteri": "0.10.5"
+  },
+  "devDependencies": {
+    "playwright-core": "1.59.0"
   }
 }

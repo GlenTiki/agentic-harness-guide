@@ -1,0 +1,190 @@
+---
+title: A check that can fail
+description: Start with a tiny notes tool, one check script and a test that is built to fail, so you know the check can go red before you add anything.
+status: built
+sidebar:
+  label: "Chapter 0: A check that can fail"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch00-baseline.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (6 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+Nothing is checked. Without a baseline you cannot tell whether a later check works or only looks like it works.
+
+## Goal
+
+Get a small sample project, a single command that checks it, and proof that the command can report a failure.
+
+## What is in the kit
+
+- `notes.py`, a plain-text notes tool. It adds, lists and searches notes. One note is one line: a UTC time stamp to the second, a tab, then the text.
+- `validate.py`, which runs the unit tests and prints one verdict.
+- `fixtures/bad`, a copy of the tool that drops the seconds from the time stamp. Its only job is to prove the check can go red.
+
+## Get the kit
+
+Download [ch00-baseline.zip](/agentic-harness-guide/downloads/ch00-baseline.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch00-baseline.zip
+unzip ch00-baseline.zip -d kit
+cd kit/ch00-baseline
+```
+
+The hash must be `c7135ce6e57d41e131c4fffb697d22b7d9d569e76ddf56177dfde2cef16e8edb`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `notes.py`. It has no dependencies.
+3. Run the tests: `python3 -I -m unittest discover -s tests -t .`.
+4. Run the validator: `python3 -I validate.py`.
+5. Add a note and list it. The first command makes the `scratch` folder: `mkdir -p scratch`, then `python3 -I notes.py --file scratch/notes.txt add "buy milk"`, then `python3 -I notes.py --file scratch/notes.txt list`.
+6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You run the validator. It runs the unit tests and prints one verdict."
+  evidence="python3 -I validate.py (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.053s
+
+OK
+python: 3.13.1
+validate: PASS
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The last line is `validate: PASS`. The `python:` line names the Python that ran. The test count and times can differ on your machine.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The kit passes on this Python. It does not show that the check can fail.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You add one note and list it, so you have seen the tool work."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+mkdir -p scratch
+python3 -I notes.py --file scratch/notes.txt add "buy milk"
+python3 -I notes.py --file scratch/notes.txt list
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+2026-10-25T01:14:48Z  buy milk
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The line starts with a UTC time stamp to the second and a `Z`. Two spaces separate it from the note. Your time stamp will differ.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The tool stores one note per line. It does not show how the tool behaves with many notes.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on a copy of the tool that drops the seconds from the time stamp. The check must go red."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+[... traceback lines omitted ...]
+FAIL: test_add_then_list (tests.test_notes.NotesTest.test_add_then_list)
+AssertionError: Lists differ: [('2026-01-02T03:04', 'buy milk')] != [('2026-01-02T03:04:05Z', 'buy milk')]
+FAIL: test_stamp_is_utc_seconds_with_z (tests.test_notes.NotesTest.test_stamp_is_utc_seconds_with_z)
+AssertionError: '2026-01-02T03:04' != '2026-01-02T03:04:05Z'
+Ran 6 tests in 0.003s
+FAILED (failures=2)
+python: 3.13.1
+validate: FAIL
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The failure lines `test_add_then_list` and `test_stamp_is_utc_seconds_with_z` name the two tests that caught it.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The check can fail on one defect. It does not show that the check finds every defect.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+Nothing here depends on a tool version. The chapter proves that the check can go red on one defect, a time stamp without seconds. It does not prove the check finds every defect. A path that cannot be used gives one line and exit code 2, not a traceback. The kit's `CHAPTER.md` shows that command.
+
+**Read the matching page:** [The method page](../../method/engineer-weak-spots/)
+
+**Next:** [Plain-English specs a script can read](../ch01-plain-spec/)

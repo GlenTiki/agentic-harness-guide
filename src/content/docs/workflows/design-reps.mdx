@@ -9,21 +9,21 @@ description: Five practice jobs for the six-step method, with worked answers, fo
 
 *If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
-A rep is one practice job. Sam has learned the method and now needs repetitions, the way a pianist needs scales. Each job below is small enough to design on one sheet of paper and different enough that the same answer will not fit twice.
+A rep is one practice job, like scales for a pianist. Each job below is small enough to design on one sheet of paper and different enough that the same answer will not fit twice.
 
 ## The idea
 
 **Skill comes from designing the same way on many different jobs, then comparing your design with a worked one.** Use the six steps of the [six-step method](../../journey/08-design-anything/#the-six-step-method) from level 8 every time.
 
-Your design does not need to match the worked answer. Where it differs, ask which choice you would defend.
+Your design need not match the worked answer. Where it differs, ask which choice you would defend.
 
 ## Try it
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need pen and paper. A chat assistant is optional, for a second opinion on your design. Take one rep at a time. Write your design first, then open the answer. Each rep is about 3 steps: read the job, write your design, then open the answer and compare. Your design work has no fixed length, so this page gives no minutes.
+You need pen and paper. A chat assistant is optional, for a second opinion. Each rep is about 3 steps: read the job, write your design, then open the answer and compare. Design work has no fixed length, so this page gives no minutes.
 
-A script in these answers means a small program or a spreadsheet formula that does one fixed job. A [workspace](../../glossary/#workspace) is a separate copy of the files that one helper works in.
+The worked answers are designs written for teaching, not recorded runs. A script here means a small program or a spreadsheet formula that does one fixed job. A [workspace](../../glossary/#workspace) is a separate copy of the files that one helper works in.
 
 ### Rep 2: triage a shared inbox
 
@@ -32,7 +32,7 @@ A small team shares one support inbox. Messages arrive all day. They want each o
 <details>
 <summary>Worked answer</summary>
 
-**Outcome and done.** Every message in the last day carries a category and a priority. Every routine message has a draft reply a person has read. No message is answered without a person agreeing.
+**Outcome and done.** Every message from the last day has a category and a priority. Every routine message has a draft a person has read. No reply goes out without a person.
 
 | Step | Mark | Owner and tool |
 | --- | --- | --- |
@@ -42,13 +42,9 @@ A small team shares one support inbox. Messages arrive all day. They want each o
 | Draft replies to routine ones | Judgement | Assistant, draft only |
 | Send | Risky | A person, from the drafts |
 
-**Roles and tools.** The reader has read-only access and no send rights. The drafter writes to a drafts folder only. Message text is treated as data, never as orders. An email can contain text that tries to steer the assistant, such as a sentence telling it to drop its rules (see [prompt injection](../../glossary/#prompt-injection) in level 4).
+**Checks.** Message text is data, never orders, because an email can try to steer the assistant (see [prompt injection](../../glossary/#prompt-injection) in level 4). A category outside the allowed list goes to "unsure". A person reviews a daily sample, and the disagreement rate goes in a [ledger](../../glossary/#ledger). Drafts that promise refunds or dates are held.
 
-**Checks.** A category outside the allowed list sends the message to "unsure". A person reviews a sample of sorted messages each day, and the disagreement rate goes in a [ledger](../../glossary/#ledger). A rule holds drafts that promise refunds or dates for a person.
-
-**Checkpoints.** Sending is always a person's action. Refunds and anything legal go to a named human.
-
-**Failure behaviour.** If the connector drops, the run stops and notes the last message read, then resumes from there. Unreadable messages go to "unsure". A watcher alerts a person when the oldest unanswered urgent message passes a set age. Log messages that match known injection patterns; a miss is expected, so the data rule and the read-only access do the real work.
+**Checkpoints and failure.** A person sends every reply. Refunds and anything legal go to a named human. If the connector drops, the run notes the last message read and resumes there. A watcher alerts a person when an urgent message waits too long.
 
 </details>
 
@@ -59,7 +55,7 @@ A team of eight uses personal calendars and a shared spreadsheet of events. A ma
 <details>
 <summary>Worked answer</summary>
 
-**Outcome and done.** Every future event from the old sources exists once in the new calendar. No two events for the same person overlap unless the owner agreed. Each of the eight people has confirmed their own events. The old sources are marked read-only, not deleted.
+**Outcome and done.** Every future event exists once in the new calendar. No two events for one person overlap unless the owner agreed. Each of the eight people has confirmed their own events. The old sources are read-only, not deleted.
 
 | Step | Mark | Owner and tool |
 | --- | --- | --- |
@@ -71,13 +67,9 @@ A team of eight uses personal calendars and a shared spreadsheet of events. A ma
 | Import into the new calendar | Risky | Manager, in a test calendar first |
 | Switch the old sources to read-only | Risky | Manager |
 
-**Roles and tools.** The assistant drafts the duplicate-matching rules and the message each person receives. It does not import anything. Each person sees only their own events when they confirm.
+**Checks.** The assistant drafts the matching rules and imports nothing. The count imported equals the count in the cleaned list. Every event removed as a duplicate is listed for a person to confirm. Recurring events are checked one by one, because a repeat rule is easy to import wrongly.
 
-**Checks.** The count of events imported equals the count in the cleaned list. The count removed as duplicates is listed, with each event, so a person can confirm it was a true duplicate. A sample of five events per person is checked by that person against their own diary.
-
-**Checkpoints.** The manager approves the cleaned list before import. Each person confirms their events before the old sources go read-only.
-
-**Failure behaviour.** The import goes to a test calendar first. A mismatch in counts stops the run. Recurring events are checked one by one, because a repeat rule is easy to import wrongly. The old sources stay as the way back for one month, and the log records what was imported when.
+**Checkpoints and failure.** The manager approves the cleaned list before import, and each person confirms before the old sources go read-only. A mismatch in counts stops the run. The old sources stay as the way back for one month.
 
 </details>
 
@@ -88,7 +80,7 @@ A small club sends a weekly newsletter. Items come from several members. An edit
 <details>
 <summary>Worked answer</summary>
 
-**Outcome and done.** A newsletter goes out on schedule. Every claim traces to a submitted item or a linked source. Names and dates match the submissions. The editor approved the final text.
+**Outcome and done.** The newsletter goes out on schedule. Every claim traces to a submitted item or a linked source. Names and dates match the submissions. The editor approved the text.
 
 | Step | Mark | Owner and tool |
 | --- | --- | --- |
@@ -99,13 +91,11 @@ A small club sends a weekly newsletter. Items come from several members. An edit
 | Edit tone | Judgement | Editor, helped by a draft |
 | Send | Risky | Editor only |
 
-**Roles and tools.** A [fan-out and gather](../../glossary/#fan-out-and-gather): one helper per item, then a gather step that checks all items arrived. Helpers have no send access. The reviewer sees the originals, not the summaries' reasoning.
+**Roles and tools.** A [fan-out and gather](../../glossary/#fan-out-and-gather): one helper per item, then a gather step. Helpers cannot send. The reviewer sees the originals, not the summaries' reasoning.
 
-**Checks.** The gather step compares the item count in with the item count out. Every date and name in the draft must appear in a submission. Link check: warn on failure and let the editor decide, because a link can fail for reasons that are not the club's fault. The reviewer lists any claim without a source.
+**Checks.** The gather step compares the item count in with the count out. Every date and name in the draft must appear in a submission. A failed link warns the editor, who decides. The reviewer lists any claim without a source.
 
-**Checkpoints.** The editor approves the final draft. Sending is a button only the editor presses.
-
-**Failure behaviour.** If an item fails, the issue is assembled without it and the editor is told which one is missing. If a name or date check fails, the issue is not sent and the editor sees why. A late issue is better than a wrong one. Each run logs which items went in.
+**Checkpoints and failure.** The editor approves the draft and alone presses send. If an item fails, the issue is assembled without it and the editor is told which. If a name or date check fails, nothing is sent. A late issue is better than a wrong one.
 
 </details>
 
@@ -116,7 +106,7 @@ A growing team wants a new person to have an account, equipment, a first-week pl
 <details>
 <summary>Worked answer</summary>
 
-**Outcome and done.** By the start date, the new hire has the accounts and equipment they need, a plan for week one and a named buddy. The manager has confirmed each item. Nobody has more access than the role needs.
+**Outcome and done.** By the start date, the new hire has the accounts, equipment, a week-one plan and a named buddy. The manager has confirmed each item. Nobody has more access than the role needs.
 
 | Step | Mark | Owner and tool |
 | --- | --- | --- |
@@ -128,13 +118,9 @@ A growing team wants a new person to have an account, equipment, a first-week pl
 | Send the welcome message | Risky | The manager, from a draft |
 | Notice stalled items | Mechanical | Watcher on a schedule |
 
-**Roles and tools.** A ledger lists every item, its owner (human or assistant), status and date. The assistant reads the template and the ledger, and writes drafts only. It has no rights to create accounts or grant access.
+**Checks.** A ledger lists every item, its owner, status and date. Required form fields are present. Requested access is compared with the role's standard list, and extras are flagged. The plan check runs before the manager sees it: every day has items, and nothing is dated before the start date.
 
-**Checks.** Required form fields are present. Requested access is compared with the role's standard list, and extras are flagged. The plan check runs before the manager sees it: every day has items, and nothing is dated before the start date.
-
-**Checkpoints.** Access is always granted by a person. The welcome message is sent by the manager.
-
-**Failure behaviour.** A missing field stops the run and asks the manager. A stalled item raises a flag on day three and again on day ten, to a person, not to the new hire. The ledger shows where things stand if the run restarts. For a full worked refinement of this job from a vague request, see [define a workflow](../define-a-workflow/).
+**Checkpoints and failure.** A person grants access and the manager sends the welcome. A missing field stops the run and asks the manager. A stalled item raises a flag to a person on day three and day ten. The ledger lets a restarted run resume. [Define a workflow](../define-a-workflow/) refines this job from a vague request.
 
 </details>
 
@@ -156,13 +142,9 @@ A small project uses an old library for dates. The team wants to move to a newer
 | Review each change | Judgement | Separate reviewer, given diff and tests |
 | Merge | Risky | A person |
 
-**Roles and tools.** A diff is the list of lines a change adds and removes. Use a pipeline with a ledger. One writer at a time works in its own copy of the code, so a change can be reviewed and reversed. The reviewer has read-only access and does not see the author's reasoning.
+**Checks.** Tests after each small change. A search that finds zero remaining uses of the old library. A comparison of outputs on recorded inputs, before and after. A diff is the list of lines a change adds and removes. One writer at a time works in its own copy of the code, so a change can be reviewed and reversed. The reviewer is read-only and does not see the author's reasoning.
 
-**Checks.** Tests after each small change. A search that finds zero remaining uses of the old library. A comparison of outputs on recorded inputs, before and after.
-
-**Checkpoints.** A person approves each merge. A person decides about any behaviour change the tests reveal, because "fix the test" and "fix the code" are different decisions.
-
-**Failure behaviour.** A failing test stops the pipeline at that module and the ledger says so. A change that touches more files than the brief allowed is rejected. Each change is small and reversible, so rollback means discarding one copy.
+**Checkpoints and failure.** A person approves each merge and decides any behaviour change the tests reveal, because "fix the test" and "fix the code" are different decisions. A failing test stops the pipeline at that module. A change that touches more files than the brief allowed is rejected.
 
 </details>
 
@@ -170,16 +152,12 @@ A small project uses an old library for dates. The team wants to move to a newer
 
 *How it works. Optional reading.*
 
-The reps differ on purpose. The inbox needs a defence against untrusted text. The calendar move needs a way back. The newsletter needs a gather step that notices a missing part. The onboarding job needs a record that survives a restart. The migration needs tests before any change.
-
-The method is the same each time. What changes is where the weak and the irreversible steps sit. After five reps you stop reading the method off the card and start seeing the shape of the job first.
+The reps differ on purpose. The inbox needs a defence against untrusted text, the calendar move a way back, the newsletter a gather step that notices a missing part, onboarding a record that survives a restart, and the migration tests before any change. The method is the same each time. What changes is where the weak and the irreversible steps sit.
 
 ## Expert corner
 
 :::caution[Expert corner]
-A worked answer is one defensible design, not the only one. Two designs can both be sound and differ in where the checks sit. Judge a design by whether each risky step has a human checkpoint and each weak step has a check that can fail. If you cannot say how a check could fail, it is decoration.
-
-Reps teach the shape of a design. They do not test it. A design earns trust only after a real case runs through it by hand.
+A worked answer is one defensible design, not the only one. Judge a design by whether each risky step has a human checkpoint and each weak step has a check that can fail. If you cannot say how a check could fail, it is decoration. A design earns trust only after a real case runs through it by hand.
 :::
 
 ## Agent note
@@ -198,11 +176,11 @@ Check: every step in your answer has an owner, a mark and a failure rule, and ev
 
 ## Mistakes people make
 
-**Reading the answer first.** The design feels obvious once you have seen it. Fix: write your own design before you open the answer.
+**Reading the answer first.** The design feels obvious once seen. Fix: write your own first.
 
-**Copying the answer's tools.** The calendar job and the inbox job need different checks. Fix: ask where this job's weak and risky steps sit.
+**Copying the answer's tools.** The calendar and inbox jobs need different checks. Fix: ask where this job's weak and risky steps sit.
 
-**Stopping at the happy path.** The design says what happens when all goes well. Fix: write the failure behaviour for every step before you compare.
+**Stopping at the happy path.** Fix: write the failure behaviour for every step before you compare.
 
 ## Checkpoint
 
@@ -211,7 +189,7 @@ Check: every step in your answer has an owner, a mark and a failure rule, and ev
 You can now:
 
 - Design a small job on paper with the six-step method.
-- Compare your design with a worked one and defend the differences.
+- Defend where your design differs from a worked one.
 - Place a human checkpoint on each risky step.
 
 **Self-test**
@@ -223,8 +201,8 @@ You can now:
 <details>
 <summary>Answers</summary>
 
-1. The log is only one layer. Message text is data, the reader is read-only, and a person sends every reply.
-2. A wrong import reaches eight people before anyone can undo it. A test calendar shows the count and the overlaps before anyone depends on them.
+1. The log is one layer. Message text is data, the reader is read-only, and a person sends every reply.
+2. A wrong import reaches eight people before anyone can undo it. A test calendar shows the count and overlaps first.
 3. Onboarding. Its ledger records each item, owner and status, so a restart resumes from the record.
 
 </details>
@@ -233,4 +211,4 @@ You can now:
 
 The six-step method now has five more jobs behind it, and the guide's baseline checklist on the engineer shelf shows what a safe setup looks like.
 
-**Next:** [The baseline checklist](../../shelf/reference/baseline/) (for engineers)
+**Next:** [Recommended baseline](../../shelf/reference/baseline/) (for engineers)

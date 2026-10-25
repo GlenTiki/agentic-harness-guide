@@ -11,7 +11,7 @@ description: Slice agent work into small, single-concern changes that a person c
 
 ## Why it matters
 
-[Level 5](../../../journey/05-check-the-work/) explains why a person must check the work. An agent can produce thousands of lines in minutes. A reviewer cannot read them with the same care. A reviewer has limited attention per change, so a very large diff tends to be skimmed or left waiting. Small changes keep the human check real, and they limit how much one mistake can break.
+[Level 5](../../../journey/05-check-the-work/) explains why a person must check the work. An agent can produce thousands of lines in minutes. A reviewer cannot read them with the same care. A reviewer has limited attention per change, so a very large diff is harder to read with the same care. Principle, not measured. Small changes keep the human check real, and they limit how much one mistake can break.
 
 ## What to enable
 

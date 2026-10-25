@@ -1,0 +1,210 @@
+{
+ "queries": [
+  {
+   "query": "How big should a pull request be before I split it?",
+   "relevant": [
+    "pull-request-size",
+    "small-commits"
+   ]
+  },
+  {
+   "query": "Which spelling should the docs use, colour or color?",
+   "relevant": [
+    "british-english"
+   ]
+  },
+  {
+   "query": "What should the subject line of my commit look like?",
+   "relevant": [
+    "small-commits"
+   ]
+  },
+  {
+   "query": "Is it okay to install a third party library for this?",
+   "relevant": [
+    "standard-library"
+   ]
+  },
+  {
+   "query": "Where do I keep API keys for the deploy script?",
+   "relevant": [
+    "secrets-handling"
+   ]
+  },
+  {
+   "query": "Should this function have annotations for its arguments?",
+   "relevant": [
+    "type-hints"
+   ]
+  },
+  {
+   "query": "How should a failed request be tried again?",
+   "relevant": [
+    "retry-policy"
+   ]
+  },
+  {
+   "query": "What shape should the log lines have?",
+   "relevant": [
+    "log-format"
+   ]
+  },
+  {
+   "query": "How wide can a line of code be?",
+   "relevant": [
+    "line-length"
+   ]
+  },
+  {
+   "query": "Which database should the new service use?",
+   "relevant": [
+    "database-choice"
+   ]
+  },
+  {
+   "query": "How do I make a schema change that I can undo?",
+   "relevant": [
+    "migration-safety"
+   ]
+  },
+  {
+   "query": "How many results should a list endpoint return per page?",
+   "relevant": [
+    "pagination-default"
+   ]
+  },
+  {
+   "query": "How should dates be typed into the form?",
+   "relevant": [
+    "date-input-format"
+   ]
+  },
+  {
+   "query": "How do I record when an event happened?",
+   "relevant": [
+    "utc-timestamps"
+   ]
+  },
+  {
+   "query": "Can we make the interface readable for people with poor eyesight?",
+   "relevant": [
+    "accessibility-basics"
+   ]
+  },
+  {
+   "query": "Do people who work at night get a darker theme?",
+   "relevant": [
+    "dark-mode-support",
+    "terminal-theme"
+   ]
+  },
+  {
+   "query": "The page feels slow, where do I start?",
+   "relevant": [
+    "performance-budget"
+   ]
+  },
+  {
+   "query": "How do we run a review after an outage?",
+   "relevant": [
+    "incident-review"
+   ]
+  },
+  {
+   "query": "How long will this task take?",
+   "relevant": [
+    "estimate-policy"
+   ]
+  },
+  {
+   "query": "What should I check when reviewing someone's code?",
+   "relevant": [
+    "review-checklist"
+   ]
+  },
+  {
+   "query": "How should I name a new branch?",
+   "relevant": [
+    "branch-naming"
+   ]
+  },
+  {
+   "query": "Where do the release notes go?",
+   "relevant": [
+    "changelog-habit"
+   ]
+  },
+  {
+   "query": "What format for the notes from a meeting?",
+   "relevant": [
+    "meeting-notes-format"
+   ]
+  },
+  {
+   "query": "When do I look back over the week?",
+   "relevant": [
+    "weekly-review-friday"
+   ]
+  },
+  {
+   "query": "How should I word a quick message to a colleague?",
+   "relevant": [
+    "email-tone"
+   ]
+  },
+  {
+   "query": "How do I protect my files if the laptop dies?",
+   "relevant": [
+    "backup-routine"
+   ]
+  },
+  {
+   "query": "Which tool stores my logins?",
+   "relevant": [
+    "password-manager"
+   ]
+  },
+  {
+   "query": "What do I take on a trip?",
+   "relevant": [
+    "travel-packing-list"
+   ]
+  },
+  {
+   "query": "Where can the group eat lunch?",
+   "relevant": [
+    "dietary-preference"
+   ]
+  },
+  {
+   "query": "How do I get to the office?",
+   "relevant": [
+    "commute-by-bike"
+   ]
+  },
+  {
+   "query": "When should I schedule a call with the team?",
+   "relevant": [
+    "morning-focus"
+   ]
+  },
+  {
+   "query": "Write the failing check before the feature",
+   "relevant": [
+    "tests-first"
+   ]
+  },
+  {
+   "query": "Which currency do prices use?",
+   "relevant": [
+    "currency-eur"
+   ]
+  },
+  {
+   "query": "What should the message say when validation fails?",
+   "relevant": [
+    "error-messages"
+   ]
+  }
+ ]
+}

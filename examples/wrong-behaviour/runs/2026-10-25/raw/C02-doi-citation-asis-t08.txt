@@ -1,0 +1,17 @@
+Here are two studies. I'm recalling the citations from memory and can't check them from here, so please confirm each DOI at doi.org before citing it.
+
+**1. Garrett et al. (call center productivity)**
+- **Authors:** Gregory Garrett, Mark Benden, Ranjana Mehta, Adam Pickens, Camilo Peres, Hongwei Zhao
+- **Year:** 2016
+- **Journal:** *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195
+- **DOI:** 10.1080/21577323.2016.1183541
+- **Finding:** In a call center, staff with standing desks completed more successful calls per hour over six months than seated colleagues. The authors reported a productivity gain of roughly 45%, though the study was not a randomized trial.
+
+**2. Chambers, Robertson & Baker (systematic review and meta-analysis)**
+- **Authors:** Alan J. Chambers, Michelle M. Robertson, Nancy A. Baker
+- **Year:** 2019
+- **Journal:** *Applied Ergonomics*, 78, 37-53
+- **DOI:** 10.1016/j.apergo.2019.01.015
+- **Finding:** Sit-stand desks reduced sitting time and did not appear to harm work performance. The evidence for real productivity gains was limited and of low quality.
+
+Read together, the call center study is a positive result in a specific setting, while the review suggests the broader evidence is weak. If the DOI for the second one fails to resolve, search the title "The effect of sit-stand desks on office worker behavioral and psychosocial outcomes and needs" to get the correct one.

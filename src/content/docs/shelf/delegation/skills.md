@@ -1,6 +1,6 @@
 ---
-title: Skills
-description: Package a repeatable procedure as a skill so it loads only when needed.
+title: Agent skills and SKILL.md
+description: Package a repeatable procedure as an agent skill with a SKILL.md file, so it loads only when needed.
 ---
 
 *Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
@@ -47,6 +47,6 @@ description: Draft release notes from merged pull requests since the last tag. U
 
 Take the one multi-step task you most often retype. Move it into `.claude/skills/<name>/SKILL.md` with a trigger-style description, then test it in a fresh session.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/skills. Quoted line: "Skills extend what Claude can do. Create a `SKILL.md` file with instructions, and Claude adds it to its toolkit." Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/skills. Quoted line: "Skills extend what Claude can do. Create a `SKILL.md` file with instructions, and Claude adds it to its toolkit." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
-**Next:** [MCP servers](../mcp-servers/)
+**Next:** [MCP server security](../mcp-servers/)

@@ -1,0 +1,65 @@
+---
+import { buildFeedbackUrl } from '../../public/feedback-url.mjs';
+import { BASE, LAST_REVIEWED } from '../data/site';
+
+const { variant } = Astro.props;
+const href = buildFeedbackUrl({ page: Astro.url.pathname });
+const build = LAST_REVIEWED.slice(0, 10);
+---
+
+{variant === 'footer' ? (
+  <a href={href} data-feedback data-build={build}>Send feedback</a>
+) : (
+  <>
+  <a class="feedback-button" href={href} data-feedback data-build={build} aria-label="Send feedback about this page">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+      <path d="M4 4h16v12H8l-4 4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+    </svg>
+    <span>Feedback</span>
+  </a>
+  <script is:inline type="module" src={`${BASE}/feedback.js`}></script>
+  </>
+)}
+
+
+<style>
+  .feedback-button {
+    position: fixed;
+    inset-inline-start: 1rem;
+    inset-block-end: 1rem;
+    z-index: calc(var(--sl-z-index-navbar) + 1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 2px solid var(--ahg-accent-strong);
+    border-radius: 999px;
+    background: var(--ahg-accent);
+    color: var(--ahg-accent-ink);
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 0.3);
+  }
+  .feedback-button:hover {
+    background: var(--ahg-accent-strong);
+    color: var(--ahg-accent-ink);
+  }
+  .feedback-button:focus-visible {
+    outline: 3px solid var(--ahg-text);
+    outline-offset: 3px;
+  }
+  @media (min-width: 50rem) {
+    .feedback-button {
+      inset-inline-start: calc(var(--sl-sidebar-width) + 1rem);
+    }
+  }
+  @media print {
+    .feedback-button {
+      display: none;
+    }
+  }
+</style>

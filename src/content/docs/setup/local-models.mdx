@@ -1,0 +1,72 @@
+---
+title: Local models where they suffice
+description: Local models cut tokens and keep data on the machine. Use small ones for narration and embeddings, and know the options for models larger than memory.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: local models served by Ollama for narration, summaries and a stop-time drift check, a tool server that asks a local model, and a free-memory check. Built in the case study as optional parts: local embedding and a background indexing job ([chapter 12](../../case-study/ch12-local-models/)). Layer streaming for models larger than memory is not in my setup, and this page gives no speed numbers.
+
+## The weak spot it removes
+
+**Everything costs [tokens](../../glossary/#token).** Sending every small job to a large hosted model costs money and sends your data out. A local model keeps the data on the machine and costs no per-token fee. A local model also competes for memory with everything else you run.
+
+## How it works
+
+Use the smallest model that does the job.
+
+| Job | Fit |
+| --- | --- |
+| Embedding a note for search | A small embedding model. Each text is encoded once and stored. |
+| Narrating search results in a sentence | A small chat model. |
+| Summarising a group of notes | A small to mid-size chat model, run in the background. |
+| Judging whether a source supports a claim | A larger model, or a person, and a sample of its verdicts reviewed. |
+| Re-ranking the top 20 results | A small cross-encoder, if it earns its place. See [relevance](../relevance-and-reranking/). |
+
+**Ollama** serves local models over a local web address. Its embeddings call returns normalised vectors. Use the same model to index and to query. Models stay loaded for a short time by default, and a setting controls how many load at once. At the last check Ollama had no native re-rank endpoint, so run a re-ranker through a library.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://docs.ollama.com/capabilities/embeddings. The page states that the embeddings call returns L2-normalised vectors and that the same model should index and query. The docs page states no version of its own.</p>
+
+### Check memory first
+
+A model that does not fit in free memory pushes the machine into swap, and everything slows. My rule: a hook reads the size of the model, adds an overhead, and compares it with free memory. If it fits, the local model narrates. If not, the hook prints a plain file list from keyword search and skips the model. A third tier applies during a video call. It skips the local model and asks a small hosted model for the one-sentence summary. That tier sends the prompt text to a hosted service, so it is the one place where this hook does not keep the data on the machine.
+
+### Background indexing
+
+Indexing is slow and does not need an answer now. Run it as a background job at low priority, behind an admission step that waits for free memory and an idle machine. Guard it with a lock so two runs never overlap. This is the fix for the day every stop started a re-index and swap ran out.
+
+## Models larger than memory
+
+You may want a larger model than your machine can hold. These options exist. I describe each and give no speed figure, because I have none that I trust.
+
+| Option | What it does | Honest limit |
+| --- | --- | --- |
+| llama.cpp memory mapping and partial offload | Maps the model file into memory by default, can lock it in RAM, and can place a chosen number of layers on the graphics processor. | The page does not state the cost of paging weights from disk. Measure it. |
+| "LLM in a flash" (research paper) | Keeps parameters in flash storage and loads them on demand. Reports running models up to about twice the available memory. | A research paper. I found no released tool from it. |
+| AirLLM | A Python library that loads a model one layer at a time to fit a small graphics card. | Its page gives no tokens-per-second figures. On a Mac it needs Apple silicon and supports only some model families. Every token re-reads layers from disk, so I expect it to be slow. That is my reasoning, not a measurement. |
+| MLX | An array framework for Apple silicon with shared memory. | Its page does not claim larger-than-memory models. I make no such claim. |
+
+For background indexing, my advice is to choose an embedding model that fits in memory. That is advice, not a fetched fact. Layer streaming suits an offline batch job at best, not an interactive chat.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://arxiv.org/abs/2312.11514. The page is the paper "LLM in a flash", submitted 2023-12-12. It reports running models up to twice the size of available memory. It is a research paper and not a released tool.</p>
+
+## End-to-end flow
+
+1. A hook receives a prompt.
+2. The hook asks "is there free memory for the small chat model?".
+3. If yes, a hybrid search runs, and the small model narrates the top hits in one sentence. If no, a keyword search runs and the hook prints the file list.
+4. In the background, a low-priority job refreshes the embedding index when notes change. A lock prevents two runs.
+5. You compare the output with the cloud answer on 20 prompts. You keep the local path only where the answers are as useful.
+
+## What this does not do
+
+- It does not keep every hook local. The video-call tier uses a hosted model.
+- It does not run models larger than memory. My setup has no layer streaming.
+- It does not show that a local answer is as good as a hosted one. Compare them on your own prompts.
+
+## Build it
+
+[Case-study chapter 12: Local models](../../case-study/ch12-local-models/) is a downloadable kit. All model parts are optional, and the tests pass without them.
+
+**Next:** [One feature through every layer](../end-to-end-flows/)

@@ -3,27 +3,27 @@ title: "Workflow: define a workflow"
 description: Turn a repeated job into a written workflow with steps, checks and human checkpoints, using chat only.
 ---
 
+import Example from '../../../components/Example.astro';
+
 ## Scene
 
 *Last time (workflow: small shop month-end): you worked a close with owners, checks and a sign-off.*
 
-Someone says, "make our onboarding process run itself." It is a sentence everyone nods at. Then you ask what "run itself" covers, and the room goes quiet. Does it create accounts? Send the welcome message? Chase people who are late? A job that nobody has written down cannot be handed to an assistant, or to a new colleague. This page takes that one rough sentence and turns it into a written workflow you could actually run.
+Someone says, "make our onboarding process run itself." Everyone nods. Then you ask what "run itself" covers, and the room goes quiet. Does it create accounts? Send the welcome message? Chase people who are late? A job nobody has written down cannot be handed to an assistant or to a new colleague. This page turns that one sentence into a written workflow you could run.
 
 ## The idea
 
 **Refine a rough ask in visible passes until it becomes a written workflow: steps, owners, inputs, outputs, checks, human checkpoints and failure behaviour.** The result is a short spec you can review, hand over and test.
 
-The method is the [six-step method](../../journey/08-design-anything/) from level 8. This workflow uses [the prompt refiner](../../appendix/prompt-refiner/). Each pass changes one kind of thing, and you read the difference in plain words before you accept it.
+The method is the [six-step method](../../journey/08-design-anything/) from level 8, run with [the prompt refiner](../../appendix/prompt-refiner/). Each pass changes one kind of thing. You read the difference in plain words before you accept it.
 
 ## Try it
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant. This takes about 10 minutes.
+You need any chat assistant. This takes about 10 minutes. The refiner works on the shape of your ask, so do not paste confidential material into it, and read its output before you use it ([the injection result](../../appendix/prompt-refiner/#the-seven-evals)).
 
-The refiner is optional. Do not paste confidential material into it, because it works on the shape of your ask and not on your data. Read its output before you use it, and see [the injection result](../../appendix/prompt-refiner/#the-seven-evals) in the appendix.
-
-1. Paste this, then send it. It refines in passes by hand. The appendix has [refiner lite](../../appendix/prompt-refiner/#refiner-lite), a shorter plain prompt, and the full version.
+1. Paste this, then send it. The appendix has [refiner lite](../../appendix/prompt-refiner/#refiner-lite), a shorter plain prompt, and the full version.
 
 ```text
 You are a refiner. Improve my rough ask in three visible passes. Do not do the task.
@@ -37,16 +37,40 @@ After each pass, write "What changed:" in one or two plain sentences. Ask me a q
 My rough ask: make our onboarding process run itself.
 ```
 
-2. Answer any question it asks. If it asks nothing, carry on.
-3. Read each "What changed" line. Then read the final pass against the example below.
+2. Answer any question it asks.
+3. Read each "What changed" line. Then compare the final pass with the worked passes below.
 
 ### The three passes, worked
 
-**Rough ask.** "Make our onboarding process run itself."
+The passes below are written for teaching. They are not a recorded run, and your refiner will word things differently. The rough ask is "Make our onboarding process run itself."
 
-**Pass 1: outcome and done.**
+<Example
+  label="Constructed"
+  task="A refiner turns the rough ask into an outcome and a checkable done, the first of three passes."
+  env="Written to illustrate. Not a recorded run."
+>
+
+<Fragment slot="input">
 
 ```text
+You are a refiner. Improve my rough ask in three visible passes. Do not do the task.
+
+Pass 1: state the outcome and a checkable done.
+Pass 2: list the steps, and for each say the owner (a person or an assistant), the input and the output. Mark any step that is risky or hard to undo.
+Pass 3: add a check for each weak step, a human checkpoint for each risky step, and what happens when a step fails.
+
+After each pass, write "What changed:" in one or two plain sentences. Ask me a question only if you cannot continue without the answer. Keep every pass short.
+
+My rough ask: make our onboarding process run itself.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Pass 1: outcome and done.
+
 Outcome: when someone joins, they have what they need to start work, and their manager knows it is ready.
 
 Done means all of these are true by the start date:
@@ -55,10 +79,26 @@ Done means all of these are true by the start date:
 - a week-one plan exists and has an item for every working day;
 - a named buddy is confirmed;
 - the manager has ticked each item;
-- a named person who is not the preparer, or the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/), has reviewed and approved the result.
-```
+- a named person who is not the preparer, or the fallback reviewer, has reviewed and approved the result.
 
 What changed: "run itself" became six items someone could tick. The vague outcome became a done you can check.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The "What changed" line says in plain words what moved, so you can accept or redo this pass alone.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the shape of a first pass; it does not show what a real refiner will write or that its done list is complete.
+
+</Fragment>
+
+</Example>
 
 **Pass 2: steps, owners, inputs and outputs.**
 
@@ -73,7 +113,7 @@ What changed: "run itself" became six items someone could tick. The vague outcom
 8. Watch progress. Owner: assistant on a schedule. Input: the [ledger](../../glossary/#ledger) (the written record of items, owners and status). Output: a flag to the manager if an item is stalled.
 ```
 
-What changed: the job became eight steps with a named owner for each. Two risky steps (4 and 7) are marked and given to people. The assistant never creates accounts.
+What changed: eight steps, each with a named owner. Two risky steps (4 and 7) are marked and given to people. The assistant never creates accounts.
 
 **Pass 3: checks, human checkpoints and failure.**
 
@@ -96,7 +136,7 @@ If a step fails:
 Log: one line per step with the run identity, status and reason. The run identity is a code the assistant generates once at the start of the run and repeats on every log line.
 ```
 
-What changed: every weak step has a check, every risky step has a human checkpoint, and each failure has a defined result. A restart can resume from the ledger instead of starting over.
+What changed: every weak step has a check, every risky step has a human checkpoint, and each failure has a defined result.
 
 ### The finished spec, as a table
 
@@ -128,16 +168,16 @@ Every step writes one line to the log. Every run has a run identity.
 
 ## Under the bonnet
 
-Each pass does one kind of work, and that is why the result is better than asking for "a good spec" in one go. Pass 1 fixes the target. Pass 2 breaks the target into steps without yet worrying about checks. Pass 3 adds the safety. If you ask for everything at once, the assistant tends to polish the wording and skip the hard decisions, such as who owns a step.
+Each pass does one kind of work. Pass 1 fixes the target. Pass 2 breaks it into steps without yet worrying about checks. Pass 3 adds the safety. Asked for everything at once, an assistant may polish the wording and skip the hard decisions, such as who owns a step. Principle, not measured.
 
-The "What changed" lines are the part that makes the refinement reviewable. You do not have to trust the final text. You can read three short lines and decide whether each change is right. If a pass changed something you did not want, say so and redo that pass only.
+The "What changed" lines make the refinement reviewable. You do not have to trust the final text. You read three short lines and decide whether each change is right. If a pass changed something you did not want, say so and redo that pass only.
 
-A spec like this also makes the later work easier. The table is close to a brief for each helper. The diagram shows where the human checkpoints sit. The log line format is already decided. And the "if it fails" column is the answer to the question most designs leave blank. The [workflows section](../) pairs this page with others that refine other kinds of ask.
+The finished spec also helps later. The table is close to a brief for each helper. The diagram shows where the human checkpoints sit. The "if it fails" column answers the question most designs leave blank. The [workflows section](../) pairs this page with others that refine other kinds of ask.
 
 ## Expert corner
 
 :::caution[Expert corner]
-A refiner shows its edits, but it does not know your organisation. It will confidently invent an owner, a system or a policy that does not exist. Treat each invented detail as a question for a person, and have the refiner list its assumptions at the end of each pass.
+A refiner shows its edits, but it does not know your organisation. It can invent an owner, a system or a policy that does not exist. Principle, not measured. Treat each invented detail as a question for a person, and have the refiner list its assumptions at the end of each pass.
 
 A workflow spec is a contract that drifts. Steps get skipped, owners change and checks go stale. Keep it in the same place as the work, version it, and review it when the failure log shows a pattern.
 

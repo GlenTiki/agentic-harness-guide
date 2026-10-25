@@ -1,0 +1,47 @@
+**Note:** February appears twice in your list (198 both times). A year has 12 months, so I treated the second one as a copy-paste duplicate and counted it once. If you really were billed twice in February, see the bottom.
+
+## Working
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+Running total:
+212 + 198 = 410
+410 + 187 = 597
+597 + 164 = 761
+761 + 151 = 912
+912 + 142 = 1,054
+1,054 + 139 = 1,193
+1,193 + 141 = 1,334
+1,334 + 158 = 1,492
+1,492 + 183 = 1,675
+1,675 + 205 = 1,880
+1,880 + 240 = **2,120**
+
+## Split
+
+2,120 ÷ 3 = 706.666… per person
+
+| Person | Share |
+|---|---|
+| Sam | €706.67 |
+| Priya | €706.67 |
+| Tom | €706.66 |
+
+The shares are rounded to the cent, so one person pays a cent less to make the total exactly €2,120.00. Pick whoever draws the short straw. It works out to about €58.89 per person per month.
+
+## If February really was counted twice
+
+Total = 2,120 + 198 = €2,318, so 2,318 ÷ 3 = €772.67 each (rounded; two pay 772.67 and one pays 772.66).

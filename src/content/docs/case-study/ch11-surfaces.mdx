@@ -1,0 +1,228 @@
+---
+title: AGENTS.md and CLAUDE.md in sync
+description: Share rules between tools with a plain-text inbox and outbox, an AGENTS.md and CLAUDE.md layout, and a check that the files exist and agree.
+status: built
+sidebar:
+  label: "Chapter 11: Surfaces"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch11-surfaces.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (8 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+Tools cannot see each other. Each starts blank and keeps its own rules, which drift apart.
+
+## Goal
+
+Keep one source of rules for several tools, and pass messages between [agents](../../glossary/#agent) as files anyone can read.
+
+## What is in the kit
+
+- `example/project/` with a shared `AGENTS.md`, a `CLAUDE.md` that holds `@AGENTS.md` plus a few tool-specific lines, and a `.gemini/settings.json` that names `AGENTS.md`.
+- `layout.py`, which checks that the files exist, that `CLAUDE.md` imports `AGENTS.md` and does not copy its lines, and that the Gemini setting includes `AGENTS.md`.
+- `exchange.py`, a plain-text message exchange. A message is a Markdown file with a header (`from`, `to`, `time`, `subject`, `status`, `re`) in a folder named `to-<name>/`. Commands: `post`, `inbox` and `check`.
+- `validate.py` and failing fixtures for both the layout and the exchange.
+
+## Get the kit
+
+Download [ch11-surfaces.zip](/agentic-harness-guide/downloads/ch11-surfaces.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch11-surfaces.zip
+unzip ch11-surfaces.zip -d kit
+cd kit/ch11-surfaces
+```
+
+The hash must be `321c244b9169bf4ea3e5f27698b66b162bdd53ad088677dbceffddba118072eb`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `example/project/AGENTS.md`, `CLAUDE.md` and `.gemini/settings.json`.
+3. Check the layout: `python3 -I layout.py example/project`.
+4. Read the two messages in `example/exchange/`. The reply names the first message in its `re` line.
+5. List an inbox: `python3 -I exchange.py --root example/exchange inbox claude`.
+6. Post a message into a scratch folder, then check that folder.
+7. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You check the example project: the shared instruction file, the Claude file and the Gemini setting."
+  evidence="python3 -I layout.py example/project (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I layout.py example/project
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+layout: OK
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The output is `layout: OK`. The check also fails if `CLAUDE.md` copies lines from `AGENTS.md`, so the rules cannot fork.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The three files agree. It does not show any real tool reads them this way.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You list the inbox of `claude` in the example exchange."
+  evidence="python3 -I exchange.py --root example/exchange inbox claude (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I exchange.py --root example/exchange inbox claude
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+20261024T091500Z-codex-7c9c.md  [new]  Review done: two gaps
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+One line shows the file, the status `[new]` and the subject of a reply. The reply names the first message in its `re` line.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+An inbox is a folder listing. It is not a live channel.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You post a message from one agent to another into a scratch folder, then check the folder."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I exchange.py --root scratch/exchange post claude codex "Please review" "Read notes.py."
+python3 -I exchange.py --root scratch/exchange check
+python3 -I validate.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+20261025T011456Z-claude-971a.md
+exchange: OK
+python: 3.13.1
+validate: PASS
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The post prints the name of the file it wrote. The name holds a UTC time, the sender and a short hash, so it changes on each run. The check prints `exchange: OK`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A message is one plain file that anyone can read. It does not show that an agent will look at it.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on a broken layout and a broken exchange."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+FAIL CLAUDE.md exists but has no line '@AGENTS.md'. The rules would fork.
+FAIL CLAUDE.md copies a line from AGENTS.md: '1. Write a failing test before you write code.'.
+FAIL CLAUDE.md copies a line from AGENTS.md: '2. Run `./check.sh` before you report. Quote its l'.
+FAIL .gemini/settings.json: context.fileName does not include AGENTS.md.
+FAIL to-claude/20261024T090500Z-codex-29b9.md: 're' names a message that does not exist.
+FAIL to-codex/20261024T090600Z-claude-ed88.md: status must be new, read or done.
+FAIL to-codex/20261024T090700Z-claude-7dcb.md: time must be UTC with seconds and a Z.
+FAIL to-gemini/20261024T090000Z-claude-5988.md: 'to' does not match the folder.
+validate: FAIL (8 problem(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Eight `FAIL` lines appear: four about the layout and four about the exchange.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Both conventions can fail. They do not show the tools honour them.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+Verified by tests: the layout check, the message format, the safe write and 8 concurrent posts. Not verified: how any real tool behaves when it reads these files. The statements about Claude Code, Codex and Gemini come from their documentation, which the setup page quotes with its fetch date. Nobody ran this layout in those tools for this chapter. A polling convention is not a real-time channel. An agent only sees a message when it looks. [MCP](../../glossary/#connector-mcp), ACP and A2A are described in the spec and not built.
+
+**Read the matching page:** [Connecting surfaces](../../setup/connecting-surfaces/)
+
+**Next:** [Local models where they suffice](../ch12-local-models/)

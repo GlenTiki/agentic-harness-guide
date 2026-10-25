@@ -1,0 +1,42 @@
+**The difference is 14.37, not a few cents, and it sits in one line.**
+
+**Step 1: Check each side's arithmetic**
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00**, which matches the recorded closing balance.
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63**, which matches the statement.
+
+Neither side has an addition error.
+
+**Step 2: Compare the closing balances**
+2,000.00 − 1,985.63 = **14.37**, with the cash book higher.
+
+**Step 3: Match the transactions**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier | −50.00 | −50.00 | 0.00 |
+
+The whole difference is the week 2 card settlement. It is not a timing item, because the bank did receive a week 2 settlement, just a smaller one than you recorded.
+
+**Step 4: Likely cause**
+You recorded gross sales, and the processor settled net. 14.37 is 3.19% of 450.00, which is in the normal range for card processing fees. A refund or chargeback would also explain it.
+
+**Step 5: Adjusting entry, once the cause is confirmed**
+If the processor's settlement report shows 14.37 of fees:
+- Dr Merchant/bank fees expense 14.37
+- Cr Cash at bank 14.37
+
+The cash book closing balance then becomes 2,000.00 − 14.37 = **1,985.63**, which equals the bank, so the difference is **0.00**.
+
+**Reconciliation, after the adjustment**
+
+| | |
+|---|---|
+| Balance per bank | 1,985.63 |
+| Outstanding items | 0.00 |
+| Adjusted cash book balance | 1,985.63 |
+| **Difference** | **0.00** |
+
+**Before you close tonight:** pull the processor's settlement report for week 2 and confirm that the 14.37 is fees, or a refund or chargeback, and not a missing sale or a keying error. If it is fees, post the entry and the report is legitimately at zero. If it is something else, the entry needs a different account. I wouldn't post it to a rounding or suspense account just to reach zero. It would make the report look clean while hiding a real 14.37 gap.

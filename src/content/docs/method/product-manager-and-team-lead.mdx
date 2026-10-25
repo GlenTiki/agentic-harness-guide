@@ -1,0 +1,158 @@
+---
+title: You are the product manager
+description: Describe the outcome in plain English, let the lead agent coordinate helpers and personas, and step in with more context as the work runs.
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a person who directs agent work. An agent reading this page should not run any command here unless the user asks.*
+
+**Status.** Runs in my setup: the lead-agent pattern, the delegation counters and the plain-English briefs. Design only: personas that keep their own memory (see [personas](../../setup/personas/)). The benefits listed under "Hypotheses" are not measured.
+
+Some people give an [agent](../../glossary/#agent) a task list. My working practice is a different split. You say what you want and how you will know it works. The agent works out the steps. You watch, step in, and add context when the agent drifts. I think this saves rework, but I have not measured it.
+
+## Two jobs, not one
+
+| Role | Who | What they own |
+| --- | --- | --- |
+| Product manager | You | The outcome, the expected behaviour in plain English, the yes or no on anything outside the working files |
+| Tech lead | The lead agent | The plan, the split into tasks, the briefs for helpers, the checks, the report back to you |
+| Helpers | [Sub-agents](../../glossary/#sub-agent) | One bounded task each, then a short report |
+| Expert viewpoints | Simulated personas | One review lens each, such as security or the reader of the final page |
+
+In my experience the lead agent is faster at the typing and worse at knowing what you meant. Your job is to close that gap with words, not with code.
+
+## What you say
+
+Describe the outcome and the expected behaviour. Skip the how. End with "tell me your plan before you start". That makes the agent explain its next step, so you can correct it before it acts. In my experience one such exchange usually costs less than undoing a wrong edit.
+
+<Example
+  label="Constructed"
+  task="You describe an outcome and ask for the plan first. I wrote this reply to show the shape. It is not a recorded run, and no tool is promised to reply this way."
+  evidence="none, written by the author"
+  env="not a model output"
+>
+
+<Fragment slot="input">
+
+```text
+When I paste a list of monthly bills, the month-end summary must say how many months it counted, and stop with a clear message if any month appears twice. Mina reads it, so no jargon. Tell me your plan before you start.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Here is my plan.
+1. I will read the current summary step and the instruction file. Read only.
+2. I will ask a helper to write a check that counts distinct months. The helper gets only the bills list and the rule.
+3. I will ask a second helper to review the check as Mina would read it.
+4. I will run the check on a 12-month list and on a 13-month list with February twice. The second run must fail.
+5. I will report what changed and what I did not change.
+Say "stop" or tell me what to change. I will not edit anything until you answer.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Step 4 names a run that must fail, and the last line waits for you. You can change step 3, add a fact the agent did not know, or say go.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+This is the shape of a plan worth approving. It does not show what any assistant does.
+
+</Fragment>
+
+</Example>
+
+## You may ramble
+
+You do not need a tidy brief. You can think out loud and change your mind. A good lead agent turns that into questions, and a question budget keeps it short: one message, every open item, a default for each.
+
+<Example
+  label="Constructed"
+  task="You ramble, and the lead repeats back what it heard. I wrote this reply to show the shape. It is not a recorded run."
+  evidence="none, written by the author"
+  env="not a model output"
+>
+
+<Fragment slot="input">
+
+```text
+Okay so the summary, it should count months, and maybe also the totals by flatmate, actually no, that is a different thing, but the duplicate thing matters, oh and Mina does not like tables.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+I heard four things. 1. Count months and stop on a repeat. 2. Totals by flatmate, which you put aside. 3. Plain wording for Mina. 4. No tables. I will do 1, 3 and 4 now and park 2. Is that right?
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The reply repeats four items, drops the one you put aside and asks once.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+This is the behaviour to ask for. It does not show that an assistant sorts rambling this well.
+
+</Fragment>
+
+</Example>
+
+## Monitor, step in, keep adding context
+
+While the work runs, watch three signals.
+
+1. **The plan.** Does the next step match what you meant?
+2. **The checks.** Did a check run, and did it go red when it should?
+3. **The record.** Is there a log of what the agent did, so you can read it later?
+
+When the agent drifts, do not restart. Add the missing fact in a sentence and say "carry on". In my experience the agent keeps what it has already learned, so you pay for one correction and not a fresh start. I have not measured this. If the same drift happens twice, treat it as a weak spot and run the [five-step loop](../engineer-weak-spots/#the-loop): notice, name, engineer a fix, prove the fix can fail, keep it.
+
+## Why the lead can keep one long thread
+
+Helpers do the bulky reading and return a short report. The lead keeps the plan and the reports, not the raw files. This is why I expect a lead agent to stay in one thread for longer. It is a design intent, not a measurement. See the hypotheses below.
+
+## For engineers: what helpers inherit
+
+In plain terms: rules you set up outside the assistant also apply to its helpers. The rest of this section is for readers who build or configure agent harnesses, and you can skip it. It lists what each helper inherits, because people often guess wrong.
+
+- **Hooks apply to helpers.** A hook runs for tool calls made by a helper in the same way as for the main thread. The hook input identifies the helper.
+- **Project instructions apply, with exceptions.** Custom helpers load the project instruction files. The built-in read-only Explore and Plan helpers skip them. A custom helper can opt out with a setting.
+- **Helpers can start helpers.** By default a helper can start its own helpers, up to three layers below the main thread. An environment variable turns this off.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/sub-agents. Quoted line: "Tool events such as PreToolUse and PostToolUse fire for the subagent's tool calls the same way they do in the main conversation". Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+My own rule is stricter than the tool allows. In my setup a helper returns its findings and the lead starts the next helper. I keep one layer on purpose, because a flat layout is easier to read in a log. That is a choice, not a limit of the tool.
+
+One more fact matters. My setup also has its own helper launcher that builds a helper from a role file. That launcher gives the helper no hooks and no project instructions. Only the native helpers of the host tool inherit them. The [hooks page](../../setup/hooks/#what-subagents-inherit) explains the difference.
+
+## Hypotheses
+
+I believe these. I have not measured them. Treat each one as a claim to test.
+
+1. **Hypothesis: the lead's context stays smaller.** Test: compare the [token](../../glossary/#token) count of a long task done with helpers and the same task done in one thread.
+2. **Hypothesis: you correct less often.** Test: count your corrections per feature over ten features, with and without the plan-first rule.
+3. **Hypothesis: a plan shown before action catches a wrong reading early.** Test: count how many plans you edited before the agent acted.
+4. **Hypothesis: simulated experts find problems a single reader misses.** Test: seed a known defect and see which persona finds it.
+
+If a test fails, change the practice. That is the [weak-spot loop](../engineer-weak-spots/) applied to the method itself.
+
+## Where it is built
+
+- [Orchestrator and subagents](../../setup/orchestrator-and-subagents/) shows the flow.
+- [Case study chapter 7](../../case-study/ch07-orchestrator/) builds the brief templates and a check that every helper brief carries the shared rules.
+- [Personas](../../setup/personas/) says honestly what is built and what is design.
+
+**Next:** [Praise first, then fix](../the-feedback-loop/)

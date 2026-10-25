@@ -1,0 +1,21 @@
+Each of you owes **€706.67**, based on a total of **€2,120** for the year.
+
+February appeared twice in your list (198 both times). I treated that as a typo and counted it once, which gives 12 months. If you were actually billed twice, the total would be €2,318 and each share €772.67.
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+| **Total** | **2,120** |
+
+2,120 ÷ 3 is 706.666…, so the shares don't divide evenly to the cent. Two of you can pay €706.67 and the third €706.66, which adds up to exactly €2,120.

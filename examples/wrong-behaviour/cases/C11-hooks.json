@@ -1,0 +1,17 @@
+{
+  "id": "C11-hooks",
+  "title": "Hooks: bypass table and exit codes",
+  "status": "existing-script",
+  "pages": [
+    "shelf/control/hooks",
+    "setup/hooks"
+  ],
+  "claim": "A text-matching hook is bypassed by nine commands.",
+  "falsified_if": "any row fails to exit 0 in test_matrix.py.",
+  "harness": "H8 no model",
+  "grader": null,
+  "arms": [],
+  "command": "python3 -I examples/hook-sample/test_matrix.py",
+  "notes": "No model call. The live hook case (T24) needs a tool-using call and is not built.",
+  "schema": 1
+}

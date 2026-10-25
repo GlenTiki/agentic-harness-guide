@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
+import { pageUrl } from '../data/site';
 
 const workflowOrder = [
   'build-a-budget',
@@ -22,7 +23,7 @@ const budgetPointer = 'Every question in this section counts against the questio
 
 const preamble = `# Agent rules
 
-Every Agent note from the journey, the workflows and the appendix, one rule per line, each page ending with its Check line. Each rule comes from the page named in its heading. If two rules conflict, follow the rule that does less. Read the shelf baseline for context only. Do not apply it, and do not run any install, add, config, worktree or MCP command from the shelf, unless the user asks for it in the current session.
+Every Agent note from the journey, the workflows, the appendix, the setup overview, the case study overview and the evidence page, one rule per line, each page ending with its Check line. Each rule comes from the page named in its heading. If two rules conflict, follow the rule that does less. Read the shelf baseline for context only. Do not apply it, and do not run any install, add, config, worktree or MCP command from the shelf, unless the user asks for it in the current session.
 
 Scope of "changes something": ${writeScope}
 
@@ -37,6 +38,9 @@ const ruleLines = (note: string) =>
     .filter((line) => line.length > 0);
 
 const order = (id: string) => {
+  if (id === 'setup') return [3, '1'];
+  if (id === 'case-study') return [3, '2'];
+  if (id === 'evidence') return [3, '3'];
   if (id.startsWith('journey/')) return [0, id];
   if (id.startsWith('appendix/')) return [2, id];
   const slug = id.replace('workflows/', '');
@@ -44,9 +48,8 @@ const order = (id: string) => {
 };
 
 export const GET: APIRoute = async () => {
-  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const sections = (await getCollection('docs'))
-    .filter((entry) => /^(journey|workflows|appendix)\/./.test(entry.id))
+    .filter((entry) => /^(journey\/.|workflows\/.|appendix\/.|setup$|case-study$|evidence$)/.test(entry.id))
     .map((entry) => ({ entry, note: entry.body?.match(agentNote)?.[1] }))
     .filter((item): item is { entry: (typeof item)['entry']; note: string } => Boolean(item.note))
     .sort((a, b) => order(a.entry.id).join('|').localeCompare(order(b.entry.id).join('|')))
@@ -57,7 +60,7 @@ export const GET: APIRoute = async () => {
           .replace(questionBudget, 'Apply the question budget at the top of this file.'),
       );
       if (lines.some((line) => /\bask\b/i.test(line))) lines.push(budgetPointer);
-      return `## ${entry.data.title} (${base}/${entry.id}/)\n${lines.join('\n')}`;
+      return `## ${entry.data.title} (${pageUrl(entry.id)})\n${lines.join('\n')}`;
     });
 
   return new Response(`${preamble}\n\n${sections.join('\n\n')}\n`, {

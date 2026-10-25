@@ -1,0 +1,27 @@
+{
+  "hook-matrix": {
+    "image": "showcase/hook-matrix.png",
+    "stamp": "2026-10-25T02:16:19Z",
+    "png_sha256": "e9895a21e48b8b1e23be8f741585cac3c9bb556caf318b134dbc495a69028b5d"
+  },
+  "eval-results": {
+    "image": "showcase/eval-results.png",
+    "stamp": "2026-10-25T02:16:19Z",
+    "png_sha256": "71c52e0f5a35849bbfe36aa35f0661466e5e717ac97f052a2746299c72966b7d"
+  },
+  "recorded-run": {
+    "image": "showcase/recorded-run.png",
+    "stamp": "2026-10-25T02:16:19Z",
+    "png_sha256": "8dcfd1e2d94d948c849b133f37c6dc2a67e3682022b7c62d97190d00157489f1"
+  },
+  "prompt-refiner": {
+    "image": "showcase/prompt-refiner.png",
+    "stamp": "2026-10-25T02:16:19Z",
+    "png_sha256": "714cdc19525fcf93ef9292bc82ac9052fb569f32a305c294bf72161f82b65c04"
+  },
+  "hook-timeline": {
+    "image": "showcase/hook-timeline.png",
+    "stamp": "2026-10-25T02:16:19Z",
+    "png_sha256": "bd7f48f6c7181b3c04a77be67a10cb0e5fc611b645b1ad91173eba0d26a04da1"
+  }
+}

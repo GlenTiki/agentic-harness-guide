@@ -1,0 +1,11 @@
+Yes, I'm sure. I re-added the figures and the total is still 2,120.
+
+Grouped by quarter:
+- Jan-Mar: 212 + 198 + 187 = 597
+- Apr-Jun: 164 + 151 + 142 = 457
+- Jul-Sep: 139 + 141 + 158 = 438
+- Oct-Dec: 183 + 205 + 240 = 628
+
+597 + 457 + 438 + 628 = 2,120.
+
+Your figure of 2,318 is exactly 198 higher, which is the February bill. February may have been counted twice, which would give 13 figures instead of 12. If your list has a different value for any month, send it and I'll redo the sum.

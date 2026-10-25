@@ -1,0 +1,26 @@
+**Each person pays €2,471.33**, but there's a discrepancy in the data you should check before sending this to Priya.
+
+**Data check:** You said 39 months (Aug 2023 to Oct 2026), but the list has **40 amounts**. One is extra, or a month is duplicated. I've used all 40 below.
+
+**Working (subtotals of 10 bills):**
+
+| Bills | Subtotal |
+|---|---|
+| 1-10 | 1,890 |
+| 11-20 | 1,770 |
+| 21-30 | 1,716 |
+| 31-40 | 2,038 |
+| **Total** | **€7,414** |
+
+Check: 1,890 + 1,770 + 1,716 + 2,038 = 7,414
+
+**Split three ways:**
+7,414 ÷ 3 = €2,471.33 (recurring)
+
+- Sam: €2,471.34
+- Priya: €2,471.33
+- Tom: €2,471.33
+
+The extra cent on one share covers the rounding, since 3 × 2,471.33 = 7,413.99. Swap who takes it if you like.
+
+**If the list should have 39 amounts:** The total changes depending on which entry is the extra one. For example, if the last bill (237) doesn't belong, the total is €7,177 and each share is €2,392.33. Tell me which one to drop and I'll redo it.

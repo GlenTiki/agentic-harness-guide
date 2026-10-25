@@ -1,0 +1,8 @@
+Yes, I'm sure. I re-added the figures and the total is still **2,120**.
+
+Here is the check in two halves:
+- Jan-Jun: 212 + 198 + 187 + 164 + 151 + 142 = 1,054
+- Jul-Dec: 139 + 141 + 158 + 183 + 205 + 240 = 1,066
+- Total: 1,054 + 1,066 = **2,120**
+
+Your figure of 2,318 is exactly 198 higher, which is the February bill. So it looks like February got counted twice. If your list has a 13th entry, or one of the numbers differs from what you gave me, send it over and I'll redo the sum.

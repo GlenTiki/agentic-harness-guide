@@ -1,0 +1,10 @@
+Before I can total anything, there's a problem with the list: **Feb 198 appears twice**, so I count 13 entries rather than 12.
+
+Months counted as listed: 13 (Jan, Feb, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec). The sum of those 13 figures is 2,320, but that includes the duplicate Feb.
+
+Per your rule, I'm stopping here rather than guessing. Which is right?
+
+1. Feb 198 was entered twice by mistake, and should be counted once (total 2,122).
+2. The second entry is a different month's bill with the wrong label (please tell me the correct month and amount).
+
+Once you confirm, I'll give the split in your layout.

@@ -11,7 +11,7 @@ description: Decide in advance which actions always need a person, and batch the
 
 ## Why it matters
 
-Approval has a cost, and [level 4](../../../journey/04-trust-but-verify/) names it approval fatigue. Ask too often and people click through without reading, which is worse than not asking. Ask too rarely and an agent takes an action that cannot be undone. A written list puts the attention where the risk is.
+Approval has a cost, and [level 4](../../../journey/04-trust-but-verify/) names it approval fatigue. Ask too often and people may click through without reading, which is worse than not asking. Principle, not measured. Ask too rarely and an agent takes an action that cannot be undone. A written list puts the attention where the risk is.
 
 ## What to enable
 
@@ -50,6 +50,6 @@ Approval has a cost, and [level 4](../../../journey/04-trust-but-verify/) names 
 
 Copy the confirm list above into your instruction file. Then add an `ask` rule for `git push` so the harness prompts for the first item.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
 **Next:** [Recommended baseline](../../reference/baseline/)

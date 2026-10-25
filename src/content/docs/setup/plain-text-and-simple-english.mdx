@@ -1,0 +1,91 @@
+---
+title: Plain-English specs and linting
+description: Keep rules, specs and memory as plain text in one repository, write them in simple English, and learn what a prose linter can and cannot check.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: plain-text files for rules, memory, specs, logs and queues, and the Simplified Technical English rules as instructions only. Built in the case study: a rule-based plain-English linter ([chapter 1](../../case-study/ch01-plain-spec/)). My setup has no STE linter, only a draft design for one.
+
+## The weak spot it removes
+
+**Vague requests and unreadable rules.** A spec in loose prose can be read two ways, and an [agent](../../glossary/#agent) will pick one. Rules in a database or a chat window cannot be diffed, searched or reviewed. Plain text in a repository fixes the second problem. Simple English plus a linter helps with the first.
+
+## Plain text for everything
+
+Almost everything in my setup is a text file in one Git repository. That covers rules, memory notes, specs, the action log, the to-do list and the work queue. The formats are Markdown, YAML and JSON Lines.
+
+Why this matters:
+
+1. **You can diff it.** Git shows what changed and who changed it.
+2. **You can search it.** Any tool reads text.
+3. **You can lint it.** A script can check a text file in a pre-commit step.
+4. **You can swap the assistant.** Plain text works with any tool.
+
+There are a few exceptions. Recall counters, the search index and some metrics live in SQLite or Parquet files. I moved the recall counters out of the tracked files on purpose, because they changed on every search and cluttered the history.
+
+## Simple English and Simplified Technical English
+
+These three names look alike and are not the same thing.
+
+| Name | What it is |
+| --- | --- |
+| Simple English | A writing style for learners of English. Fewer words, simpler grammar. It has editing guidelines and word lists, but no maintained rules-and-dictionary standard like STE. |
+| Basic English | A 1930s proposal for a small core vocabulary. It influenced STE. |
+| Simplified Technical English (STE) | A controlled language for technical documents. It has writing rules and a dictionary of roughly 900 approved words. Issue 9 is the current issue at the time of writing. |
+
+<p class="verified">Docs page fetched on 2026-10-24: https://www.asd-europe.org/standards-specifications/simplified-technical-english/what-are-the-basics-of-simplified-technical-english. Quoted line: "approximately 900 approved words". The page states no tool version. ASD publishes the specification as a free download and keeps the copyright.</p>
+
+The STE rules I follow when I describe code are short:
+
+1. Use about 20 words per procedure sentence and 25 per description.
+2. Use the active voice and name who acts.
+3. Give one instruction per sentence.
+4. Keep the articles ("the", "a").
+5. Use the same term for the same thing every time.
+6. Put steps in a numbered list.
+
+I follow the rules. I do not hold the licensed dictionary. So I cannot say my text conforms to STE. I can say it follows the rules.
+
+## What a linter can and cannot check
+
+| Check | Can a script do it? | Note |
+| --- | --- | --- |
+| Sentence length | Yes | Count words per sentence. |
+| Passive voice | Roughly | Pattern rules find many cases and miss some. Tools admit this. |
+| Banned vague words | Yes | A list you choose, such as "etc." or "as needed". |
+| Readability grade | Yes | Formulas such as Flesch-Kincaid use sentence and syllable counts. |
+| One term per thing | Partly | You can list banned synonyms. A script cannot find all of them. |
+| Em dashes, hard wraps | Yes | Simple patterns. |
+| Conformance to the STE dictionary | No | The official dictionary is licensed and is not in the open checkers. |
+| Correct word sense | No | STE gives each word one meaning. A script cannot judge sense. |
+| Meaning preserved | No | Only a reader can judge this. |
+
+What the common prose tools do, from their own pages:
+
+- **Vale** can compute readability metrics through custom rules and flag passive voice with word patterns.
+- **write-good** flags passive voice, weasel words, wordiness and repeated words. It has no readability score.
+- **proselint** flags clichés, redundancy and misused terms.
+- **alex** flags insensitive wording. It is not a plain-English tool.
+- **textlint** is a framework. The checks come from the plugins you install.
+- An unofficial open-source tool checks some rules against STE Issue 9 and says plainly that no tool can guarantee compliance.
+
+**Honest limit.** A passing linter proves that the text follows the rules a script can test. It does not prove the text is good STE, and it does not prove the spec is clear.
+
+## End-to-end flow
+
+Goal: a rule such as "Report how many months you counted" becomes a checked spec.
+
+1. You write the spec in plain sentences. One instruction per sentence. Steps in a numbered list.
+2. You run the plain-English linter on the spec.
+3. The linter reports, for example, one over-long sentence and one use of "as needed". You fix both.
+4. You prove the linter can fail: you add a 40-word sentence on purpose, the linter must go red, and you remove it.
+5. You add the linter to a pre-commit step, so the check runs on every commit.
+6. An agent reads the spec and builds the feature. A failing test, written from the spec, shows whether it did.
+
+## Build it
+
+[Case-study chapter 1: Plain spec](../../case-study/ch01-plain-spec/) is a downloadable kit. It holds a spec template and a rule-based linter with sentence length, passive voice, banned words and readability grade. It adds an optional config for a prose linter. The chapter states the dictionary limit again.
+
+**Next:** [A link check is not a reference check](../link-and-reference-checks/)

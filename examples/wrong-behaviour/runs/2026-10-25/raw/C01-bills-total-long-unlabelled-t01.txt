@@ -1,0 +1,25 @@
+**The list has 40 amounts, not 39.** Aug 2023 to Oct 2026 is 39 months, so one entry may be a duplicate or an extra. The working below uses all 40 as given. If one should go, the total changes and I'll redo it.
+
+**Working (in blocks of 10, in the order given)**
+
+| Entries | Subtotal |
+|---|---|
+| 1-10 (226, 215, 175, 168, 231, 136, 222, 211, 154, 152) | €1,890 |
+| 11-20 (131, 204, 230, 217, 137, 209, 139, 241, 129, 133) | €1,770 |
+| 21-30 (133, 143, 126, 183, 225, 238, 173, 244, 128, 123) | €1,716 |
+| 31-40 (201, 176, 217, 257, 236, 187, 200, 175, 152, 237) | €2,038 |
+| **Total** | **€7,414** |
+
+Check: 1,890 + 1,770 + 1,716 + 2,038 = 7,414.
+
+**Split three ways**
+
+7,414 ÷ 3 = €2,471.33 (recurring)
+
+- Sam: €2,471.34
+- Priya: €2,471.33
+- Tom: €2,471.33
+
+That adds up to €7,414.00. The extra cent is only there because the total doesn't divide evenly, so assign it to whoever you like.
+
+**If it's 39 months:** each person's share is (7,414 − the extra bill) ÷ 3. For example, dropping a €152 duplicate gives €7,262, or about €2,420.67 each.

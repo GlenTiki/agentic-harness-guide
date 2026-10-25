@@ -1,0 +1,92 @@
+---
+interface HookEvent {
+  seq: number;
+  event_type: string;
+  tool_name: string;
+  offset_ms: number;
+  duration_ms: number;
+  exit_code: number;
+  decision: 'allow' | 'block';
+}
+interface Props {
+  run: { title: string; recorded_at: string; source: string; environment: string; fields: string; events: HookEvent[] };
+  id?: string;
+}
+
+const { run, id = 'hook-timeline' } = Astro.props;
+const width = 640;
+const left = 96;
+const right = 44;
+const laneY = { allow: 60, block: 120 } as const;
+const span = Math.max(...run.events.map((e) => e.offset_ms + e.duration_ms), 1);
+const x = (ms: number) => left + ((width - left - right) * ms) / span;
+const blocked = run.events.filter((e) => e.decision === 'block').length;
+const summary = `${run.events.length} ${run.events[0]?.event_type ?? 'hook'} events in ${span} milliseconds. ${run.events.length - blocked} allowed with exit code 0 and ${blocked} blocked with exit code 2.`;
+const ticks = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(span * f));
+---
+
+<figure class="hook-timeline" aria-labelledby={`${id}-t`}>
+  <svg viewBox={`0 0 ${width} 190`} role="img" aria-labelledby={`${id}-t ${id}-d`} xmlns="http://www.w3.org/2000/svg">
+    <title id={`${id}-t`}>{run.title}</title>
+    <desc id={`${id}-d`}>{summary} The table below the chart lists every event.</desc>
+    {(['allow', 'block'] as const).map((lane) => (
+      <g>
+        <text x="8" y={laneY[lane] + 5} class="lane-label">{lane === 'allow' ? 'Allowed' : 'Blocked'}</text>
+        <line x1={left} x2={width - right} y1={laneY[lane]} y2={laneY[lane]} class="lane" />
+      </g>
+    ))}
+    {ticks.map((ms) => (
+      <g>
+        <line x1={x(ms)} x2={x(ms)} y1="140" y2="146" class="axis" />
+        <text x={x(ms)} y="162" class="axis-label">{ms} ms</text>
+      </g>
+    ))}
+    <line x1={left} x2={width - right} y1="140" y2="140" class="axis" />
+    {run.events.map((e) => (
+      <g>
+        {e.decision === 'allow' ? (
+          <circle cx={x(e.offset_ms)} cy={laneY.allow} r="9" class="mark allow" />
+        ) : (
+          <g>
+            <rect x={x(e.offset_ms) - 9} y={laneY.block - 9} width="18" height="18" class="mark block" />
+            <path d={`M${x(e.offset_ms) - 4} ${laneY.block - 4} l8 8 m0 -8 l-8 8`} class="cross" />
+          </g>
+        )}
+        <text x={x(e.offset_ms)} y={laneY[e.decision] - 16} class="seq">{e.seq}</text>
+      </g>
+    ))}
+  </svg>
+  <figcaption>
+    {run.title}. {summary} Recorded {run.recorded_at} with {run.environment}. {run.fields}
+  </figcaption>
+  <details>
+    <summary>Data table for this run</summary>
+    <div class="table-scroll" role="region" tabindex="0" aria-label={`Table: ${run.title}`}>
+      <table>
+        <thead>
+          <tr><th>#</th><th>Event</th><th>Tool</th><th>Start (ms)</th><th>Took (ms)</th><th>Exit code</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+          {run.events.map((e) => (
+            <tr><td>{e.seq}</td><td>{e.event_type}</td><td>{e.tool_name}</td><td>{e.offset_ms}</td><td>{e.duration_ms}</td><td>{e.exit_code}</td><td>{e.decision === 'allow' ? 'Allowed' : 'Blocked'}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </details>
+</figure>
+
+<style>
+  .hook-timeline { margin: 1.5rem 0; }
+  svg { width: 100%; height: auto; max-width: 100%; font-family: var(--sl-font-system); }
+  .lane { stroke: var(--ahg-line); stroke-width: 2; }
+  .axis { stroke: var(--ahg-muted); stroke-width: 1; }
+  .lane-label, .axis-label { fill: var(--ahg-muted); font-size: 13px; }
+  .axis-label { text-anchor: middle; }
+  .seq { fill: var(--ahg-text); font-size: 12px; font-weight: 700; text-anchor: middle; }
+  .mark.allow { fill: var(--ahg-right-soft); stroke: var(--ahg-right); stroke-width: 2.5; }
+  .mark.block { fill: var(--ahg-wrong-soft); stroke: var(--ahg-wrong); stroke-width: 2.5; }
+  .cross { stroke: var(--ahg-wrong); stroke-width: 2.5; fill: none; }
+  figcaption { font-size: var(--sl-text-sm); color: var(--ahg-muted); margin-top: 0.5rem; }
+  summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+</style>

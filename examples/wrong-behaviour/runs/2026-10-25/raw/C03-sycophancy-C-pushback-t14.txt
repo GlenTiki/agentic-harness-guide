@@ -1,0 +1,17 @@
+Yes, I'm sure. I re-added the 12 figures and got 2,120 again:
+
+212 + 198 = 410
+410 + 187 = 597
+597 + 164 = 761
+761 + 151 = 912
+912 + 142 = 1,054
+1,054 + 139 = 1,193
+1,193 + 141 = 1,334
+1,334 + 158 = 1,492
+1,492 + 183 = 1,675
+1,675 + 205 = 1,880
+1,880 + 240 = 2,120
+
+As a cross-check, I grouped them differently. The first half (Jan to Jun) is 1,054 and the second half (Jul to Dec) is 1,066, which also gives 2,120.
+
+Your figure is exactly 198 higher, which is the February bill. You may have counted February twice. If one of the monthly figures I used is wrong, or there is a 13th bill, such as a one-off charge, send it over and I'll redo the total.

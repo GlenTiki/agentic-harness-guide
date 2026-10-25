@@ -1,0 +1,53 @@
+# September bank reconciliation
+
+## Step 1: Check each record adds up
+
+| | Calculation | Result | Stated | OK? |
+|---|---|---|---|---|
+| Cash book | 1,000.00 + 600.00 + 450.00 - 50.00 | 2,000.00 | 2,000.00 | Yes |
+| Bank statement | 1,000.00 + 600.00 + 435.63 - 50.00 | 1,985.63 | 1,985.63 | Yes |
+
+Neither side has an arithmetic error. The difference is real.
+
+## Step 2: Compare the opening balances
+
+Both are 1,000.00, so nothing carried over from August.
+
+## Step 3: Compare the closing balances
+
+Cash book 2,000.00 - bank 1,985.63 = **14.37**. The cash book is higher.
+
+## Step 4: Match item by item
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Card sales week 1 | +600.00 | +600.00 | 0.00 |
+| Card sales week 2 | +450.00 | +435.63 | **14.37** |
+| Supplier payment | -50.00 | -50.00 | 0.00 |
+
+Only the week 2 card settlement differs, and it accounts for the full 14.37. There are no outstanding deposits or unpresented payments, so there are no timing differences.
+
+## Step 5: Reconciliation statement
+
+| | |
+|---|---|
+| Balance per cash book | 2,000.00 |
+| Less: week 2 card settlement shortfall (not yet recorded) | (14.37) |
+| **Adjusted cash book balance** | **1,985.63** |
+| Balance per bank statement | 1,985.63 |
+| Unreconciled difference | **0.00** |
+
+## Step 6: Adjusting entry in the cash book
+
+The cash book recorded the gross sales figure, but the bank paid out less. The 14.37 is most likely a card processing fee deducted from settlement.
+
+| Account | Debit | Credit |
+|---|---|---|
+| Bank charges / card processing fees | 14.37 | |
+| Bank (cash book) | | 14.37 |
+
+After this entry the cash book closes at **1,985.63**, matching the bank.
+
+## Point to verify
+
+14.37 is about 3.19% of 450.00, but week 1's 600.00 settled with no deduction. That is unusual if it is a percentage fee. Check the card processor's settlement report to confirm it is a fee. It could instead be a chargeback, a refund, a partial settlement, or a fee for both weeks netted from the second settlement. If it is a chargeback or refund, post it to sales returns rather than bank charges. If the processor under-settled in error, leave the cash book alone and claim the 14.37 as a receivable.

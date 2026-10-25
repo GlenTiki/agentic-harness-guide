@@ -1,0 +1,103 @@
+---
+import Default from '@astrojs/starlight/components/Footer.astro';
+import FeedbackButton from './FeedbackButton.astro';
+import { AUTHOR, BASE, LAST_REVIEWED, LICENCE } from '../data/site';
+
+const reviewedDate = LAST_REVIEWED.slice(0, 10);
+---
+
+<Default {...Astro.props}><slot /></Default>
+<p class="site-colophon">
+  By {AUTHOR}. Last reviewed <time datetime={LAST_REVIEWED}>{reviewedDate}</time>. Licence: {LICENCE}.
+</p>
+<p class="site-colophon feedback-line">
+  <FeedbackButton variant="footer" /> Select text first for a precise note.
+</p>
+<p class="site-colophon">
+  Proof: <a href={`${BASE}/health/`}>guide health</a>, <a href={`${BASE}/showcase/`}>showcase</a>. For machines: <a href={`${BASE}/llms.txt`}>llms.txt</a>, <a href={`${BASE}/llms-full.txt`}>the whole guide as text</a>,
+  <a href={`${BASE}/agent-rules.txt`}>agent rules</a>, <a href={`${BASE}/feed.xml`}>Atom feed</a>.
+</p>
+<FeedbackButton />
+
+<script>
+  const SCROLL_REGION = '.table-scroll, .expressive-code pre';
+
+  const nameFor = (el: Element, index: number) => {
+    if (el.matches('.table-scroll')) return el.getAttribute('data-name') ?? el.getAttribute('aria-label') ?? 'Table';
+    const language = el.getAttribute('data-language');
+    return `Code example ${index + 1}${language ? `: ${language}` : ''}`;
+  };
+
+  const setAttr = (el: Element, name: string, value: string | null) => {
+    if (el.getAttribute(name) === value) return;
+    if (value === null) el.removeAttribute(name);
+    else el.setAttribute(name, value);
+  };
+
+  const edgeOf = (el: HTMLElement) => {
+    if (el.scrollWidth <= el.clientWidth) return null;
+    if (el.scrollLeft <= 1) return 'start';
+    return el.scrollLeft + el.clientWidth >= el.scrollWidth - 1 ? 'end' : 'middle';
+  };
+  const watched = new WeakSet<Element>();
+
+  const sync = () => {
+    let codeIndex = 0;
+    document.querySelectorAll<HTMLElement>(SCROLL_REGION).forEach((el) => {
+      const isTable = el.matches('.table-scroll');
+      const overflows = el.scrollWidth > el.clientWidth;
+      if (isTable) {
+        if (!el.dataset.name) el.dataset.name = el.getAttribute('aria-label') ?? 'Table';
+        setAttr(el, 'data-edge', edgeOf(el));
+        if (!watched.has(el)) {
+          watched.add(el);
+          el.addEventListener('scroll', () => setAttr(el, 'data-edge', edgeOf(el)), { passive: true });
+        }
+        const cue = el.nextElementSibling;
+        if (cue?.classList.contains('table-cue')) (cue as HTMLElement).hidden = !overflows;
+      } else codeIndex += 1;
+      setAttr(el, 'tabindex', overflows ? '0' : null);
+      setAttr(el, 'role', overflows ? 'region' : null);
+      setAttr(el, 'aria-label', overflows ? (isTable ? (el.dataset.name ?? 'Table') : nameFor(el, codeIndex - 1)) : null);
+    });
+  };
+
+  let queued = false;
+  const queue = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      sync();
+    });
+  };
+
+  const menuButton = document.querySelector('.sl-menu-button');
+  const sidebar = document.getElementById('starlight__sidebar');
+  if (menuButton && sidebar) {
+    menuButton.setAttribute('aria-controls', 'starlight__sidebar');
+    menuButton.setAttribute('aria-expanded', String(sidebar.matches(':popover-open')));
+    sidebar.addEventListener('toggle', (event) => {
+      menuButton.setAttribute('aria-expanded', String((event as ToggleEvent).newState === 'open'));
+    });
+  }
+
+  sync();
+  window.addEventListener('load', queue);
+  window.addEventListener('resize', queue);
+  document.addEventListener('toggle', queue, true);
+  new MutationObserver((records) => {
+    if (records.some((r) => r.target instanceof Element && r.target.matches('.expressive-code pre'))) queue();
+  }).observe(document.body, { attributes: true, attributeFilter: ['role', 'tabindex'], subtree: true });
+</script>
+
+<style>
+  .site-colophon {
+    margin-top: 1rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+  .site-colophon:last-of-type {
+    padding-bottom: 4rem;
+  }
+</style>

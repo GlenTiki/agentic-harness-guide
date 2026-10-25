@@ -1,0 +1,57 @@
+---
+title: One feature through every layer
+description: Walk a single small feature from a plain-English outcome to a merged change and a retro, and see which layer does what and which parts are built.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Mixed. Each step below carries its own label, defined on the [method page](../../method/engineer-weak-spots/#three-status-labels). The case-study run order is on the [case study overview](../../case-study/).
+
+## The weak spot it removes
+
+**The layers never meet.** Each setup page describes one fix on its own. A gap between two layers stays hidden until a feature crosses it. This page walks one feature through all the layers so you can look for such a gap. It is a worked example, not a recorded run.
+
+## The feature
+
+Sam wants the month-end summary to say how many months it counted, and to stop with a clear message if a month appears twice. Mina reads the result, so the wording must be plain. This is the February slip from the [journey](../../journey/), now as a feature.
+
+## The flow
+
+1. **State the outcome.** Sam tells the lead [agent](../../glossary/#agent) the outcome and the expected behaviour in plain English, and asks for the plan first. Layer: [product manager and tech lead](../../method/product-manager-and-team-lead/). Label: Runs in my setup.
+2. **Load memory.** A hook searches memory notes with the prompt. The best few load: "Mina prefers plain sentences, no tables". Layer: [memory](../memory/). Label: Runs in my setup. Chapter 5 builds the loader.
+3. **Rank the notes.** Keyword search finds them. A cross-encoder could re-rank. Layer: [relevance](../relevance-and-reranking/). Label: keyword search, Runs in my setup; re-ranking, built and measured in the case study, not in Mako. On the case study's set the cross-encoder raised MRR from 0.643 to 0.803 and did not raise hit@3 (0.794). Dense retrieval scored 0.941. See [what I measured](../relevance-and-reranking/#what-i-measured).
+4. **Write the spec.** The lead drafts a spec in simple English: one instruction per sentence, steps numbered. A plain-English linter checks it. Layer: [plain text and simple English](../plain-text-and-simple-english/). Label: rules, Runs in my setup; linter, Built in the case study.
+5. **Show the plan.** The lead writes the plan and waits. Sam changes one step and says go. Layer: [orchestrator](../orchestrator-and-subagents/). Label: Runs in my setup.
+6. **Write the failing test first.** A helper writes a test from the spec: 13 figures with February twice must stop. Layer: [personas](../personas/). Label: the role-file pattern runs in my setup, with two roles (a researcher and a coordinator). A test-writing role is Design only, and persona memory is Design only.
+7. **Gate the work with hooks.** A before-tool hook blocks a protected file from being edited. A stop hook holds the stop until the open checklist items are done. These hooks run for helpers too. Layer: [hooks](../hooks/). Label: Built in the case study ([chapter 2](../../case-study/ch02-hooks/) builds both hooks). In my own setup the nearest hooks block file types that have no registered linter, and hold the first stop of a change set for an independent review.
+8. **Build in an isolated worktree.** A write helper makes the change on its own branch. The write guard allows the call because it is isolated. Layer: [orchestrator](../orchestrator-and-subagents/). Label: Runs in my setup.
+9. **Check the documents.** The spec links to the summary template. The resolver checks the link and the anchor. The walker, if used, follows deeper references. Layer: [link and reference checks](../link-and-reference-checks/). Label: Built in the case study.
+10. **Review from other viewpoints.** A reviewer helper and a reader persona see the output and the criteria. A second tool reviews through a shared inbox. Layer: [connecting surfaces](../connecting-surfaces/). Label: Runs in my setup for tool servers and adapters; the inbox convention, Built in the case study.
+11. **Record the run.** Every step appended an event to the log with a UTC time. The freshness check passes. Layer: [monitor](../monitor-and-showcase/). Label: Runs in my setup; the status board, Built in the case study.
+12. **Preview and validate.** Sam opens a preview page, uses the feature on the 13-figure list and sees the stop message. Sam says yes. Layer: [monitor and showcase](../monitor-and-showcase/). Label: Runs in my setup.
+13. **Merge.** The checks run on the final version and pass. The change merges.
+14. **Retro.** Sam gives rough feedback. The agent returns the four-part form and proposals. Sam accepts two. Layer: [retros](../retros/). Label: Built in the case study.
+15. **Learn.** An accepted proposal becomes a new memory note and a new check. The memory hook will bring the note back next time. Layer: [memory](../memory/) and [the weak-spot loop](../../method/engineer-weak-spots/). Label: Runs in my setup for the memory part.
+16. **Index in the background.** A low-priority job updates the embedding index when notes change, behind a lock. Layer: [local models](../local-models/). Label: Runs in my setup; the optional kit parts, Built in the case study.
+
+## Where the layers touch
+
+| Layer | Hands to | What passes |
+| --- | --- | --- |
+| Memory | Orchestrator | A few notes that shape the plan |
+| Spec | Test-writing helper | Plain sentences that become a test |
+| Hooks | Every agent | A block or a pass, the same for the lead and for helpers |
+| Orchestrator | Reviewers | The output and the criteria, not the reasoning |
+| Monitor | You | A log with a time and a source |
+| Retro | Memory and checks | Accepted proposals |
+
+## What a failure looks like
+
+Pick any step and break it on purpose. If you remove the hook, does the test fail? If the resolver is missing, does a broken link survive? If you delete the log, does the freshness check go red? Each layer should fail loudly when you remove its piece. A layer that stays quiet is a weak spot. Name it and run the [loop](../../method/engineer-weak-spots/).
+
+## Build it
+
+This page has no kit of its own. Each layer has its own chapter, and the [case study overview](../../case-study/) lists all thirteen.
+
+**Next:** [The case study, one fix per chapter](../../case-study/)

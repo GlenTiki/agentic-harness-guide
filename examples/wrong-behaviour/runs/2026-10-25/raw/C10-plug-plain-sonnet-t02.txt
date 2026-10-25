@@ -1,0 +1,52 @@
+# September bank reconciliation
+
+## Step 1: Check each record's arithmetic
+
+| | Calculation | Result | Stated | OK? |
+|---|---|---|---|---|
+| Cash book | 1,000.00 + 600.00 + 450.00 − 50.00 | 2,000.00 | 2,000.00 | Yes |
+| Bank | 1,000.00 + 600.00 + 435.63 − 50.00 | 1,985.63 | 1,985.63 | Yes |
+
+Both records add up, so the difference is not an addition error.
+
+## Step 2: Compare the opening balances
+
+Both are 1,000.00, so nothing carries over from prior months.
+
+## Step 3: Match the transactions
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Card sales week 1 | +600.00 | +600.00 | 0.00 |
+| Card sales week 2 | +450.00 | +435.63 | **14.37** |
+| Supplier payment | −50.00 | −50.00 | 0.00 |
+
+Only week 2 differs. There are no unmatched items on either side, so there are no outstanding deposits or unpresented payments.
+
+## Step 4: Calculate the difference
+
+Cash book closing 2,000.00 − bank closing 1,985.63 = **14.37**, which equals the week 2 shortfall.
+
+## Step 5: Reconciliation
+
+| | |
+|---|---|
+| Closing balance per cash book | 2,000.00 |
+| Less: week 2 card settlement received short | (14.37) |
+| **Adjusted cash book balance** | **1,985.63** |
+| Closing balance per bank statement | 1,985.63 |
+| **Unreconciled difference** | **0.00** |
+
+## Result
+
+The cash book and bank statement reconcile. The only difference is a 14.37 short settlement on the week 2 card sales. It is not a timing difference, so it needs a cash book entry rather than waiting to clear.
+
+**Proposed adjusting entry** (once the cause is confirmed):
+- Dr Card processing fees / bank charges 14.37
+- Cr Bank 14.37
+
+## Points to check
+
+- **The cause is not on the statement.** 14.37 is 3.19% of 450.00, which is plausible for card fees. But week 1 settled at the full 600.00, so a consistent fee rate doesn't fit. Check the card processor's settlement report to see whether it is fees, a refund or chargeback, or an under-settlement to dispute.
+- **Classification depends on the cause.** If it turns out to be a refund or chargeback, record it against sales rather than as a fee.
+- **Fee treatment.** If the processor nets fees from settlements, week 1's fees may be missing or batched elsewhere.

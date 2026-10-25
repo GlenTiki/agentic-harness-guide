@@ -1,0 +1,49 @@
+{
+  "id": "C01-bills-total",
+  "title": "Bills list, February twice: does the assistant give the wrong total?",
+  "status": "ready",
+  "pages": [
+    "index (hero card)",
+    "journey/00-hello-robot",
+    "journey/01-say-it-properly",
+    "journey/05-check-the-work",
+    "method/engineer-weak-spots"
+  ],
+  "claim": "An assistant sounds sure and gives Total 2,318.00 (772.67 each) without noticing that February is listed twice.",
+  "falsified_if": "wrong_behaviour is 0 of all trials in every arm: the page must say it could not trigger the wrong reply and relabel the example as constructed.",
+  "harness": "H1 no tools, one prompt",
+  "grader": "bills",
+  "arms": [
+    {
+      "id": "sonnet",
+      "model": "claude-sonnet-5-5",
+      "prompt": "Here are our shared bills for last year, in euros per month: Jan 212, Feb 198, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split the total between the three of us (Sam, Priya and Tom). Show the working, because Priya will want to see it.",
+      "n": 20
+    },
+    {
+      "id": "haiku",
+      "model": "haiku",
+      "prompt": "Here are our shared bills for last year, in euros per month: Jan 212, Feb 198, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split the total between the three of us (Sam, Priya and Tom). Show the working, because Priya will want to see it.",
+      "n": 20
+    },
+    {
+      "id": "long-unlabelled",
+      "model": "claude-sonnet-5-5",
+      "prompt": "Here are our shared bills for the last 39 months (Aug 2023 to Oct 2026), one amount per line, in euros:\n226\n215\n175\n168\n231\n136\n222\n211\n154\n152\n131\n204\n230\n217\n137\n209\n139\n241\n129\n133\n133\n143\n126\n183\n225\n238\n173\n244\n128\n123\n201\n176\n217\n257\n236\n187\n200\n175\n152\n237\nSplit the total between the three of us (Sam, Priya and Tom). Show the working, because Priya will want to see it.",
+      "n": 20,
+      "expected": {
+        "right_total": 7281.0,
+        "wrong_total": 7414.0,
+        "wrong_share": 2471.33,
+        "dup_value": 133,
+        "note": "40 lines for 39 months; line 20 and line 21 are identical (the buried duplicate). Right total counts it once."
+      },
+      "declared": "Harder arm declared 2026-10-25 before running. Amounts invented with a fixed seed; the duplicate is not labelled."
+    }
+  ],
+  "notes": "Prompt is the level 0 five-minute-win text. Recorded earlier: 0 of 8 wrong on claude-sonnet-5-5. Haiku arm tests whether a smaller model triggers it; the alias is checked against modelUsage in the reply metadata.",
+  "schema": 1,
+  "definitions": {
+    "wrong_headline": "The first total stated outside an 'if' or alternative line differs from the page's right answer (2,120, or 7,281 for the long list), whether or not the reply goes on to flag the problem. wrong_behaviour is the narrower case: wrong headline and the repeat is never mentioned."
+  }
+}

@@ -3,15 +3,21 @@ title: "Level 8: Design anything"
 description: Design a multi-part agent system for a job you have never seen, and defend each choice.
 ---
 
+import Example from '../../../components/Example.astro';
+
+**The lesson:** Use six steps to design a system for a job you have never seen, and defend each choice.
+
 ## Scene
 
-*Last time: you predicted where a many-step job fails first, and gave the run an audit log, limits and a safe restart.*
-
-*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
+*Last time: you predicted where a many-step job fails first, and gave the run an audit log, limits and a safe restart. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
 *Only use a chat window? You can skip to the [cheat sheet](../../start-here/cheat-sheet/) and come back when you connect tools.*
 
-A wedding is a project with a hundred small jobs, a fixed date and one very bad day to be late. Nobody plans one by starting at the flowers. A good planner asks what must be true on the day, lists every job, and decides who does what and who checks. You now have all the parts. This chapter puts them together on a blank page.
+A good wedding planner does not start at the flowers. They ask what must be true on the day, list every job, and decide who does what and who checks. You now have all the parts. This chapter puts them together on a blank page.
+
+:::note[Weak spot]
+Level 7 made a job you already built visible. **A new job arrives with no method, so you copy the last design and miss the new risk.** This level is step 3 of the five-step [weak-spot loop](../../method/engineer-weak-spots/#loop-3-engineer-a-fix), Engineer a fix, applied to a whole job. The fix is the six-step method below. It is a different list from the loop: the loop fixes a slip after it happens, and the six steps plan a job before it runs.
+:::
 
 ## The idea
 
@@ -30,6 +36,8 @@ A wedding is a project with a hundred small jobs, a fixed date and one very bad 
 5. **Place checks and human checkpoints.** Put a check after the weakest or most costly step. Put a [human checkpoint](../../glossary/#human-checkpoint) before anything risky. Use a separate [reviewer](../../glossary/#reviewer) where the producer would share the blind spot.
 6. **Decide how it fails safely, and how you will know.** What does each step do when it fails? What does the run do when it dies halfway? What goes in the [audit log](../../glossary/#audit-log), and what limits apply?
 
+The two lists meet like this: steps 1 to 5 build the fix (loop step 3), the checks from step 5 are what loop step 4, [Prove the fix can fail](../../method/engineer-weak-spots/#loop-4-prove-the-fix-can-fail), tests, and the audit log from step 6 is what loop step 1, [Notice](../../method/engineer-weak-spots/#loop-1-notice), reads.
+
 Here is the method applied to Mina's September month-end, in short form. The [full month-end](../../workflows/small-shop-month-end/) is a workflow.
 
 | Step | Question | Answer for the month-end run |
@@ -41,7 +49,7 @@ Here is the method applied to Mina's September month-end, in short form. The [fu
 | 5 | Checks and checkpoints | Months check, reconciliation, Mina approves before sending |
 | 6 | Failure | A failed check stops the run, logs why, tells Sam |
 
-Done means: nine distinct months, year to date 44,600.00; the proof of sales to the bank receipts has an unexplained difference of 0.00; every variance line over 5% and 50.00 has an explanation from Mina; the reviewer is not the preparer, or is the fallback reviewer.
+Done means: nine distinct months, year to date 44,600.00. The proof of sales to the bank receipts has an unexplained difference of 0.00. Every variance line over 5% and 50.00 has an explanation from Mina. The reviewer is not the preparer.
 
 ### The pattern library
 
@@ -51,12 +59,12 @@ Most designs combine a few shapes. Learn the shapes and the smell that tells you
 | --- | --- | --- | --- |
 | [Pipeline](../../glossary/#pipeline) | Step A, then B, then C | Order matters, each needs the last result | Fifteen stages, no check between them |
 | [Fan-out and gather](../../glossary/#fan-out-and-gather) | Split, run in parallel, combine | Parts are independent | Shared files, or gather drops a part |
-| [Reviewer loop](../../glossary/#reviewer-loop) | One produces, another reviews, producer revises | Quality needs an independent look | Reviewer sees the reasoning, or no limit |
+| [Reviewer loop](../../glossary/#reviewer-loop) | One produces, another reviews, producer revises | Quality needs an independent look | Reviewer is not independent (one guide test did not separate them), or no limit |
 | Human checkpoint | The run stops until a person says yes | The step is hard to undo | Rubber stamp: a wall of text, one click |
 | [Watcher](../../glossary/#watcher) | Checks a condition on a schedule, raises a flag | You must notice a change or stall | The watcher acts instead of reporting |
 | [Ledger](../../glossary/#ledger) | A written record of tasks, status, decisions | The job spans steps, sessions or helpers | Nobody reads it, or many writers edit it |
 
-The remedy for a ledger with many writers is one writer, or append-only with a version check. A good design uses three or four patterns, not all six. For detail, see [sub-agents](../../shelf/delegation/sub-agents/) and [human in the loop](../../shelf/operations/human-in-the-loop/) (both for engineers).
+A good design uses three or four patterns, not all six. For detail, see [sub-agents](../../shelf/delegation/sub-agents/) and [human in the loop](../../shelf/operations/human-in-the-loop/) (both for engineers).
 
 :::tip[New to this]
 Keep the six steps on a card. When you are stuck, ask the next question on the card.
@@ -87,7 +95,25 @@ Here is a job design. Do not rewrite it. Review it with these questions and answ
 Job: [paste your two-line outcome and your marked steps]
 ```
 
-An example reply for a trip-planning job:
+Your reply will differ. Here is a hand-written one for a trip-planning job:
+
+<Example
+  label="Constructed"
+  task="A trip planner pastes a two-line outcome and marked steps, and asks the assistant to review the design in five short answers."
+>
+
+<Fragment slot="input">
+
+```text
+[... review questions as in the prompt above ...]
+
+Job: Plan a four-day trip. Done: a good trip.
+Steps: 1 pick lodging (J). 2 book flights (R). 3 add up costs (M).
+```
+
+</Fragment>
+
+<Fragment slot="output">
 
 ```text
 1. The done says "a good trip". Add: flights and lodging booked, a day-by-day list, total under the stated budget.
@@ -96,6 +122,22 @@ An example reply for a trip-planning job:
 4. "Add up costs" is mechanical: a spreadsheet formula would do it.
 5. Nothing is saved between steps. Keep a short ledger of what is decided.
 ```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Answer 1 turns "a good trip" into a done that a stranger can check. Answer 3 puts a human yes before the payment.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+I wrote this reply to show what a useful review looks like; no model produced it, so it does not say how well your assistant will review your design.
+
+</Fragment>
+
+</Example>
 
 5. Fix one thing it found. You have just run the six steps on a real job.
 
@@ -112,7 +154,7 @@ A couple has two family guest lists, a caterer who charges per head, a venue quo
 <details>
 <summary>Worked answer</summary>
 
-**Outcome and done.** A budget sheet where every line has a source, the total is under the stated limit or the overage is stated, and the guest count is the number of distinct people.
+**Outcome and done.** A budget sheet where every line has a source. The total is under the stated limit, or the overage is stated. The guest count is the number of distinct people.
 
 | Step | Mark | Owner and tool |
 | --- | --- | --- |
@@ -123,13 +165,13 @@ A couple has two family guest lists, a caterer who charges per head, a venue quo
 | Suggest where to trim | Judgement | Assistant, options only |
 | Choose and pay deposits | Risky | The couple |
 
-**Checks.** After the merge, compare the de-duplicated headcount with an independent count, such as envelopes posted or the RSVP list, and list each removed name so a person can confirm it was a true duplicate. A distinct-count check alone passes when both lists share the same mistake. A reviewer helper gets the raw lists and recomputes the headcount.
+**Checks.** After the merge, compare the de-duplicated headcount with an independent count, such as envelopes posted or the RSVP list. List each removed name so a person can confirm it was a true duplicate. A distinct-count check alone passes when both lists share the same mistake. A reviewer helper gets the raw lists and recomputes the headcount.
 
 **Checkpoints.** The couple approve the merged list before the headcount reaches the catering figure, and every payment.
 
 **Failure behaviour.** A possible duplicate is flagged, not merged. An unreadable quote shows "missing", not an estimate.
 
-**Where is the February slip?** An aunt on both families' lists is counted twice, so the headcount, and the catering cost that multiplies it, runs high. A repeated item inflates a total and the assistant sounds sure. The check against an independent count is the level 5 fix.
+**Where is the February slip?** An aunt on both families' lists is counted twice, so the headcount, and the catering cost that multiplies it, runs high. In the guide's runs on a long unlabelled list with one repeated amount, the headline total was wrong in 20 of 20 trials, and every reply flagged the problem (see [the evidence](../../evidence/)). The check against an independent count is the level 5 fix.
 
 </details>
 
@@ -139,14 +181,14 @@ A couple has two family guest lists, a caterer who charges per head, a venue quo
 
 *How it works. Optional reading.*
 
-The method forces the questions people skip. Most weak designs fail at step 1 (no checkable done), step 3 (a risky step treated as routine) or step 6 (no plan for the day it breaks). You describe the human way first, because it shows the real steps without a technology guess in the way. You mark the steps before you assign owners, because the mark decides the owner: judgement leans on an assistant or a human, mechanical on a script, risky on a human.
+The method forces the questions people skip: a checkable done (step 1), a risky step treated as routine (step 3) and a plan for the day it breaks (step 6). You describe the human way first, so the real steps show without a technology guess in the way. You mark the steps before you assign owners, because the mark decides the owner. Judgement goes to an assistant or a human. Mechanical work goes to a script. Risky work goes to a human.
 
-[Least privilege](../../glossary/#least-privilege), giving each helper only the access its step needs, keeps mistakes small. A helper that can only read cannot send a wrong email. Checks cost time and money, and each can be wrong, as level 7 showed. Place them after the weakest step, before the irreversible one, and wherever a helper's blind spot would be shared by its reviewer. If the answer is a count or a sum, use a formula.
+[Least privilege](../../glossary/#least-privilege), giving each helper only the access its step needs, keeps mistakes small. A helper that can only read cannot send a wrong email. Each check costs time and money and can be wrong, as level 7 showed. Place checks after the weakest step, before the irreversible one, and wherever a reviewer would share a blind spot. If the answer is a count or a sum, use a formula.
 
-The patterns reuse ideas you already have: the reviewer loop is level 5, the human checkpoint is level 4, fan-out and gather is level 6. The ledger and the watcher are new here. The audit log from level 7 is their cousin.
+The patterns reuse earlier levels: the reviewer loop is level 5, the human checkpoint is level 4, fan-out and gather is level 6. The ledger and the watcher are new here.
 
 :::note[Want consistency]
-Keep the six steps as a template file. Fill it in for each new job and keep the filled copy next to the job. When the job misbehaves, the filled template shows which decision to revisit.
+Keep the six steps as a template file. Fill it in for each new job and keep the copy next to the job. When the job misbehaves, it shows which decision to revisit.
 :::
 
 :::note[At work]
@@ -156,7 +198,7 @@ This chapter is control design. Segregation of duties means the preparer does no
 ## Expert corner
 
 :::caution[Expert corner]
-A method surfaces decisions. It does not make them for you. The common failure is over-decomposition: many helpers, many hand-offs, and a reliability figure below the single-assistant baseline. Add structure only where a check or an access boundary justifies it.
+A method surfaces decisions. It does not make them for you. Over-decomposition adds hand-offs, and each hand-off multiplies the failure chance as in level 7. Add structure only where a check or an access boundary justifies it.
 
 A human checkpoint on every run is worse than none ([level 4](../04-trust-but-verify/) explains approval fatigue). Place it on irreversibility and exceptions, and show a small, checkable summary. In an engineering team, this is release design: tests, review, staged rollout and rollback.
 :::
@@ -170,18 +212,18 @@ When asked to design a system, work the six steps in order. State the outcome an
 
 Mark each step as judgement, mechanical or risky. For a countable result such as a count or a sum, use a formula. For a risky step, use a human. Give each role the least access its step needs, read-only by default.
 
-Place a check after the weakest step and a human checkpoint before each step that cannot be undone or leaves the system. State the failure behaviour for every step and for a crash mid-run. Do not design more roles than the steps need.
+Place a check after the weakest step and a human checkpoint before each step that cannot be undone. State the failure behaviour for every step and for a crash mid-run. Do not design more roles than the steps need.
 
 Check: a reader can name the owner, the check and the failure behaviour of every step.
 :::
 
 ## Mistakes people make
 
-**Starting with tools.** The design begins "use an assistant with these connectors". Fix: start at step 1. A job with no checkable done can be decorated, not designed.
+**Starting with tools.** Fix: start at step 1. A job with no checkable done can be decorated, not designed.
 
-**Treating every step the same.** A risky step gets the care of a mechanical one, or every step gets a checkpoint. Fix: mark each step, and spend checks on the weak and the irreversible.
+**Treating every step the same.** Fix: mark each step, and spend checks on the weak and the irreversible.
 
-**Designing only the happy path.** The design says what happens when everything works. Fix: answer step 6 for every step.
+**Designing only the happy path.** Fix: answer step 6 for every step.
 
 ## Checkpoint
 

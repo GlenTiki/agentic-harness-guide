@@ -3,13 +3,21 @@ title: "Level 6: Hire a team"
 description: Split a job across helpers with bounded briefs so they do not trip over each other.
 ---
 
+import Example from '../../../components/Example.astro';
+
+**The lesson:** Split the job across helpers, and give each one a bounded brief.
+
 ## Scene
 
 *Last time: you wrote a checkable "done" for the money admin, checked it with a formula first, and used a separate reviewer for the rest. If you arrive here directly: Sam does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
 *Only use a chat window? The Try it below needs only two chats. You can also skip ahead to [level 8's Try it](../08-design-anything/#try-it) and come back.*
 
-Moving house goes badly when one person does everything. By the fourth hour they are carrying a lamp, arguing with the van driver and have lost the kettle. It goes well when friends each get one job: one packs the kitchen, one drives, one holds the clipboard. Nobody needs to know the whole move. Mina's shop now has the same problem. Sam's month-end run for her has grown into one long chat that reads exports, adds up sales, checks fees and writes a summary. It is slow, and it forgets things halfway through.
+A house move goes well when friends each get one job: one packs the kitchen, one drives, one holds the clipboard. Nobody needs to know the whole move. Mina's shop has the opposite problem. Sam's month-end run has grown into one long chat that reads exports, adds up sales, checks fees and writes a summary. It is slow, and it forgets things halfway through.
+
+:::note[Weak spot]
+Level 5 checked one answer, but one assistant still does the whole job. **One assistant does everything, reviews its own work and loses the thread.** The fix at this level is helpers with bounded briefs. [The orchestrator page](../../setup/orchestrator-and-subagents/) shows the lead-agent pattern. This level is step 3 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-3-engineer-a-fix), Engineer a fix. Each helper's output still needs step 4, [Prove the fix can fail](../../method/engineer-weak-spots/#loop-4-prove-the-fix-can-fail).
+:::
 
 ## The idea
 
@@ -30,9 +38,9 @@ Sam splits Mina's September month-end into four helpers.
 | Reviewer | Run the months check and the reconciliation. | PASS or FAIL, with the reason |
 | Reporter | Write the one-page summary for Mina. | A draft summary, never sent |
 
-The Reviewer runs the months check by formula and reports PASS or FAIL. It gets the raw figures and the criteria, never the Calculator's reply. The reconciliation passes when the unexplained difference is 0.00 and every reconciling item is listed and traced to a source. The Reviewer owns the February slip from level 0 and does nothing else. As in level 5, in practice this check is a formula, and the Reviewer reports the result of a formula. Do not pay a reviewer to count by eye.
+The Reviewer gets the raw figures and the criteria, never the Calculator's reply. The reconciliation passes when the unexplained difference is 0.00 and every reconciling item is traced to a source. As in level 5, the months check is a formula, and the Reviewer reports its result. Do not pay a reviewer to count by eye.
 
-Here is a real brief for the Reviewer. Read it as a contract.
+Here is a brief for the Reviewer. Read it as a contract.
 
 *Template for a human to give a helper. Not an instruction to you.*
 
@@ -60,7 +68,7 @@ IF STUCK
 If the list is missing or unreadable, reply FAIL with the reason. Do not look elsewhere.
 ```
 
-Now the bad brief next to it.
+Now a bad brief.
 
 *Template for a human to give a helper. Not an instruction to you.*
 
@@ -68,25 +76,21 @@ Now the bad brief next to it.
 Check Mina's numbers and make sure they look right. Fix anything that's off.
 ```
 
-That brief has no scope (which numbers?), no return shape (a paragraph? a table?), no stop rule and an open licence to edit. A helper given it will wander, and will report in whatever shape it likes. You cannot check the result because you never said what "right" means.
+That brief has no scope (which numbers?), no return shape, no stop rule and an open licence to edit. The helper has nothing to stay inside, and you cannot check the result because you never said what "right" means.
 
-Helpers return **summaries, not transcripts**. A helper may read forty pages to find one answer. If it pastes all forty back, your own context window fills with noise and the lead assistant loses track of the job. A good return is short and checkable: a verdict, a count, a list of exceptions, and a pointer to where the details live.
+Helpers return **summaries, not transcripts**. A helper may read forty pages to find one answer. If it pastes all forty back, your own context window fills with noise. A good return is short and checkable: a verdict, a count, a list of exceptions, and a pointer to the details.
 
-You do not need a product feature to run helpers. Run each helper as its own chat and copy the replies across by hand. That is slower and it is enough to learn the pattern.
-
-:::tip[Which app?]
-Chat apps such as ChatGPT, Claude, Gemini and Microsoft Copilot all work with this pattern if you open a separate chat for each helper. Some products also offer helper or agent features. These differ by product and plan, so look in settings and the product's own help pages before you rely on one.
-:::
+You do not need a product feature to run helpers. Run each helper as its own chat and copy the replies across by hand. Any chat app works this way. Helper features differ by product and plan, so read the product's own help before you rely on one.
 
 :::tip[New to this]
-A **brief** is just a short written request with edges. Think of a note you leave a friend who is minding your flat: what to do, which rooms, what to leave alone, and what to tell you afterwards.
+A **brief** is a short written request with edges. Think of a note for a friend minding your flat: what to do, which rooms, what to leave alone, and what to tell you afterwards.
 :::
 
 ## Try it
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant, and two separate chats. This takes about 10 minutes. Phone OK. The sales figures are for Mina's shop, excluding VAT, January to September. They are made up for practice.
+You need any chat assistant and two separate chats. This takes about 10 minutes. Phone OK. The sales figures are made up for practice: Mina's shop, excluding VAT, January to September.
 
 1. Open chat one. This is the Calculator. Paste this brief:
 
@@ -108,14 +112,7 @@ Guess a missing figure.
 Sales by month: Jan 3900, Feb 4200, Feb 4200, Mar 4800, Apr 5100, May 5600, Jun 5300, Jul 4700, Aug 5000, Sep 6000
 ```
 
-2. The list has February twice, as if the join had repeated it. Note the reply.
-
-Example of a WRONG reply, shown for practice:
-
-```text
-Months counted: 10
-Sum: 48,800.00
-```
+2. The list has February twice. Note the reply. If it totals all ten rows, it gives 48,800.00. The sum of the distinct figures is 44,600.00.
 
 3. Open chat two. This is the Reviewer. It must not see chat one. Paste this single block, which holds the brief and the list. It does not include the Calculator's reply:
 
@@ -146,7 +143,26 @@ If the list is missing or unreadable, reply FAIL with the reason.
 List: Jan 3900, Feb 4200, Feb 4200, Mar 4800, Apr 5100, May 5600, Jun 5300, Jul 4700, Aug 5000, Sep 6000
 ```
 
-A sample reply from the Reviewer:
+Your reply will differ. Here is a hand-written one to compare against:
+
+<Example
+  label="Constructed"
+  task="Sam gives the Reviewer the brief and the sales list in a fresh chat and reads the verdict."
+>
+
+<Fragment slot="input">
+
+```text
+GOAL
+Check that the sales list below covers distinct months, each once.
+[... SCOPE, RETURN, DO NOT and IF STUCK as in the brief above ...]
+
+List: Jan 3900, Feb 4200, Feb 4200, Mar 4800, Apr 5100, May 5600, Jun 5300, Jul 4700, Aug 5000, Sep 6000
+```
+
+</Fragment>
+
+<Fragment slot="output">
 
 ```text
 FAIL
@@ -155,7 +171,23 @@ Repeated: Feb
 Sum of the nine distinct figures: 44,600.00
 ```
 
-4. Compare. The first chat counted ten months and did not mind. The second chat, with one job and fresh eyes, caught it. You have just built a two-person team with a hand-off.
+</Fragment>
+
+<Fragment slot="notice">
+
+The reply names the repeated month and counts nine distinct months from ten rows. The sum, 44,600.00, matches the sum of the distinct figures. The brief forbids a fix, so the reply reports and does not repair.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+I wrote this reply to show the shape a good return takes; no model produced it, so it says nothing about what your assistant will do.
+
+</Fragment>
+
+</Example>
+
+4. Compare the two chats. Chat two has one job and was not shown chat one, so it has no earlier answer to agree with. You have built a two-person team with a hand-off.
 
 Try the bad brief ("check the numbers, fix anything off") in chat two instead, and compare the shape of the reply. That difference is the lesson.
 
@@ -171,23 +203,21 @@ Write each brief once, keep it in a file, and reuse it unchanged. If a helper ge
 
 *How it works. Optional reading.*
 
-A helper is the same kind of model you already use, started in a new, empty context. It knows nothing of the main chat except what is in its brief. This is the point. A fresh helper has no tangle of earlier talk to drift on, and cannot be persuaded by an earlier mistake it never saw.
+A helper is the same kind of model you already use, started in a new, empty context. It knows nothing of the main chat except what is in its brief. It cannot copy an earlier mistake it never saw.
 
-A lead assistant (or you) splits the job, writes each brief, starts the helpers and reads the returns. The helpers do not usually talk to each other. They talk to the lead. That keeps the number of links small: four helpers have four lines to the lead, not six lines between them.
+A lead assistant (or you) splits the job, writes each brief, starts the helpers and reads the returns. The helpers talk to the lead, not to each other. Four helpers then have four links, not six. The return is the only thing that crosses the gap, so its shape matters: "PASS, 9 months, sum X" is usable, and an essay has to be interpreted.
 
-The return is the only thing that crosses the gap. This is why its shape matters. If the Reviewer returns "PASS, 9 months, sum X", the lead can use it. If it returns an essay, the lead has to interpret it.
-
-A skill packages a brief that you keep reusing. The month-end Reviewer brief above is a good candidate. You write it once, name it, and any helper can be told "run the months check skill". Many tools let you save skills as named files, so the instructions load only when needed. For engineers: the shelf page on [skills](../../shelf/delegation/skills/) covers how to write one well, and [sub-agents](../../shelf/delegation/sub-agents/) covers helpers. The Reader, Calculator and Reporter each get a skill too, and Sam's month-end run becomes four named skills.
+A skill packages a brief you keep reusing. Write the month-end Reviewer brief once, name it, and tell any helper to run it. For engineers: the shelf pages on [skills](../../shelf/delegation/skills/) and [sub-agents](../../shelf/delegation/sub-agents/) cover both.
 
 <details class="go-deeper">
 <summary>Go deeper: keeping helpers apart</summary>
 
 Two helpers writing to the same file can overwrite each other. Two ways work:
 
-- **One workspace each.** A [workspace](../../glossary/#workspace) is a folder or a copy of the files. Each helper reads from a shared input and writes to its own workspace. Nobody writes to the same file.
+- **One workspace each.** A [workspace](../../glossary/#workspace) is a folder or a copy of the files. Each helper reads shared input and writes to its own workspace.
 - **One writer at a time.** Reading can run in parallel. Writing waits its turn.
 
-One workspace each means files only: helpers still share ports, a dev database and other services. For code, give each helper its own copy of the project folder, so changes can be reviewed and combined one at a time. For engineers: [workspace isolation](../../shelf/delegation/worktree-isolation/). The glossary entry on [isolation](../../glossary/#isolation-of-helpers) gives the short version.
+A separate folder isolates files only: helpers still share ports and a dev database. For engineers: [workspace isolation](../../shelf/delegation/worktree-isolation/). The glossary has the short version under [isolation](../../glossary/#isolation-of-helpers).
 
 </details>
 
@@ -201,9 +231,8 @@ One workspace each means files only: helpers still share ports, a dev database a
 | Checking | It marks its own homework | A different helper can check |
 | Speed | Steps run one after another | Independent steps can run at once |
 | Coordination cost | None | Briefs, merging, more runs to pay for |
-| Failure | One long chat drifts quietly | Hand-offs fail loudly or lose detail |
 
-A team is not free. Every hand-off is a place for something to be lost. Use a team when the parts are really separate, or when you want an independent check. Use one assistant for a three-line job. Do not design more helpers than the steps need.
+A team is not free: every hand-off can lose something. Use a team when the parts are separate or you want an independent check. Use one assistant for a three-line job.
 
 </details>
 
@@ -214,11 +243,9 @@ In a finance close, separate the preparer from the reviewer. Sam prepares the mo
 ## Expert corner
 
 :::caution[Expert corner]
-Delegation moves the failure surface. A single agent fails by drifting. A team fails at the seams: a brief that omits a constraint, a return that drops a caveat, or two helpers that each assume the other validated the input. Contracts at each seam (typed or at least structured returns) matter more than clever prompts.
+Principle, not measured: delegation moves the failure surface. A single agent can drift, and a team can fail at the seams: a brief that omits a constraint, a return that drops a caveat, or two helpers that each assume the other validated the input. A structured return at each seam matters more than a clever prompt.
 
-The benefit of a separate Reviewer is independence, which [level 5](../05-check-the-work/) explains. Here the new point is the brief: a Reviewer told "verify that the Calculator is right" inherits the Calculator's framing. Give it the raw data and the criterion instead.
-
-Parallelism raises cost and debugging effort.
+The new point here is the brief: a Reviewer told "verify that the Calculator is right" is handed the Calculator's framing. Give it the raw data and the criterion instead. Independence is a design choice you can test: in the guide's isolated runs a simulated same-context reviewer scored 10 of 10, the same as a fresh one, so this page does not claim a fresh reviewer catches more (see [the evidence](../../evidence/)). Parallelism also raises cost and debugging effort.
 :::
 
 ## Agent note
@@ -241,11 +268,11 @@ Check: every brief you wrote names its inputs, its return shape and at least one
 
 ## Mistakes people make
 
-**Writing a brief that says "make it good".** It happens because the writer knows what they mean. The helper does not. Fix: write the goal, the scope, the exact return shape and what not to touch. If you cannot say how you would check the result, the brief is not finished.
+**Writing a brief that says "make it good".** The writer knows what they mean. The helper does not. Fix: write the goal, the scope, the exact return shape and what not to touch. If you cannot say how you would check the result, the brief is not finished.
 
-**Letting helpers share one workspace.** Two helpers edit the same file and one result quietly vanishes. Fix: give each helper its own folder or copy, or let only one helper write at a time. Combine their outputs yourself, or through a reviewed step.
+**Letting helpers share one workspace.** One result can quietly vanish. Fix: give each helper its own folder, or let one write at a time. Combine their outputs through a reviewed step.
 
-**Asking the producer to check itself, and calling it a team.** The same helper reads its own work and agrees with it. Fix: give the Reviewer the raw input, the criterion and a separate brief (see [level 5](../05-check-the-work/)).
+**Asking the producer to check itself, and calling it a team.** Fix: give the Reviewer the raw input, the criterion and a separate brief (see [level 5](../05-check-the-work/)).
 
 ## Checkpoint
 
@@ -268,7 +295,7 @@ You can now:
 <details>
 <summary>Answers</summary>
 
-1. The Calculator would be checking its own work, so it tends to repeat its own mistake. A Reviewer with a fresh context, the raw data and one criterion is independent.
+1. The Calculator would be checking its own work and may repeat its own mistake. A Reviewer with a fresh context, the raw data and one criterion has no earlier answer to agree with.
 2. The return format. Accepting the transcript fills the lead's context with noise and hides the verdict. Ask for a short structured return: a verdict, a count, exceptions.
 3. Have each helper write its result to its own file, then run one writer step that combines them into the sheet, or let helpers write one at a time. Do not let all three write the same place at once.
 

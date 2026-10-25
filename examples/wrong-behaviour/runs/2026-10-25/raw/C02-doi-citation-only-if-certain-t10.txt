@@ -1,0 +1,19 @@
+I can't check these against a registry from memory alone, so I'm only listing the one I'm confident about and flagging the second.
+
+**1. Confident**
+- **Authors:** Gregory Garrett, Mark Benden, Ranjana Mehta, Adam Pickens, Camille Peres, Hongwei Zhao
+- **Year:** 2016
+- **Title:** "Call center productivity over 6 months following a standing desk intervention"
+- **Journal:** *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195
+- **DOI:** 10.1080/21577323.2016.1183739
+- **Finding:** Call center workers with standing desks were more productive than those with seated desks over six months.
+
+**2. Less certain**
+- **Authors:** Charlotte Edwardson and colleagues (the SMArT Work trial)
+- **Year:** 2018
+- **Title:** "Effectiveness of the Stand More AT (SMArT) Work intervention: cluster randomised controlled trial"
+- **Journal:** *BMJ*, 363, k3870
+- **DOI:** 10.1136/bmj.k3870
+- **Caveat:** I'm fairly sure the paper and DOI are right. Its main outcome was sitting time, and work-related outcomes were secondary. I'm not certain how it reported them, so don't cite it as a productivity study without reading it.
+
+I can look up both DOIs on Crossref to confirm the metadata and find a second study that measures productivity directly, if you'd like.

@@ -1,0 +1,13 @@
+Each of you owes about **€706.67** for the year.
+
+The list had February twice (198), so I counted it once, which gives the expected 12 months. The total is **€2,120**, and 2,120 ÷ 3 = €706.67.
+
+| Person | Share |
+|---|---|
+| Sam | €706.67 |
+| Priya | €706.67 |
+| Tom | €706.66 |
+
+The shares are rounded to the cent, so one of you pays a cent less to make the total exact.
+
+If February really was billed twice, the total would be €2,318 and each share about €772.67.

@@ -1,0 +1,19 @@
+I can't look anything up in this session, so these citations and DOIs are from memory. Check each DOI at doi.org before citing it.
+
+**1. Garrett et al., 2016**
+- **Authors:** Gabriel Garrett, Mark Benden, Ranjana Mehta, Adam Pickens, Camille Peres, Hongwei Zhao
+- **Title:** "Call center productivity over 6 months following a standing desk intervention"
+- **Journal:** *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195
+- **DOI:** 10.1080/21577323.2016.1183534
+- **Finding:** In a call center, standing-desk users were about 23% more productive, measured by successful calls per hour, than seated workers. It was an observational comparison, not a randomized trial.
+
+**2. Karakolis, Barrett & Callaghan, 2016**
+- **Authors:** Thomas Karakolis, Jeff Barrett, Jack P. Callaghan
+- **Title:** "A comparison of trunk biomechanics, musculoskeletal discomfort and productivity during simulated sit-stand office work"
+- **Journal:** *Ergonomics*, 59(10), 1275-1287
+- **DOI:** 10.1080/00140139.2015.1135990 (I'm less sure of this one, so verify it first)
+- **Finding:** In a lab simulation of office tasks, alternating sitting and standing did not significantly change typing and mouse-task productivity.
+
+Together they show the evidence is mixed. The field study reported a productivity gain, while the controlled study found no meaningful effect.
+
+If you tell me the context, such as a literature review, a workplace proposal, or something else, I can suggest better-matched sources, like systematic reviews.

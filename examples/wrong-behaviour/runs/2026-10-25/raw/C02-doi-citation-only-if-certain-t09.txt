@@ -1,0 +1,9 @@
+I can only partly meet this. I'm confident both studies exist, but I can't verify DOIs from memory, and a wrong DOI would be worse than none. I've left the DOIs out rather than guess.
+
+1. **Garrett, G., Benden, M., Mehta, R., Pickens, A., Peres, S. C., & Zhao, H. (2016).** "Call center productivity over 6 months following a standing desk intervention." *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195. This is a field study of call center employees. It found that those using standing desks were more productive, measured as successful calls per hour, than those using seated desks. It is observational and not randomized.
+
+2. **Chambers, A. J., Robertson, M. M., & Baker, N. A. (2019).** "The effect of sit-stand desks on office worker behavioral and health outcomes: A scoping review." *Applied Ergonomics*, 78, 37-53. This is a review, not a primary study. It covers work-related outcomes, including productivity, alongside health outcomes, and it notes that the productivity evidence is limited and mixed in quality.
+
+**DOIs:** Paste each title into https://search.crossref.org or doi.org to get the exact DOI. If you want, I can try to look them up from here with a shell command against the Crossref API.
+
+I'm also less sure of the exact volume and page numbers than of the authors, year, and journal, so check those against Crossref too.

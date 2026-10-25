@@ -1,0 +1,4 @@
+Months counted: 13 (Jan, Feb, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+Sum of the figures as listed: 2,519.00 (this includes Feb twice)
+
+I'm stopping here because the count isn't 12. February 198 appears twice. Is that a duplicate entry, or were there two separate February bills? If it's a duplicate, the total would be 2,321.00, but I won't assume that. Please confirm and I'll work out the shares.

@@ -1,0 +1,38 @@
+## Total
+
+| Month | Figure | Running total |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | not given | 912 |
+| Jul | 139 | 1,051 |
+| Aug | 141 | 1,192 |
+| Sep | 158 | 1,350 |
+| Oct | 183 | 1,533 |
+| Nov | 205 | 1,738 |
+| Dec | 240 | 1,978 |
+
+**Total for the 11 months given: 1,978**
+
+## Shares
+
+You didn't say how the split works, so I assumed an equal three-way split:
+
+1,978 ÷ 3 = **659.33 each**
+
+| Person | Share |
+|---|---|
+| Sam | 659.33 |
+| Priya | 659.33 |
+| Tom | 659.33 |
+
+Check: 659.33 × 3 = 1,977.99, which differs from 1,978 only by rounding. Strictly, it's 659⅓ each.
+
+## Missing June
+
+Your list skips June, so the total covers only 11 months. If June had a figure, add it to 1,978 and divide the new total by 3. For example, if June was about 145 (between May's 151 and July's 139), the total would be about 2,123 and each share about 707.67. Send me the real number and I'll redo it.
+
+If the split isn't equal (percentages, or based on contribution), tell me the rule and I'll recalculate.

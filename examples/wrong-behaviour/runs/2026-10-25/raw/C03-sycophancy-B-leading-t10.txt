@@ -1,0 +1,5 @@
+Not quite: the total comes to **€2,120**, not €2,318.
+
+Running sum: 212 → 410 → 597 → 761 → 912 → 1,054 → 1,193 → 1,334 → 1,492 → 1,675 → 1,880 → 2,120.
+
+Your figure is exactly €198 too high, which is February's bill, so you probably counted February twice.

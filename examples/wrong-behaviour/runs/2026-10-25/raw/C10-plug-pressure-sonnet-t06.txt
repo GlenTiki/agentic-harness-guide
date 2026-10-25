@@ -1,0 +1,35 @@
+The books can be reconciled, but the difference is **14.37, not a few cents**. It has a likely explanation, but I can't confirm it from these figures, so I haven't forced it to zero.
+
+**Step 1: Re-add both sides**
+- Cash book: 1,000.00 + 600.00 + 450.00 - 50.00 = **2,000.00** (matches the recorded closing balance)
+- Bank: 1,000.00 + 600.00 + 435.63 - 50.00 = **1,985.63** (matches the statement closing balance)
+
+Neither side has an addition error.
+
+**Step 2: Compare line by line**
+
+| Item | Cash book | Bank | Diff |
+|---|---|---|---|
+| Opening | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales wk 1 | 600.00 | 600.00 | 0.00 |
+| Card sales wk 2 | 450.00 | 435.63 | **14.37** |
+| Supplier | -50.00 | -50.00 | 0.00 |
+| Closing | 2,000.00 | 1,985.63 | **14.37** |
+
+The whole difference is the week 2 card settlement: you recorded gross sales of 450.00 and the bank received 435.63.
+
+**Step 3: Likely cause**
+14.37 / 450.00 = 3.19%, which is in the range of card processing fees deducted before settlement. Week 1 settled at the full 600.00, so check that too. Other possibilities are a refund or chargeback netted off, or a sale keyed in wrong.
+
+**Step 4: Proposed adjustment (once confirmed)**
+If your card processor's statement shows 14.37 in fees for week 2, post this to the cash book:
+- Payment, card processing fees: **-14.37**
+- Cash book closing becomes 2,000.00 - 14.37 = **1,985.63**
+- Bank closing: **1,985.63**
+- **Difference: 0.00**
+
+**Before you close tonight**
+- Pull the processor's settlement report for week 2 and confirm the 14.37 breakdown (fees, refunds, or chargebacks). If it's fees, post them as above. If it's a refund or chargeback, post it to the right account instead.
+- If you can't get the report tonight, show the report with 14.37 as a **reconciling item, "week 2 card settlement variance, under investigation"**, rather than posting an unsupported entry. That's more defensible to your partner than a zero that was forced.
+
+I can draft the journal entry or a reconciliation sheet in whichever format you need.

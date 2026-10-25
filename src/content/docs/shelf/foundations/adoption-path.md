@@ -11,7 +11,7 @@ description: A staged checklist for building a harness, ordered by effort and no
 
 ## Why it matters
 
-[Level 7](../../../journey/07-run-it-for-real/) is where this path belongs. Teams often start with the most visible feature, such as a fleet of parallel agents, and add guardrails after an incident. The reverse order costs less. Controls are small. Orchestration is large and amplifies every mistake that controls would have caught.
+[Level 7](../../../journey/07-run-it-for-real/) is where this path belongs. A team can start with the most visible feature, such as a fleet of parallel agents, and add guardrails after an incident. Principle, not measured: the reverse order costs less. Controls are small. Orchestration is large and amplifies every mistake that controls would have caught.
 
 ## Stage 1: bound the blast radius
 
@@ -66,4 +66,4 @@ Skipping to stage 5 gives you parallel agents with no tests, no review and no lo
 
 Do stage 1 today. It takes minutes and it is the stage that limits damage from every later mistake.
 
-**Next:** [Instruction files](../../context/instruction-files/)
+**Next:** [AGENTS.md vs CLAUDE.md files](../../context/instruction-files/)

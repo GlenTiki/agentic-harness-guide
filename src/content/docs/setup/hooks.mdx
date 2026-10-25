@@ -1,0 +1,166 @@
+---
+title: A rule in a hook is harder to forget
+description: Hooks are scripts the harness runs at fixed points, so a rule holds for the calls it matches even when the agent forgets it. The exit code decides what blocks.
+status: runs
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup. The exit-code tests are rebuilt from scratch in [case-study chapter 2](../../case-study/ch02-hooks/), and you can run them from the downloadable kit.
+
+## The weak spot it removes
+
+**The [agent](../../glossary/#agent) can fail to follow a rule.** An [instruction file](../../glossary/#instruction-file) is advice, and nothing forces the agent to follow it. This is a principle: the guide's runs did not test how often an agent skips a rule. A [hook](../../glossary/#hook) is a script the harness runs at a fixed point. The agent cannot decide to skip it for the tool calls the hook matches. A hook can still be misconfigured, and a hook that fails with an exit code other than 2 lets the action go ahead. See [level 4](../../journey/04-trust-but-verify/) and the [hooks shelf page](../../shelf/control/hooks/).
+
+## How it works
+
+A hook has three parts: an event, a script and a reply. The event is a point in the agent loop, such as "before a tool call" or "when the agent stops". The script reads a JSON description of that event on its input. The reply is an exit code, and sometimes JSON.
+
+### The exit-code contract
+
+| Exit code | Meaning |
+| --- | --- |
+| 0 | Success. Any JSON reply applies. |
+| 2 | A blocking error. On events that can block, the harness stops the action. |
+| Any other non-zero | A non-blocking error. The action goes ahead. |
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "If your hook is meant to enforce a policy, use exit 2." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+Exit 2 does not have the same meaning on every event. The same docs page lists each event.
+
+| Event | What exit 2 does |
+| --- | --- |
+| Before a tool call | Blocks the call. |
+| When the user submits a prompt | Blocks the prompt. |
+| When the agent tries to stop | Stops it from stopping. |
+| When a helper tries to stop | Stops it from stopping. |
+| After a tool call | Cannot block, because the tool already ran. The message is shown to the agent. |
+| When a helper starts | Only shows the message to the user. |
+
+So "exit 2 sends my reason to the agent" is true for some events and not for others. Check the table for the event you use. A script can also return JSON. The top-level `decision` field takes only `"block"`. A before-tool hook can return a permission decision of allow, deny, ask or defer. Exit 2 wins even if the JSON says allow.
+
+## Why exit 1 is a trap
+
+A new author writes a hook that exits 1 to mean "stop". Exit 1 does not block. The action goes ahead and the hook looks like it works. **A hook that cannot block looks like a hook that blocks.** The fix is a test matrix that feeds the hook a bad call and checks that the result is a block. [Chapter 2](../../case-study/ch02-hooks/) builds that matrix with 19 cases: allow, deny and malformed input.
+
+The kit's dispatcher blocks a forbidden command with the reason on stderr and exit code 2; [chapter 2](../../case-study/ch02-hooks/) shows that run. A gate should also fail closed on input it cannot read:
+
+<Example
+  label="Computed"
+  task="You send the dispatcher input that is not valid JSON. A gate should fail closed."
+  evidence="the command shown, run from the ch02-hooks kit root"
+  env="Python 3.13.1, macOS, ch02-hooks kit, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+echo '{not json' | python3 -I dispatch.py; echo "exit=$?"
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Blocked: the hook event is not valid JSON (Expecting property name enclosed in double quotes: line 1 column 2 (char 1)).
+exit=2
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The reason names the parse error and the exit code is 2. A hook that exited 0 here would let the call through. The kit's `--bad` copy exits 1 for a denied call, and the matrix reports `expected exit 2, got 0`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Bad input blocks in this dispatcher. It does not show the same for every other failure.
+
+</Fragment>
+
+</Example>
+
+## A tool error can look like a block
+
+Exit 2 means "block" to the harness. The command-line tool grep, for one, exits 2 when it cannot run. A hook that calls such a tool and passes its exit code on reports an error as a policy block. In my setup a hook once ran a system command with a flag that one operating system rejected. The command exited 2, so the failure looked like policy. This is an anecdote, no log kept. The Example below shows the same mechanism with a flag that macOS grep rejects.
+
+<Example
+  label="Computed"
+  task="You run grep with the -P flag on macOS. This is the shape of a hook that fails on one operating system."
+  evidence="the command shown, run on macOS 26.5 with /usr/bin/grep (BSD grep 2.6.0-FreeBSD)"
+  env="macOS 26.5, BSD grep 2.6.0-FreeBSD, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+echo abc | /usr/bin/grep -P 'a'; echo "exit=$?"
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+grep: invalid option -- P
+usage: grep [-abcdDEFGHhIiJLlMmnOopqRSsUVvwXxZz] [-A num] [-B num] [-C[num]]
+[... three more usage lines omitted ...]
+exit=2
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+grep prints `invalid option -- P` and the last line is `exit=2`. A hook that passed this code on would tell the harness to block, though the user's call was fine.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+One real exit 2 that is an error, not a decision. It does not show how often hooks fail this way.
+
+</Fragment>
+
+</Example>
+
+My fix is one adapter that sorts hooks into two kinds. An *advisory* hook that exits non-zero is treated as a crash. The adapter logs it, swallows it, and shows a one-line notice at the next prompt. A *gate* hook may exit 2 on purpose. Only a few of my hooks are gates. Most advise.
+
+## What subagents inherit
+
+- Hooks from settings files, managed policy and plugins run for tool calls made by subagents. The hook input says which subagent made the call.
+- Subagent start and stop are events too. The matcher is the agent type name.
+- A custom subagent can carry its own hooks in its definition. They run only while that subagent is active.
+- Custom subagents load the project instruction files. The built-in Explore and Plan agents do not. A custom subagent can opt out with a setting.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/sub-agents. Quoted line: "Hooks from settings files, managed policy settings, and plugins all apply inside subagents". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+**What my own launcher does not inherit.** My setup has a command that starts a helper from a role file. That helper gets the role file and an optional skill. It gets no hooks and no project instructions. If you use such a launcher, put the shared rules into the brief yourself. [Chapter 7](../../case-study/ch07-orchestrator/) builds a check for this.
+
+## End-to-end flow
+
+Rule: "Never force-push." This is one rule, taken through every step.
+
+1. You write the rule in plain English in the instruction file, so the agent can explain it.
+2. You write a before-tool hook for shell calls. The script reads the call from its input.
+3. The script looks for a force flag on a push. If it finds one, it prints the reason and exits 2. If the input is not valid JSON, it exits 2 as well, because a gate should fail closed.
+4. You write the test matrix: one allowed push, one denied force-push, one malformed input. Each has an expected exit code.
+5. You run the matrix and see all three pass.
+6. You break the hook on purpose, for example by changing the flag it looks for. The deny case must go red. This is the proof that the test can fail.
+7. You register the hook in the shared settings file. You test it with a real session.
+8. A subagent tries the same push. The hook runs for the subagent too, and the call is blocked.
+
+## What this does not do
+
+A hook covers only the paths it sees. A script that the agent writes and then runs can take actions the hook never matched. A hook is a strong control for the calls it covers, not a promise about everything.
+
+## Build it
+
+[Case-study chapter 2: Hooks](../../case-study/ch02-hooks/) gives you a kit with a dispatcher, five example hooks and the test matrix. It uses only the standard library.
+
+**Next:** [Plain-English specs and linting](../plain-text-and-simple-english/)

@@ -1,0 +1,235 @@
+---
+title: Load a few notes, not all of them
+description: Build plain-text memory notes with front matter, a deterministic BM25 loader that picks a bounded set, a token budget and a recall log.
+status: built
+sidebar:
+  label: "Chapter 5: Memory"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch05-memory.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (7 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+The [agent](../../glossary/#agent) forgets you. Loading every note wastes [tokens](../../glossary/#token). Loading none repeats the problem.
+
+## Goal
+
+Pick a bounded, repeatable set of notes for a prompt and record which notes were used.
+
+## What is in the kit
+
+- Eight memory files in `example/memories/`. Each is a plain text file. The front matter holds a name, a type and an `updated` time in UTC to the second.
+- `bm25.py`, about 40 lines, written from the published formula.
+- `memory.py`, a loader. It scores every memory against the prompt, picks the best ones that fit a token budget (400 by default) and writes one line to a recall log.
+- `validate.py`, which checks every memory file and six golden prompts in `example/golden.json`.
+
+## Get the kit
+
+Download [ch05-memory.zip](/agentic-harness-guide/downloads/ch05-memory.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch05-memory.zip
+unzip ch05-memory.zip -d kit
+cd kit/ch05-memory
+```
+
+The hash must be `502f98061b46dd5811bc10fa61108ecb21573b9317d976fe72e329c6727b6bc4`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read the eight files in `example/memories/`. You can edit each one by hand.
+3. Read `bm25.py`.
+4. Recall for a prompt. The log goes to `scratch/`: `mkdir -p scratch`, then `python3 -I memory.py "Write the commit message for this change" --dir example/memories --log scratch/recall.jsonl`.
+5. Read the log line it wrote.
+6. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You ask for memories that fit the prompt 'Write the commit message for this change'. The loader picks the best ones that fit a 400-token budget and logs the choice."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+mkdir -p scratch
+python3 -I memory.py "Write the commit message for this change" --dir example/memories --log scratch/recall.jsonl
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+
+-- 3 memories, about 149 of 400 tokens
+[small-commits] The user wants small, single-purpose commits.
+Each commit holds one logical change. The message says what changed and why. Do not mix a refactor with a feature in one commit.
+
+[tests-first] The user wants a failing test before the code.
+Write the failing test first, run it and watch it fail. Then write the code that makes it pass. A test never seen failing is not trusted.
+
+[british-english] The user writes in British English.
+Use British spelling: colour, organise, behaviour. Dates are written day first. Do not switch to American spelling in documents or commit messages.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Three memories print, best first: `small-commits`, `tests-first`, `british-english`. The line `-- 3 memories, about 149 of 400 tokens` is the budget use.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+BM25 picked three notes whose words match the prompt. It does not show that they are the right three for every prompt.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You read the log line that the recall wrote."
+  evidence="python3 -I -c 'print(open('scratch/recall.jsonl').read())' (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I -c "print(open('scratch/recall.jsonl').read())"
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+{"budget": 400, "prompt_sha256": "1138ecf2eb6c0aef80a3d2e0dccee2d5a7184b23c0542956c998be1d5730b489", "selected": [{"name": "small-commits", "score": 5.3342}, {"name": "tests-first", "score": 2.5299}, {"name": "british-english", "score": 1.3063}], "time": "2026-10-25T01:14:52Z", "tokens_used": 149}
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The line holds a hash of the prompt (`prompt_sha256`), the names and scores of the chosen notes, and the token count. The time field changes on every run.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Each recall leaves a record. The log does not show whether the note helped.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You ask for notes with the word 'timestamp'. The note `utc-timestamps` writes 'time stamp' with a space."
+  evidence="python3 -I memory.py 'Add a timestamp to each note' --dir example/memories (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I memory.py "Add a timestamp to each note" --dir example/memories
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+
+-- 2 memories, about 88 of 400 tokens
+[standard-library] Prefer the Python standard library.
+Add a third party package only when the standard library cannot do the job. Say why in the pull request.
+
+[small-commits] The user wants small, single-purpose commits.
+Each commit holds one logical change. The message says what changed and why. Do not mix a refactor with a feature in one commit.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Two notes print: `standard-library` (it matches the word "add") and `small-commits`. `utc-timestamps` does not appear. The prompt in the kit's golden file says "time stamp" for this reason.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+BM25 matches words, not meaning. It does not show how often this happens; chapter 6 measures that.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on memory files with five kinds of defect. The check must go red."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+FAIL bad-time.md: 'updated' must be UTC with seconds and a Z, such as 2026-10-01T10:00:00Z.
+FAIL missing-type.md: missing front matter key(s): type.
+FAIL no-colon.md:6: expected 'key: value'.
+FAIL no-front-matter.md: the file must start with a --- line.
+FAIL Duplicate memory name: dup
+validate: FAIL (5 problem(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Five `FAIL` lines name the file and the problem.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The file checks can fail. They do not show the notes are true.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+BM25 matches words, not meaning. A prompt about "tidy history" does not find a memory about "small commits". The token count is an estimate of four characters per token. This is the memory system of the case study, not of any real assistant. Nothing here was run inside Claude Code, Codex or Gemini. The "timestamp" example is one extra command that I ran for this page. It is not a step in the kit.
+
+**Read the matching page:** [Memory](../../setup/memory/)
+
+**Next:** [Re-rank only if it measurably helps](../ch06-rerank/)

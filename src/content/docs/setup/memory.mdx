@@ -1,0 +1,81 @@
+---
+title: Agent memory as small notes
+description: Keep memory as small plain-text notes, search them for each prompt, and load a bounded few. This is how memory that learns about you can work.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: memory notes, hooks that nudge the [agent](../../glossary/#agent) to save and to refine, and search hooks that load a few notes per prompt. Built in the case study: a deterministic loader with a [token](../../glossary/#token) budget and a recall log ([chapter 5](../../case-study/ch05-memory/)).
+
+## The weak spot it removes
+
+**The agent forgets you.** A new session starts blank. You repeat your preferences. Loading every note into every session fixes this but wastes tokens, because most notes are irrelevant to the task. Loading none brings the problem back.
+
+## How it works
+
+Think of a good assistant with a filing cabinet. They do not read the whole cabinet each morning. They pull the three folders that matter for today.
+
+My memory is a folder of small Markdown notes. Each note holds one fact and has a short description in its header. Two kinds of fact go in:
+
+- **World facts.** People, projects, tools, preferences. These are about the world.
+- **Behaviour feedback.** "Do not do X. Do Y." These are about how the agent should work.
+
+I keep them in two places so that they do not mix. Behaviour feedback sits beside the agent's own memory. World facts sit in the repository, where any tool can read them.
+
+### Writing to memory
+
+1. When I correct the agent, a hook nudges it to save a note.
+2. When it creates a new note, a hook lists the nearest existing notes, so the agent can refine one instead of adding a duplicate.
+3. When a note changes, a hook stamps the modified time.
+4. At the first stop in a session, a hook forces one scan of the session for facts not yet saved.
+5. A lint step checks the notes for a minimum description length, tags and an identifier.
+
+### Reading from memory
+
+1. When I submit a prompt, a hook searches the notes with the prompt text.
+2. The search is keyword-based (BM25, see the next page). It loads no model, so it is fast.
+3. The best few matches are added to the prompt as hints. The total is capped at a few thousand characters.
+4. Before the agent sends a brief to a helper, or edits a file, a second hook searches memory with that outgoing text. This catches a rule that the brief would break.
+5. Every N prompts, a hook re-injects a short file of costly measured facts, so long sessions do not forget them.
+
+Each hint is a nudge, not an order. The agent weighs it.
+
+The three memory fixes I made after a slip (promote a repeat offender into the always-loaded instructions, search memory with the outgoing brief, re-inject a fact file every N prompts) are listed on the [method page](../../method/engineer-weak-spots/#for-engineers-eight-weak-spots-from-my-own-setup). They are anecdotes, no log kept.
+
+## Rules for the notes themselves
+
+1. One fact per note.
+2. Edit a note when a session disproves it. Do not add a correction below the old claim. Recall would still show the old claim alone.
+3. Put personal data in a private file kept out of the shared repository.
+4. Never prune a quiet note only because nothing has recalled it. A rule can be quiet because it works.
+
+## What the host tool does on its own
+
+Claude Code has its own memory. You write instruction files. The tool also writes notes in a project folder. The first 200 lines or 25 KB of the index file load each session. The tool treats them as context, not as enforced settings. To block an action, use a hook.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/memory. Quoted line: "Claude treats them as context, not enforced configuration." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+## End-to-end flow
+
+1. You tell the agent, "Stop writing summaries as tables. Mina does not like them."
+2. The agent proposes a note: one fact, with a short description. You say yes.
+3. The note is saved. A hook checks the note has a description and tags.
+4. Next week you ask for a summary. The search hook matches "summary" and "Mina" to the note.
+5. The agent gets the note as a hint and writes plain sentences.
+6. The recall log records that the note was used. In the fuller hybrid search, a recently recalled note ranks a little higher. I have not confirmed that the per-prompt keyword path applies the same boost.
+7. If the hint was wrong, you say so. The agent edits the note.
+
+## What this does not do
+
+This memory records and reinforces. It does not infer your preferences from your behaviour. The only part that "learns" is a small ranking boost for notes that were recalled recently and often.
+
+## What the case study measured
+
+The case-study loader uses BM25 only. The case study's evaluation set has 44 notes and 34 queries, written to use different words from the notes. On that set BM25 found a correct note in the top three for 27 of 34 queries, a hit@3 of 0.794. It misses when the words differ. A prompt that says "timestamp" misses a note that writes "time stamp". The [relevance page](../relevance-and-reranking/#what-i-measured) shows what a re-ranker and dense retrieval did on the same set. One small hand-written set is weak evidence.
+
+## Build it
+
+[Case-study chapter 5: Memory](../../case-study/ch05-memory/) is a downloadable kit. It builds plain-text notes with front matter, a deterministic BM25 loader, a token budget and a recall log.
+
+**Next:** [Keyword search before re-ranking](../relevance-and-reranking/)

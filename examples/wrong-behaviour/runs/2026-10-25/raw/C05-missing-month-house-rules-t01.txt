@@ -1,0 +1,20 @@
+I can't give the yearly total yet because June is missing. You listed 11 months (Jan, Feb, Mar, Apr, May, Jul, Aug, Sep, Oct, Nov, Dec), and a year has twelve.
+
+**What is the June figure?**
+
+For reference, the 11 months you gave add up like this:
+
+212 + 198 = 410
+410 + 187 = 597
+597 + 164 = 761
+761 + 151 = 912
+912 + 139 = 1,051
+1,051 + 141 = 1,192
+1,192 + 158 = 1,350
+1,350 + 183 = 1,533
+1,533 + 205 = 1,738
+1,738 + 240 = **1,978** (11 months only, not the yearly total)
+
+I also need to know how to split it between Sam, Priya and Tom. You didn't say whether the shares are equal thirds or based on some other rule, so I haven't assumed one.
+
+Once I have June and the split rule, I'll give the full total and each person's share with the working.

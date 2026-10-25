@@ -1,0 +1,9 @@
+**Total for the year: €2,120**, which is **about €706.67 each** for Sam, Priya and Tom.
+
+Your list had February twice (198 both times). I treated that as a duplicate entry and counted it once, which gives the 12 months of the year. The monthly figures add up like this:
+
+212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240 = 2,120
+
+Splitting €2,120 three ways gives €706.666..., so two people pay €706.67 and one pays €706.66 to make the total come out exactly.
+
+If February really was billed twice, the total would be €2,318, or about €772.67 each.

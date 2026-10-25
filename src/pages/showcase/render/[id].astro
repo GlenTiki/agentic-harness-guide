@@ -1,0 +1,38 @@
+---
+import HookTimeline from '../../../components/HookTimeline.astro';
+import run from '../../../data/runs/hook-sample-run.json';
+import { artefacts } from '../../../data/artefacts';
+import '../../../styles/tokens.css';
+
+export const getStaticPaths = () => [...artefacts().map((a) => ({ params: { id: a.id }, props: { item: a } })), { params: { id: 'hook-timeline' }, props: { item: null } }];
+
+const { item } = Astro.props;
+const title = item ? item.title : run.title;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main class="shot" id="shot">
+      <h1 class="label">{item ? item.kind : 'recorded run'}: {title}</h1>
+      {item && <p class="label">Prepared {item.preparedAt}</p>}
+      {item ? <pre>{item.text.split('\n').slice(0, 28).join('\n')}</pre> : <HookTimeline run={run} id="render-timeline" />}
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  body { margin: 0; padding: 24px; background: var(--ahg-bg); color: var(--ahg-text); font-family: ui-sans-serif, system-ui, sans-serif; }
+  .shot { width: 960px; max-width: 100%; }
+  .label { margin: 0 0 8px; color: var(--ahg-muted); font-size: 14px; font-weight: 400; line-height: inherit; }
+  pre { margin: 0; padding: 16px; background: var(--ahg-code-bg); border-radius: 8px; font: 14px/1.45 ui-monospace, Menlo, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 4px 10px; border-bottom: 1px solid var(--ahg-line); text-align: left; }
+</style>

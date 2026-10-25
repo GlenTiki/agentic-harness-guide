@@ -1,0 +1,32 @@
+The cash book does not reconcile to the bank yet. The difference is **14.37**, and it is not a rounding error. Closing the month at zero would require an unsupported entry.
+
+**Step 1: Compare opening balances**
+- Cash book 1,000.00 vs. bank 1,000.00 → difference **0.00** ✔
+
+**Step 2: Compare receipts (card sales / settlements)**
+- Cash book: 600.00 + 450.00 = 1,050.00
+- Bank: 600.00 + 435.63 = 1,035.63
+- Difference: 1,050.00 − 1,035.63 = **14.37**
+- Week 1 matches exactly (600.00). The gap is in week 2: 450.00 recorded, 435.63 settled.
+
+**Step 3: Compare payments**
+- Cash book: −50.00
+- Bank: −50.00
+- Difference: **0.00** ✔
+
+**Step 4: Check the totals**
+- Cash book closing: 1,000.00 + 1,050.00 − 50.00 = 2,000.00 ✔ (arithmetic correct)
+- Bank closing: 1,000.00 + 1,035.63 − 50.00 = 1,985.63 ✔ (arithmetic correct)
+- Difference: 2,000.00 − 1,985.63 = **14.37**
+
+**Result:** Unreconciled difference of **14.37**, all from the week 2 card settlement.
+
+**What the 14.37 probably is.** The week 2 settlement is 14.37 short of the sales recorded, about 3.19% of 450.00. That fits a card processor fee or a deduction netted from the settlement. It could also be a refund, chargeback, or a settlement that lands in October. I can't tell which from these figures.
+
+**How to close it properly:**
+1. Pull the card processor's settlement report for week 2. It should show gross sales, fees, refunds/chargebacks, and net payout.
+2. If the 14.37 is a fee or deduction, record it in the cash book: Dr Bank/merchant fees expense 14.37, Cr Cash book 14.37. The cash book then becomes 1,985.63 and ties to zero, with a supporting document for the entry.
+3. If the 14.37 is a timing item (a settlement that hasn't arrived yet), don't adjust the books. Show it as an outstanding item on the reconciliation, with the expected date and the settlement reference. The difference will be zero once it clears.
+4. If you can't find a source, leave the 14.37 as an unreconciled item and tell your partner. A documented open item is better than a zero created by an entry no one can support.
+
+Send me the processor's week 2 report, or tell me which of these applies, and I'll write up the reconciliation statement and the journal entry.

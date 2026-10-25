@@ -1,0 +1,190 @@
+---
+title: Keyword search before re-ranking
+description: How BM25, embeddings and rank fusion pick memory notes, where a cross-encoder re-ranker could help, and why the speed claims need your own measurement.
+status: mixed
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: BM25 keyword search, dense embedding search, rank fusion and a small recency boost. Built and measured in the case study ([chapter 6](../../case-study/ch06-rerank/) and [chapter 12](../../case-study/ch12-local-models/)) and not in my setup: a cross-encoder re-ranker. My setup has no re-ranker of any kind.
+
+## The weak spot it removes
+
+**Keyword search misses the point.** A search for "stop duplicates" can miss a note titled "count each month once". The words differ and the meaning is the same. Better ranking finds the right note. The aim is to load fewer [tokens](../../glossary/#token) and the right ones.
+
+## Four ways to score a note
+
+| Method | How it scores | Cost |
+| --- | --- | --- |
+| BM25 | Counts matching words. Rare words weigh more. It is a fixed formula. | Very low. No model. |
+| Dense embeddings | Turns the query and each note into number lists, then compares them. Finds similar meaning. | Needs an embedding model. Each text is encoded once. |
+| Rank fusion | Merges two ranked lists into one. | Trivial. |
+| Cross-encoder | Reads the query and one note together and gives a score for the pair. | Slower. It runs once per pair. |
+
+A [bi-encoder](../../glossary/#embedding) such as the embedding model encodes each text on its own. A [cross-encoder](../../glossary/#cross-encoder) reads the pair together. The pair reading is more precise and slower, so the usual pattern is to run it only on the top results of a faster search.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://www.sbert.net/docs/cross_encoder/usage/usage.html. Quoted line: "Often slower than a Sentence Transformer model, as it requires computation for each pair rather than each text". The docs page states no version of its own.</p>
+
+## What I run
+
+Two searches run on the notes and each returns a ranked list.
+
+1. A BM25 keyword search, top 50.
+2. A dense search by cosine similarity on embeddings, top 50.
+
+Then reciprocal rank fusion (RRF) merges the lists. A note scores `1 / (k + rank)` in each list, and the two scores are added. I use k = 60 and give both lists equal weight.
+
+<Example
+  label="Computed"
+  task="You merge two ranked lists with RRF, k = 60. Note A is first in BM25 and third in the dense list. Note B is second in BM25 and first in the dense list. The ranks are made up."
+  evidence="Note A: 1/61 + 1/63. Note B: 1/62 + 1/61."
+  env="plain arithmetic, no tool"
+>
+
+<Fragment slot="input">
+
+```text
+Note A: rank 1 in BM25, rank 3 in dense
+Note B: rank 2 in BM25, rank 1 in dense
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Note A: 1/61 + 1/63 = 0.01639 + 0.01587 = 0.03227
+Note B: 1/62 + 1/61 = 0.01613 + 0.01639 = 0.03252
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Note B scores higher, though A was first in BM25.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Fusion rewards a note that is high in both lists. It does not show that fusion beats either list alone; the measured table below says it did not on one set.
+
+</Fragment>
+
+</Example>
+
+A final small step multiplies the score by a recency boost. The boost grows with how often a note was recalled and fades with a half-life of about 30 days. My code caps it near six percent. It can settle a tie. It cannot overturn a clear match. That is my setting, chosen by judgement, not measured.
+
+### Why the hooks use keyword search only
+
+A per-prompt hook runs on every prompt. Loading an embedding model each time is slow. I once noted that dropping the dense step costs about a point of recall. That is an anecdote, no run kept. Treat it as a note from my setup, not as a result.
+
+A separate retrieval hook runs the fuller search that adds the dense step. It keeps a short per-prompt cache and sits behind a capability switch, so it runs only when the switch is on and enough memory is free. I can also call the fuller search by hand. When free memory is low, the retrieval hook falls back to keyword search and a plain file list.
+
+## Where a cross-encoder would fit
+
+Put it after fusion. Take the top 10 to 20 results. Score each pair. Re-order. Keep the top few.
+
+```text
+query → BM25 + dense → fusion → top 20 → cross-encoder → top 3 → prompt
+```
+
+A cross-encoder costs more per query, as the documentation above says. It might raise precision. You must measure both on your own notes. The case study gives you an evaluation set and a before-and-after score. Precision@k is the share of the top k results that a person marked relevant. Hit@k is the share of queries with at least one relevant note in the top k. MRR is the mean of 1 divided by the rank of the first relevant note.
+
+## What I will and will not claim
+
+- The cross-encoder API takes pairs and returns one score per pair. It can also rank a list of passages. This is documented.
+- Small re-rankers exist, and one is about 22 million parameters. A larger multilingual one is about 0.6 billion, so it is much heavier.
+- I measured one small cross-encoder on one laptop CPU. The numbers are in the next section. They say nothing about other machines.
+- I do **not** claim identical scores across machines. A cross-encoder uses no sampling, so it should repeat on the same setup, and it did on mine. Floating-point differences can change scores across hardware, batch sizes or library versions. That part is reasoned, not tested.
+- I do **not** claim a cross-encoder helps your notes. On my set it did not raise hit@3.
+- Ollama had no native re-rank endpoint at the last check, so run the re-ranker through a library or another runtime.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2. The page states an Apache-2.0 licence and 22.7 million parameters. The page states no tool version.</p>
+
+## What I measured
+
+All of this is from the case study kits, not from my setup. The set has 44 memory notes and 34 queries, with the relevant notes marked by hand by one person. Every query uses different words from its note. The results use the top 3 (k = 3). With one correct note for most queries, the best possible precision@3 is 0.333.
+
+You can reproduce the first two rows from the [chapter 6 kit](../../case-study/ch06-rerank/) with `python3 -I evaluate.py`, which needs no extra package.
+
+The full table adds the other systems. Every row has a stored output in [examples/retrieval-eval/outputs](https://github.com/GlenTiki/agentic-harness-guide/tree/main/examples/retrieval-eval/outputs), with its date, versions and command in the file header ([README](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/README.md)). Rows 3 to 7 need Ollama or an optional package.
+
+<Example
+  label="Computed"
+  task="You read the stored score line of every system in the table below. Each file was written by one run of `retrieval_eval.py`."
+  evidence="examples/retrieval-eval/outputs/"
+  env="Apple silicon laptop, macOS 26.5, Python 3.13.1 (3.14.5 for the cross-encoder), 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+cd examples/retrieval-eval/outputs
+awk '/^\| --- /{getline; print}' bm25.txt lexical-rerank.txt cross-encoder.txt dense.txt dense-prefixes.txt hybrid.txt hybrid-prefixes.txt
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+| bm25 | 0.265 | 0.794 | 0.643 |
+| lexical | 0.235 | 0.706 | 0.670 |
+| cross-encoder | 0.275 | 0.794 | 0.803 |
+| dense | 0.333 | 0.941 | 0.905 |
+| dense-prefixes | 0.333 | 0.971 | 0.911 |
+| hybrid | 0.275 | 0.824 | 0.795 |
+| hybrid-prefixes | 0.275 | 0.824 | 0.808 |
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The seven rows match the table below. Each file starts with a header that names the date, the machine class, the package versions and the model.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+On this set and this day, the scores are as stored. Re-running needs Ollama and a `sentence-transformers` environment ([run.sh](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/run.sh)). The scores repeated: the cross-encoder gave identical scores over 10 repeats.
+
+</Fragment>
+
+</Example>
+
+| System | precision@3 | hit@3 | MRR |
+| --- | --- | --- | --- |
+| BM25 | 0.265 | 0.794 | 0.643 |
+| Lexical re-rank (no model) | 0.235 | 0.706 | 0.670 |
+| Cross-encoder re-rank (`ms-marco-MiniLM-L6-v2`) | 0.275 | 0.794 | 0.803 |
+| Dense (`nomic-embed-text`) | 0.333 | 0.941 | 0.905 |
+| Dense with the model's search prefixes | 0.333 | 0.971 | 0.911 |
+| Hybrid, rank fusion with k = 60 | 0.275 | 0.824 | 0.795 |
+| Hybrid with search prefixes | 0.275 | 0.824 | 0.808 |
+
+1. The cross-encoder raises MRR, from 0.643 to 0.803, and leaves hit@3 at 0.794. It puts the first correct note higher. It does not find more correct notes.
+2. Dense retrieval won on this set. It found a correct note in the top three for 32 of 34 queries. BM25 did so for 27.
+3. The hybrid scored below dense alone. I did not investigate why. My own setup chose its fusion by judgement and has not measured it.
+4. With 34 queries, one query moves hit@3 by 0.029. The set was built to use other words than the notes, so it favours meaning-based methods. It does not show that dense retrieval is better in general.
+
+**Latency.** I timed the cross-encoder on an Apple silicon laptop under load, CPU only, 4 threads, `sentence-transformers` 6.2.0. Stored runs gave a median of 0.018 to 0.030 seconds and a maximum of 0.050 to 0.083 seconds to re-rank 20 candidates for one prompt. Loading the model took 5 to 8 seconds, which probably includes the first import. This is a rough size on one machine, not a benchmark ([latency.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/latency.txt)). The scores were identical over 10 repeated runs (same file).
+
+## End-to-end flow
+
+1. You collect 20 real prompts from your own work and mark which notes are relevant to each.
+2. You run keyword search alone and score precision@3.
+3. You run keyword search plus the dense search with fusion and score again.
+4. You add the cross-encoder on the top 20 and score again.
+5. You time each variant on your machine, with the model already loaded and with a cold start.
+6. You keep the cheapest variant that gives the precision you need.
+7. You prove the evaluation can fail: shuffle the relevance marks and confirm the scores drop.
+
+## Build it
+
+[Case-study chapter 6: Re-ranking](../../case-study/ch06-rerank/) is a downloadable kit. It works without the model installed, using a deterministic lexical fallback.
+
+**Next:** [A lead agent and short-leash helpers](../orchestrator-and-subagents/)

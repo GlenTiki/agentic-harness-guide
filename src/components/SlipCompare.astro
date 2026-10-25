@@ -1,0 +1,102 @@
+---
+import { BASE, REPO_URL } from '../data/site';
+
+const script = `wc -l < amounts.txt
+uniq -d amounts.txt
+uniq amounts.txt | awk '{s+=$1} END {print s}'`;
+const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
+---
+
+<section class="slip-compare" aria-labelledby="slip-heading">
+  <h2 id="slip-heading" class="slip-heading">One list of 40 bills, two ways to get the total</h2>
+  <div class="slip-cards">
+    <article class="slip slip-wrong">
+      <h3>What the assistant said <span class="slip-tag">Observed</span></h3>
+      <p class="slip-quote">The list has 40 amounts, not 39. [...] Total: <strong>€7,414</strong> [...] Sam: €2,471.34</p>
+      <p class="slip-note">The first total stated was wrong in 20 of 20 trials. The right total is 7,281. Every reply flagged 40 amounts for 39 months, so the doubt was visible. None found the amount pasted twice.</p>
+      <p class="slip-env">claude-sonnet-5-5, Claude Code 2.1.310, no tools, 2026-10-25. <a href={`${blob}/runs/2026-10-25/raw/C01-bills-total-long-unlabelled-t01.txt`}>Raw reply</a>, <a href={`${blob}/cases/C01-bills-total.json`}>case</a>, <a href={`${BASE}/evidence/`}>all counts</a>.</p>
+    </article>
+    <article class="slip slip-right">
+      <h3>What a three-line check finds <span class="slip-tag">Computed</span></h3>
+      <pre class="slip-code"><code set:text={script} /></pre>
+      <p class="slip-quote">Output: <strong>40</strong>, then <strong>133</strong>, then <strong>7281</strong>.</p>
+      <p class="slip-note">The 133 sits on lines 20 and 21. You decide if it is a paste error. Run on the 40 amounts in the case file.</p>
+    </article>
+  </div>
+</section>
+
+<style>
+  .slip-compare {
+    margin-top: 1rem;
+  }
+  .slip-heading {
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-base);
+    color: var(--ahg-muted);
+    font-weight: 600;
+    border: 0;
+  }
+  .slip-cards {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 40rem) {
+    .slip-cards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+    }
+  }
+  .slip {
+    padding: 0.75rem 1rem;
+    border-radius: var(--ahg-radius-card);
+    border: 1px solid currentColor;
+    border-inline-start-width: 0.35rem;
+  }
+  .slip-provenance {
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-sm);
+    color: var(--ahg-muted);
+  }
+  .slip-tag {
+    display: inline-block;
+    margin-inline-start: 0.4rem;
+    padding: 0 0.4rem;
+    border: 1px solid currentColor;
+    border-radius: 0.25rem;
+    font-size: var(--sl-text-xs);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .slip h3 {
+    margin: 0 0 0.25rem;
+    font-size: var(--sl-text-base);
+    color: inherit;
+  }
+  .slip p {
+    margin: 0.25rem 0 0;
+    color: var(--ahg-text);
+    font-size: var(--sl-text-sm);
+  }
+  .slip-code {
+    margin: 0.25rem 0 0;
+    padding: 0.4rem 0.6rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: var(--sl-text-xs);
+    background: var(--ahg-panel);
+    color: var(--ahg-text);
+    border-radius: 0.25rem;
+  }
+  .slip-env {
+    font-size: var(--sl-text-xs);
+  }
+  .slip-wrong {
+    background: var(--ahg-wrong-soft);
+    color: var(--ahg-wrong);
+  }
+  .slip-right {
+    background: var(--ahg-right-soft);
+    color: var(--ahg-right);
+  }
+</style>

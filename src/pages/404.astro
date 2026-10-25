@@ -1,0 +1,59 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { BASE } from '../data/site';
+
+const best = [
+  { href: `${BASE}/`, label: 'The home page' },
+  { href: `${BASE}/start-here/how-to-read/`, label: 'Pick your route' },
+  { href: `${BASE}/journey/00-hello-robot/#five-minute-win`, label: 'The five-minute win' },
+  { href: `${BASE}/start-here/cheat-sheet/`, label: 'The cheat sheet' },
+  { href: `${BASE}/glossary/`, label: 'The glossary' },
+];
+---
+
+<StarlightPage frontmatter={{ title: 'Page not found', description: 'This page does not exist.', template: 'splash', editUrl: false, pagefind: false }}>
+  <p>That address does not lead to a page. It may have moved, or the link may be mistyped.</p>
+  <p>
+    <button type="button" class="open-search">Search the guide</button>
+    <span class="search-hint">or press Ctrl+K (Cmd+K on a Mac)</span>
+  </p>
+  <h2>Good places to go next</h2>
+  <ul class="best-links">
+    {best.map((link) => <li><a href={link.href}>{link.label}</a></li>)}
+  </ul>
+</StarlightPage>
+
+<script>
+  document.querySelector('.open-search')?.addEventListener('click', () => {
+    const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>('site-search button[data-open-modal]'));
+    const visible = buttons.find((button) => button.offsetParent !== null) ?? buttons[0];
+    visible?.click();
+  });
+</script>
+
+<style>
+  .open-search {
+    min-height: 44px;
+    padding: 0 1.25rem;
+    border: 0;
+    border-radius: var(--ahg-radius-control);
+    background: var(--ahg-accent);
+    color: var(--ahg-accent-ink);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .search-hint {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--ahg-muted);
+  }
+  .best-links {
+    padding-inline-start: 1.25rem;
+  }
+  .best-links a {
+    display: inline-block;
+    min-height: 44px;
+    line-height: 44px;
+  }
+</style>

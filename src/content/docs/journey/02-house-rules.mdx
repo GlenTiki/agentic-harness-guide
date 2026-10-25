@@ -3,11 +3,19 @@ title: "Level 2: House rules"
 description: Write your rules once in an instruction file, so you stop repeating yourself, and keep memory and context tidy.
 ---
 
+import Example from '../../../components/Example.astro';
+
+**The lesson:** Write your rules once, in a file the assistant reads at the start of every session.
+
 ## Scene
 
 *Last time: you built a strong ask from a goal, constraints, an example and a check step, and the assistant started to show its month count before giving a total. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
-A new flatmate moves in. Sam explains the house rules once: bins go out on Tuesday, the top shelf is shared, the heating goes off at night. Nobody explains them again every morning, because that would be a very tiring flat. Sam's assistant is the opposite. Every new chat is a flatmate who has just arrived, and the rules have to be explained from scratch.
+A new flatmate moves in. Sam explains the house rules once: bins go out on Tuesday, the top shelf is shared, the heating goes off at night. Sam's assistant is the opposite. Every new chat is a flatmate who has just arrived, and the rules have to be explained from scratch.
+
+:::note[Weak spot]
+Level 1 fixed one ask, but the next chat starts empty. **The assistant forgets your rules at the start of every session.** The fix at this level is an instruction file. This level is step 5 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-5-keep-it), Keep it: the rule is saved once, where every chat reads it. A file is still advice, so later levels add controls that run outside the assistant, such as [hooks](../../setup/hooks/).
+:::
 
 ## The idea
 
@@ -19,7 +27,7 @@ Three ideas make this work:
 - **[Memory](../../glossary/#memory)** holds facts the assistant keeps between chats: things it learned about you or the job.
 - **[Context hygiene](../../glossary/#context-hygiene)** is the habit of keeping the desk tidy, so the useful things stay on it.
 
-Many chat apps let you save your house rules in their settings or in a named project. The idea is the same in all of them. For a plain-chat routine that you can start today, read the [consistency fast track](../../start-here/consistency-fast-track/). (For engineers: the shelf covers file names and loading rules in [instruction files](../../shelf/context/instruction-files/).)
+Many chat apps let you save your house rules in their settings or in a named project. For a plain-chat routine, read the [consistency fast track](../../start-here/consistency-fast-track/). (For engineers: [instruction files](../../shelf/context/instruction-files/) on the shelf.)
 
 Here is Sam's file. It is short on purpose. Type it into a note. The # signs are headings; keep them or drop them.
 
@@ -51,7 +59,7 @@ Notice what the file does not contain.
 - **Secrets.** No passwords, account numbers or access keys. An [access key](../../glossary/#access-key) is a secret code that lets a program act as you. The file is plain text and may be stored or logged.
 - **This month's figures.** They change. Paste them into the chat.
 
-Here is a second file, for writing work. It has eight rules. The same shape fits any job where the reader, the voice and the format stay the same.
+Here is a second file, for writing work. The same shape fits any job where the reader, the voice and the format stay the same.
 
 ```text
 # Status updates: house rules
@@ -97,23 +105,59 @@ Acknowledge these rules in one sentence, then wait for figures.
 Bills last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split it.
 ```
 
-An example reply:
+The assistant should say that June is missing and ask for it. Here is a recorded run with a short version of the rules.
+
+<Example
+  label="Observed"
+  task="Sam gives the assistant a short rule set and a bills list with June missing, to see whether it asks instead of guessing."
+  evidence="examples/wrong-behaviour/cases/C05-missing-month.json examples/wrong-behaviour/runs/2026-10-25/raw/C05-missing-month-house-rules-t01.txt"
+  env="claude-sonnet-5-5, Claude Code 2.1.310, no tools, 2026-10-25"
+>
+
+<Fragment slot="input">
 
 ```text
-I counted 11 months. June is missing. I have not guessed it.
-Sum of the 11 figures: 1,978.00.
-Please send June and I will split the full total.
+House rules: Count each month once. A year has twelve months. If a month is missing or repeated, tell me and ask instead of guessing. Never invent a figure.
+
+Figures per month for last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Give me the yearly total and each share for the three of us (Sam, Priya and Tom). Show the working.
 ```
 
-That is the rule "ask, do not guess" in action. Without the file, many assistants would quietly total what they had, or invent a plausible June.
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+I can't give the yearly total yet because June is missing. You listed 11 months (Jan, Feb, Mar, Apr, May, Jul, Aug, Sep, Oct, Nov, Dec), and a year has twelve.
+
+**What is the June figure?**
+
+[... running sum of the 11 months omitted ...]
+1,738 + 240 = **1,978** (11 months only, not the yearly total)
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The first sentence names the missing month and withholds the total. The 1,978 is labelled as 11 months only.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The reply asked for June in 10 of 10 trials with the rules. It did the same in 10 of 10 without them, so this page does not claim the assistant guesses here; the rule makes the behaviour standing and easy to test. One model, one day.
+
+</Fragment>
+
+</Example>
 
 5. Now send June (142). Check the final total yourself: it should be 2,120.00, and two of the three shares are 706.67 while Sam's is 706.66.
 
-The February slip is still possible. The rule says to count, and the assistant can still miscount. A rule is a request, not a lock ([level 4](../04-trust-but-verify/) says why). Level 3 reduces the slip by reading the data directly. Level 5 checks the count with a test.
+A rule is a request, not a lock ([level 4](../04-trust-but-verify/) says why), and the assistant can still miscount. Level 3 reduces the slip by reading the data directly. Level 5 checks the count with a test.
 
 ### Optional, for work: turn your standard into rules
 
-If you work to a written standard, the file is where it becomes an asset. Here is an example for a month-end close. The thresholds are starting points. Set your own with your reviewer.
+If you work to a written standard, the file is where it becomes an asset. Here is a month-end example. The thresholds are starting points. Set your own with your reviewer.
 
 ```text
 # Month-end: standing rules (example)
@@ -127,7 +171,7 @@ If you work to a written standard, the file is where it becomes an asset. Here i
 - Owner of this file: [name]. Review it on [date], then every month.
 ```
 
-Now turn your own standard into rules. Take one paragraph and rewrite it as rules a stranger could check. Here is a made-up policy paragraph for practice:
+Turn one paragraph of your own standard into rules a stranger could check. Here is a made-up policy paragraph for practice:
 
 ```text
 Expense claims need a receipt for every line. A line over 100.00 needs a manager's approval written on it. A meal over 40.00 per person needs a stated business reason.
@@ -153,7 +197,7 @@ Now prove the assistant follows them. Open a new chat, paste the rules, then pas
 3. Meal for one person, 38.00, receipt R-103
 ```
 
-Then seed a violation. Change line 3 to `Meal for one person, 62.00, receipt R-103`, with no reason, and send it again. The assistant should flag line 3 as "needs reason". If it does not, change the rule, not the chat, and run both tests again. A rule that has never been seen to fire has not been tested.
+Then seed a violation. Change line 3 to `Meal for one person, 62.00, receipt R-103`, with no reason, and send it again. The assistant should flag line 3 as "needs reason". If it does not, change the rule, not the chat, and run both tests again. A rule never seen to fire has not been tested.
 
 Your version: swap in a task of your own, for example shift cover to share out.
 
@@ -169,12 +213,12 @@ Memory works in a similar way. Some apps notice a fact ("Priya pays on the first
 
 Memory and data go together. Use a separate chat or project for each client, with memory off when the data identifies a client. See [using an assistant at work](../professional-guardrails/).
 
-Context hygiene follows from the size of the desk. A long chat drifts: old detail gets shortened by the app, and the assistant can lose a rule you gave an hour ago. Good habits cost little:
+A long chat drifts: old detail gets shortened by the app, and the assistant can lose a rule you gave an hour ago. Good habits cost little:
 
-- One job per chat. Start a new chat for a new job.
-- Restate key facts after a long chat, or ask for a short summary and carry that into a fresh chat.
+- One job per chat.
+- Restate key facts after a long chat, or carry a short summary into a fresh chat.
 - When the assistant gets something wrong twice, fix the rule in the file instead of arguing in the chat.
-- Remove rules that no longer apply. A stale rule is an instruction the assistant is likely to follow.
+- Remove rules that no longer apply. A stale rule is still followed.
 
 (For engineers: the shelf pages on [context management](../../shelf/context/context-management/) and [memory](../../shelf/context/memory/) go deeper.)
 
@@ -191,13 +235,13 @@ Four more things do not belong in the file:
 </details>
 
 :::note[At work]
-The close procedure is a set of standing rules. It has a named owner, a review date and a reviewer who is not the preparer (or the [fallback reviewer](../professional-guardrails/#fallback-reviewer)). When the procedure changes, change the document the whole team reads, not one person's notes.
+The close procedure is a set of standing rules with a named owner, a review date and a reviewer who is not the preparer (or the [fallback reviewer](../professional-guardrails/#fallback-reviewer)). Change the document the whole team reads, not one person's notes.
 :::
 
 ## Expert corner
 
 :::caution[Expert corner]
-Every line in an instruction file costs context on every run, and a long file dilutes the lines that matter. Treat it like a configuration file: each line should be a rule you would be annoyed to repeat, and the file should be reviewed when behaviour changes.
+Every line in an instruction file costs context on every run, and a long file dilutes the lines that matter. Treat it like a configuration file: review it when behaviour changes.
 
 Rules in a file are advisory ([level 4](../04-trust-but-verify/) explains why). A rule that must hold, such as "never send a message", belongs in a control that runs outside the assistant, whether or not the model agrees.
 
@@ -220,11 +264,11 @@ Check: no edit to an instruction file or memory entry happened without a recorde
 
 ## Mistakes people make
 
-**Writing an essay.** A long file costs context every run and buries the rules that matter. Fix: keep one rule per line, cut anything you would not be annoyed to repeat, and check the file monthly.
+**Writing an essay.** A long file buries the rules that matter. Fix: one rule per line, and cut anything you would not be annoyed to repeat.
 
 **Putting secrets or this month's figures in it.** Secrets can leak, and figures go stale. Fix: keep the file for rules only. Paste figures into the chat. Keep secrets out of any text the assistant reads.
 
-**Never updating it.** The assistant keeps obeying a rule that stopped being true. Fix: when you correct the assistant twice for the same thing, change the file. When a job changes, delete the rules that no longer apply.
+**Never updating it.** The assistant keeps obeying a rule that stopped being true. Fix: when you correct it twice for the same thing, change the file. Delete rules that no longer apply.
 
 ## Checkpoint
 

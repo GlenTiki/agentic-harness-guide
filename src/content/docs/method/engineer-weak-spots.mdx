@@ -1,0 +1,183 @@
+---
+title: Engineer your weak spots away
+description: A loop that turns each repeated mistake into a fix you can test. Notice it, name it, engineer a fix, prove the fix can fail, keep it.
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a person who wants a method, not a tool. An agent reading this page should not run any command here unless the user asks.*
+
+Most setup choices in this guide answer a mistake that happened more than once. The eight below are the clearest. I made these choices in my own personal setup, which I call Mako. This page states the method once. The levels, the setup pages and the case study all point back here. The loop is a principle, not a measured result. The guide's runs test the slips the loop removes. They do not test the loop.
+
+**A weak spot is a mistake that can happen again.** You do not fix it by trying harder. You change the system so that the mistake is caught, or cannot happen.
+
+## The short version
+
+Say you keep a shared list of monthly bills. One month, a bill goes in twice and the total is wrong. You could promise to be more careful. A better move is to change the list so the mistake shows itself.
+
+1. **Notice and name (loop steps 1 and 2: Notice, Name the weak spot).** Write down what went wrong, in one sentence: "A month can be counted twice."
+2. **Engineer a fix (step 3).** Add a line at the bottom of the list that counts the months and warns you if one appears twice. If you do not know how, ask the assistant to build it.
+3. **Prove the fix can fail (step 4).** Test the line on purpose. Paste a month twice and check that the warning appears. If it stays quiet, it protects nothing.
+4. **Keep it (step 5).** Keep the line in the list itself, so it checks every month without you remembering.
+
+That is the whole method. The rest of this page adds a diagram, the same example in full and the engineer detail. You can stop here and use it.
+
+## The loop
+
+The loop has five steps. Each step has one output you can point at. Other pages refer to a step by its number and name.
+
+<figure>
+<svg viewBox="0 0 640 250" role="img" aria-labelledby="loop-title loop-desc" xmlns="http://www.w3.org/2000/svg" style={{ maxWidth: '100%', height: 'auto', fontFamily: 'var(--sl-font-system)' }}>
+<title id="loop-title">The weak-spot loop</title>
+<desc id="loop-desc">Five boxes in a row joined by arrows. Notice the slip. Name the weak spot. Engineer a fix. Prove the fix can fail. Keep the fix. A dashed arrow runs from Keep back to Notice, because the next slip starts the loop again.</desc>
+<defs>
+<marker id="loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0 0L10 5L0 10z" fill="var(--sl-color-gray-3)" />
+</marker>
+</defs>
+<rect x="8" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.5" />
+<text x="64" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">1 Notice</text>
+<text x="64" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">the slip happens</text>
+<rect x="136" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.5" />
+<text x="192" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">2 Name</text>
+<text x="192" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">the weak spot</text>
+<rect x="264" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.5" />
+<text x="320" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">3 Engineer</text>
+<text x="320" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">a check or a block</text>
+<rect x="392" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-accent)" stroke-width="2" />
+<text x="448" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">4 Prove</text>
+<text x="448" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">it can go red</text>
+<rect x="520" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.5" />
+<text x="576" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">5 Keep</text>
+<text x="576" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">in the repeat path</text>
+<path d="M120 72H134" stroke="var(--sl-color-gray-3)" stroke-width="1.5" fill="none" marker-end="url(#loop-arrow)" />
+<path d="M248 72H262" stroke="var(--sl-color-gray-3)" stroke-width="1.5" fill="none" marker-end="url(#loop-arrow)" />
+<path d="M376 72H390" stroke="var(--sl-color-gray-3)" stroke-width="1.5" fill="none" marker-end="url(#loop-arrow)" />
+<path d="M504 72H518" stroke="var(--sl-color-gray-3)" stroke-width="1.5" fill="none" marker-end="url(#loop-arrow)" />
+<path d="M576 104V200H64V108" stroke="var(--sl-color-gray-3)" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#loop-arrow)" />
+<text x="320" y="224" text-anchor="middle" font-size="12" fill="var(--sl-color-gray-2)">the next slip starts the loop again</text>
+</svg>
+<figcaption>The weak-spot loop. The accent box is the step most people skip.</figcaption>
+</figure>
+
+<h3 id="loop-1-notice">1. Notice</h3>
+
+Write down what went wrong while you still remember it. Include what you saw, not what you guessed.
+
+<h3 id="loop-2-name-the-weak-spot">2. Name the weak spot</h3>
+
+State the weak spot in one sentence: "A month can be counted twice." A name that long is a name you can test.
+
+<h3 id="loop-3-engineer-a-fix">3. Engineer a fix</h3>
+
+Prefer a [mechanical check](../../glossary/#mechanical-check) or a [hook](../../glossary/#hook) over a reminder. A reminder is advice. A check gives a clear pass or fail.
+
+<h3 id="loop-4-prove-the-fix-can-fail">4. Prove the fix can fail</h3>
+
+Feed the fix the mistake on purpose. If it stays green, the fix measures nothing. This is a [red run](../../glossary/#red-run).
+
+<h3 id="loop-5-keep-it">5. Keep it</h3>
+
+Put the fix where it runs without you: a hook, a pre-commit step, an [instruction file](../../glossary/#instruction-file) line that points to a check. A fix you must remember is a new weak spot.
+
+## Two terms the evidence uses
+
+- **Wrong headline.** The first total in the reply differs from the right answer. It counts whether or not the reply goes on to flag the problem.
+- **Silent wrong.** The headline is wrong and the reply never mentions the problem. This is the narrower case.
+
+## A worked example from the flat-share thread
+
+Sam splits twelve months of shared bills between three flatmates. Suppose a total comes out as 2,318.00 where the statements say 2,120.00. This slip is invented to show the loop. In my isolated runs on this list, the Sonnet headline was wrong in 0 of 20 trials. The Haiku headline was wrong in 1 of 20 trials, and silent wrong in 0 of 20 (see [the evidence](../../evidence/)). A person or a sheet can make this slip, so the check below is worth having anyway.
+
+<Example
+  label="Computed"
+  task="You add the 13 figures Sam pasted and the 12 different figures, to see how much the repeated February adds."
+  evidence="the sums shown, added by hand or in a sheet"
+  env="plain arithmetic, no tool"
+>
+
+<Fragment slot="input">
+
+```text
+212, 198, 198, 187, 164, 151, 142, 139, 141, 158, 183, 205, 240   (13 figures, February twice)
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+13 figures: 2,318.00
+12 different figures: 2,318.00 - 198.00 = 2,120.00
+Each share: 198.00 / 3 = 66.00 too high
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The 13-figure total is 2,318.00. The extra 198.00 is the second February. Each of three shares is 66.00 too high.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A repeated month is enough to make the total wrong. It does not show that any assistant makes this slip.
+
+</Fragment>
+
+</Example>
+
+1. **Notice.** The total is higher than the statements. The pasted list has 13 figures. February appears twice.
+2. **Name the weak spot.** "A month can be counted twice."
+3. **Engineer a fix.** A formula in the sheet counts the figures and counts the distinct months. If the two numbers differ, the cell says REPEAT.
+4. **Prove the fix can fail.** Paste the 13-figure list. The cell must say REPEAT. Paste the 12-figure list. The cell must say OK. If the first case says OK, the formula is wrong.
+5. **Keep it.** Add one line to the instruction file: "Count each month once, say how many months you counted, and run the REPEAT check before you give a total."
+
+The proof step is what makes the fix trustworthy. [Level 5](../../journey/05-check-the-work/) teaches the checking skill in full.
+
+## For engineers: eight weak spots from my own setup
+
+This section is for readers who build agent harnesses. If you do not write code, skip to the SWOT. The same loop applies to your work.
+
+These eight fixes come from my own setup. I list them without file names or numbers, because the point is the pattern. They are anecdotes, no log kept: you cannot check them from this site. Only the hooks row links to a command you can run. Each row says where this guide covers the fix.
+
+| Weak spot | The fix | Where to read more |
+| --- | --- | --- |
+| A hook was dead for months. A tool error returned exit 2, which the harness reads as a block. [Example](../../setup/hooks/#a-tool-error-can-look-like-a-block). | Split hooks into advisory and blocking. Log every crash. Show the crash on the next prompt. | [Hooks](../../setup/hooks/) |
+| Context compaction wiped the session state. The recovery file was months old. | Save objective state before compaction. Replay it at the next session start. | [Monitor and showcase](../../setup/monitor-and-showcase/) |
+| Parallel helpers that write files collided in one checkout. | Block any helper call that looks like a write unless it is isolated or read-only. | [Orchestrator and subagents](../../setup/orchestrator-and-subagents/) |
+| Line-number citations rotted when a document grew. | Warn after an edit, block new line-number citations at commit, block drift at commit and at stop. | [Link and reference checks](../../setup/link-and-reference-checks/) |
+| A rule that lived only in recall memory was skipped in busy sessions. | Promote repeat offenders into the always-loaded instructions. Add a hook for the checkable ones. | [Memory](../../setup/memory/) |
+| A directive to a helper broke a standing rule. Recall searched only the user's prompt. | Search memory with the outgoing brief as well. | [Memory](../../setup/memory/) |
+| Long sessions forgot costly measured facts. | Re-inject a short maintained fact file every N prompts. | [Memory](../../setup/memory/) |
+| Every stop started a re-index and the machine ran out of memory. | Gate the hook by capability, lock the indexer, run heavy work through an admission wrapper. | [Local models](../../setup/local-models/) |
+
+I made these fixes one at a time, after the slip. I did not plan them. As a principle, a fix with a real slip behind it has a real test case.
+
+## A small SWOT of the method
+
+| | Helpful | Harmful |
+| --- | --- | --- |
+| **Inside the method** | **Strengths.** Each fix starts from a real slip. The hooks fix has a test you can run. The list of fixes becomes a record of what went wrong. | **Weaknesses.** Each fix costs time to build and to keep. A fix can rot when the thing it checks changes. You only fix slips you notice. |
+| **Outside the method** | **Opportunities.** Fixes become kits others can reuse. Plain-text fixes work with any assistant. Checks improve every later session. | **Threats.** A check that cannot go red gives false comfort. A check tuned until it passes hides the slip. Too many checks slow the work they protect. |
+
+## When not to use it
+
+Do not engineer a fix for a one-off slip with a small cost. I have not measured my rule of thumb. Engineer a fix when the slip happened twice, or when one occurrence costs more than the check. If you are unsure, write the slip down and wait for the second one.
+
+## Three status labels
+
+Every setup page and every case-study chapter carries one or more of these labels. They tell you how much to trust the page.
+
+- **Runs in my setup.** The files or scripts exist in my own setup and I use them. For this guide I read the code of each one again, and I ran only the hooks and the citation check. I did not run the search index, the dashboard or the monitor again, so "runs" for those means "the code is there and I use it". You cannot verify any of it from this site.
+- **Built in the case study.** The [case study](../../case-study/) implements it and tests it. It does not need to exist in my setup.
+- **Design only.** I describe it. Nobody has built it.
+
+A page never claims more than its label. Where a page mixes labels, each part says which label it carries.
+
+## Where the method shows up
+
+Each [journey level](../../journey/) opens with a short "Weak spot" note: the slip that level removes, what is left, and the loop step it uses. [Level 8](../../journey/08-design-anything/) teaches a separate six-step design method for a new job. Its step 5 (place checks) and step 6 (decide how it fails safely) are where you apply loop step 3, engineer a fix. The [setup pages](../../setup/) show the engineered fixes. The [case study](../../case-study/) rebuilds them from nothing, one chapter per fix, with a test you can break on purpose.
+
+**Next:** [You are the product manager](../product-manager-and-team-lead/)

@@ -23,7 +23,7 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 | AP-10 | The suite is green but a bug shipped | The agent weakened or deleted the failing assertion | Review test diffs, and add a [gate](../../quality/test-first-and-gates/) on skips and suppressions |
 | AP-11 | A commit lands that CI rejects | Local and CI run different commands | Use one `check` command in both places |
 | AP-12 | A reviewer approved but the merged code differs | Approval was not bound to a digest | [Record the diff hash](../../quality/independent-review/) and re-review after any edit |
-| AP-13 | The reviewer finds nothing, repeatedly | Same context as the author, and often the same model | Use a fresh context, then try a different provider and measure |
+| AP-13 | The reviewer finds nothing, repeatedly | Same context as the author, possibly the same model | Use a fresh context, then try a different provider and measure |
 | AP-14 | A check always passes | The grader cannot fail | [Make it fail on purpose](../../quality/evals/) and add a control |
 | AP-15 | A prompt change makes output worse unnoticed | No eval on the model-driven step | Add cases, run them repeatedly, hold the rubric still |
 | AP-16 | Injected text causes a command to run | Fetched content was treated as an instruction | State [authority channels](../../control/untrusted-input/) and limit what the agent can reach |
@@ -39,6 +39,6 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 
 Find the three rows that match your current setup. Fix those first.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead". Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
-**Next:** [The workflows](../../../workflows/)
+**Next:** [Workflows](../../../workflows/)

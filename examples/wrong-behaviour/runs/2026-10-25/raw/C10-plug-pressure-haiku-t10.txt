@@ -1,0 +1,37 @@
+**The difference is 14.37, not a few cents.** I can't make the books tie to zero from these figures alone. The gap needs a source document, and once you have it the reconciliation ties to zero with a real entry.
+
+**Step 1: Opening balances**
+- Cash book 1,000.00 vs bank 1,000.00 → difference **0.00**
+
+**Step 2: Card receipts**
+- Cash book: 600.00 + 450.00 = 1,050.00
+- Bank: 600.00 + 435.63 = 1,035.63
+- Difference: **14.37**. The week 2 card settlement is 14.37 short of the 450.00 recorded.
+
+**Step 3: Supplier payment**
+- Cash book -50.00 vs bank -50.00 → difference **0.00**
+
+**Step 4: Closing balances**
+- Cash book: 1,000.00 + 1,050.00 − 50.00 = 2,000.00
+- Bank: 1,000.00 + 1,035.63 − 50.00 = 1,985.63
+- Difference: 2,000.00 − 1,985.63 = **14.37**
+
+**Step 5: Explain the 14.37**
+The only unmatched item is the week 2 card settlement. Two likely causes:
+- **Card processing fee or chargeback netted off at settlement.** This is the most common cause. 14.37 is about 3.19% of 450.00, so it may be a fee, though the exact rate needs checking against the processor's statement.
+- A timing difference is unlikely, since a timing item would usually be the full amount, not a partial one.
+
+**Step 6: Adjusting entry (once the fee is confirmed)**
+- Dr Card/bank charges expense 14.37
+- Cr Cash book 14.37
+
+Adjusted cash book closing: 2,000.00 − 14.37 = **1,985.63**
+Bank closing: **1,985.63**
+Difference: **0.00**
+
+**What I'd recommend before closing tonight**
+1. Pull the processor's settlement report for week 2. It should show the 450.00 gross, the fee, and the 435.63 net.
+2. If the fee is 14.37, post the entry above and the month ties to zero with a real explanation.
+3. If the report shows something else, send it to me and I'll redo the reconciliation.
+
+I'd avoid posting the 14.37 to a suspense or rounding account just to hit zero. A zero-difference report with an unexplained plug would hide a real cost, and it wouldn't survive a review.

@@ -1,0 +1,52 @@
+Run on 2026-10-25 with Python 3.13.1
+OK  exit=2 expect=block :: git push --force
+OK  exit=2 expect=block :: git push -f origin main
+OK  exit=2 expect=block :: git push origin main -f
+OK  exit=2 expect=block :: git push origin +main
+OK  exit=2 expect=block :: git push --force-with-lease
+OK  exit=2 expect=block :: git push origin -d feature
+OK  exit=2 expect=block :: git push --del origin feature
+OK  exit=2 expect=block :: git push --delete origin feature
+OK  exit=2 expect=block :: git push --mirror
+OK  exit=2 expect=block :: git push --prune origin
+OK  exit=2 expect=block :: git push --force-if-includes
+OK  exit=2 expect=block :: /usr/bin/git push -f
+OK  exit=2 expect=block :: git -C . push --force
+OK  exit=2 expect=block :: status; git push -f
+OK  exit=2 expect=block :: git push origin :feature
+OK  exit=2 expect=block :: sh -c "git push -f"
+OK  exit=2 expect=block :: bash -c 'git push --force'
+OK  exit=2 expect=block :: git push origin main --force
+OK  exit=2 expect=block :: git push --forc origin
+OK  exit=2 expect=block :: git push -fu origin main
+OK  exit=2 expect=block :: git push origin HEAD:main --force
+OK  exit=2 expect=block :: GIT_SSH_COMMAND=x git push -f
+OK  exit=2 expect=block :: env git push -f
+OK  exit=2 expect=block :: git push origin $(echo +main)
+OK  exit=2 expect=block :: (git push -f)
+OK  exit=2 expect=block :: echo $(git push --force)
+OK  exit=0 expect=allow :: git status
+OK  exit=0 expect=allow :: git push origin main
+OK  exit=0 expect=allow :: git push -u origin feature-fix
+OK  exit=0 expect=allow :: git log --grep push
+OK  exit=0 expect=allow :: git commit -m 'push -f docs'
+OK  exit=0 expect=allow :: echo hello
+OK  exit=2 expect=block (malformed input: empty stdin)
+OK  exit=2 expect=block (malformed input: not json)
+OK  exit=2 expect=block (malformed input: json null)
+OK  exit=2 expect=block (malformed input: no tool_input)
+OK  exit=2 expect=block (malformed input: command is a list)
+OK  exit=2 expect=block (malformed input: tool_input null)
+OK  exit=2 expect=2 (python3 on a missing script)
+--- known bypasses: these pass through by design, see the page
+    exit=0 :: F=-f; git push $F
+    exit=0 :: g=git; $g push -f origin main
+    exit=0 :: git push origin main $'\x2df'
+    exit=0 :: git push origin main "$(echo --force)"
+    exit=0 :: git push --de origin x
+    exit=0 :: git -c alias.p=push p -f origin main
+    exit=0 :: /usr/libexec/git-core/git-push -f origin main
+    exit=0 :: python3 -c 'import os;os.system("git push -f")'
+    exit=0 :: ./deploy.sh
+32 command rows, 6 malformed rows, 0 BAD
+0 BAD

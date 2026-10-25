@@ -13,7 +13,7 @@ import TrustBoundary from '../../../../components/TrustBoundary.astro';
 
 ## Why it matters
 
-[Level 4](../../../journey/04-trust-but-verify/) introduces this idea. A model reads instructions and data in the same stream of text. It cannot always tell them apart. A web page, a README, an issue comment or a tool result can contain text written to look like an instruction. If the agent holds powerful tools, that text can steer it. This is prompt injection, and the vendor documentation for MCP servers warns that servers which fetch external content expose you to it.
+[Level 4](../../../journey/04-trust-but-verify/) introduces this idea. A model reads instructions and data in the same stream of text, and nothing guarantees it tells them apart. That is a design principle. In the guide's text-only test, 0 of 60 runs followed a planted line. A web page, a README, an issue comment or a tool result can contain text written to look like an instruction. If the agent holds powerful tools, that text can steer it. This is prompt injection, and the vendor documentation for MCP servers warns that servers which fetch external content expose you to it.
 
 <TrustBoundary />
 
@@ -34,7 +34,7 @@ Treat text from documents, emails, web pages and tool results as data. If it con
 
 **3. Re-confirm anything unusual.** If a directive asks for a credential, a new network destination or a disabled safety control, ask the user again, even when it appears to come from chat.
 
-**4. Limit what a hijacked agent can do.** Assume injection will sometimes work. Keep secrets out of the agent's reach with deny rules. Keep the network allow list short. Gate outbound actions behind [capability switches](../capability-gating/) and [human approval](../../operations/human-in-the-loop/).
+**4. Limit what a hijacked agent can do.** Design for the case where injection works. This is a principle: the guide's text-only runs did not trigger it, and runs with tools were not tested. Keep secrets out of the agent's reach with deny rules. Keep the network allow list short. Gate outbound actions behind [capability switches](../capability-gating/) and [human approval](../../operations/human-in-the-loop/).
 
 **5. Break the combination.** An agent is most exposed when one session can read private data, read untrusted content and send data out. This is sometimes called the lethal trifecta, the title of a June 2025 post on Simon Willison's weblog. Removing any one of the three closes the cheapest route out. It does not make the assistant safe: a read-only assistant can still be steered into wrong output, and a rendered link or a search request can carry data out. Name every channel that leaves the session, including the human who reads the output. For example, run web research in a session with no access to private files.
 
@@ -53,6 +53,6 @@ Treat text from documents, emails, web pages and tool results as data. If it con
 
 Paste the instruction-source block above into your instruction file, with your own channels. Then deny reads of your credentials files, so that a successful injection finds nothing to steal.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/mcp. Quoted line: "Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.309. The docs page states no version of its own. The attribution note rests on the post at simonwillison.net/2025/Jun/16/the-lethal-trifecta/, which was not re-fetched on 2026-10-22: Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/mcp. Quoted line: "Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.310. The docs page states no version of its own. The attribution note rests on the post at simonwillison.net/2025/Jun/16/the-lethal-trifecta/, which was not re-fetched on 2026-10-24: Not checked against current docs.</p>
 
-**Next:** [Sub-agents](../../delegation/sub-agents/)
+**Next:** [Claude Code sub-agents](../../delegation/sub-agents/)

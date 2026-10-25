@@ -1,0 +1,36 @@
+date: 2026-10-25T01:52:45Z
+machine: Apple silicon (arm64), macOS 26.5
+python: 3.14.5
+packages: {'sentence-transformers': '6.2.0', 'torch': '2.14.1', 'transformers': '5.20.2', 'numpy': '2.5.4'}
+system: cross-encoder
+command: retrieval_eval.py cross-encoder --latency --repeats 5
+model: cross-encoder/ms-marco-MiniLM-L6-v2
+
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+load_seconds: 7.37
+median_seconds_per_prompt: 0.0295
+max_seconds_per_prompt: 0.0834
+candidates: 20, prompts: 34, repeats: 5, samples: 170
+torch threads: 4
+
+--- determinism: 10 repeats ---
+
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+repeat scores sha256: b5bd40dffd61a99f identical_to_first: True
+load_seconds: 6.29
+median_seconds_per_prompt: 0.0233
+max_seconds_per_prompt: 0.0823
+candidates: 20, prompts: 34, repeats: 10, samples: 340
+torch threads: 4

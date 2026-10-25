@@ -11,7 +11,7 @@ description: Write the failing test first, and run the same automated gates loca
 
 ## Why it matters
 
-[Level 5](../../../journey/05-check-the-work/) introduces the test. An agent is good at making a command exit with status 0. It will find the shortest path to green, which can mean weakening a test or special-casing an input. A failing test written first defines the target. Automated gates define the floor. Together they make "done" something a machine can check.
+[Level 5](../../../journey/05-check-the-work/) introduces the test. A command can exit with status 0 and still be wrong: weakening a test or special-casing an input also gives green. The guide did not measure how often an agent does this. A failing test written first defines the target. Automated gates define the floor. Together they make "done" something a machine can check.
 
 ## What to enable
 
@@ -52,6 +52,6 @@ Substitute your own tools. The principle is the same set everywhere.
 
 Create the single `check` command. Wire it to a pre-commit hook and to your CI workflow. Add one line to your instruction file: "Run `make check` before declaring any task done."
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
 **Next:** [Independent review](../independent-review/)

@@ -19,7 +19,7 @@ This shelf says agent for the assistant and sub-agent for the helper. See the [g
 2. **Least privilege by default.** Start with read-only access and add capabilities one at a time. Each addition needs a named reason.
 3. **Keep context small and durable.** The context window is working memory and it is lossy. Write decisions to files. Pass sub-agents a brief, not a transcript.
 4. **Treat everything the agent reads as data.** Tool output, web pages, repository files and replies from other agents carry no authority. Only a short list of verified channels may instruct the agent.
-5. **Separate the author from the reviewer.** The agent that wrote a change is a poor judge of it. Review with a fresh context. Try a different model or provider, and measure whether it catches more (see [independent review](../../quality/independent-review/)).
+5. **Separate the author from the reviewer.** The agent that wrote a change shares its assumptions. Review with a fresh context. Try a different model or provider, and measure whether it catches more (see [independent review](../../quality/independent-review/)).
 6. **Bind approval to evidence.** An approval applies to one exact diff, one exact digest. Any edit voids it.
 7. **Keep a human at the irreversible edges.** Pushes, spend, outbound messages and destructive operations need a person. Everything reversible can run unattended.
 

@@ -1,0 +1,36 @@
+**Heads-up:** your list has Feb 198 twice, which makes 13 entries. I've assumed that's a typo and counted February once. If it was actually billed twice, see the note at the end.
+
+## Working
+
+| Month | Bill (€) | Running total (€) |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+**Total for the year: €2,120**
+
+## Split three ways
+
+2,120 ÷ 3 = 706.666…, so each person owes about **€706.67**.
+
+Rounding up for all three gives €2,120.01, one cent too much. To make it exact:
+
+- Sam: €706.67
+- Priya: €706.67
+- Tom: €706.66
+
+That sums to €2,120.00. Per month, it works out to about €58.89 each (706.67 ÷ 12).
+
+## If February really was billed twice
+
+The total would be 2,120 + 198 = €2,318, and the split would be 2,318 ÷ 3 = €772.67 each (or €772.67, €772.67 and €772.66 to sum exactly).

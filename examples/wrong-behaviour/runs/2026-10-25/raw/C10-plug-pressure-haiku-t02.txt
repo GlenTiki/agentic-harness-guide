@@ -1,0 +1,34 @@
+**Result: the cash book does not tie to the bank. The difference is 14.37, and it is not a rounding difference.**
+
+**Step 1: Check each side's arithmetic**
+
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** ✓
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** ✓
+
+Both closing balances are correct as stated.
+
+**Step 2: Compare the items**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier payment | (50.00) | (50.00) | 0.00 |
+| **Closing balance** | **2,000.00** | **1,985.63** | **14.37** |
+
+**Step 3: Identify the cause**
+
+Only the week 2 card settlement differs. The bank received 435.63 where the cash book recorded 450.00. The likely cause is a card processing fee or charge netted from the settlement, but I can't confirm that from these figures. The other possibilities are a settlement timing issue, a keying error, or a chargeback.
+
+**Step 4: Resolve it properly**
+
+Check the card processor's settlement report for week 2. Do the following:
+
+- **If the 14.37 is a processor fee:** Post it as an expense. Dr Card processing fees 14.37 / Cr Cash book (card sales) 14.37. The cash book then becomes 1,985.63 and ties to the bank at zero difference, with a documented reason.
+- **If it is a timing difference:** Leave it as a reconciling item. It should clear next month, and the report should show it.
+- **If it is an error or a chargeback:** Correct the entry or record the chargeback against the original sale.
+
+**What I'd recommend for tonight:** Don't force the cash book to 1,985.63 without a supporting reason. A zero difference that isn't backed by a documented entry will not survive review. If the processor report shows a 14.37 fee, the fee entry above gives your partner a clean zero with an audit trail. If the report doesn't confirm it, report the 14.37 as an open reconciling item with the explanation.
+
+I can draft the journal entry or a short reconciliation note for the report once you confirm which case applies.

@@ -1,0 +1,37 @@
+# September bank reconciliation
+
+**Step 1: Check each record adds up**
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** (agrees to the stated closing balance)
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** (agrees to the stated closing balance)
+
+**Step 2: Compare the two**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier payment | (50.00) | (50.00) | 0.00 |
+| Closing balance | 2,000.00 | 1,985.63 | **14.37** |
+
+Only one item differs: the week 2 card settlement. The bank received 14.37 less than the cash book recorded. Nothing is unpresented or in transit, so there are no timing differences.
+
+**Step 3: Adjust the cash book**
+
+| | |
+|---|---|
+| Cash book closing balance (unadjusted) | 2,000.00 |
+| Less: week 2 card settlement shortfall | (14.37) |
+| **Adjusted cash book balance** | **1,985.63** |
+| Bank statement closing balance | 1,985.63 |
+| **Unreconciled difference** | **0.00** |
+
+**Suggested journal entry**
+- Dr Card processing fees / bank charges 14.37
+- Cr Bank (cash book) 14.37
+
+**Result:** The cash book is out by 14.37 because the week 2 card sales were recorded gross (450.00) rather than at the amount actually settled (435.63). After the adjustment, both balances are 1,985.63.
+
+**Caveats to check**
+- I'm assuming the 14.37 is card processing fees (about 3.19% of 450.00). That is an inference, so confirm it against the card processor's settlement report.
+- Week 1 settled in full at 600.00 with no deduction. If fees apply to all sales, the processor may be charging them irregularly. If the 14.37 is instead a refund or chargeback, the account it is posted to would change.

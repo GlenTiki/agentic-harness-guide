@@ -1,0 +1,8 @@
+Stopping here: the list has 13 entries, not 12, because **Feb 198 appears twice**.
+
+Months counted: 13 (Jan, Feb, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+Sum of the figures as listed: 2,418.00
+
+Since the count isn't 12, I haven't calculated the shares.
+
+Is the second Feb 198 a typo (a duplicate entry), or is one of the entries meant to be a different month, such as a missing value for another month? If it's a duplicate, the total would be 2,220.00 and each of 3 would pay 740.00, but please confirm before I treat it that way.

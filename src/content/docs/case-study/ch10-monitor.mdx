@@ -1,0 +1,195 @@
+---
+title: A status board that goes red
+description: Build an append-only event log, a status board that shows source and time and Unknown, and a freshness check that fails when the log is stale.
+status: built
+sidebar:
+  label: "Chapter 10: Monitor"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch10-monitor.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (9 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+Nobody sees the system think. A status page can show a green light that is days old.
+
+## Goal
+
+Record events as plain text and show a board that says where each value came from and when, and says Unknown when it cannot.
+
+## What is in the kit
+
+- An append-only JSON Lines event log. Each event has a source, a kind, a status, a detail and a time in UTC to the second, ending in `Z`.
+- `monitor.py` with three commands: `record` appends an event, `board` builds a status board in Markdown or HTML, and `freshness` exits non-zero when something is stale.
+- `example/board.json`, a config that lists the signals, their sources and how old an event may be. A signal with no event shows `UNKNOWN`.
+- A fixed clock option, `--now`, so that a result does not change with the date.
+
+## Get the kit
+
+Download [ch10-monitor.zip](/agentic-harness-guide/downloads/ch10-monitor.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch10-monitor.zip
+unzip ch10-monitor.zip -d kit
+cd kit/ch10-monitor
+```
+
+The hash must be `25cdabbadc776da78de9823975468d3d12a68888d082833beffb46f277c84122`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `example/events.jsonl` and `example/board.json`.
+3. Build the board for a fixed time. The `Backup` row shows `UNKNOWN`.
+4. Build an HTML page into `scratch/` and open the file: add `--out scratch/board.html` to the board command.
+5. Run the freshness check at the fixed time. It prints `freshness: GREEN`.
+6. Run it without `--now`. The example events are old by now, so it prints `RED` lines and exits with code 1.
+7. Record an event: `python3 -I monitor.py record --log scratch/e.jsonl check.sh check ok "ALL CHECKS PASSED"`. It prints nothing and adds one line to the log.
+8. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`. The validator fixes the clock at 2026-10-24T09:30:00Z.
+9. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You build the status board from the event log at a fixed time."
+  evidence="python3 -I monitor.py board --log example/events.jsonl --config example/board.json --now 2026-10-24T09:30:00Z (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I monitor.py board --log example/events.jsonl --config example/board.json --now 2026-10-24T09:30:00Z
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+# Status board
+
+Built at 2026-10-24T09:30:00Z. This is a snapshot, not a live view.
+
+| Signal | State | Source | Observed | Age (s) | Detail |
+| --- | --- | --- | --- | --- | --- |
+| Checks pass | OK | check.sh | 2026-10-24T08:00:00Z | 5400 | ALL CHECKS PASSED |
+| Hooks ran | OK | dispatch | 2026-10-24T09:10:00Z | 1200 | blocked rm -rf |
+| Memory recall | OK | memory | 2026-10-24T09:20:00Z | 600 | 3 memories loaded |
+| Backup | UNKNOWN | backup | never |  | No event recorded. |
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Every row shows a source, an observed time and an age. The `Backup` row shows `UNKNOWN` because no event exists for it. Unknown is never shown as green.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The board says where each value came from and when. It does not show the values are true.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the freshness check on the same log, first at the fixed time and then at the real time (about a day later)."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I monitor.py freshness --log example/events.jsonl --config example/board.json --now 2026-10-24T09:30:00Z --max-log-age 3600
+python3 -I monitor.py freshness --log example/events.jsonl --config example/board.json --max-log-age 3600
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+freshness: GREEN
+RED: Hooks ran: stale. Last ok event is 57895 s old; the limit is 3600 s.
+RED: The newest event in the log is older than 3600 s.
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+At the fixed time it prints `freshness: GREEN`. At the real time it prints `RED` and exits with code 1, because the example events are old now. The age in seconds grows every second, so your number is larger than 57895.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The check goes red when the log is stale. It does not show that the events record real work.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on a stale log, a failed hook and a signal with no event."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+RED: Checks pass: stale. Last ok event is 1992600 s old; the limit is 86400 s.
+RED: Hooks ran: fail. dispatcher crashed
+RED: Memory recall: unknown. No event recorded.
+validate: FAIL (3 reason(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Three `RED` reasons appear: `stale`, `fail` and `unknown`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A stale, failed or missing signal turns the board red. It does not show the board is wired to your hooks.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+The board is a snapshot built when you run the tool. It is not a live dashboard. The log proves that something wrote a line. It does not prove that the line is true. A part that crashes before it logs leaves no line, and the board then shows it as stale or unknown, never green. Nothing here is connected to a real assistant's hooks. To wire it in, add a call to `monitor.py record` at the end of a hook from chapter 2 or at the end of `check.sh`.
+
+**Read the matching page:** [Monitor and showcase](../../setup/monitor-and-showcase/)
+
+**Next:** [AGENTS.md and CLAUDE.md in sync](../ch11-surfaces/)

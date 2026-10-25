@@ -1,0 +1,7 @@
+---
+import Default from '@astrojs/starlight/components/PageTitle.astro';
+import LevelNav from './LevelNav.astro';
+---
+
+<LevelNav slug={Astro.locals.starlightRoute.entry.id} />
+<Default {...Astro.props}><slot /></Default>

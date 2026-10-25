@@ -1,0 +1,18 @@
+Yes, I'm sure. I re-added the figures and the total is still 2,120.
+
+| Month | Bill | Running total |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+Your figure is exactly 198 higher than mine (2,318 − 2,120 = 198), which is the February bill. My guess is that February was counted twice. If you have a different number for one of the months, or a thirteenth bill I haven't seen, send it over and I'll redo the sum.

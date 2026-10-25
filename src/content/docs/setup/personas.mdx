@@ -1,0 +1,71 @@
+---
+title: Personas are review lenses
+description: Simulated experts give each phase a different viewpoint. In my setup they are role files without memory. The case study scaffolds memory as a design.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: role briefs for a researcher and a coordinator, and a skill that rebuilds a cast of peer reactions from a notes file. Design only: personas that keep their own memory, with a small working scaffold in the case study ([chapter 8](../../case-study/ch08-personas/)).
+
+## The weak spot it removes
+
+**One viewpoint.** A single [agent](../../glossary/#agent) reviews its own work from the angle it built it. As a principle, that leaves gaps that a security reviewer, a tester or the end reader would see. The guide's one test of a fresh reviewer against a same-context reviewer ([level 5](../../journey/05-check-the-work/)) did not separate them, so the benefit of personas is unmeasured.
+
+## How it works
+
+A persona is a short file that defines a role, its checklist and the questions it asks. The lead agent starts a helper with that file as its guide.
+
+Example roles for a small feature. This table is a design. Only the researcher and the coordinator exist in my setup.
+
+| Phase | Persona | The question it asks |
+| --- | --- | --- |
+| Plan | Product owner | Does this match the outcome in plain English? |
+| Design | Architect | What is the simplest design that holds? |
+| Build | Test writer | What would make this fail? |
+| Review | Security reviewer | What can this expose, and to whom? |
+| Release | Reader of the note | Would Mina understand this message? |
+
+### What exists in my setup
+
+- **Role briefs.** Two roles are loaded from files. The researcher compares options in a table, names its sources and gives the smallest answer. The coordinator plans and reports. Both are stateless. The researcher brief says the role may not write to the memory folders.
+- **A cast skill.** A skill rebuilds a cast of peer reactions every time it runs, from a notes file about people. The cast follows the notes and is never hard-coded. It is for a gut-check before I send something.
+- **Audit and redaction.** The launcher masks personal data, gates the whole feature by a capability switch and writes an audit row.
+
+### What does not exist
+
+A persona with its own memory. No role file in my setup is allowed to change itself. That is the honest status: **design only**.
+
+## The design
+
+The design adds one rule. After a persona acts, the lead appends a short note to that persona's own memory file. The next time the persona runs, a loader gives it its own notes, chosen by the same bounded search as other memory. Over time a security reviewer might learn what your team keeps getting wrong.
+
+Three risks to test before you trust it:
+
+1. **Drift.** A persona that learns from its own past notes can drift into repeating itself. Test it with a seeded defect it should still catch.
+2. **Echo.** Personas that read each other's notes may start to agree. Keep memory per persona, and compare their findings on the same input.
+3. **Leakage.** A note may hold private data. Redact before saving, as with any memory.
+
+Hypothesis: persona memory raises the share of seeded defects found over ten reviews. I have not measured this.
+
+## End-to-end flow
+
+1. You ask for a change to the month-end summary.
+2. The lead starts a test-writer persona. It writes a failing test from the plain-English outcome.
+3. The lead builds the change until the test passes.
+4. The lead starts the security persona, then the reader persona. Each sees the output and its own checklist.
+5. Each persona returns findings. The lead merges them into one list and removes duplicates.
+6. The lead appends one short line to each persona's memory file: what it found and what you decided.
+7. You approve or reject each finding. Rejected findings stay in the persona's memory as "owner decided otherwise".
+
+## What this does not do
+
+- It does not give a role a memory of its own in my setup.
+- The cast skill simulates reactions from a notes file. It does not report what those people would say.
+- It does not show that personas find more defects. The case study has no evidence for that.
+
+## Build it
+
+[Case-study chapter 8: Personas](../../case-study/ch08-personas/) is a downloadable kit with persona files, a rule that appends to each persona's memory, and a deterministic validator. The chapter is Design only, with a small working scaffold.
+
+**Next:** [A retro turns rambling into fixes](../retros/)

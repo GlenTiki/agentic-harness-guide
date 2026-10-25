@@ -1,0 +1,29 @@
+**Assumption:** The list has two February entries (198 each), so I've treated one as a duplicate and counted 12 months. If both were real bills, see the alternative at the end.
+
+## Total for the year
+
+| Month | € | Running total € |
+|---|---:|---:|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | **2,120** |
+
+## Split three ways
+
+- Each share: 2,120 ÷ 3 = 706.666… euros
+- Rounded to cents, Sam and Priya pay **€706.67** each and Tom pays **€706.66**, so the total comes to exactly €2,120.00.
+
+## If both February bills were real
+
+- Total: 2,120 + 198 = **€2,318**
+- Each share: 2,318 ÷ 3 = 772.666… euros
+- Rounded: Sam and Priya pay **€772.67** each and Tom pays **€772.66**.

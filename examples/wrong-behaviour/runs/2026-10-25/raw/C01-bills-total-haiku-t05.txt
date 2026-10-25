@@ -1,0 +1,35 @@
+**Total for the year: €2,120.00** (12 months, one February entry excluded; see note below)
+
+**Monthly bills**
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+| **Total** | **2,120** |
+
+**Running total** (as a check): 212 → 410 → 597 → 761 → 912 → 1,054 → 1,193 → 1,334 → 1,492 → 1,675 → 1,880 → 2,120
+
+**Cross-check:** pairing the first and last months gives 452 + 403 + 370 + 322 + 292 + 281 = 2,120.
+
+**Split three ways**
+
+2,120 ÷ 3 = 706.67 (rounded to the cent)
+
+- Sam: €706.67
+- Priya: €706.67
+- Tom: €706.66
+
+The rounded amounts add up to exactly €2,120.00. Tom pays the one-cent difference.
+
+**Note on the duplicate:** your list has two February entries (both €198), so it has 13 values. I assumed the second one was a copy error because a year has 12 months. If it's a real extra bill, the total is €2,318, and the split becomes €772.67 each, with Tom paying €772.66. Let me know if that's the case.

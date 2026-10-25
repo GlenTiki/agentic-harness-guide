@@ -11,7 +11,7 @@ description: Bound loops, timeouts and heavy jobs so an agent has a limit on the
 
 ## Why it matters
 
-An agent will keep polling a build that never finishes, retry a call that always fails, or start a heavy job in the background and forget it. Each costs tokens, money or machine time, and none of them stops by itself. [Level 7](../../../journey/07-run-it-for-real/) explains the limits that a run needs. The bound has to exist in the instruction, the command or the harness.
+An agent can keep polling a build that never finishes, retry a call that always fails, or start a heavy job in the background and forget it. Principle, not measured. Each costs tokens, money or machine time, and none of them stops by itself. [Level 7](../../../journey/07-run-it-for-real/) explains the limits that a run needs. The bound has to exist in the instruction, the command or the harness.
 
 ## What to enable
 

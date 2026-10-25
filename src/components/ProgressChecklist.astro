@@ -25,10 +25,12 @@ const chapters = (await getCollection('docs'))
 ---
 
 <div class="progress-checklist" data-progress>
+  <p class="progress-storage" data-storage-note>Your ticks are saved in this browser only. They are not sent anywhere.</p>
+  <p class="progress-next" data-next hidden>Next up: <a data-next-link href={`${base}/journey/`}>the journey map</a></p>
   {chapters.map((chapter) => (
-    <details class="progress-group" open>
+    <details class="progress-group" open data-chapter={chapter.id} data-chapter-title={chapter.title}>
       <summary>{chapter.title} <span class="progress-count" data-count></span></summary>
-      <p class="progress-link"><a href={`${base}/${chapter.id}/`}>Open this level</a></p>
+      <p class="progress-link"><a href={`${base}/${chapter.id}/`}>Open {chapter.title}</a></p>
       <ul class="progress-list">
         {chapter.bullets.map((bullet, index) => (
           <li>
@@ -41,39 +43,70 @@ const chapters = (await getCollection('docs'))
       </ul>
     </details>
   ))}
-  <p><button type="button" class="progress-reset" data-reset>Clear all ticks</button></p>
+  <p class="progress-actions">
+    <button type="button" class="progress-button" data-export>Show my progress as text</button>
+    <button type="button" class="progress-button" data-reset>Clear all ticks</button>
+  </p>
+  <label class="progress-export" data-export-box hidden>
+    <span>Copy this text to keep your progress somewhere else.</span>
+    <textarea readonly rows="6" data-export-text></textarea>
+  </label>
 </div>
 
 <script>
   const root = document.querySelector('[data-progress]');
   const boxes = root ? Array.from(root.querySelectorAll<HTMLInputElement>('input[data-key]')) : [];
+  const nowUtc = () => new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+  let storageWorks = true;
 
   const read = (key: string) => {
     try {
-      return localStorage.getItem(key) === '1';
+      return localStorage.getItem(key);
     } catch {
-      return false;
+      storageWorks = false;
+      return null;
     }
   };
   const write = (key: string, ticked: boolean) => {
     try {
-      if (ticked) localStorage.setItem(key, '1');
+      if (ticked) localStorage.setItem(key, nowUtc());
       else localStorage.removeItem(key);
     } catch {
-      // The page works without storage; ticks last until the page closes.
+      storageWorks = false;
     }
   };
   const updateCounts = () => {
-    root?.querySelectorAll('details').forEach((group) => {
+    let next: HTMLElement | null = null;
+    root?.querySelectorAll<HTMLElement>('details[data-chapter]').forEach((group) => {
       const inputs = Array.from(group.querySelectorAll<HTMLInputElement>('input[data-key]'));
       const done = inputs.filter((input) => input.checked).length;
       const count = group.querySelector('[data-count]');
       if (count) count.textContent = `(${done} of ${inputs.length})`;
+      if (!next && done < inputs.length) next = group;
     });
+    const nextBox = root?.querySelector<HTMLElement>('[data-next]');
+    const nextLink = root?.querySelector<HTMLAnchorElement>('[data-next-link]');
+    if (nextBox && nextLink && next) {
+      const group = next as HTMLElement;
+      nextLink.textContent = group.dataset.chapterTitle ?? 'the next level';
+      nextLink.href = group.querySelector<HTMLAnchorElement>('.progress-link a')?.href ?? nextLink.href;
+      nextBox.hidden = false;
+    } else if (nextBox) nextBox.hidden = true;
+    const note = root?.querySelector('[data-storage-note]');
+    if (note && !storageWorks) note.textContent = 'This browser blocks storage, so your ticks last only until you close or reload the page.';
   };
+  const exportText = () =>
+    boxes
+      .filter((box) => box.checked)
+      .map((box) => {
+        const when = read(box.dataset.key ?? '');
+        const label = box.closest('label')?.textContent?.trim() ?? '';
+        return `${/^\d{4}-/.test(when ?? '') ? when : 'time not recorded'}  ${label}`;
+      })
+      .join('\n') || 'Nothing ticked yet.';
 
   boxes.forEach((box) => {
-    box.checked = read(box.dataset.key ?? '');
+    box.checked = read(box.dataset.key ?? '') !== null;
     box.addEventListener('change', () => {
       write(box.dataset.key ?? '', box.checked);
       updateCounts();
@@ -86,17 +119,30 @@ const chapters = (await getCollection('docs'))
     });
     updateCounts();
   });
+  root?.querySelector('[data-export]')?.addEventListener('click', () => {
+    const area = root.querySelector<HTMLTextAreaElement>('[data-export-text]');
+    const holder = root.querySelector<HTMLElement>('[data-export-box]');
+    if (!area || !holder) return;
+    area.value = exportText();
+    holder.hidden = false;
+    area.focus();
+    area.select();
+  });
   updateCounts();
 </script>
 
 <style>
   .progress-group { margin: 0.75rem 0; padding: 0.5rem 0.9rem; border: 1px solid var(--sl-color-hairline); border-radius: 0.5rem; }
   .progress-group summary { cursor: pointer; font-weight: 600; }
-  .progress-count { font-weight: 400; color: var(--sl-color-gray-3); font-size: var(--sl-text-sm); }
+  .progress-count { font-weight: 400; color: var(--ahg-muted); font-size: var(--sl-text-sm); }
   .progress-link { margin: 0.4rem 0 0; font-size: var(--sl-text-sm); }
   .progress-list { list-style: none; padding: 0; margin: 0.5rem 0 0.25rem; }
   .progress-list li { margin: 0.4rem 0; }
   .progress-list label { display: flex; gap: 0.6rem; align-items: flex-start; cursor: pointer; }
   .progress-list input { margin-top: 0.3rem; flex: none; }
-  .progress-reset { cursor: pointer; padding: 0.3rem 0.8rem; border: 1px solid var(--sl-color-gray-4); border-radius: 0.3rem; background: transparent; color: var(--sl-color-text); }
+  .progress-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .progress-button { cursor: pointer; min-height: 44px; padding: 0 1rem; border: 1px solid var(--ahg-muted); border-radius: var(--ahg-radius-control); background: transparent; color: var(--sl-color-text); font: inherit; }
+  .progress-storage, .progress-next { font-size: var(--sl-text-sm); color: var(--ahg-muted); }
+  .progress-export { display: block; margin-top: 0.75rem; font-size: var(--sl-text-sm); }
+  .progress-export textarea { display: block; width: 100%; margin-top: 0.25rem; font: inherit; background: var(--ahg-code-bg); color: var(--ahg-text); border: 1px solid var(--ahg-line); border-radius: var(--ahg-radius-control); }
 </style>

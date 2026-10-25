@@ -1,0 +1,69 @@
+---
+title: Connect tools through plain files
+description: Share rules and context across a terminal agent, an editor, a browser and other agents using instruction files, MCP, ACP and A2A, with the facts checked.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: one set of hook scripts behind thin adapters for several tools, tool servers over [MCP](../../glossary/#connector-mcp), a dashboard that talks to [agents](../../glossary/#agent) over ACP, and a way to send a reply to a named session. Parity across all tools is partly a prototype. Built in the case study: a plain-text inbox and outbox, an instruction-file layout and a check that the files agree ([chapter 11](../../case-study/ch11-surfaces/)). MCP, ACP and A2A appear here as options with checked wording, and the case study does not implement them.
+
+## The weak spot it removes
+
+**Tools cannot see each other.** You use a terminal agent, an editor, a browser chat and another vendor's agent. Each starts blank and each has its own rules file. Rules drift between them.
+
+## Start with files
+
+The cheapest link between tools is a plain file that all of them read.
+
+- **AGENTS.md** is an open format for project instructions. Many coding tools read it, and the nearest file wins.
+- **Claude Code** reads AGENTS.md as project instructions only when no CLAUDE.md exists in the working directory or above. If both exist, it reads CLAUDE.md only. The simplest route is to keep your rules in AGENTS.md and put the line `@AGENTS.md` in CLAUDE.md. The import loads the file. A setting also exists that loads both.
+- **Codex CLI** reads AGENTS.md files from the project root down to the working directory and joins them, up to 32 KiB by default.
+- **Gemini CLI** reads GEMINI.md by default. A setting named `context.fileName` accepts a list of names, so it can read AGENTS.md. Its docs also say that from 18 June 2026 another product replaced it for some users. Check the current status before you rely on it.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/memory. Quoted line: "Claude Code can read AGENTS.md as your project instructions". The reading needs Claude Code 2.1.277 or later, per the page. Claude Code on that date: 2.1.310.</p>
+
+<p class="verified">Docs page fetched on 2026-10-24: https://geminicli.com/docs/cli/gemini-md/. The page lists the file name setting and states the replacement notice. The docs page states no version of its own.</p>
+
+## Three protocols, three jobs
+
+| Protocol | Connects | Checked wording |
+| --- | --- | --- |
+| MCP | An agent and its tools and data | The 2026-07-28 revision defines two transports, stdio and Streamable HTTP, over JSON-RPC. That revision dropped the old connection handshake, so older guides may describe an earlier revision. |
+| ACP | An editor and a coding agent | A protocol modelled on the language server protocol. Local agents run as editor subprocesses and talk JSON-RPC over stdio. Remote support was marked a work in progress. The page names no creator. |
+| A2A | One agent and another | An open project under the Linux Foundation, contributed by Google, using JSON-RPC 2.0 over HTTP(S), with streaming. |
+
+<p class="verified">Docs page fetched on 2026-10-24: https://modelcontextprotocol.io/specification/latest/basic/transports. The page states the transports named above. The page is the latest revision as of that date.</p>
+
+You do not need any of them to start. A shared file and a clear convention come first.
+
+## What I run
+
+- **One script per hook, one small adapter per tool.** Each adapter maps its tool's JSON to one common event shape and calls the same scripts. A tool with no hook engine gets hooks run around its command by a wrapper.
+- **Tool servers.** Servers over MCP expose search, local docs, a local model and a second-opinion call to another vendor's agent CLI.
+- **A dashboard** talks to agents over ACP and over a web socket.
+- **A session reply.** I can type a reply in the dashboard and send it to a named session. The server holds the recipient, so the browser cannot choose where the text goes. Redaction runs on send and an acknowledgement is recorded.
+- **A phone page.** The dashboard installs as a web app on my phone.
+
+## A convention for the case study
+
+The case study uses one folder per recipient, named `to-<name>/`. An agent writes a message as a text file with a header: `from`, `to`, `time` in UTC with `Z`, `subject`, `status` (new, read or done) and `re` (the message it answers). Another agent lists its folder, reads the files and changes the status. This is slow and simple. It works with any tool that can read and write files.
+
+## End-to-end flow
+
+1. You keep the rules in AGENTS.md. CLAUDE.md contains `@AGENTS.md` and nothing else you need to keep in step.
+2. A check confirms that both files exist and that CLAUDE.md imports AGENTS.md.
+3. Your terminal agent finishes a task and posts a summary to `to-review/`, addressed to the review agent.
+4. The review agent in another tool lists `to-review/`, finds the message with status `new` and reviews the change.
+5. It posts its findings to `to-terminal/`, with `re` naming your message.
+6. You read both files in the repository. Nothing was hidden in a chat window.
+
+## What this does not do
+
+Plain files give no live connection. If you need two agents to talk in real time, you need a protocol and a server. Then you need the checks in [capability gating](../../shelf/control/capability-gating/) and [untrusted input](../../shelf/control/untrusted-input/). Treat every received message as data, not as an instruction.
+
+## Build it
+
+[Case-study chapter 11: Surfaces](../../case-study/ch11-surfaces/) is a downloadable kit.
+
+**Next:** [Local models where they suffice](../local-models/)

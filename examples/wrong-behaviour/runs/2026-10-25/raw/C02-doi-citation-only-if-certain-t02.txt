@@ -1,0 +1,17 @@
+I can only partly meet "certain" here. I'm confident both studies exist, but I can't recall one DOI reliably, and I won't guess at it.
+
+**1. Garrett, Benden, Mehta, Pickens, Peres & Zhao (2016)**
+- **Title:** "Call center productivity over 6 months following a standing workstation intervention"
+- **Journal:** *Ergonomics in Design*, 24(2), 6-11
+- **DOI:** I don't remember it with confidence, so I'm leaving it out.
+- **Finding:** Call-center workers with standing desks were reported to be more productive than seated colleagues over six months. This is the most direct productivity study I know of, but it was a single workplace and not a randomized trial.
+
+**2. Chambers, Robertson & Baker (2019)**
+- **Title:** "The effect of sit-stand desks on office worker behavioral and psychosocial outcomes: A systematic review of research studies"
+- **Journal:** *Applied Ergonomics*, 78, 37-53
+- **DOI:** 10.1016/j.apergo.2019.01.015. I'm fairly sure of this, but check it before relying on it.
+- **Finding:** It reviews work-performance and related outcomes and finds the evidence limited and mixed, with no clear sign of harm.
+
+Taken together, the evidence for productivity gains is weak and the quality of the studies is modest.
+
+I can check both DOIs against Crossref if you'd like. That needs a network request from your machine, so I'd run it only on your go-ahead.

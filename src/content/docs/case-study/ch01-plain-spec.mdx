@@ -1,0 +1,148 @@
+---
+title: Plain-English specs a script can read
+description: Write specs in simple English from a template, and lint them for sentence length, passive voice, vague words and readability, within the limits of a script.
+status: built
+sidebar:
+  label: "Chapter 1: Plain-English specs"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch01-plain-spec.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (6 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+Vague requests. A spec that can be read two ways will be built one way, and it may not be yours.
+
+## Goal
+
+Have specs in simple English that a rule-based linter can check, and know exactly what that linter cannot check.
+
+## What is in the kit
+
+- `example/TEMPLATE.md` and a worked example, `example/notes-add.md`.
+- `plainlint.py`, a linter with four rules: sentence length (25 words in a description, 20 in a numbered step), passive voice, a list of banned vague words, and a readability grade (Flesch-Kincaid, limit 9).
+- `validate.py`, which lints everything in `example/` and `SPEC.md`.
+- Optional rules in the Vale format, in `vale/`. The tests do not need Vale.
+
+## Get the kit
+
+Download [ch01-plain-spec.zip](/agentic-harness-guide/downloads/ch01-plain-spec.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch01-plain-spec.zip
+unzip ch01-plain-spec.zip -d kit
+cd kit/ch01-plain-spec
+```
+
+The hash must be `37ebb74ea24195721c63fc28ed6dafc1119f1feecda1b591127824bd0c4fca62`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `example/TEMPLATE.md` and the worked example `example/notes-add.md`.
+3. Lint one file: `python3 -I plainlint.py example/notes-add.md`.
+4. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+5. Run the unit tests: `python3 -I -m unittest discover -s tests -t .`. The last line is `OK`.
+6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You lint the worked example spec with the rule-based linter."
+  evidence="python3 -I plainlint.py example/notes-add.md (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I plainlint.py example/notes-add.md
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+plainlint: 0 finding(s)
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The line says `0 finding(s)`. The linter prints one line for each finding, and none appear.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The example follows the four rules a script can test. It does not show the spec is clear to a reader.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on a file of two sentences that break every rule. The check must go red."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+<kit>/fixtures/bad/vague.md:3: [sentence-length] 39 words; the limit is 25.
+<kit>/fixtures/bad/vague.md:3: [passive-heuristic] Possible passive voice. Name the actor.
+<kit>/fixtures/bad/vague.md:3: [vague-word] Replace the vague word 'etc'.
+<kit>/fixtures/bad/vague.md:3: [vague-word] Replace the vague word 'things'.
+<kit>/fixtures/bad/vague.md:3: [vague-word] Replace the vague word 'various'.
+<kit>/fixtures/bad/vague.md:3: [vague-word] Replace the vague word 'easily'.
+<kit>/fixtures/bad/vague.md:5: [passive-heuristic] Possible passive voice. Name the actor.
+<kit>/fixtures/bad/vague.md:5: [vague-word] Replace the vague word 'as needed'.
+<kit>/fixtures/bad/vague.md:1: [readability] Flesch-Kincaid grade 12.0; the limit is 9.0.
+validate: FAIL (9 finding(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Nine findings appear, one rule name in brackets on each line, for example `[vague-word] Replace the vague word 'etc'.`
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Each rule can fail. It does not show that the rules find every unclear sentence.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+The linter cannot check the licensed Simplified Technical English dictionary. It cannot check word sense or meaning. The passive-voice rule is a heuristic, and the test `test_known_false_positive_is_documented` records a sentence it flags wrongly. Vale is optional and the kit does not install it: `vale --config vale/.vale.ini example/notes-add.md`. The Vale rules mirror three of the rules (vague words, sentence length and passive voice) and do not compute the readability grade. I did not run Vale for this page. On 2026-10-24 I ran Vale 3.22.0 on the sample spec and on the failing fixture. The sample spec had 0 findings. The failing fixture had 5 errors and 5 warnings.
+
+**Read the matching page:** [Plain text and simple English](../../setup/plain-text-and-simple-english/)
+
+**Next:** [Hooks that block what agents forget](../ch02-hooks/)

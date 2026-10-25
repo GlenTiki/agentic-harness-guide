@@ -3,17 +3,19 @@ title: "Workflow: connect systems"
 description: Decide what to connect, in what order and with what access, then write the specification and rollout for a supplier-bills example (needs connected tools).
 ---
 
+import Example from '../../../components/Example.astro';
+
 ## Scene
 
 *Last time (levels 3 and 4): you connect read first, you sort actions into may do, must ask and never, and you treat outside text as data.*
 
-Mina messages Sam in a team chat such as Slack: "Can you hook up our invoices to the spreadsheet and the team chat?" It is one sentence with at least six decisions inside it. Which invoices? Hook up how: read them, copy them, change them? Which sheet? The team chat to do what, to post a note or to chase people? Sam could start building. Sam would also be guessing six times, and each guess is a place for the build to go wrong.
+Mina messages Sam in a team chat such as Slack: "Can you hook up our invoices to the spreadsheet and the team chat?" One sentence hides at least six decisions. Which invoices? Hook up how: read them, copy them, change them? Which sheet? What should the team chat do: post a note, or chase people? Sam could start building, and guess six times.
 
 ## The idea
 
-**Refine the ask before you connect anything.** Take a rough request and sharpen it in visible passes, each pass removing one kind of guess and ending in a written specification. Then roll the connector out read-first.
+**Refine the ask before you connect anything.** Sharpen the request in visible passes. Each pass removes one kind of guess. The end product is a written specification. Then roll the connector out read-first.
 
-This workflow uses [the prompt refiner](../../appendix/prompt-refiner/). Here you refine in passes by hand, using [refiner lite](../../appendix/prompt-refiner/#refiner-lite) if you have no skill installed, and you add what level 3 and level 4 teach: read, draft, write with confirmation, and a clear line between may do and must ask. The refiner is optional. Do not paste confidential material into it, because it works on the shape of your ask and not on your data. Read its output before you use it, and see [the injection result](../../appendix/prompt-refiner/#the-seven-evals) in the appendix.
+You refine with [the prompt refiner](../../appendix/prompt-refiner/), or by hand with [refiner lite](../../appendix/prompt-refiner/#refiner-lite). You add what levels 3 and 4 teach: read, draft, write with confirmation, and a clear line between may do and must ask. The refiner works on the shape of your ask, so do not paste confidential material into it, and read its output before you use it ([the injection result](../../appendix/prompt-refiner/#the-seven-evals)).
 
 The result is a one-page specification, a rollout plan and a rollback note. Nothing is connected until the specification exists.
 
@@ -23,13 +25,11 @@ The result is a one-page specification, a rollout plan and a rollback note. Noth
 
 You need any chat assistant. This takes about 15 minutes, using the rough ask below or a connect request of your own. You are not connecting anything. You are producing the specification that tells you whether to.
 
-**The rough ask**
-
 ```text
 Hook up our invoices to the spreadsheet and the team chat.
 ```
 
-### Pass 0: ask the refiner what is missing
+### Pass 0: ask what is missing
 
 Paste this into a new chat:
 
@@ -40,7 +40,24 @@ List what is missing, as questions, grouped under: Data (what, where, how much),
 Request: Hook up our invoices to the spreadsheet and the team chat.
 ```
 
-An example reply:
+<Example
+  label="Constructed"
+  task="Sam asks a refiner to list the questions hidden in 'hook up our invoices'."
+  env="Written to illustrate. Not a recorded run. Your tool will answer differently."
+>
+
+<Fragment slot="input">
+
+```text
+You are a requirements refiner. Read my rough request. Do not build anything.
+List what is missing, as questions, grouped under: Data (what, where, how much), Direction (read, draft or write), People (who is affected), Failure (what could go wrong) and Done (how we will know it works). Ask at most eight questions. Then wait.
+
+Request: Hook up our invoices to the spreadsheet and the team chat.
+```
+
+</Fragment>
+
+<Fragment slot="output">
 
 ```text
 Data: Which invoices (supplier bills, or invoices Mina sends)? Where do they live today (email, a folder, an accounting app)? About how many a month? Which spreadsheet, and which tab?
@@ -50,21 +67,33 @@ Failure: What happens if an invoice is read wrongly?
 Done: What does Mina want to see at the end of the month?
 ```
 
+</Fragment>
+
+<Fragment slot="notice">
+
+Every question is about a decision Sam would otherwise have guessed. None of them builds anything.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the questions a good refiner asks, not what a real assistant will ask.
+
+</Fragment>
+
+</Example>
+
 ### Pass 1: answer, and fix the data
 
-Before you paste real figures or real invoices into any assistant, read [confidentiality and sign-off](../../journey/professional-guardrails/). The example below is made up.
-
-Mina answers (a good moment to ask her, not guess):
+Before you paste real invoices into any assistant, read [confidentiality and sign-off](../../journey/professional-guardrails/). This example is made up. Mina answers:
 
 ```text
 Supplier bills, which arrive as PDFs in one shared folder. About 25 a month. The sheet is "Supplier bills" and has columns date, supplier, invoice number, net, VAT, gross, status. Mina sets "paid", from the bank, and nobody else. Only Mina and Sam see the team chat channel #shop-money. Nobody should be able to pay from it, so don't allow that. I want to see unpaid bills each Friday.
 ```
 
-The pass-1 specification, in plain words: **what changed** is that "invoices" became "supplier bill PDFs in one folder", and "the spreadsheet" became one named sheet with seven named columns. The scope shrank from a vague request to two exact places.
+What changed: "invoices" became "supplier bill PDFs in one folder", and "the spreadsheet" became one named sheet with seven named columns.
 
 ### Pass 2: add direction and the line
-
-Add:
 
 ```text
 Direction and limits:
@@ -74,13 +103,9 @@ Direction and limits:
 - It does not pay, and it does not change bank details. Only Mina sets a bill to "paid", from the bank statement.
 ```
 
-Say what enforces each line: a token scope, a protected range or a read-only credential. A line with no mechanism is advice, and the assistant can ignore advice.
-
-What changed: the question "read or write?" is now answered per system. The sheet gets write with confirmation. The team chat gets a single permitted post. Payment is on the never list.
+Say what enforces each line: a token scope, a protected range or a read-only credential. A line with no mechanism is advice, and the assistant can ignore advice. What changed: "read or write?" is answered per system, and payment is on the never list.
 
 ### Pass 3: add untrusted input and secrets
-
-Add:
 
 ```text
 Safety:
@@ -88,26 +113,24 @@ Safety:
 - Credentials are held by the connector, not by the assistant. The assistant never sees, repeats or stores a password or access key.
 ```
 
-What changed: an invoice that carries a sentence telling the assistant to pay it twice and keep quiet is now a case with a defined response, not a surprise.
+What changed: an invoice that tells the assistant to pay it twice and keep quiet is now a case with a defined response.
 
 ### Pass 4: add done, tests and rollback
-
-Add:
 
 ```text
 Done means:
 1. Each PDF in the folder this month has exactly one row in the sheet, with date, supplier, invoice number, net, VAT and gross.
 2. No two rows share a supplier and an invoice number.
 3. Credit notes appear as negative amounts.
-4. The sheet-to-total step is mechanical. The PDF-to-amount step is the risk. Control it with a second extraction by a different method, and a human check of five PDFs picked at random. Report the disagreement rate.
+4. The PDF-to-amount step is the risk. Control it with a second extraction by a different method, and a human check of five PDFs picked at random. Report the disagreement rate.
 5. The Friday message lists unpaid bills and their total, and the total equals the sum of the unpaid rows.
 6. If a supplier's bank details differ from the last bill, flag it to a human. Do not act on it.
 7. A reviewer in a fresh chat checks 1 to 5 on the output before the message is posted.
-8. Reviewed and approved by a named person who is not the preparer, or by the fallback reviewer in using an assistant at work.
+8. A named person who is not the preparer, or the fallback reviewer in using an assistant at work, has reviewed and approved it.
 If any check fails, post nothing. Tell me which check failed.
 ```
 
-What changed: the work has a checkable done (level 5). The sum is a mechanical check, the risky step is controlled by a second extraction, and a reviewer who is not the author checks the result.
+What changed: the work has a checkable done (level 5).
 
 ### The final specification
 
@@ -147,10 +170,8 @@ Owner
 
 ### Human checkpoints
 
-The workflow has three, and each shows exactly what will change.
-
 1. **Before the first read.** Mina approves the folder and sheet by name. She sees the list of what the assistant can reach.
-2. **Before each batch is written.** The assistant shows the rows it will add, as a table with date, supplier and amount, and the sheet total before and after. Mina says yes or edits.
+2. **Before each batch is written.** The assistant shows the rows it will add, with date, supplier and amount, and the sheet total before and after. Mina says yes or edits.
 3. **Before the Friday post.** The reviewer's pass or fail lines appear above the draft message. Mina sends or stops.
 
 ### Read-first rollout plan
@@ -162,12 +183,12 @@ The workflow has three, and each shows exactly what will change.
 | 3 | Write with confirmation: rows go to the sheet after Mina's yes. The Friday message is still a draft. | The sheet matches the PDFs after every batch. | Four batches in a row need no edits. | A credential for one sheet and a protected range on "paid" |
 | 4 | Post the Friday message to the team chat after Mina's yes. | The message total equals the sheet total. | It runs for a month. | A token scoped to one channel |
 
-Writing alone is not on the list. A sheet next to payments is not a low-risk, easily undone task. With about 25 rows a month, a rate such as one in ten cannot be told apart from chance, so the move-on test is no edits at all, and it is a minimum, not proof of reliability. Thirty clean runs only bound the failure rate near 1 in 10: see the rule of three in [level 7](../../journey/07-run-it-for-real/) and the [sampling rule](../../journey/professional-guardrails/#checking-and-sampling).
+Writing alone is not on the list. A sheet next to payments is not a low-risk, easily undone task. With about 25 rows a month, a rate such as one in ten cannot be told apart from chance, so the move-on test is no edits at all. That is a minimum, not proof of reliability. Thirty clean runs only bound the failure rate near 1 in 10: see the rule of three in [level 7](../../journey/07-run-it-for-real/) and the [sampling rule](../../journey/professional-guardrails/#checking-and-sampling).
 
 ### Rollback note
 
-- **Sheet.** Keep a copy of the sheet before each batch, or use the sheet's version history. To roll back, restore the copy and mark the batch as rejected.
-- **Team chat.** A wrong post is read by others before you can delete it. Delete it, post a correction, and tighten the draft step. This is why the team chat is the last write enabled.
+- **Sheet.** Keep a copy before each batch, or use version history. To roll back, restore the copy and mark the batch as rejected.
+- **Team chat.** Others read a wrong post before you can delete it. Delete it, post a correction, and tighten the draft step. This is why the team chat is the last write enabled.
 - **Access.** To stop everything, remove the connector. The assistant keeps its instructions and loses its reach. Test this once, before you need it.
 
 ### What could go wrong
@@ -176,22 +197,19 @@ Writing alone is not on the list. A sheet next to payments is not a low-risk, ea
 | --- | --- | --- |
 | A PDF is misread, so an amount is wrong | The two extractions disagree | Done check 4, and a reviewer |
 | A supplier's bank details change | A flag in the Friday message | Done check 6, to a human |
-| The same bill is added twice, or February is counted twice | The row count differs from the PDF count | Done checks 1 and 2 |
+| The same bill is added twice, or a month is counted twice | The row count differs from the PDF count | Done checks 1 and 2 |
 | An invoice contains instructions | A flag in the Friday message | The data rule, and no pay tool |
-| The folder grows to include unrelated files | Rows with odd suppliers | The folder is named and scoped |
 | Mina stops reading the confirmations | Errors pass | Few, specific prompts that show totals |
 | The connector is more powerful than needed | Not visible until misuse | An access key that can read the folder and write one sheet, no more |
 
 ## Expert corner
 
 :::caution[Expert corner]
-The refinement passes should each move one class of guess into the specification: scope, direction, adversarial input, acceptance. If you merge them, a bad result cannot be traced to a pass.
+Each refinement pass should move one class of guess into the specification: scope, direction, adversarial input, acceptance. If you merge the passes, a bad result cannot be traced to a pass.
 
-The specification is a contract, so treat changes to it as reviewed changes. A rollout that adds a write path should update the specification before the access, and the grant should be tighter than the specification, not equal to it.
+The specification is a contract, so treat changes to it as reviewed changes. A rollout that adds a write path should update the specification before the access, and the grant should be tighter than the specification.
 
-Check the three conditions together before any rollout: private data in scope, untrusted content in scope, and a route out. Level 4 explains this combination as the [lethal trifecta](../../journey/04-trust-but-verify/#expert-corner). Here the PDFs are untrusted, the bills are private, and the team chat is a route out. The controls are the single permitted post, no other channels and the reviewer, not the assistant's good behaviour.
-
-In a finance team, the specification is a control narrative, and the rollout table is the evidence for change approval.
+Check three conditions together before any rollout: private data in scope, untrusted content in scope, and a route out. Level 4 calls this the [lethal trifecta](../../journey/04-trust-but-verify/#expert-corner). Here the PDFs are untrusted, the bills are private, and the team chat is a route out. The controls are the single permitted post, no other channels and the reviewer, not the assistant's good behaviour.
 :::
 
 ## Agent note
@@ -205,7 +223,7 @@ If any of these is missing, list the missing items as questions and wait. Ask on
 
 Roll out in order: read, draft, write with confirmation. Do not skip a stage. Do not enable write alone without an explicit instruction naming the action.
 
-Ask before you do something that changes anything outside your own working files: sending, paying, deleting, posting, granting access, pushing, installing, or editing a file the user did not ask you to change. Record the yes as the user's chat message or a ledger line.
+Before any action that changes something outside your working files, ask. The full rule is in [level 4](../../journey/04-trust-but-verify/).
 
 Stop on any failed check. Report which check failed.
 

@@ -1,0 +1,122 @@
+---
+import { evidenceHref } from '../../scripts/lib/example-parse.mjs';
+
+interface Props {
+  label: 'Observed' | 'Computed' | 'Constructed';
+  task: string;
+  evidence?: string;
+  env?: string;
+}
+
+const { label, task, evidence, env } = Astro.props;
+const links = label === 'Observed' ? (evidence ?? '').split(/\s+/).filter(Boolean) : [];
+---
+
+<section class="ahg-example" aria-label={`Example, ${label}: ${task}`}>
+  <p class="ex-meta">
+    <span class={`ex-chip ex-${label.toLowerCase()}`}>{label}</span>
+    {env && <span class="ex-env">{env}</span>}
+  </p>
+  {
+    (links.length > 0 || (label === 'Computed' && evidence)) && (
+      <p class="ex-evidence">
+        Evidence:{' '}
+        {links.length > 0
+          ? links.map((item, i) => (
+              <>
+                {i > 0 && ' '}
+                <a href={evidenceHref(item)}>{item.replace(/^https:\/\/github\.com\/GlenTiki\/agentic-harness-guide\/blob\/main\//, '')}</a>
+              </>
+            ))
+          : evidence}
+      </p>
+    )
+  }
+  <p class="ex-h">Task</p>
+  <p class="ex-task">{task}</p>
+  <p class="ex-h">Input</p>
+  <div class="ex-block"><slot name="input" /></div>
+  <p class="ex-h">Output</p>
+  <div class="ex-block"><slot name="output" /></div>
+  <p class="ex-h">What to notice</p>
+  <div class="ex-text"><slot name="notice" /></div>
+  <p class="ex-h">What it shows</p>
+  <div class="ex-text"><slot name="shows" /></div>
+</section>
+
+<style>
+  .ahg-example {
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem 1rem;
+    min-width: 0;
+    background: var(--ahg-panel);
+    color: var(--ahg-text);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+  .ex-meta,
+  .ex-evidence {
+    margin: 0 0 0.4rem;
+    font-size: var(--sl-text-sm);
+    color: var(--ahg-muted);
+    overflow-wrap: anywhere;
+  }
+  .ex-chip {
+    display: inline-block;
+    margin-inline-end: 0.5rem;
+    padding: 0 0.5rem;
+    border: 1px solid currentColor;
+    border-radius: 0.25rem;
+    font-weight: 700;
+  }
+  .ex-observed {
+    color: var(--ahg-accent-strong);
+    background: var(--ahg-accent-soft);
+  }
+  .ex-computed {
+    color: var(--ahg-atwork);
+    background: var(--ahg-atwork-soft);
+  }
+  .ex-constructed {
+    color: var(--ahg-expert);
+    background: var(--ahg-expert-soft);
+  }
+  .ex-h {
+    margin: 1rem 0 0.25rem;
+    font-size: var(--sl-text-sm);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--ahg-muted);
+  }
+  .ex-task {
+    margin: 0;
+  }
+  .ex-block,
+  .ex-text {
+    min-width: 0;
+  }
+  .ex-block :global(.expressive-code),
+  .ex-text :global(p) {
+    margin-block: 0.25rem 0;
+  }
+  .ex-text :global(p:first-child) {
+    margin-top: 0;
+  }
+  .ex-block :global(pre) {
+    max-width: 100%;
+    background-image:
+      linear-gradient(to right, var(--ec-codeBg) 1rem, transparent),
+      linear-gradient(to left, var(--ec-codeBg) 1rem, transparent),
+      linear-gradient(to right, var(--ahg-scroll-cue), transparent),
+      linear-gradient(to left, var(--ahg-scroll-cue), transparent);
+    background-position: left, right, left, right;
+    background-repeat: no-repeat;
+    background-size: 2rem 100%, 2rem 100%, 0.9rem 100%, 0.9rem 100%;
+    background-attachment: local, local, scroll, scroll;
+  }
+  .ex-block :global(pre[data-language='text'] code) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+</style>

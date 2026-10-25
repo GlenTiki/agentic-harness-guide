@@ -50,6 +50,6 @@ Use second-resolution UTC timestamps. They sort, compare and survive time zones.
 
 Create `ledger.json` with the four keys above. Add one line to your instruction file: "Update the ledger after each decision and before ending a phase."
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/hooks. Quoted line: "`PreCompact` | Before context compaction". Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "`PreCompact` | Before context compaction". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
-**Next:** [Memory](../memory/)
+**Next:** [Agent memory across sessions](../memory/)

@@ -1,0 +1,26 @@
+**Assumption:** the list has 13 entries, but there are 12 months. I've treated the second February (€198) as a duplicate and dropped it. If both February bills were real, tell me and I'll redo the numbers.
+
+**Monthly bills (12 months, €)**
+
+| Month | Bill |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+**Total:** 212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240 = **€2,120**
+
+**Split three ways (equal shares, assumed):** 2,120 ÷ 3 = 706.666… ≈ **€706.67 each**
+
+Rounded to the cent, that comes to €2,120.01, so one person should pay €706.66 to make the total exact.
+
+**If both February bills count:** the total is €2,318, and each share is 2,318 ÷ 3 ≈ **€772.67**.

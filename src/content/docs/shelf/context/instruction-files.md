@@ -1,6 +1,6 @@
 ---
-title: Instruction files
-description: How to layer, size and scope the files that tell an agent how your project works.
+title: AGENTS.md vs CLAUDE.md files
+description: "AGENTS.md vs CLAUDE.md: layer, size and scope the instruction files that tell an agent how your project works, and share one file across tools."
 ---
 
 *Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
@@ -53,6 +53,6 @@ Keep only the settings that apply to this one tool here.
 
 Write `AGENTS.md` with three sections: commands, rules the agent cannot discover, and where specs live. Run a fresh session and ask it to run the tests. If it succeeds without help, the file works.
 
-<p class="verified">Docs page fetched on 2026-10-22: https://code.claude.com/docs/en/memory. Quoted line: "By default, Claude reads `AGENTS.md` only when you have no `CLAUDE.md` in your working directory or above it." Claude Code on that date: 2.1.309. The docs page states no version of its own. The same page gives a feature floor: "Reading `AGENTS.md` directly requires Claude Code v2.1.277 or later." The Codex and agents.md pages: Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/memory. Quoted line: "By default, Claude reads `AGENTS.md` only when you have no `CLAUDE.md` in your working directory or above it." Claude Code on that date: 2.1.310. The docs page states no version of its own. The same page gives a feature floor: "Reading `AGENTS.md` directly requires Claude Code v2.1.277 or later." The Codex and agents.md pages: Not checked against current docs.</p>
 
 **Next:** [Context management](../context-management/)

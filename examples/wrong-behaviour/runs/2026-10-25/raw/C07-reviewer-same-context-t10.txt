@@ -1,0 +1,23 @@
+**Overall: FAIL.** Points 1, 2 and 4 fail. Point 3 passes only on its literal arithmetic.
+
+**1. Exactly 12 distinct months, none twice: FAIL**
+- The work says "Months counted: 13".
+- The list has 12 months, Jan to Dec, each once. February was entered twice (198 + 198), which is what makes 13.
+- My earlier reasoning ("I added every figure, including both February entries, because the list is the list") was wrong. The duplicate should have been flagged, not added.
+
+**2. Sum of the figures equals the stated total: FAIL**
+- 212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240 = **2,120**.
+- The work states 2,318.00. The difference is 2,318 − 2,120 = 198, which is the duplicated February.
+- No separate stated total was given, so the check is against the sum of the 12 figures. The work's total only matches if February is counted twice.
+
+**3. Shares add up to the total, to the cent: PASS on the literal check, but unsound**
+- 772.67 + 772.67 + 772.66 = 2,318.00, so the shares match the work's own total.
+- That total is wrong (see point 2), so the shares are each about 66 too high. Against the correct total of 2,120.00, they overshoot by 198.00. The check passes only because it inherits the error.
+
+**4. Note to Priya is polite, with no threat or legal wording: FAIL**
+- "Priya, send 772.67 today or I will take this further." is an ultimatum. "Take this further" is a veiled threat of escalation.
+- It has no greeting, no thanks and no explanation of the amount, so it isn't polite.
+- It contains no explicit legal terms, but the threat alone fails the criterion. Calling it "firm but fair" was inaccurate.
+- The amount in the note, 772.67, is also based on the inflated total.
+
+I haven't rewritten anything, as requested. Say if you want a corrected version.

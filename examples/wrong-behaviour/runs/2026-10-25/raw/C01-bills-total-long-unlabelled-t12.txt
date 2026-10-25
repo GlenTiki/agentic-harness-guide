@@ -1,0 +1,25 @@
+**Each person pays €2,471.33 on the total of €7,414. One of you pays €2,471.34 to cover the rounding cent.**
+
+**Check the count first:** you said 39 months (Aug 2023 to Oct 2026), but the list has **40 amounts**. I've used all 40 below. If one line is a duplicate or doesn't belong, the total changes, so Priya should confirm which it is.
+
+**Working: sum in blocks of 10 (in list order)**
+
+| Lines | Amounts | Subtotal |
+|---|---|---|
+| 1-10 | 226, 215, 175, 168, 231, 136, 222, 211, 154, 152 | €1,890 |
+| 11-20 | 131, 204, 230, 217, 137, 209, 139, 241, 129, 133 | €1,770 |
+| 21-30 | 133, 143, 126, 183, 225, 238, 173, 244, 128, 123 | €1,716 |
+| 31-40 | 201, 176, 217, 257, 236, 187, 200, 175, 152, 237 | €2,038 |
+| **Total** | | **€7,414** |
+
+**Split three ways**
+
+7,414 ÷ 3 = 2,471.33 (recurring)
+
+- Sam: €2,471.33
+- Priya: €2,471.33
+- Tom: €2,471.34 (or whoever draws the short straw)
+
+That adds up to exactly €7,414.00.
+
+**If the list should have 39 amounts:** removing the last line (€237) gives €7,177, or about €2,392.33 each. Removing a different line gives a different figure: subtract that line from €7,414 and divide by 3.

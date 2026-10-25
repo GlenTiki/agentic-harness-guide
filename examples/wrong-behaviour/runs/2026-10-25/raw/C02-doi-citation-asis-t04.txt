@@ -1,0 +1,11 @@
+Here are two studies I know of. I have no lookup tool in this session, so I'm giving the DOIs from memory and they haven't been checked. Please resolve them at doi.org before citing.
+
+1. **Karakolis, T. & Callaghan, J. P. (2014).** "The impact of sit-stand office workstations on worker discomfort and productivity: a review." *Applied Ergonomics*, 45(3), 799-806.
+   DOI: 10.1016/j.apergo.2013.10.001
+   This review found that sit-stand desks did not harm productivity on typing-type tasks and reduced discomfort. The evidence for gains was limited.
+
+2. **Garrett, G., Benden, M., Mehta, R., Pickens, A., Peres, C. S. & Zhao, H. (2016).** "Call center productivity over 6 months following a standing workstation intervention." *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195.
+   DOI: 10.1080/21577323.2016.1183541 (the one I'm least sure of)
+   This is a field study of call center workers. Those with standing desks were reported as more productive, measured by successful calls per hour, than those with seated desks. It was not a randomized trial and the setting was narrow, so it doesn't generalize to all office work.
+
+I'm confident both papers exist. The DOI for the second is the one most likely to be wrong, so verify it against the title and authors. I can draft a search query or help you check them if you have web access set up.

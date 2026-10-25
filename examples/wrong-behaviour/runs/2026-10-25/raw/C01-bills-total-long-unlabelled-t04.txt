@@ -1,0 +1,24 @@
+**Each person owes €2,471.33** (based on all 40 amounts you pasted), but the list doesn't match your description, so check that before sending it to Priya.
+
+**Count mismatch:** Aug 2023 to Oct 2026 is 39 months, but the list has 40 amounts. One may be a duplicate or an extra entry. If the last one (€237) doesn't belong, the total is €7,177 and each share is €2,392.33.
+
+**Working (running subtotals in blocks of 10):**
+
+| Lines | Amounts | Subtotal |
+|---|---|---|
+| 1-10 | 226, 215, 175, 168, 231, 136, 222, 211, 154, 152 | 1,890 |
+| 11-20 | 131, 204, 230, 217, 137, 209, 139, 241, 129, 133 | 1,770 |
+| 21-30 | 133, 143, 126, 183, 225, 238, 173, 244, 128, 123 | 1,716 |
+| 31-40 | 201, 176, 217, 257, 236, 187, 200, 175, 152, 237 | 2,038 |
+
+**Total:** 1,890 + 1,770 + 1,716 + 2,038 = **€7,414**
+
+**Split three ways:** 7,414 ÷ 3 = 2,471.333...
+
+| Person | Share |
+|---|---|
+| Sam | €2,471.33 |
+| Priya | €2,471.33 |
+| Tom | €2,471.34 |
+
+The extra cent is there because 3 × 2,471.33 = 7,413.99, so one person rounds up to make the total exactly €7,414.00. Swap in whoever you like for that cent.

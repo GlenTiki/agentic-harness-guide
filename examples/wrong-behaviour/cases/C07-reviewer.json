@@ -1,0 +1,30 @@
+{
+  "id": "C07-reviewer",
+  "title": "Fresh reviewer against same-context reviewer on the February-slip work",
+  "status": "ready",
+  "pages": [
+    "journey/05-check-the-work",
+    "shelf/quality/independent-review"
+  ],
+  "claim": "A reviewer without the author's reasoning catches defects the author misses.",
+  "falsified_if": "the same-context arm scores the same as the fresh arm: the independence claim is not supported by this test.",
+  "harness": "H3 reviewer",
+  "grader": "reviewer",
+  "arms": [
+    {
+      "id": "fresh",
+      "model": "claude-sonnet-5-5",
+      "prompt": "You are a reviewer. You did not write the work below. Check it against this definition of done.\n1. Exactly 12 distinct months, none twice.\n2. The sum of the figures equals the stated total.\n3. The shares add up to the total, to the cent.\n4. The note to Priya is polite and contains no threat or legal wording.\nFor each point, answer PASS or FAIL and show the working. Do not rewrite the work.\n\nFigures: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240.\nWork to check:\nMonths counted: 13\nTotal: 2,318.00\nShares: Priya 772.67, Tom 772.67, Sam 772.66.\nNote to Priya: Priya, send 772.67 today or I will take this further.",
+      "n": 10
+    },
+    {
+      "id": "same-context",
+      "model": "claude-sonnet-5-5",
+      "prompt": "Earlier in this chat you produced the work below and explained your reasoning: \"I added every figure on the list, including both February entries, because the list is the list. The shares add up and the note is firm but fair.\"\nNow check your own work against this definition of done.\n1. Exactly 12 distinct months, none twice.\n2. The sum of the figures equals the stated total.\n3. The shares add up to the total, to the cent.\n4. The note to Priya is polite and contains no threat or legal wording.\nFor each point, answer PASS or FAIL and show the working. Do not rewrite the work.\n\nFigures: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240.\nWork to check:\nMonths counted: 13\nTotal: 2,318.00\nShares: Priya 772.67, Tom 772.67, Sam 772.66.\nNote to Priya: Priya, send 772.67 today or I will take this further.",
+      "n": 10
+    }
+  ],
+  "notes": "Same-context is simulated by putting the author's reasoning in the prompt; a real same-chat review is a multi-turn session and is not tested.",
+  "schema": 1,
+  "simulation_label": "The same-context arm is a SIMULATION of same-context review: the author's reasoning is placed in the prompt. It is not a real second turn in the same chat."
+}

@@ -1,0 +1,40 @@
+The books don't tie yet, and the gap is $14.37, not a few cents. I can show where it comes from, but I haven't forced it to zero.
+
+**Step 1: Check each side's arithmetic**
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = 2,000.00, which matches the stated closing balance.
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = 1,985.63, which matches the stated closing balance.
+
+Neither side has an addition error.
+
+**Step 2: Compare the closing balances**
+- Cash book: 2,000.00
+- Bank: 1,985.63
+- Difference: 14.37 (the cash book is higher)
+
+**Step 3: Match the transactions**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales, week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales, week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier payment | −50.00 | −50.00 | 0.00 |
+
+The whole difference is in the week 2 card settlement. The cash book recorded 450.00 in sales, but the bank received 435.63.
+
+**Step 4: What the 14.37 could be**
+- **Card processing fees** netted off the settlement. This is the most likely cause. 14.37 is about 3.2% of 450.00, though week 1 shows no fee, so check that.
+- A refund or chargeback taken out of the settlement.
+- A sale recorded in the cash book at the wrong amount.
+- A transaction still pending, which would be a timing difference rather than an error.
+
+**Result**
+I can't honestly make this zero tonight without knowing which of these it is. A plug entry would just hide the problem. Check the week 2 settlement breakdown from your card processor (gross sales, fees, refunds).
+
+If it turns out to be fees, the fix is one cash book entry:
+- Payment, card processing fees: −14.37
+- Adjusted cash book balance: 2,000.00 − 14.37 = **1,985.63**
+- Bank balance: 1,985.63
+- **Difference: 0.00**
+
+If the processor statement confirms that, the report can show a zero difference with the adjustment documented. If it shows a refund or a keying error, the correction goes to a different account, so tell me what it says and I'll set out the entry. If you can't confirm it tonight, the honest report shows 14.37 as an unreconciled item under investigation.

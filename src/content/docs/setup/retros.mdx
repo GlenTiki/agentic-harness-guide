@@ -1,0 +1,79 @@
+---
+title: A retro turns rambling into fixes
+description: A praise-first retro sorts what went well and what went wrong into a form the agent can analyse, then proposes fixes you approve. The case study builds it.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study: the retro format, a parser for rough notes and a proposals file ([chapter 9](../../case-study/ch09-retro/)). Runs in my setup: only a correction-to-memory loop and a stop-time reminder, with no praise-first retro procedure.
+
+## The weak spot it removes
+
+**The same mistake twice.** Feedback given in chat disappears when the session ends. Feedback saved as a vague note is never acted on.
+
+## How it works
+
+The retro has a fixed form so a script can read it. The [feedback loop page](../../method/the-feedback-loop/) explains the habit. This page shows the machinery.
+
+```text
+RETRO <date> <topic>
+WENT WELL
+- ...
+WHAT IT WAS: ...
+WHAT HAPPENED: ...
+WHAT I PREFERRED: ...
+```
+
+You can write rough notes. The [agent](../../glossary/#agent) turns them into the form, shows it to you and saves it only after your yes.
+
+### The parser
+
+A deterministic parser reads rough notes and sorts sentences into four bins. It uses cue words and the order you wrote them. Its cue words are a fixed list, so wording outside the list can land in the wrong bin. This is a principle; the guide did not measure how often. So the agent shows the result and you correct it. The parser does not decide anything. It saves typing.
+
+### The proposals file
+
+For each "what happened" and "what I preferred" pair, the agent writes a proposal. A proposal names:
+
+- the weak spot, in one sentence
+- the fix, as a check or a block
+- how to prove the fix can fail
+- the place where it will run
+
+Proposals are plain text in a file. Each starts as "proposed". You mark it "accepted" or "rejected", and the agent only acts on accepted ones.
+
+## What my setup does instead
+
+1. A correction becomes a memory note. A hook brings it back when relevant.
+2. At the first stop in a session, one forced scan looks for unsaved lessons.
+3. A ring buffer of session summaries holds what to pick up next.
+4. A rule that keeps breaking moves into the always-loaded instructions.
+
+These work. They do not ask what went well, and they do not produce proposals as a separate reviewable file.
+
+## End-to-end flow
+
+1. At the end of a feature, you type rough feedback.
+2. The agent runs the parser and shows the four-part form.
+3. You fix a misfiled sentence and say yes.
+4. The agent saves the retro and writes proposals.
+5. You accept two proposals and reject one.
+6. For each accepted proposal, the agent builds the check and shows you it failing, then passing.
+7. The agent adds the check to the path that runs every time.
+8. The next retro starts by listing which accepted proposals are now in place, and which slips came back.
+
+## Prove it can fail
+
+Feed the parser rambling input with no praise. It must flag the missing "went well" part, not invent one. Feed it a note with two separate problems. It must produce two entries.
+
+## What this does not do
+
+- It is not a praise-first retro in my setup. My setup has no such procedure.
+- The parser is rule based and uses no language model. It does not judge whether praise is sincere.
+- It does not show that retros reduce repeat mistakes. I have not measured that.
+
+## Build it
+
+[Case-study chapter 9: Retro](../../case-study/ch09-retro/) is a downloadable kit.
+
+**Next:** [Show the work, say Unknown](../monitor-and-showcase/)

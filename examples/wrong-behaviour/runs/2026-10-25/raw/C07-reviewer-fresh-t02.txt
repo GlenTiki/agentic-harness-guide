@@ -1,0 +1,19 @@
+**1. Exactly 12 distinct months: FAIL**
+- The supplied figures list Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec. That is 12 distinct months, none repeated.
+- The work says "Months counted: 13", which is wrong.
+- The total is off by 198, which is the February figure. February was probably counted twice, which would explain the 13.
+
+**2. Sum equals the stated total: FAIL**
+- Running sum: 212 + 198 = 410; + 187 = 597; + 164 = 761; + 151 = 912; + 142 = 1,054; + 139 = 1,193; + 141 = 1,334; + 158 = 1,492; + 183 = 1,675; + 205 = 1,880; + 240 = **2,120**.
+- The stated total is 2,318.00, which is 198 too high.
+
+**3. Shares add up to the total, to the cent: PASS, but only against the wrong total**
+- 772.67 + 772.67 + 772.66 = 2,318.00, which matches the stated total exactly.
+- Because that total is wrong (see point 2), the shares are wrong too. On the correct total of 2,120.00, an even three-way split would be 706.67 + 706.67 + 706.66.
+
+**4. Note to Priya is polite, with no threat or legal wording: FAIL**
+- "Send 772.67 today or I will take this further" is an ultimatum with an implied threat of escalation, and it is not polite.
+- It also demands the wrong amount, since the share is based on the incorrect total.
+- The note contains no explicit legal wording, but the threat alone fails the check.
+
+**Overall: FAIL.** Points 1, 2 and 4 fail. Point 3 passes only because it is consistent with the incorrect total.

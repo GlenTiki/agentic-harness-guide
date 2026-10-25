@@ -4,36 +4,29 @@ description: A plain-English guide to getting reliable, checkable work from AI a
 template: splash
 hero:
   title: Get dependable work from an AI assistant
-  tagline: A plain-English course for anyone who uses an AI assistant. No coding needed. Nine levels, each with a try-it you can do now. Engineers get the depth on the shelf.
+  tagline: A plain-English course for anyone who uses an AI assistant. No coding needed. Nine levels, each with a try-it you can do now.
   actions:
     - text: Try the five-minute win
       link: ./journey/00-hello-robot/#five-minute-win
       icon: right-arrow
-    - text: Pick your route
-      link: ./start-here/how-to-read/
-      variant: secondary
-    - text: For engineers
-      link: ./start-here/engineer-route/
-      variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 import LevelLadder from '../../components/LevelLadder.astro';
 
-"Agentic" means an assistant that takes steps for you, such as reading a file or drafting a message. A "harness" is the set of limits and checks around it. You do not need either word to start.
+A confident total can be wrong, and the reply can still flag its own doubt. In the recorded runs, a list of 40 bills for 39 months got the wrong headline total in 20 of 20 trials: 7,414 against the right 7,281. Every reply flagged "40 amounts for 39 months". None found the bill pasted twice. A three-line check finds it. The nine levels teach you to ask for checks like that, and not to trust the tone. The [evidence page](./evidence/) has the counts.
 
-Assistants write confident answers that can be wrong. This guide shows you how to catch that. Here is the kind of slip it teaches you to catch. You paste a year of shared bills, and February is in the list twice by accident.
+## What is an agentic harness?
 
-```text
-Example of a WRONG reply, shown for practice:
-Total for the year: 2,318.00. Each of the three of us pays 772.67.
+An agentic harness is the set of limits and checks around an AI assistant that takes steps for you, such as reading a file or drafting a message. It makes the assistant's work dependable and checkable. This guide teaches you to build one, from your first chat to a team of assistants. When the same slip comes back, you work through the [weak-spot loop](./method/engineer-weak-spots/#the-loop): notice it, name it, engineer a fix, prove the fix can fail, keep it.
 
-A checked reply:
-I counted 13 figures for 12 months. February appears twice.
-Total without the repeat: 2,120.00. Shares: 706.67, 706.67 and 706.66.
-```
+## Start here
 
-The wrong reply sounds sure and costs each person 66.00 too much. The checked reply says what it counted. Nine levels teach you to ask for that.
+1. **Do the five-minute win.** [Level 0](./journey/00-hello-robot/#five-minute-win) shows how to catch a repeated figure before it becomes a wrong total.
+2. **Pick your route.** [Choose a route](./start-here/how-to-read/) by how you use an assistant: at work, in a chat window, or as an engineer.
+3. **Keep one prompt.** [Refiner lite](./appendix/prompt-refiner/#refiner-lite) tightens a vague ask. Paste it into any chat assistant.
+
+You do not need the words "agentic" or "harness" to start. [Engineers: start with the engineer route.](./start-here/engineer-route/)
 
 ## The nine levels
 
@@ -65,22 +58,22 @@ The shelf is written against Claude Code, with notes on Codex CLI. The ideas tra
     The principles and a staged adoption path. [Read the principles](./shelf/foundations/principles/).
   </Card>
   <Card title="Instructions and context" icon="document">
-    Instruction files, context management and memory. [Open the section](./shelf/context/instruction-files/).
+    Instruction files, context management and memory. [Read the instruction-file pages](./shelf/context/instruction-files/).
   </Card>
   <Card title="Control" icon="warning">
-    Hooks, permissions, capability gating and untrusted input. [Open the section](./shelf/control/hooks/).
+    Hooks, permissions, capability gating and untrusted input. [Read the control pages](./shelf/control/hooks/).
   </Card>
   <Card title="Delegation" icon="random">
-    Sub-agents, worktrees, skills and MCP servers. [Open the section](./shelf/delegation/sub-agents/).
+    Sub-agents, worktrees, skills and MCP servers. [Read the delegation pages](./shelf/delegation/sub-agents/).
   </Card>
   <Card title="Quality" icon="approve-check">
-    Specs, tests, independent review, evals and small pull requests. [Open the section](./shelf/quality/spec-driven-development/).
+    Specs, tests, independent review, evals and small pull requests. [Read the quality pages](./shelf/quality/spec-driven-development/).
   </Card>
   <Card title="Operations" icon="setting">
-    Audit log, cost discipline and human approval. [Open the section](./shelf/operations/observability/).
+    Audit log, cost discipline and human approval. [Read the operations pages](./shelf/operations/observability/).
   </Card>
   <Card title="Reference" icon="list-format">
-    The minimum viable setup and a table of anti-patterns. [Open the section](./shelf/reference/baseline/).
+    The minimum viable setup and a table of anti-patterns. [Read the reference pages](./shelf/reference/baseline/).
   </Card>
 </CardGrid>
 

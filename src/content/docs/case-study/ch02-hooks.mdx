@@ -1,0 +1,263 @@
+---
+title: Hooks that block what agents forget
+description: Build a hook dispatcher with the exit-2 block contract, five example hooks and a test matrix with allow, deny and malformed cases.
+status: built
+sidebar:
+  label: "Chapter 2: Hooks"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch02-hooks.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (7 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+The [agent](../../glossary/#agent) forgets the rules. A rule in an instruction file is advice. A hook runs when its event fires, and the agent cannot decide to skip it. It can still be misconfigured or fail open.
+
+## Goal
+
+Run five hooks through one dispatcher and prove each one blocks, allows or fails closed as designed.
+
+## What is in the kit
+
+- `dispatch.py`, a hook dispatcher. It follows the exit-code contract: 0 allows, 2 blocks, any other non-zero code is a non-blocking error. Bad input fails closed.
+- Five example hooks in `hooks/`: `block_destructive_bash.py`, `protect_files.py`, `inject_rules.py`, `log_tool_use.py` and `stop_if_open_checklist.py`.
+- `hooks.json`, which maps each event and tool name to a script.
+- `matrix.json`, a test matrix of 19 cases: allow, deny and malformed input.
+- `claude-settings.example.json`, a settings snippet for Claude Code.
+
+## Get the kit
+
+Download [ch02-hooks.zip](/agentic-harness-guide/downloads/ch02-hooks.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch02-hooks.zip
+unzip ch02-hooks.zip -d kit
+cd kit/ch02-hooks
+```
+
+The hash must be `f9af645321bd40c9010d56228f6c011fb47bbc3c3e97aa0e9e9f987088f72ce2`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `dispatch.py` and the five scripts in `hooks/`.
+3. Read `hooks.json`. It maps each event and tool name to a script.
+4. Run the matrix: `python3 -I validate.py`. It also installs the kit into a scratch project and follows the commands in `claude-settings.example.json`.
+5. Pipe one event into the dispatcher by hand and read the exit code. The second Example shows the command.
+6. Point the dispatcher at a config that does not exist. It still blocks.
+7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+To use the hooks in Claude Code, copy `dispatch.py`, `hooks.json` and the `hooks/` folder into `.claude/harness-hooks/` in your project. Then merge `claude-settings.example.json` into `.claude/settings.json`. The commands in it name `${CLAUDE_PROJECT_DIR}/.claude/harness-hooks/dispatch.py`. If you put the files elsewhere, change that path. A path that does not exist makes the hook fail on every call, and the validator checks the sample path for that reason.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You run the whole matrix of 19 cases through the dispatcher."
+  evidence="python3 -I validate.py (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+validate: PASS
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The last line is `validate: PASS`. Every case gave the exit code that `matrix.json` expects.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The dispatcher and the five hooks behave as the matrix says. The matrix is not a proof for every input.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You send the dispatcher the event 'run `rm -rf x`' by hand, as the agent harness would before the call."
+  evidence="the command shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+echo '{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"rm -rf x"}}' | python3 -I dispatch.py; echo "exit=$?"
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Blocked: rm with -rf destroys work. Ask the user first.
+exit=2
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The reason goes to stderr: `Blocked: rm with -rf destroys work. Ask the user first.` The last line, `exit=2`, is the block signal.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A deny gives a reason and exit code 2. It does not show what a live Claude Code session does with that reply.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You send an event that the rules allow, to see that the hook does not block everything."
+  evidence="the command shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+echo '{"hook_event_name":"PreToolUse","tool_name":"Bash","tool_input":{"command":"ls -la"}}' | python3 -I dispatch.py; echo "exit=$?"
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+exit=0
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+There is no message. The only line is `exit=0`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+An allowed call passes. It does not show the rule set is complete.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You point the dispatcher at a config file that does not exist. A policy hook must still block."
+  evidence="echo '{}' | python3 -I dispatch.py --config scratch/no-such.json; echo 'exit=$?' (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+echo '{}' | python3 -I dispatch.py --config scratch/no-such.json; echo "exit=$?"
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Blocked: the hook config scratch/no-such.json cannot be read ([Errno 2] No such file or directory: 'scratch/no-such.json').
+exit=2
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The reason names the missing file. The last line is `exit=2`. Exit code 1 would let every action through.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A missing config fails closed. It does not show the same for every other failure.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on a copy where the Bash hook exits with code 1 where it should exit with code 2. The check must go red."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+FAIL rm -rf is denied: expected exit 2, got 0
+FAIL force push is denied: expected exit 2, got 0
+FAIL hard reset is denied: expected exit 2, got 0
+FAIL bash event without a command fails closed: expected exit 2, got 0
+FAIL settings PreToolUse: the command path 'python3 -I "${CLAUDE_PROJECT_DIR}/chapters/02-hooks/dispatch.py"' does not resolve to a file when the kit sits in .claude/harness-hooks.
+FAIL settings: no PreToolUse command covers the Bash tool.
+validate: FAIL (6 problem(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Four deny cases report `got 0`. The dispatcher treats the bad hook's exit 1 as a non-blocking error and exits 0, so the action would have gone ahead. Two settings problems follow; the path in the first is my repository layout, not the kit's.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Exit code 1 looks like a block and does not block, and the matrix catches it. It does not show the same for the live harness.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+The behaviour inside a live Claude Code session is not tested. I ran nothing inside Claude Code for this chapter. The settings snippet follows the documented shape: an event name, a list of groups with an optional matcher, and a list of hooks with `type` and `command`. The tests check that shape and that the path resolves. The claims about exit codes come from the Claude Code hooks documentation, which the setup page quotes. The tests run against this dispatcher, not against Claude Code.
+
+**Read the matching page:** [Hooks](../../setup/hooks/)
+
+**Next:** [Resolve every link in a document](../ch03-link-resolver/)

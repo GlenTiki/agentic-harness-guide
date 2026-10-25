@@ -1,0 +1,122 @@
+---
+title: Observability and audit log
+description: Record what the agent did in a file you control, so you can answer what happened and why.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 7: Run it for real](../../../journey/07-run-it-for-real/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** write an audit log from hooks, not from the model, and ship it somewhere the agent cannot edit. Keep session transcripts for as long as your policy needs them and know when your harness deletes them. Track token use and cost per session.
+
+## Why it matters
+
+When something goes wrong, the question is "what did the agent do, in what order, and on whose instruction?". The model's own account is a summary and may be wrong. A log written by the harness is a record, as [level 7](../../../journey/07-run-it-for-real/) shows with its audit log. It also supports audits, because you can show what the agent touched.
+
+## What to enable
+
+**1. One line per tool call, from two events.** Do not log secrets. Add the log directory to `.gitignore` unless you mean to commit it. Log from `PreToolUse` and from `PostToolUse`. Claude Code behaviour: `PostToolUse` runs after a call succeeds. A failed call produces no `PostToolUse` line, because Claude Code has a separate `PostToolUseFailure` event. A call that was blocked before it ran did not succeed, so it produces none either. The `PreToolUse` line shows what the agent tried, and a missing `post` line next to it shows what did not complete. Each line carries a UTC timestamp, the session id, a sequence number, the phase, the tool and the target.
+
+```bash
+#!/usr/bin/env bash
+# Usage: log-action.sh pre|post. Reads the hook JSON on stdin.
+set -euo pipefail
+phase=$1
+input=$(cat)
+session=$(jq -r '.session_id' <<<"$input")
+log_dir="${CLAUDE_PROJECT_DIR}/.agent-log"
+mkdir -p "$log_dir"
+seq_file="$log_dir/seq-$session"
+seq=$(( $(cat "$seq_file" 2>/dev/null || echo 0) + 1 ))
+echo "$seq" > "$seq_file"
+target=$(jq -r '.tool_input.file_path // .tool_input.command // ""' <<<"$input" | perl -pe '
+  s/(bearer\s+)\S+/$1\[REDACTED]/ig;
+  s/\b(\w*(?:token|key|password|passwd|secret)\w*=)\S+/$1\[REDACTED]/ig;
+  s/(--password[= ])\S+/$1\[REDACTED]/ig;
+  s/(\s-u\s+[^\s:]+:)\S+/$1\[REDACTED]/g;
+' | head -c 200)
+printf '%s | %s | %06d | %s | %s | %s\n' \
+  "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$session" "$seq" "$phase" \
+  "$(jq -r '.tool_name' <<<"$input")" "$target" >> "$log_dir/actions.log"
+```
+
+Save it as `.claude/hooks/log-action.sh`. Register it on both events with the commands `${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh pre` and `${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh post`. The log goes to `${CLAUDE_PROJECT_DIR}/.agent-log`, so it lands in one place whatever directory the session is in. Check the path first with `test -f`. A missing shell script exits 127 and the hook then silently logs nothing (see [Hooks](../../control/hooks/)).
+
+<Example
+  label="Computed"
+  task="A maintainer feeds five hook calls to the logging script to see what lands in the log and which secrets the filter misses."
+  evidence="The script above, run with CLAUDE_PROJECT_DIR set to an empty folder."
+  env="macOS 26.5, bash script, jq 1.8.2, perl 5.34.1, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```bash
+echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"curl -H \"Authorization: Bearer abc123\" https://x.example"}}' | ./log-action.sh pre
+echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"curl -H Authorization:Bearer abc123 https://x.example"}}' | ./log-action.sh pre
+echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"curl -H \"X-Api-Key: k1\" https://x.example"}}' | ./log-action.sh post
+echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"mysql -phunter3 -e x"}}' | ./log-action.sh post
+echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"deploy --token=abc123"}}' | ./log-action.sh post
+```
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+2026-10-25T01:06:19Z | s1 | 000001 | pre | Bash | curl -H "Authorization: Bearer [REDACTED] https://x.example
+2026-10-25T01:06:19Z | s1 | 000002 | pre | Bash | curl -H Authorization:Bearer [REDACTED] https://x.example
+2026-10-25T01:06:19Z | s1 | 000003 | post | Bash | curl -H "X-Api-Key: k1" https://x.example
+2026-10-25T01:06:19Z | s1 | 000004 | post | Bash | mysql -phunter3 -e x
+2026-10-25T01:06:20Z | s1 | 000005 | post | Bash | deploy --token=[REDACTED]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Lines 1, 2 and 5 hide the secret. Lines 3 and 4 write `k1` and `hunter3` to the log in clear text. The sequence numbers run 1 to 5, so a gap would show.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows that a short pattern list misses some shapes, so the filter is not a guarantee. It does not show what the filter misses on other inputs.
+
+</Fragment>
+
+</Example>
+
+The `perl` filter redacts `Bearer` values, any `name=value` pair whose name contains `token`, `key`, `password`, `passwd` or `secret`, `--password` values and the password in `-u user:pass`. `head -c 200` only truncates. It does not redact.
+
+Parallel tool calls can race on the counter file, so treat a repeated number as a prompt to look, not as proof of tampering. The script writes in append mode, which is not append-only: a log file the agent can write is a log the agent can edit. Ship each line off the machine, or write to a path that the agent's user account cannot write.
+
+**2. Log lifecycle events too.** Session start, session end, sub-agent start and stop, configuration changes and capability changes all belong in the trail. Claude Code exposes events for most of these, including `SessionStart`, `SessionEnd`, `SubagentStart`, `SubagentStop` and `ConfigChange`.
+
+**3. Use second-resolution UTC timestamps.** They sort lexically, they compare without time zone arithmetic, and you convert to local time only when you display them.
+
+**4. Know your transcript retention.** Harnesses store full session transcripts on disk, and some delete them after a set period. Check how long yours keep them, and copy out anything you must retain for audit before it expires. Do not assume an old session is still there.
+
+**5. Treat transcripts as sensitive.** They contain file contents, command output and anything you pasted. Apply the same access controls as the code and data they touched.
+
+**6. Track tokens and cost.** Record input tokens, output tokens and the model per session, and total them per day. A sudden jump can mean a loop or an oversized context. See [Cost and resource discipline](../cost-and-resources/).
+
+**7. Make the log queryable.** Plain lines are enough. A short script that answers "what changed since yesterday?" is worth more than a dashboard you never open.
+
+**8. Prove it runs.** "Enabled" is not "running". After you add the hook, trigger an action and confirm a new line appears.
+
+## Failure modes it reduces
+
+- You cannot tell which session changed a file.
+- A transcript you needed was deleted by the retention policy.
+- Cost doubles for a week before anyone notices.
+- A hook is configured but silently failing, so the log has gaps.
+
+## First step for the maintainer
+
+Add the action-log hook above on both events. Perform one edit and one command. Check that four lines appear, two `pre` and two `post`.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "tool events (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`, `PermissionDenied`)". Claude Code on that date: 2.1.310. The docs page states no version of its own. Transcript retention periods vary by tool and version, so this page names no figure. Check your tool's documentation.</p>
+
+**Next:** [Cost and resource discipline](../cost-and-resources/)

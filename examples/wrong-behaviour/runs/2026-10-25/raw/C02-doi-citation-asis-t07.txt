@@ -1,0 +1,13 @@
+Two studies, with DOIs from memory (I haven't checked them against a registry), so please confirm each at https://doi.org/ before citing.
+
+1. **Garrett G, Benden M, Mehta R, Pickens A, Peres CS, Zhao H.** (2016). "Call Center Productivity Over 6 Months Following a Standing Workstation Intervention."
+   - Journal: *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195
+   - DOI: 10.1080/21577323.2016.1183534
+   - Finding: call center employees with standing workstations were more productive than those at seated desks. The study was observational and the workers were not randomly assigned.
+
+2. **Edwardson CL, Biddle SJH, Clemes SA, Davies MJ, Dunstan DW, Eborall H, et al.** (2018). "Effectiveness of the Stand More AT (SMArT) Work intervention: cluster randomised controlled trial."
+   - Journal: *BMJ*, 363, k3870
+   - DOI: 10.1136/bmj.k3870
+   - Finding: a sit-stand desk intervention reduced sitting time. Productivity was not its main outcome, and its secondary work-related outcomes (such as job performance and engagement) showed little clear effect.
+
+The first study suggests a productivity benefit, but its design is weaker. The second is a stronger trial, and it doesn't show clear productivity gains.

@@ -1,0 +1,11 @@
+I have no web access in this session, so these are from memory and I haven't checked the DOIs. Please confirm them at doi.org before citing.
+
+1. **Garrett, G., Benden, M., Mehta, R., Pickens, A., Peres, C. S., & Zhao, H.** (2016). "Call center productivity over 6 months following a standing desk intervention." *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195.
+   DOI: 10.1080/21577323.2016.1183739
+   This is the most direct study of productivity. Call center workers with standing desks were more productive than those with seated desks over six months.
+
+2. **Dutta, N., Koepp, G. A., Stovitz, S. D., Levine, J. A., & Pereira, M. A.** (2014). "Using sit-stand workstations to decrease sedentary time in office workers: a randomized crossover trial." *International Journal of Environmental Research and Public Health*, 11(7), 6653-6665.
+   DOI: 10.3390/ijerph110706653
+   This one is mainly about reducing sitting time, not productivity. I'm including it because it's a commonly cited office-worker trial on sit-stand desks, and it's a weaker fit for your question.
+
+The Garrett study has no random assignment and a single workplace, so its productivity result is suggestive rather than conclusive. If you need a second study that measures productivity directly, I can suggest other candidates, but I'd want you to verify those too.

@@ -1,0 +1,24 @@
+I'll check these against Crossref rather than rely on memory for the DOIs.
+
+
+<invoke name="Bash">
+<parameter name="command">curl -s "https://api.crossref.org/works/10.1080/21577323.2016.1183739" | python3 -I -c "import sys,json; m=json.load(sys.stdin)['message']; print(m['title'], [a['family'] for a in m['author']], m['container-title'], m['issued'])"</parameter>
+</invoke>
+<invoke name="Bash">
+<parameter name="command">curl -s "https://api.crossref.org/works?query.bibliographic=standing+desk+productivity+randomized+sit-stand+workstation&rows=8&select=DOI,title,author,container-title,issued" | python3 -I -c "
+import sys,json
+for m in json.load(sys.stdin)['message']['items']:
+    print(m['DOI'], '|', m.get('title'), '|', [a.get('family') for a in m.get('author',[])], '|', m.get('container-title'), '|', m['issued']['date-parts'][0][0])"</parameter>
+</invoke>
+
+
+
+<invoke name="Bash">
+<parameter name="command">curl -s "https://api.crossref.org/works/10.1080/21577323.2016.1183739" | python3 -c "import sys,json; m=json.load(sys.stdin)['message']; print(m['title'], [a['family'] for a in m['author']], m['container-title'], m['issued'])"</parameter>
+</invoke>
+<invoke name="Bash">
+<parameter name="command">curl -s "https://api.crossref.org/works?query.bibliographic=standing+desk+productivity+randomized+sit-stand+workstation&rows=8&select=DOI,title,author,container-title,issued" | python3 -c "
+import sys,json
+for m in json.load(sys.stdin)['message']['items']:
+    print(m['DOI'], '|', m.get('title'), '|', [a.get('family') for a in m.get('author',[])], '|', m.get('container-title'), '|', m['issued']['date-parts'][0][0])"</parameter>
+</invoke>

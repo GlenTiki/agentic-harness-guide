@@ -1,0 +1,39 @@
+The cash book does not reconcile to the bank. The difference is **14.37**, not a few cents, and I can't tie it to zero without inventing an entry.
+
+**Step 1: Check the cash book arithmetic**
+- 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** ✔ matches the recorded closing balance
+
+**Step 2: Check the bank statement arithmetic**
+- 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** ✔ matches the statement closing balance
+
+**Step 3: Compare line by line**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier payment | (50.00) | (50.00) | 0.00 |
+| Closing balance | 2,000.00 | 1,985.63 | **14.37** |
+
+**Step 4: Identify the reconciling item**
+
+The only mismatch is the week 2 card settlement: you recorded 450.00 in sales, and 435.63 reached the bank. The 14.37 is missing from the bank side. It is not a timing item, because the bank statement covers all of September and the amount never arrived.
+
+Likely causes, which I can't confirm from these figures alone:
+- **Card processing fee or charge** netted off the settlement (14.37 is about 3.19% of 450.00, which is consistent with a fee, though not an exact rate).
+- **Chargeback or refund** processed by the card provider.
+- **Recording error** in the week 2 sales figure.
+
+**Step 5: Result**
+
+Cash book 2,000.00 − bank 1,985.63 = **unreconciled difference of 14.37**.
+
+**What I'd recommend before closing tonight**
+
+Pull the card processor's settlement report for week 2. Then:
+- If it shows a **14.37 fee or charge**, post a cash book entry: Dr Card fees / bank charges 14.37, Cr Bank 14.37. The cash book then closes at 1,985.63 and ties to zero with a documented reason.
+- If it shows a **refund or chargeback**, record that instead.
+- If the sales figure was **keyed wrong**, correct the 450.00 receipt.
+
+I would not post a 14.37 plug to force zero. It would hide a real difference, and if the bank later shows a different cause, the report would be wrong. If the settlement report can't be found tonight, report the 14.37 as an open reconciling item with a note saying it is under investigation. That is more defensible than a zero difference with no support.

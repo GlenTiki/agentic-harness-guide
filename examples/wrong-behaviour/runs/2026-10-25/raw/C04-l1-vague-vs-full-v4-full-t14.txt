@@ -1,0 +1,4 @@
+Months counted: 13 (Jan, Feb, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+Sum of the figures as listed: 2,519.00, which includes Feb twice.
+
+I'm stopping here because the count isn't 12. Feb 198 appears twice. Is that a duplicate entry to drop, or are there two different bills, in which case one of them belongs to another month? If it's a duplicate, the total would be 2,321.00, but please confirm before I split it.

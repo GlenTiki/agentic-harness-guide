@@ -1,0 +1,82 @@
+---
+title: A link check is not a reference check
+description: Two checks keep documents honest. One proves every link and path resolves. The other follows references and asks whether the target supports the claim.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: a check for `path:line` citations in changed files. Built in the case study: a Markdown link and anchor resolver ([chapter 3](../../case-study/ch03-link-resolver/)) and a depth-limited reference walker ([chapter 4](../../case-study/ch04-reference-walker/)). My setup has neither of those, and it has no depth or loop limit anywhere.
+
+## The weak spot it removes
+
+**Documents drift from reality.** A document points to a file. Someone renames the file. The pointer stays and the document now lies. A pointer with a line number is worse: the file grows and the line number lands in the wrong place.
+
+In my setup this happened. Line-number citations rotted when a document grew, and one pointer ended up in the wrong section. The fix had three layers. It warns after an edit. It blocks new line-number citations at commit. It blocks drift in changed files at commit and at stop. I then replaced line numbers with heading anchors in Markdown, because anchors survive edits.
+
+## Two different checks
+
+| Check | Question it answers | Needs a model? |
+| --- | --- | --- |
+| Resolver | Does this link, path or anchor point at something that exists? | No |
+| Walker | Does the referenced text really support the claim, several hops deep? | Yes, for the judging step |
+
+Keep them apart. The resolver is cheap, exact and runs on every commit. The walker is slower, judges meaning and runs out of band, for example nightly.
+
+## Why the usual tools are not enough
+
+Two good tools exist and each leaves a gap.
+
+- **markdownlint rule MD051** checks that a link fragment matches a heading in the same document. It does not check relative file paths. It does not check fragments in other files.
+- **lychee** checks local relative links and, with its fragment option, anchors. It is a strong choice for a docs site. It does not judge whether the target supports the claim. It may also miss anchors that JavaScript creates.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://github.com/DavidAnson/markdownlint/blob/main/doc/md051.md. The page describes a check that a link fragment matches a heading fragment in the document. The page states no tool version.</p>
+
+<p class="verified">Docs page fetched on 2026-10-24: https://github.com/lycheeverse/lychee. The page describes checking local files and relative links, and checking fragments only when the body is fetched. The page states no tool version.</p>
+
+Use those tools if they fit. The case study builds a small resolver from scratch so you can see each rule and break it on purpose. It is a teaching build, not a replacement for lychee.
+
+## How the resolver works
+
+1. Find every Markdown link and every path in code spans that looks like a file.
+2. For a relative file link, check that the file exists, relative to the file that contains the link.
+3. For a link with `#fragment`, check that the target file has a heading that makes the same anchor.
+4. Report each failure with the file and the line of the link.
+
+## How the walker works
+
+The walker starts at one root document. It follows every reference, and every reference in those, until it hits a limit. It needs four limits, or it can run forever.
+
+| Limit | Why it exists |
+| --- | --- |
+| Maximum depth | Stops a long chain of hops. |
+| Maximum path length | Stops one chain from getting too long to read. |
+| Visited set | Stops the walker reading the same file twice. |
+| Cycle detection | Stops A pointing to B pointing to A. |
+
+At each hop a *judge* decides whether the referenced text supports the claim that cited it. In the case study the judge is a plug-in point. In the tests it is a fixed stub, so the tests stay deterministic. In real use you could connect a model there. Then the walker is only as good as that model, and you should review a sample of its verdicts.
+
+The depth and path-length values are settings. The case study picks small defaults to keep the demo fast. Pick your own after you have seen how deep your documents go.
+
+## End-to-end flow
+
+1. You edit a spec and rename a heading.
+2. The resolver runs at commit. It reports that three other documents link to the old anchor. The commit is blocked.
+3. You fix the three links. The resolver goes green.
+4. Nightly, the walker starts at the top-level index. It follows references to a depth of four.
+5. At one hop the stub judge, or a model, says the cited paragraph no longer states the claim. The walker records the file, the claim and the verdict.
+6. You read the report and update the claim.
+
+## Prove each check can fail
+
+- Resolver: a fixture with a broken file link and a broken anchor must go red.
+- Walker: a fixture with a reference cycle must stop and report the cycle. A fixture deeper than the limit must stop at the limit and say so.
+
+## Build it
+
+Both are downloadable kits.
+
+- [Chapter 3: Link resolver](../../case-study/ch03-link-resolver/).
+- [Chapter 4: Reference walker](../../case-study/ch04-reference-walker/).
+
+**Next:** [Agent memory as small notes](../memory/)

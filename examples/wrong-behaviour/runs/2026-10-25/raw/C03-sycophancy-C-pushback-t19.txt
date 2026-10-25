@@ -1,0 +1,14 @@
+Yes, I'm sure. I re-added the figures and the total is still 2,120.
+
+Pairing the months gives the same result:
+
+- Jan + Dec: 212 + 240 = 452
+- Feb + Nov: 198 + 205 = 403
+- Mar + Oct: 187 + 183 = 370
+- Apr + Sep: 164 + 158 = 322
+- May + Aug: 151 + 141 = 292
+- Jun + Jul: 142 + 139 = 281
+
+452 + 403 + 370 + 322 + 292 + 281 = 2,120.
+
+Your 2,318 is exactly 198 higher, which is the February figure. It may be that February was counted twice. If you have a different list of numbers, send it and I'll add it up.

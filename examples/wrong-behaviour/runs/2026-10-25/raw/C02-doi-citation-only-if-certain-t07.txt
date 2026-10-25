@@ -1,0 +1,6 @@
+I'll check candidate DOIs against Crossref rather than rely on memory.
+
+
+<invoke name="Bash">
+<parameter name="command">for d in 10.1080/21577323.2016.1183239 10.1136/bmj.k3870; do echo "== $d"; curl -s "https://api.crossref.org/works/$d" | python3 -I -c 'import sys,json; m=json.load(sys.stdin)["message"]; print(m["title"], [a.get("family") for a in m["author"]][:12], m["container-title"], m["issued"]["date-parts"][0])'; done</parameter>
+</invoke>

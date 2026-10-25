@@ -1,0 +1,87 @@
+---
+title: A lead agent and short-leash helpers
+description: A lead agent plans and reports while helpers do bounded tasks. Hooks nudge delegation and block risky helper calls. Here is the flow and the limits.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: the lead-agent policy, a delegation counter, a block on write-capable helpers that are not isolated, and context-ledger recovery. Built in the case study: brief templates and a shared-rules check ([chapter 7](../../case-study/ch07-orchestrator/)).
+
+## The weak spot it removes
+
+**One [agent](../../glossary/#agent) does everything.** Its context fills with raw files. It reviews its own work. It loses the plan. Parallel helpers that write files can also trample each other.
+
+## How it works
+
+The lead agent plans, coordinates and reports. Helpers do one bounded task and return a short summary. The human states the outcome and approves outside actions.
+
+My policy says to delegate when any of these is true:
+
+- The task touches more than three files.
+- The task needs more than about 100 lines of new content.
+- The work is exploration, such as "find where X lives".
+- A new direction arrives while another task runs.
+- Several tool calls in a row have passed with no delegation.
+
+Simple edits, short reads and one-line answers stay in the main thread.
+
+### Hooks that support the policy
+
+1. **A counter.** A hook counts consecutive main-thread tool calls. At the fifth and tenth call it adds a nudge to delegate.
+2. **A write guard.** A before-tool hook denies a helper call that looks like it writes files. It allows the call only if the call is isolated in its own worktree, is read-only, or targets a path where isolation is impossible. The guard exists because parallel writers in one checkout collided.
+3. **A brief check.** A hook searches memory with the outgoing brief, so a helper is not told to break a standing rule.
+4. **A context ledger.** Before context compaction, a hook saves objective state: branch, short commit, count of changed files, intent and recent actions. After compaction, a session-start hook prints the newest entry. It cannot know what the agent was thinking. It records facts only.
+
+### What helpers get
+
+This part differs by launcher.
+
+| Launcher | Hooks | Project instructions |
+| --- | --- | --- |
+| A native helper in Claude Code | Yes | Yes for custom helpers. No for the built-in Explore and Plan helpers. |
+| My own launcher built from a role file | No | No. The brief must carry them. |
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/sub-agents. Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+Claude Code lets helpers start helpers, up to three layers. I keep to one layer by my own rule: a helper reports back and the lead starts the next one. That keeps the log flat.
+
+## End-to-end flow
+
+1. You describe the outcome and the check that will prove it.
+2. The lead agent reads the instruction files and writes a plan. It tells you the plan.
+3. You approve or change the plan.
+4. The lead starts a read-only helper to find the relevant files. The helper returns a summary of at most a page.
+5. The lead starts a write helper in its own worktree. The brief has the task, the files, the rules block and the check that must pass.
+6. The write guard checks the call. The worktree isolation passes it.
+7. The helper works. Hooks run on its tool calls. It returns a short report and a branch.
+8. The lead starts a separate reviewer helper. The reviewer sees the output and the check, not the author's reasoning.
+9. The lead runs the check itself, sees it pass, and reports to you.
+
+## A brief for a helper
+
+A good brief fits on a screen. It has five parts.
+
+1. The task, in one sentence.
+2. The files and folders the helper may touch.
+3. The shared rules block, copied from one place.
+4. The check that must pass, and the command that runs it.
+5. What to return: findings, not a long transcript.
+
+## What to watch
+
+- A helper that returns a long dump has defeated the purpose. Ask for less.
+- A helper brief that omits the rules block is a weak spot. Chapter 7 builds a check that finds it.
+- Give the reviewer the output and the criteria, not the author's reasoning. In my isolated test, a simulated same-context reviewer (the author's reasoning put in the prompt) missed the defect in 0 of 10 trials, the same as a fresh reviewer, so this page does not claim that seeing the reasoning makes a reviewer agree. See the [evidence page](../../evidence/).
+
+## What this does not do
+
+- The delegation counter nudges. It does not block.
+- The one-layer rule is a written policy. I have not built a check for it.
+- It does not prove that delegation gives better results. I have not measured that, and [the product manager page](../../method/product-manager-and-team-lead/) lists the tests to run.
+
+## Build it
+
+[Case-study chapter 7: Orchestrator](../../case-study/ch07-orchestrator/) is a downloadable kit. [Level 6](../../journey/06-hire-a-team/) teaches the idea.
+
+**Next:** [Personas are review lenses](../personas/)

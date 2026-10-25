@@ -1,0 +1,34 @@
+## Reconciliation: cash book to bank statement, September
+
+**Step 1: Compare opening balances**
+- Cash book: 1,000.00
+- Bank: 1,000.00
+- **Result:** Agree, no difference.
+
+**Step 2: Match each cash book entry to the bank statement**
+
+| Cash book entry | Cash book | Bank statement | Difference | Status |
+|---|---|---|---|---|
+| Receipt, card sales week 1 | +600.00 | +600.00 (card settlement) | 0.00 | Matched |
+| Receipt, card sales week 2 | +450.00 | +435.63 (card settlement) | 14.37 | **Unmatched** |
+| Payment, supplier | -50.00 | -50.00 (debit, supplier) | 0.00 | Matched |
+
+**Step 3: Recompute the closing balances from the entries**
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = 2,000.00 (agrees to the stated closing balance)
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = 1,985.63 (agrees to the stated closing balance)
+
+**Step 4: Compare closing balances**
+- Cash book 2,000.00 − Bank 1,985.63 = **14.37 difference**
+
+**Step 5: Explain the difference**
+- Two of three items match exactly. The only difference is week 2 card sales: 450.00 recorded, 435.63 received.
+- No timing items (outstanding cheques or deposits in transit) appear in the data, so the 14.37 is not a timing difference.
+- The most likely cause is a card processor fee or deduction taken from the settlement (14.37 is about 3.2% of 450.00). A chargeback or a keying error in the cash book is also possible.
+- I can't confirm the cause from these figures. Check the card processor's settlement report for week 2 to see which it is.
+
+**Step 6: Adjust the cash book**
+- Cash book 2,000.00 − 14.37 = 1,985.63 = bank closing balance. **Reconciled.**
+- If the cause is a card fee, post: Dr Card processing fees (expense) 14.37 / Cr Cash book 14.37.
+- If the cause is a keying error, correct the week 2 receipt to 435.63 instead.
+
+**Result:** After the 14.37 adjustment, the cash book agrees to the bank statement at 1,985.63. Treat the adjustment as provisional until the settlement report confirms the cause.

@@ -1,0 +1,75 @@
+---
+title: Show the work, say Unknown
+description: An event log, a status board that shows source and time, and a freshness check let you see what the agents did. A showcase page lets you try a preview.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: a monitor that records my activity state and machine load, a log of hook events, a hook-crash notice and a showcase of self-contained preview pages. Built in the case study: an append-only event log, a build-time status board with an Unknown state, and a freshness check ([chapter 10](../../case-study/ch10-monitor/)). My monitor records and reinforces. It does not adapt its own thresholds.
+
+## The weak spot it removes
+
+**Nobody sees the system think.** An [agent](../../glossary/#agent) does work and you see only the final message. A hook can crash and nothing says so. A status page can show a green light that is three days old.
+
+## How it works
+
+### The event log
+
+Every important event is one line of text, appended to a file, never edited. Each line has a time in UTC to the second, ending in `Z`, such as `2026-10-02T09:14:03Z`. Text logs are simple to read, diff and search. The [audit log](../../glossary/#audit-log) idea is taught in [level 7](../../journey/07-run-it-for-real/).
+
+### What my monitor records
+
+- My state every 30 seconds: coding, in a meeting, idle, away or locked. A meeting is detected when a call app holds the microphone.
+- Memory, swap and processor load.
+- Hook events, with personal data redacted, in a local database. I can purge them on request.
+- Hook crashes, shown as a one-line notice on the next prompt.
+
+The state decides when heavy jobs may run. A heavy job waits for free memory, an idle state and no call. It also runs at a lower priority. I publish no numbers from these logs, because they describe my day.
+
+### The status board
+
+A status board shows what is true now. The case study builds it at build time from the log. Every tile carries three items:
+
+1. The value.
+2. The source of the value.
+3. The time it was observed.
+
+A tile can also say **Unknown**. Unknown is a first-class state, not an error. A board that shows a value it cannot source is worse than a board with a gap.
+
+### The freshness check
+
+The freshness check reads the newest event time. If it is older than a limit, the check goes red. This catches the green light that is three days old. Prove it can fail: point it at a log whose last line is old.
+
+### The showcase
+
+The showcase serves a self-contained page for a preview. The page is served with a policy that sandboxes it and allows scripts only. A page can be marked sensitive, which hides it from the list. I use it to show a preview before I commit work. The case study does not build a showcase.
+
+## Weak spots this solved in my setup
+
+These are anecdotes from my setup. I have no command or log to show for them.
+
+| Weak spot | Fix |
+| --- | --- |
+| A hook crashed and nobody saw it. | Log the crash. Show one line at the next prompt. |
+| Context compaction lost the session state. | Save objective state before compaction. Replay it after. |
+| Every stop started a re-index and swap ran out. | Gate the hook, lock the indexer, run heavy jobs through an admission wrapper at low priority. |
+
+## End-to-end flow
+
+1. A hook appends `time | event | target` to the log on every file write and shell call.
+2. At build time, a script reads the log and writes the status board as a page.
+3. Each tile shows value, source and observed time. A tile with no source says Unknown.
+4. A freshness check runs after the build. If the newest event is older than the limit, the build goes red.
+5. You open the board. You see that the last agent run was yesterday and that one hook crashed twice.
+6. You open the crash line, find the cause and run the [weak-spot loop](../../method/engineer-weak-spots/).
+
+## What this does not do
+
+Logs hold file paths and command text. A secret can appear in them. Redact before you store, and never publish a raw log.
+
+## Build it
+
+[Case-study chapter 10: Monitor](../../case-study/ch10-monitor/) is a downloadable kit.
+
+**Next:** [Connect tools through plain files](../connecting-surfaces/)

@@ -1,0 +1,41 @@
+The list has Feb 198 twice, which gives 13 entries. I've treated the second one as a typo, since a year has 12 months. If it was a real second bill, see the note at the end.
+
+**Monthly bills (€)**
+
+| Month | Bill |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+**Running total**
+212 + 198 = 410
+410 + 187 = 597
+597 + 164 = 761
+761 + 151 = 912
+912 + 142 = 1,054
+1,054 + 139 = 1,193
+1,193 + 141 = 1,334
+1,334 + 158 = 1,492
+1,492 + 183 = 1,675
+1,675 + 205 = 1,880
+1,880 + 240 = **2,120**
+
+**Split three ways**
+2,120 ÷ 3 = 706.666…, so about **€706.67 each**.
+
+Rounding to the cent, 3 × 706.67 = 2,120.01, which is one cent over. To make it exact, Sam and Priya pay €706.67 and Tom pays €706.66. That adds up to €2,120.00.
+
+**Monthly equivalent:** 706.67 ÷ 12 ≈ €58.89 per person per month.
+
+**If the duplicate Feb was real**
+The total would be 2,120 + 198 = €2,318, and 2,318 ÷ 3 = €772.67 each (rounded). Two people pay €772.67 and one pays €772.66.

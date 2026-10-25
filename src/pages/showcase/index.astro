@@ -1,0 +1,61 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import HookTimeline from '../../components/HookTimeline.astro';
+import run from '../../data/runs/hook-sample-run.json';
+import { artefacts, pngSize } from '../../data/artefacts';
+import { BASE } from '../../data/site';
+import { provenanceText } from '../../data/twins';
+
+const items = artefacts().map((item) => ({ ...item, size: pngSize(item.image) }));
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Showcase',
+    description: 'Real outputs from the guide: a hook test run, eval results, a recorded reply and the prompt refiner, each with a text version.',
+    template: 'splash',
+    editUrl: false,
+    pagefind: false,
+  }}
+>
+  <p>These are real outputs from the guide's own examples. Each card has a picture, a text version and a link to the page that explains it. Each item is made by the guide or is an unedited reply kept as evidence. None holds personal or client data.</p>
+  <ul class="showcase-grid">
+    {items.map((item) => (
+      <li class="card">
+        <p class="kind">{item.kind} <span class="prov">{provenanceText(item.provenance)}</span></p>
+        <h2>{item.title}</h2>
+        <p>{item.summary}</p>
+        <a class="shot" href={`${BASE}/showcase/render/${item.id}/`}>
+          <img src={`${BASE}/${item.image}`} alt={item.imageAlt} width={item.size.width} height={item.size.height} loading="lazy" />
+          <span class="sr-only">Open the full-size view of {item.title}</span>
+        </a>
+        <details>
+          <summary>Text version</summary>
+          <pre tabindex="0"><code>{item.text}</code></pre>
+        </details>
+        <p class="meta">Prepared <time datetime={item.preparedAt}>{item.preparedAt}</time>. <a href={`${BASE}/${item.learnMore}`}>Read the page that explains it</a>.</p>
+      </li>
+    ))}
+  </ul>
+  <h2>A recorded hook run</h2>
+  <p>This run sent eight tool calls through the sample pre-tool hook and recorded what it decided. The recording keeps metadata only.</p>
+  <HookTimeline run={run} />
+  <p><a href={`${BASE}/showcase/render/hook-timeline/`}>Full-size view of the timeline</a>.</p>
+</StarlightPage>
+
+<style>
+  .showcase-grid { list-style: none; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.5rem; }
+  .card { padding: 1rem; border: 1px solid var(--ahg-line); border-radius: var(--ahg-radius-card); background: var(--ahg-panel); }
+  .card h2 { margin: 0.25rem 0; font-size: var(--sl-text-lg); }
+  .kind { margin: 0; font-size: var(--sl-text-sm); color: var(--ahg-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .prov { margin-inline-start: 0.5rem; padding: 0 0.5rem; border: 1px solid var(--ahg-muted); border-radius: 999px; text-transform: none; letter-spacing: 0; }
+  .shot { display: block; margin: 0.75rem 0; }
+  .shot img { display: block; width: 100%; height: auto; border: 1px solid var(--ahg-line); border-radius: var(--ahg-radius-control); }
+  @media (max-width: 40rem) {
+    .shot { overflow-x: auto; }
+    .shot img { width: auto; min-width: 42rem; max-width: none; }
+  }
+  details summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+  pre { max-height: 24rem; overflow: auto; padding: 0.75rem; background: var(--ahg-code-bg); border-radius: var(--ahg-radius-control); font-size: var(--sl-text-sm); white-space: pre-wrap; overflow-wrap: anywhere; }
+  .meta { font-size: var(--sl-text-sm); color: var(--ahg-muted); }
+</style>

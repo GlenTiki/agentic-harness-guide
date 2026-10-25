@@ -1,0 +1,23 @@
+**Total for the year: €2,120, so each of you pays about €706.67.**
+
+February was listed twice (198 both times). Since there are only 12 months in a year, I treated the second one as an accidental duplicate and counted it once.
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+| **Total** | **2,120** |
+
+2,120 doesn't divide evenly by 3. Two people pay €706.67 and one pays €706.66 (or round it however you like).
+
+If February really was billed twice, the total would be €2,318, or about €772.67 each.

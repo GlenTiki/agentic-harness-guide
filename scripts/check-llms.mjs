@@ -1,9 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { findExamples, TWIN_PARTS } from './lib/example-parse.mjs';
 
 const docsRoot = path.resolve('src/content/docs');
 const examplesRoot = path.resolve('examples');
-const dist = path.resolve('dist');
+const dist = path.resolve(process.env.DIST ?? 'dist');
 const base = '/agentic-harness-guide';
 const maxDescription = 160;
 const problems = [];
@@ -69,7 +70,7 @@ if (rules) {
   if (!rules.includes('follow the rule that does less')) problems.push('agent-rules.txt: tie-break "follow the rule that does less" is missing');
   if (/narrower/.test(rules)) problems.push('agent-rules.txt: old tie-break "narrower" is still present');
   if (!/appendix/.test(rules.split('\n## ')[0])) problems.push('agent-rules.txt: preamble does not name the appendix');
-  const noteSource = markdownFiles.filter((f) => /^(journey|workflows|appendix)\//.test(path.relative(docsRoot, f)));
+  const noteSource = markdownFiles.filter((f) => /^((journey|workflows|appendix)\/|(setup|case-study|evidence)\/index\.mdx?$)/.test(path.relative(docsRoot, f)));
   const withNote = noteSource.filter((f) => fs.readFileSync(f, 'utf8').includes(':::note[Agent note]')).length;
   const headings = (rules.match(/^## /gm) ?? []).length;
   if (withNote !== headings) problems.push(`Agent notes in source: ${withNote}, sections in agent-rules.txt: ${headings}`);
@@ -128,6 +129,103 @@ for (const file of attackFiles) {
     }
   });
 }
+
+const ORIGIN = 'https://glentiki.dev/agentic-harness-guide/';
+const quote = llms.split('\n').find((line) => line.startsWith('> '));
+if (!quote) problems.push('llms.txt: no summary blockquote');
+else if (quote.length >= 300) problems.push(`llms.txt: summary blockquote is ${quote.length} characters, limit is 299`);
+for (const file of ['agent-rules.txt', 'llms-full.txt', 'feed.xml']) {
+  if (!llms.includes(`](${ORIGIN}${file})`)) problems.push(`llms.txt: does not list ${ORIGIN}${file}`);
+  if (!fs.existsSync(path.join(dist, file))) problems.push(`missing build output: ${file}`);
+}
+if (/\]\(\/[a-z]/.test(llms) || /in \/agent-rules\.txt/.test(llms)) problems.push('llms.txt: contains a root-relative link');
+const bareExamples = llms.split('\n').filter((line) => /(^|[\s(])examples\//.test(line) && !line.includes('github.com'));
+if (bareExamples.length) problems.push('llms.txt: mentions an unpublished examples/ path');
+
+const llmsLines = llms.split('\n');
+const fullPath = path.join(dist, 'llms-full.txt');
+const full = fs.existsSync(fullPath) ? fs.readFileSync(fullPath, 'utf8') : '';
+let twins = 0;
+for (const file of markdownFiles) {
+  const rel = path.relative(docsRoot, file);
+  if (rel === '404.md') continue;
+  const source = fs.readFileSync(file, 'utf8');
+  if (/^sidebar:\s*\n\s+hidden:\s*true/m.test(source)) continue;
+  const id = rel.replace(/\.mdx?$/, '');
+  const needsStatus = /^(setup|case-study|evidence)\//.test(rel);
+  const twinStatus = source.split(/\n---\n/)[0].match(/^status:\s*(runs|built|design|mixed)\s*$/m)?.[1];
+  if (needsStatus && !twinStatus) problems.push(`${rel}: no status field (runs, built, design or mixed)`);
+  const twinId = id.replace(/(^|\/)index$/, '') === '' ? 'index' : id.replace(/\/index$/, '');
+  const twin = path.join(dist, `${twinId}.md`);
+  if (!fs.existsSync(twin)) problems.push(`${rel}: no markdown twin at ${twinId}.md`);
+  else {
+    twins += 1;
+    const text = fs.readFileSync(twin, 'utf8');
+    if (!/^---\ntitle: ".+"\n/.test(text)) problems.push(`${twinId}.md: twin has no front matter title`);
+    if (/^import\s/m.test(text)) problems.push(`${twinId}.md: twin still contains an import line`);
+    const exampleCount = findExamples(source).length;
+    if (exampleCount > 0) {
+      for (const part of TWIN_PARTS) {
+        const found = text.split(part).length - 1;
+        if (found !== exampleCount) problems.push(`${twinId}.md: twin has ${found} of ${part}, source has ${exampleCount} examples`);
+      }
+      if (/<Example|<Fragment/.test(text)) problems.push(`${twinId}.md: twin still contains an Example or Fragment tag`);
+    }
+    if (/<svg|<figure|style=\{\{|<Card|<Code\s/.test(text)) problems.push(`${twinId}.md: twin still contains a component or SVG block`);
+    if (twinStatus && !new RegExp(`^status: ${twinStatus}$`, 'm').test(text.split('\n---\n')[0])) {
+      problems.push(`${twinId}.md: twin front matter has no status: ${twinStatus}`);
+    }
+  }
+  const exampleTotal = findExamples(source).length;
+  if (exampleTotal > 0) {
+    const url0 = `${ORIGIN}${twinId === 'index' ? '' : `${twinId}/`}`;
+    const fullSection = full.split(`<!-- page: ${url0} -->`)[1]?.split('\n\n---\n\n')[0] ?? '';
+    for (const part of TWIN_PARTS) {
+      if (fullSection.split(part).length - 1 !== exampleTotal) problems.push(`${rel}: llms-full.txt entry lacks ${part} for ${exampleTotal} examples`);
+    }
+  }
+  const url = `${ORIGIN}${twinId === 'index' ? '' : `${twinId}/`}`;
+  if (!full.includes(`<!-- page: ${url} -->`)) problems.push(`${rel}: missing from llms-full.txt`);
+  if (twinStatus) {
+    if (!llmsLines.some((line) => line.includes(`](${url})`) && line.includes(`(status: ${twinStatus})`))) {
+      problems.push(`${rel}: llms.txt line has no (status: ${twinStatus})`);
+    }
+    const section = full.split(`<!-- page: ${url} -->`)[1]?.split('\n\n---\n\n')[0] ?? '';
+    if (!section.includes(`Status: ${twinStatus} (`)) problems.push(`${rel}: llms-full.txt entry has no Status: ${twinStatus}`);
+  }
+}
+const readJson = (file) => JSON.parse(fs.readFileSync(file, 'utf8'));
+const dataTwins = [
+  { id: 'health', rows: readJson('src/data/health.json').rows.map((row) => row.label) },
+  {
+    id: 'showcase',
+    rows: [
+      ...readJson('src/data/showcase.json').flatMap((item) => [item.title, fs.readFileSync(path.join('src/data', item.textFile), 'utf8').trim()]),
+      readJson('src/data/runs/hook-sample-run.json').recorded_at,
+    ],
+  },
+];
+for (const { id, rows } of dataTwins) {
+  const file = path.join(dist, `${id}.md`);
+  if (!fs.existsSync(file)) {
+    problems.push(`${id}.md: data page has no markdown twin`);
+    continue;
+  }
+  const text = fs.readFileSync(file, 'utf8');
+  if (!/^---\ntitle: ".+"\n/.test(text)) problems.push(`${id}.md: twin has no front matter title`);
+  for (const row of rows) if (!text.includes(row)) problems.push(`${id}.md: twin lacks "${row.slice(0, 50)}"`);
+  if (!llms.includes(`](${ORIGIN}${id}.md)`)) problems.push(`llms.txt: does not link ${id}.md`);
+}
+const kitSums = fs.readFileSync('public/downloads/SHA256SUMS', 'utf8').split('\n').filter(Boolean);
+if (!llms.includes(`](${ORIGIN}downloads/SHA256SUMS)`)) problems.push('llms.txt: does not list downloads/SHA256SUMS');
+for (const line of kitSums) {
+  const [digest, name] = line.split(/ {2}/);
+  if (!llms.split('\n').some((l) => l.includes(`](${ORIGIN}downloads/${name})`) && l.includes(digest))) problems.push(`llms.txt: kit ${name} is not listed with its SHA-256`);
+}
+for (const heading of rules.match(/^## .* \(([^)]*)\)$/gm) ?? []) {
+  if (!/\(https:\/\/glentiki\.dev\/agentic-harness-guide\//.test(heading)) problems.push(`agent-rules.txt: heading link is not absolute: ${heading}`);
+}
+console.log(`${twins} markdown twins checked, ${dataTwins.length} data twins, ${kitSums.length} kits listed`);
 
 console.log(`${pages} pages checked, ${listedPaths.length} links in llms.txt, ${problems.length} problems`);
 for (const problem of problems) console.log(`  problem: ${problem}`);

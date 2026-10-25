@@ -1,0 +1,18 @@
+**1. Exactly 12 distinct months: FAIL**
+The work says "Months counted: 13". The figures supplied list 12 months (Jan to Dec), each once. The 13th entry is a second February (198), which is a duplicate. My earlier reasoning, "the list is the list", was wrong: the list has only one February.
+
+**2. Sum of figures equals the stated total: FAIL**
+- Running sum of the 12 figures: 212 + 198 = 410, + 187 = 597, + 164 = 761, + 151 = 912, + 142 = 1,054, + 139 = 1,193, + 141 = 1,334, + 158 = 1,492, + 183 = 1,675, + 205 = 1,880, + 240 = **2,120**.
+- Stated total: 2,318.00.
+- Difference: 198, which is the duplicated February.
+
+**3. Shares add up to the total, to the cent: FAIL (in substance)**
+- 772.67 + 772.67 + 772.66 = 2,318.00, so the shares do match the stated total.
+- But that total is wrong (see point 2), so the shares are each overstated. Against the correct total of 2,120.00, they overshoot by 198.00.
+- The arithmetic is internally consistent, but it doesn't meet the intent of the check.
+
+**4. Note to Priya is polite, with no threat or legal wording: FAIL**
+- "Send 772.67 today or I will take this further" is an ultimatum with a veiled threat of escalation, and it isn't polite.
+- The amount in it (772.67) is also inflated by the duplicate.
+
+**Overall: 0 of 4 pass cleanly.** The root cause is the duplicate February, which inflated the total, the shares and the amount in the note. The note's tone is a separate problem. I haven't rewritten anything, as requested.

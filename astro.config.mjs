@@ -1,18 +1,53 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import fs from 'node:fs';
+import sitemap from '@astrojs/sitemap';
+import { satteri } from '@astrojs/markdown-satteri';
+import { lastCommitDate, sourceFileFor } from './scripts/lib/git-dates.mjs';
+import { agentNoteFoldPlugin } from './scripts/rehype/agent-note-fold.mjs';
+import { taskListLabelsPlugin } from './scripts/rehype/task-list-labels.mjs';
+import { tableRegionPlugin } from './scripts/rehype/table-region.mjs';
+
+const reviewedAt = JSON.parse(fs.readFileSync('src/data/review.json', 'utf8')).lastReviewed;
+const SITE_BASE = '/agentic-harness-guide/';
+const NOT_INDEXED = ['/shelf/foundations/glossary/', '/404', '/showcase/render/'];
 
 export default defineConfig({
   site: 'https://glentiki.dev',
   base: '/agentic-harness-guide',
+  redirects: { '/shelf/foundations/glossary': '/agentic-harness-guide/glossary/' },
+  markdown: { processor: satteri({ hastPlugins: [tableRegionPlugin, taskListLabelsPlugin, agentNoteFoldPlugin] }) },
   integrations: [
+    sitemap({
+      filter: (url) => !NOT_INDEXED.some((path) => url.includes(path)),
+      serialize(item) {
+        const id = decodeURI(new URL(item.url).pathname).replace(SITE_BASE, '').replace(/\/$/, '') || 'index';
+        const source = sourceFileFor(id === 'index' ? 'index' : id);
+        const lastmod = (source ? lastCommitDate(source) : null) ?? (source ? null : reviewedAt);
+        return lastmod ? { ...item, lastmod } : item;
+      },
+    }),
     starlight({
       title: 'The Agentic Harness Guide',
       description: 'A plain-English guide to getting reliable, checkable work from AI assistants, from your first chat to systems of several assistants.',
-      customCss: ['./src/styles/custom.css'],
+      customCss: ['./src/styles/tokens.css', './src/styles/custom.css'],
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/GlenTiki/agentic-harness-guide' }],
       editLink: { baseUrl: 'https://github.com/GlenTiki/agentic-harness-guide/edit/main/' },
+      head: [
+        {
+          tag: 'script',
+          content:
+            "addEventListener('load',()=>{const b=document.querySelector('site-search button[data-open-modal]');const k=b&&b.querySelector('kbd');if(k&&getComputedStyle(k).display!=='none')b.setAttribute('aria-label',b.getAttribute('aria-label')+' '+k.textContent.trim())})",
+        },
+      ],
       lastUpdated: false,
       disable404Route: true,
+      routeMiddleware: './src/routeData.ts',
+      components: {
+        Footer: './src/components/Footer.astro',
+        Hero: './src/components/Hero.astro',
+        PageTitle: './src/components/PageTitle.astro',
+      },
       sidebar: [
         {
           label: 'Start here',
@@ -49,7 +84,57 @@ export default defineConfig({
           ],
         },
         {
+          label: 'The method',
+          items: [
+            { slug: 'method/engineer-weak-spots' },
+            { slug: 'method/product-manager-and-team-lead' },
+            { slug: 'method/the-feedback-loop' },
+          ],
+        },
+        {
+          label: 'The setup',
+          items: [
+            { slug: 'setup' },
+            { slug: 'setup/hooks' },
+            { slug: 'setup/plain-text-and-simple-english' },
+            { slug: 'setup/link-and-reference-checks' },
+            { slug: 'setup/memory' },
+            { slug: 'setup/relevance-and-reranking' },
+            { slug: 'setup/orchestrator-and-subagents' },
+            { slug: 'setup/personas' },
+            { slug: 'setup/retros' },
+            { slug: 'setup/monitor-and-showcase' },
+            { slug: 'setup/connecting-surfaces' },
+            { slug: 'setup/local-models' },
+            { slug: 'setup/end-to-end-flows' },
+          ],
+        },
+        {
+          label: 'Case study',
+          items: [
+            { slug: 'case-study' },
+            { slug: 'case-study/ch00-baseline' },
+            { slug: 'case-study/ch01-plain-spec' },
+            { slug: 'case-study/ch02-hooks' },
+            { slug: 'case-study/ch03-link-resolver' },
+            { slug: 'case-study/ch04-reference-walker' },
+            { slug: 'case-study/ch05-memory' },
+            { slug: 'case-study/ch06-rerank' },
+            { slug: 'case-study/ch07-orchestrator' },
+            { slug: 'case-study/ch08-personas' },
+            { slug: 'case-study/ch09-retro' },
+            { slug: 'case-study/ch10-monitor' },
+            { slug: 'case-study/ch11-surfaces' },
+            { slug: 'case-study/ch12-local-models' },
+          ],
+        },
+        {
+          label: 'Evidence',
+          items: [{ slug: 'evidence' }],
+        },
+        {
           label: 'Workflows',
+          collapsed: true,
           items: [
             { slug: 'workflows' },
             { slug: 'workflows/build-a-budget' },

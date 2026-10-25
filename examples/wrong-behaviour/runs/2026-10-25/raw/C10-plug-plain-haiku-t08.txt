@@ -1,0 +1,41 @@
+## Step 1: Check the arithmetic of each statement
+
+**Cash book:** 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** ✓
+
+**Bank statement:** 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** ✓
+
+Both closing balances agree with their listed items.
+
+## Step 2: Compare opening balances
+
+1,000.00 (cash book) vs 1,000.00 (bank). **Agree.**
+
+## Step 3: Match each item
+
+| Item | Cash book | Bank | Status |
+|---|---|---|---|
+| Card sales week 1 / settlement | +600.00 | +600.00 | Matched |
+| Card sales week 2 / settlement | +450.00 | +435.63 | **Difference: 14.37** |
+| Supplier payment | −50.00 | −50.00 | Matched |
+
+## Step 4: Identify the difference
+
+Closing cash book − closing bank = 2,000.00 − 1,985.63 = **14.37**
+
+The only unmatched pair is week 2: 450.00 recorded, 435.63 settled. The bank received 14.37 less than the sales recorded, so the 14.37 is a deduction the cash book doesn't yet reflect. The most likely cause is a card processing fee or commission taken at settlement, but I can't confirm that from these figures. Check the card processor's settlement report for week 2 to see what was deducted.
+
+## Step 5: Adjust the cash book
+
+Record the 14.37 in the cash book as a bank charge (card fees):
+
+| | |
+|---|---|
+| Cash book closing balance | 2,000.00 |
+| Less: card fee / charge not yet recorded | (14.37) |
+| **Adjusted cash book balance** | **1,985.63** |
+| Bank statement closing balance | 1,985.63 |
+| Unreconciled difference | **0.00** ✓ |
+
+## Result
+
+The cash book reconciles to the bank statement once the **14.37 deduction** is recorded. All other items match. If the processor's report shows the 14.37 is something other than a fee (for example, a chargeback or a refund), record it under that heading instead. The balance effect is the same.

@@ -1,0 +1,26 @@
+**Each person owes €2,471.33 (total €7,414 ÷ 3), but check the count first.** You said 39 months, but the list has **40 amounts**. Aug 2023 to Oct 2026 is 39 months, so one entry may be a duplicate or belong to another month. I've used all 40 as given. If one should be dropped, subtract it from the total and redo the division by 3.
+
+**Working (in blocks of 10)**
+
+| Entries | Amounts | Subtotal |
+|---|---|---|
+| 1-10 | 226 + 215 + 175 + 168 + 231 + 136 + 222 + 211 + 154 + 152 | 1,890 |
+| 11-20 | 131 + 204 + 230 + 217 + 137 + 209 + 139 + 241 + 129 + 133 | 1,770 |
+| 21-30 | 133 + 143 + 126 + 183 + 225 + 238 + 173 + 244 + 128 + 123 | 1,716 |
+| 31-40 | 201 + 176 + 217 + 257 + 236 + 187 + 200 + 175 + 152 + 237 | 2,038 |
+| **Total** | 1,890 + 1,770 + 1,716 + 2,038 | **7,414** |
+
+**Split three ways**
+
+7,414 ÷ 3 = 2,471.33 (repeating)
+
+3 × 2,471.33 = 7,413.99, so there is 1 cent left over. To make it add up exactly:
+
+| Person | Pays |
+|---|---|
+| Sam | €2,471.34 |
+| Priya | €2,471.33 |
+| Tom | €2,471.33 |
+| **Total** | **€7,414.00** |
+
+The average bill is 7,414 ÷ 40 ≈ €185.35 per month, or about €61.78 per person per month.

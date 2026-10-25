@@ -1,0 +1,47 @@
+name: Guide feedback
+description: Tell the author what was wrong, confusing, missing or good on a page of the guide.
+title: 'Feedback: '
+labels: ['feedback']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue is public. Anyone can read it. Do not paste passwords, keys, client data or personal details.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of feedback is it?
+      options:
+        - Wrong
+        - Confusing
+        - Missing
+        - Worked well
+        - Idea
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: Filled in for you.
+  - type: input
+    id: section
+    attributes:
+      label: Section
+      description: Filled in for you. The heading nearest to your selection or to the top of the screen.
+  - type: textarea
+    id: quote
+    attributes:
+      label: Text you selected
+      description: Filled in for you. Leave it empty if you selected nothing.
+  - type: textarea
+    id: comment
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: Filled in for you. Screen size, colour scheme and guide build date.

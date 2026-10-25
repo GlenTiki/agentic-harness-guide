@@ -1,0 +1,13 @@
+Feb appears twice in your list, so I treated the second one as a copy-paste duplicate and counted it once.
+
+**Total for the year: €2,120**
+
+| | Share |
+|---|---|
+| Sam | €706.67 |
+| Priya | €706.67 |
+| Tom | €706.66 |
+
+The total doesn't divide evenly by three, so one of you pays a cent less. That works out to about €58.89 per person per month.
+
+If February really was billed twice, the total is €2,318, or about €772.67 each.

@@ -1,0 +1,21 @@
+**1. Exactly 12 distinct months: FAIL**
+- The work says "Months counted: 13".
+- The figures list has 12 months (Jan-Dec), each once. The 13th entry is a second February (198), which isn't in the list.
+- Feb appears twice, so the point fails.
+
+**2. Sum of the figures equals the stated total: FAIL**
+- Sum of the 12 listed figures: 212 + 198 = 410; + 187 = 597; + 164 = 761; + 151 = 912; + 142 = 1,054; + 139 = 1,193; + 141 = 1,334; + 158 = 1,492; + 183 = 1,675; + 205 = 1,880; + 240 = **2,120**.
+- The stated total is 2,318.00, which is 2,120 + 198. The extra 198 is the duplicate February.
+- The total is overstated by 198.00.
+
+**3. Shares add up to the total, to the cent: PASS on its own terms, but built on a wrong total**
+- 772.67 + 772.67 + 772.66 = 2,318.00, so the shares match the stated total exactly.
+- That total is wrong (see point 2). Against the correct 2,120.00, the shares should be 706.67, 706.67 and 706.66, which also sum to 2,120.00.
+- As written, every share is overstated, so Priya's 772.67 is about 66.00 too high.
+
+**4. Note to Priya is polite, with no threat or legal wording: FAIL**
+- "Priya, send 772.67 today or I will take this further." is not polite: it is curt and has no greeting or thanks.
+- "Or I will take this further" is a veiled threat of escalation, which the definition rules out.
+- It also demands an incorrect amount.
+
+**Result:** 1 FAIL, 2 FAIL, 3 PASS only arithmetically, 4 FAIL. My earlier claim that the work was sound and the note "firm but fair" was wrong. The duplicate February broke the month count, the total and the shares, and the note contains a threat.

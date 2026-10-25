@@ -4,6 +4,7 @@ description: Review each change with a fresh-context reviewer, preferably from a
 ---
 
 import ReviewGate from '../../../../components/ReviewGate.astro';
+import Example from '../../../../components/Example.astro';
 
 *Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
 
@@ -13,7 +14,7 @@ import ReviewGate from '../../../../components/ReviewGate.astro';
 
 ## Why it matters
 
-The author of a change shares its assumptions. An agent reviewing its own work in the same context tends to confirm what it just reasoned. A fresh context sees only the artefact. [Level 5](../../../journey/05-check-the-work/) explains why independence matters. A different model may make different mistakes, so measure it. Seed known defects into a test change, then record the catch rate for each reviewer and for the two together. A same-provider fresh reviewer is useful. Whether a second provider adds anything is a result you measure, not a fact you assume.
+Principle, not measured: the author of a change shares its assumptions. A fresh context sees only the artefact. [Level 5](../../../journey/05-check-the-work/) explains why independence matters. Whether a fresh or different reviewer catches more is a result you measure, not a fact you assume. In this guide's isolated test a simulated same-context reviewer scored the same as a fresh one, 10 of 10 each ([evidence](../../../evidence/)). Seed known defects into a test change, then record the catch rate for each reviewer and for the two together.
 
 <ReviewGate />
 
@@ -40,7 +41,51 @@ cat spec.md checklist.md | shasum -a 256
 
 The first line hashes the exact diff. The second gives a patch id that stays the same when a rebase changes only the line offsets. The third hashes the spec and the checklist the reviewer was given, so you can show later that the review used the same inputs. Record all three beside the verdict.
 
-On 2026-10-22 the author ran this in a throwaway repository where `main` gained one unrelated commit after the branch was cut. The diff against the merge base was 9 lines and hashed to `6c882fff0547` (first 12 characters). The diff against the tip of `main` was 16 lines and hashed to `77a609f6bd26`, because it included the reverse of the unrelated commit. Same branch, two digests. Use full commit ids or the merge base, never a branch name that moves. A rebase or a moved base changes the diff, so it changes the digest. That is the intended behaviour: the old approval no longer matches. Turn on the setting your code host offers that dismisses approvals when new commits arrive, and pin required checks to the head commit. CI should compare the digest recorded with the verdict to the digest of the diff it is about to merge, and fail the merge if they differ. A rule that nobody compares is a note, not a control.
+<Example
+  label="Computed"
+  task="A maintainer hashes the same branch against its merge base and against the moved tip of main, to see why the digest must use the merge base."
+  evidence="The commands in the input, run in a new empty folder."
+  env="git on macOS 26.5, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```bash
+git init -q -b main && printf 'a\nb\nc\n' > f.txt && git add . && git commit -qm base
+git checkout -qb feature && printf 'a\nb\nc\nd\n' > f.txt && git commit -qam feat
+git checkout -q main && printf 'x\n' > other.txt && git add . && git commit -qm unrelated
+git checkout -q feature
+base=$(git merge-base main HEAD)
+git diff --binary --no-ext-diff --no-color -U3 "$base" HEAD | shasum -a 256
+git diff --binary --no-ext-diff --no-color -U3 main HEAD | shasum -a 256
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+49583a2c46e688af5f1f4146848bc255fdde76b827906584cb675f53fea5ce20  -
+e8e28341d08429b3ff96b41a9c67a47f937a2634af814adf929061cb3492ceff  -
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The two digests differ for one branch. The diff against `main` also holds the reverse of the unrelated commit: 16 lines, against 9 lines for the merge-base diff.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows that the choice of base changes the digest. It does not show how your code host compares digests.
+
+</Fragment>
+
+</Example>
+
+Use full commit ids or the merge base, never a branch name that moves. A rebase or a moved base changes the diff, so it changes the digest. That is the intended behaviour: the old approval no longer matches. Turn on the setting your code host offers that dismisses approvals when new commits arrive, and pin required checks to the head commit. CI should compare the digest recorded with the verdict to the digest of the diff it is about to merge, and fail the merge if they differ. A rule that nobody compares is a note, not a control.
 
 **4. Record the review.** Store reviewer, model, digest, findings, resolutions and verdict in one file in the repository or the pull request. Never report a second-model review when only one model ran.
 

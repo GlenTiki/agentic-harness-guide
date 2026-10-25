@@ -3,13 +3,15 @@ title: "Workflow: spreadsheet Monday"
 description: Ask an assistant for formulas, check them with a TRUE or FALSE cell, and draft a traceable variance note. Chat and a spreadsheet; needs bookkeeping.
 ---
 
+import Example from '../../../components/Example.astro';
+
 ## Scene
 
 *Last time (level 1): you made a request clear enough to check.*
 
 *If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
-Monday morning. Sam pastes twelve months of shared bills into a chat and asks for the total. The assistant answers with a confident figure. It is the sum of thirteen numbers, because February is in the list twice. A person adding the column in a spreadsheet would have seen thirteen rows. An assistant adding in prose sees none of that.
+Monday morning. Sam pastes twelve months of shared bills into a chat and asks for the total. The assistant adds the numbers in prose and gives one confident figure. A person adding the column in a spreadsheet would see every row. An assistant adding in prose shows no rows to count, so a month listed twice goes unseen.
 
 ## The idea
 
@@ -19,7 +21,7 @@ Three habits keep the Monday routine safe:
 
 1. **Formula, not sum.** The assistant writes the formula. The spreadsheet computes it.
 2. **A check cell.** One cell shows TRUE or FALSE, so a wrong total shows itself.
-3. **Traceable commentary.** Any sentence about the numbers uses only figures in the sheet, each with its cell reference.
+3. **Traceable commentary.** Every figure in a sentence about the numbers has its cell reference.
 
 Anonymise first. The steps are in [how to anonymise a spreadsheet](../../journey/professional-guardrails/#how-to-anonymise-a-spreadsheet).
 
@@ -27,38 +29,21 @@ Anonymise first. The steps are in [how to anonymise a spreadsheet](../../journey
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant and a spreadsheet. This takes about 25 minutes. Needs a laptop. Replies vary between runs and tools. The figures are made up for the example.
+You need any chat assistant and a spreadsheet. This takes about 25 minutes. Needs a laptop. The figures are made up for the example.
 
 :::tip[Which app?]
-Excel and Google Sheets both take the formulas below. Paste a formula into a cell and compare the result with the figure given on this page. If your result differs, check the formula syntax in your spreadsheet's help.
+Excel and Google Sheets both take the formulas below. Paste a formula into a cell and compare the result with the figure on this page. If your result differs, check the formula syntax in your spreadsheet's help.
 :::
 
-<p class="verified">Docs page fetched on 2026-10-22: https://support.microsoft.com/en-us/excel/functions/sumproduct-function. Quoted line: "The SUMPRODUCT function returns the sum of the products of corresponding ranges or arrays." Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://support.microsoft.com/en-us/excel/functions/sumproduct-function. Quoted line: "The SUMPRODUCT function returns the sum of the products of corresponding ranges or arrays." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
-<p class="verified">Docs page fetched on 2026-10-22: https://support.google.com/docs/answer/3094294. Quoted line: "The SUMPRODUCT function calculates the sum of the products of corresponding entries in 2 equally sized arrays or ranges." Claude Code on that date: 2.1.309. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-10-24: https://support.google.com/docs/answer/3094294. Quoted line: "The SUMPRODUCT function calculates the sum of the products of corresponding entries in 2 equally sized arrays or ranges." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
-Every formula on this page was evaluated in LibreOffice 26.8 on 2026-10-22, and the results are printed beside it. COUNTIF ignores case, so Feb and feb count as one month, and it treats `*` and `?` as wildcards.
+I ran every formula on this page in LibreOffice 26.8.0.3 on 2026-10-25. The results below are what it gave. COUNTIF ignores case, so Feb and feb count as one month, and it treats `*` and `?` as wildcards.
 
 ### Part 1: the flat's shared bills
 
-Put the months in A2:A13 and the amounts in B2:B13.
-
-| Month | Amount |
-| --- | --- |
-| Jan | 212 |
-| Feb | 198 |
-| Mar | 187 |
-| Apr | 164 |
-| May | 151 |
-| Jun | 142 |
-| Jul | 139 |
-| Aug | 141 |
-| Sep | 158 |
-| Oct | 183 |
-| Nov | 205 |
-| Dec | 240 |
-
-Ask the assistant to write the formulas. Do not give it the numbers to add.
+Put the months in A2:A13 and the amounts in B2:B13: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Ask the assistant for formulas. Do not give it the numbers to add.
 
 ```text
 My sheet has months in A2:A13 and amounts in B2:B13. Write spreadsheet formulas for these, one per line, and do not calculate any answers:
@@ -70,53 +55,192 @@ My sheet has months in A2:A13 and amounts in B2:B13. Write spreadsheet formulas 
 6. Sam's share, which is the total minus the other two shares, so the three shares add to the total exactly.
 ```
 
-An example reply, and the result each formula should give:
+<Example
+  label="Computed"
+  task="Sam runs the six formulas the prompt asks for on the twelve bills, to learn what each should give."
+  evidence="Formulas typed into a spreadsheet; B14 holds the total"
+  env="LibreOffice 26.8.0.3, 2026-10-25. No assistant reply was recorded for this prompt."
+>
 
-| Task | Formula | Result |
-| --- | --- | --- |
-| Total | `=SUM(B2:B13)` | 2,120 |
-| Months listed | `=COUNTA(A2:A13)` | 12 |
-| Distinct months | `=SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13))` | 12 |
-| Repeat flag | `=IF(COUNTA(A2:A13)=SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13)),"OK","REPEAT")` | OK |
-| Share for Priya or Tom | `=ROUND(B14/3,2)` | 706.67 |
-| Sam's share | `=B14-2*ROUND(B14/3,2)` | 706.66 |
+<Fragment slot="input">
 
-Here B14 holds the total. The rounding rule is the owner's. Round each share to the cent. If the three shares do not add to the total, change Sam's share by the difference and say so. Three shares of 706.67 would add to 2,120.01, so Sam's share is 706.66. The assistant applies the owner's rule. It does not choose one.
+```text
+Total              =SUM(B2:B13)
+Months listed      =COUNTA(A2:A13)
+Distinct months    =SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13))
+Repeat flag        =IF(COUNTA(A2:A13)=SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13)),"OK","REPEAT")
+Priya's or Tom's   =ROUND(B14/3,2)
+Sam's share        =B14-2*ROUND(B14/3,2)
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Total              2120
+Months listed      12
+Distinct months    12
+Repeat flag        OK
+Priya's or Tom's   706.67
+Sam's share        706.66
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Three shares of 706.67 would add to 2,120.01. Sam's share is the total minus the other two, so the shares add to 2,120.00. The rounding rule is the owner's. The assistant applies it and does not choose one.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the results to expect from correct formulas; it does not show how an assistant writes them.
+
+</Fragment>
+
+</Example>
 
 The distinct-months formula divides by zero if a cell in A2:A13 is blank, so fill every row first.
 
-**Make the check fail.** Change A4 from Mar to Feb. The total stays 2,120, the count stays 12, the distinct count drops to 11, and the flag says REPEAT. Change A4 back. A check that cannot turn red proves nothing, so run this once.
+<Example
+  label="Computed"
+  task="Sam makes the repeat flag fail on purpose, because a check that cannot turn red proves nothing."
+  evidence="Change A4 from Mar to Feb in the sheet above"
+  env="LibreOffice 26.8.0.3, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+A2:A13  Jan  Feb  Feb  Apr  May  Jun  Jul  Aug  Sep  Oct  Nov  Dec    (A4 was Mar)
+B2:B13  unchanged
+
+Total              =SUM(B2:B13)
+Months listed      =COUNTA(A2:A13)
+Distinct months    =SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13))
+Repeat flag        =IF(COUNTA(A2:A13)=SUMPRODUCT(1/COUNTIF(A2:A13,A2:A13)),"OK","REPEAT")
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Total              2120
+Months listed      12
+Distinct months    11
+Repeat flag        REPEAT
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The total and the count stay the same. Only the distinct count and the flag change. Change A4 back afterwards.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows that the flag can go red on a repeated month; it does not show that the flag catches every kind of error.
+
+</Fragment>
+
+</Example>
 
 ### Part 2: the shop's September
 
-Mina's September sales, with a label in column A, a type in column B and the amount in column C:
+Mina's September sales go in A2:C5, with the line in column A, the type in column B and the amount in column C (VAT included): online orders, gross, Online, 5,400.00; refunds (three of 50.00), Online, -150.00; market card takings, Market, 1,720.00; market cash takings, Market, 410.00. In C7, type Mina's own total from her sales report, 7380, and write its source beside it.
 
-| Line | Type | Amount (VAT included) |
-| --- | --- | --- |
-| Online orders, gross | Online | 5,400.00 |
-| Refunds (three of 50.00) | Online | -150.00 |
-| Market card takings | Market | 1,720.00 |
-| Market cash takings | Market | 410.00 |
+<Example
+  label="Computed"
+  task="Sam totals the sales lines by type and compares the sheet with Mina's own total in C7."
+  evidence="Formulas typed into the sheet described above"
+  env="LibreOffice 26.8.0.3, 2026-10-25"
+>
 
-In C7, type Mina's own total from her sales report: 7380. Write its source beside it.
+<Fragment slot="input">
 
-| Task | Formula | Result |
-| --- | --- | --- |
-| Total sales | `=SUM(C2:C5)` | 7,380.00 |
-| Online, net of refunds | `=SUMIF(B2:B5,"Online",C2:C5)` | 5,250.00 |
-| Market total | `=SUMIF(B2:B5,"Market",C2:C5)` | 2,130.00 |
-| Check cell | `=ROUND(SUM(C2:C5)-C7,2)=0` | TRUE |
+```text
+Total sales        =SUM(C2:C5)
+Online, net        =SUMIF(B2:B5,"Online",C2:C5)
+Market total       =SUMIF(B2:B5,"Market",C2:C5)
+Check cell         =ROUND(SUM(C2:C5)-C7,2)=0
+```
 
-The check cell compares the sheet with Mina's total in C7, which she typed from her records. If the cell says FALSE, the sheet and Mina's records disagree, and you stop and find out why. The tolerance is zero.
+</Fragment>
 
-Next, budget in column B, actual in column C, variance in D and percentage in E:
+<Fragment slot="output">
 
-| Line | Budget | Actual | Variance | % |
-| --- | --- | --- | --- | --- |
-| Materials | 1,400.00 | 1,530.00 | `=C3-B3` gives 130.00 | `=D3/B3` gives 9.3% |
-| Other costs | 100.00 | 112.00 | `=C8-B8` gives 12.00 | `=D8/B8` gives 12.0% |
+```text
+Total sales        7380
+Online, net        5250
+Market total       2130
+Check cell         TRUE
+```
 
-Format column E as a percentage, or `=D3/B3` shows 0.0929 and not 9.3%. A positive variance on a cost is adverse (A). A positive variance on sales is favourable (F). In the full table, sales is row 2, materials row 3 and other costs row 8. A flag for lines past the investigation threshold: `=AND(ABS(D3)>50,ABS(E3)>0.05)`. The percentage is a fraction, so 5% is 0.05. It gives TRUE for materials (130.00 and 9.3%) and FALSE for other costs (12.00 is under 50.00). The rule, and why it uses "and", are on the [small shop month-end](../small-shop-month-end/#step-5-budget-against-actual) page.
+</Fragment>
+
+<Fragment slot="notice">
+
+The check cell compares the sheet with a figure Mina typed from her records. FALSE means the two disagree. Stop and find out why. The tolerance is zero.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows a check cell that compares two independent records; it does not show that Mina's total is right.
+
+</Fragment>
+
+</Example>
+
+Next, the budget in column B, the actual in column C, the variance in D and the percentage in E. Materials is row 3 and other costs is row 8. A positive variance on a cost is adverse. A positive variance on sales is favourable. The flag is true only when a line is more than 50.00 and more than 5% from budget. The percentage is a fraction, so 5% is 0.05.
+
+<Example
+  label="Computed"
+  task="Sam flags the budget lines that need an explanation from Mina."
+  evidence="Formulas typed into the budget table: materials 1,400.00 against 1,530.00, other costs 100.00 against 112.00"
+  env="LibreOffice 26.8.0.3, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+Variance (D3)      =C3-B3
+Percentage (E3)    =D3/B3
+Flag (materials)   =AND(ABS(D3)>50,ABS(E3)>0.05)
+Flag (other costs) =AND(ABS(D8)>50,ABS(E8)>0.05)
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Variance (D3)      130
+Percentage (E3)    0.0929 (9.3% once formatted as a percentage)
+Flag (materials)   TRUE
+Flag (other costs) FALSE
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Other costs are 12.0% over but only 12.00, so the flag stays FALSE. Format column E as a percentage, or 0.0929 shows instead of 9.3%.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the rule "more than 5% and more than 50.00"; the rule is an example, and the [small shop month-end](../small-shop-month-end/#step-6-explain-the-variances) page says why it uses "and".
+
+</Fragment>
+
+</Example>
 
 ### Part 3: the commentary
 
@@ -128,15 +252,15 @@ Using only the figures in the table below, write two sentences on the materials 
 
 Check every figure in the reply against its cell. A figure with no cell is an invented figure.
 
-Before you paste real figures from a real business, anonymise them and read [confidentiality and sign-off](../../journey/professional-guardrails/). Definition of done: the formulas give the results above, the check cell shows TRUE, every figure in the commentary has a cell reference, and the work is reviewed and approved by a named person who is not the preparer, or by the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/).
+Before you paste real figures from a real business, anonymise them and read [confidentiality and sign-off](../../journey/professional-guardrails/). The work is done when the formulas give the results above, the check cell shows TRUE, every figure in the commentary has a cell reference, and a named person who is not the preparer, or the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/), has reviewed and approved it.
 
 ## Under the bonnet
 
 *How it works. Optional reading.*
 
-An assistant produces text one piece at a time. When it adds a long list "in its head", it writes a likely-looking total, and a likely total can be wrong. A formula moves the arithmetic to a tool that does it the same way every time.
+An assistant writes text one piece at a time. A long sum "in its head" can give a likely-looking total. In the guide's recorded runs, 10 of 20 replies stated a wrong sum for a 13-figure list ([level 1](../../journey/01-say-it-properly/), [evidence](../../evidence/)). A formula moves the arithmetic to a tool that does it the same way every time.
 
-Asking for the formula also gives you something to read. You can see that the range is A2:A13 and not A2:A12. You can test the formula on a case where you know the answer. That is a check you can run, and a total in prose is not.
+Asking for the formula also gives you something to read. You can see that the range is A2:A13 and not A2:A12, and you can test the formula on a case with a known answer. A total in prose cannot be tested.
 
 The check cell turns the rule into a signal. A person skimming a sheet will not notice a wrong total, but will notice a red FALSE.
 
@@ -147,9 +271,9 @@ Keep the check cell, the source figures and the reviewer's initials on the sheet
 ## Expert corner
 
 :::caution[Expert corner]
-The distinct-count trick treats "Feb" and "Feb " (with a trailing space) as different months, and "Feb" and "feb" as the same one. Clean the column first. Floating-point sums can leave tiny differences, so compare money with a tolerance, as in the check cell, not with exact equality.
+The distinct-count formula treats "Feb" and "Feb " (with a trailing space) as different months, and "Feb" and "feb" as the same one. Clean the column first. Floating-point sums can leave tiny differences, so compare money with a tolerance, as in the check cell.
 
-An assistant can write a formula that looks right and refers to the wrong range. Test every formula on a case with a known answer before you trust it on the real data.
+An assistant can write a formula that looks right and points at the wrong range. Test every formula on a case with a known answer before you trust it on real data.
 
 Anonymising reduces what leaves your machine. It does not remove the need for permission to use the data.
 :::

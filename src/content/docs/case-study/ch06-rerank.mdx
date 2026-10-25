@@ -1,0 +1,216 @@
+---
+title: Re-rank only if it measurably helps
+description: Add an optional cross-encoder re-ranker after BM25, with a lexical fallback, a determinism test, a latency note and a precision@k before-and-after score.
+status: built
+sidebar:
+  label: "Chapter 6: Re-ranking"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch06-rerank.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 5 minutes (5 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+Keyword search misses the point. Notes with the right meaning and different words rank too low.
+
+## Goal
+
+Decide with numbers from your own machine whether a re-ranker is worth its cost.
+
+## What is in the kit
+
+- `rerank.py`. The function `rerank_ranker` takes the top 20 BM25 candidates and sorts them again with a scorer.
+- Two scorers. A lexical scorer needs no package and is deterministic. An optional cross-encoder scorer uses `sentence-transformers` and the model `cross-encoder/ms-marco-MiniLM-L6-v2`.
+- `evalset/`: 44 memories and 34 queries that one person labelled by hand.
+- `evaluate.py`, which prints precision@3, hit@3 and MRR for each system, and with `--latency` times the cross-encoder.
+- `results.json`, a regression guard for the two systems that need no package.
+
+## Get the kit
+
+Download [ch06-rerank.zip](/agentic-harness-guide/downloads/ch06-rerank.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch06-rerank.zip
+unzip ch06-rerank.zip -d kit
+cd kit/ch06-rerank
+```
+
+The hash must be `7cb9a08ab0642a246708c57493eaafc1ae76e0ab6cf99aa73b85e333d80f51cf`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `rerank.py`.
+3. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`. Without `sentence-transformers` the unit tests report `OK (skipped=1)`.
+4. Run the evaluation without extra packages: `python3 -I evaluate.py`.
+5. Optional: try the real cross-encoder in a throwaway environment under `scratch/`. The kit lists the three commands. They need `uv` and a network. The stored run of the cross-encoder is in [examples/retrieval-eval/outputs/cross-encoder.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/cross-encoder.txt).
+6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You score keyword search and the lexical re-ranker on the 44 memories and 34 queries in the kit, with no extra package."
+  evidence="python3 -I evaluate.py (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I evaluate.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+| system | precision@3 | hit@3 | MRR |
+| --- | --- | --- | --- |
+| bm25 | 0.265 | 0.794 | 0.643 |
+| lexical rerank | 0.235 | 0.706 | 0.670 |
+(44 memories, 34 queries)
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The last line names the set: 44 memories, 34 queries. Lexical re-ranking has a higher MRR (0.670 against 0.643) and a lower hit@3 (0.706 against 0.794).
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The lexical fallback is not an upgrade on this set. One small hand-written set is weak evidence.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on a tiny evaluation set. The check must go red."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+FAIL Only 2 memories; at least 40 are needed.
+FAIL Only 3 queries; at least 30 are needed.
+FAIL Query 'How do I name a branch?' names unknown memory 'branch-naming'.
+FAIL Query 'What is the meaning of life?' has no relevant memory.
+validate: FAIL (4 problem(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Four problems appear: too few memories, too few queries, a query that names an unknown memory, and a query with no relevant memory.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The evaluation set is itself checked. It does not show the labels are right.
+
+</Fragment>
+
+</Example>
+
+### Measured results
+
+The set has 44 memories and 34 queries. Precision@3 is low for every system because most queries have one correct memory, so the best possible value is 0.333.
+
+| system | precision@3 | hit@3 | MRR |
+| --- | --- | --- | --- |
+| bm25 | 0.265 | 0.794 | 0.643 |
+| lexical rerank | 0.235 | 0.706 | 0.670 |
+| cross-encoder rerank | 0.275 | 0.794 | 0.803 |
+
+The first two rows are the output of the first Example above, and `results.json` guards them. The cross-encoder row has a stored output (below), run in a throwaway environment with sentence-transformers 6.2.0 and the model `cross-encoder/ms-marco-MiniLM-L6-v2`. The kit does not guard it, because the package is optional.
+
+<Example
+  label="Computed"
+  task="You read the stored output of the cross-encoder run on the same 44 memories and 34 queries."
+  evidence="examples/retrieval-eval/outputs/cross-encoder.txt"
+  env="Apple silicon laptop, macOS 26.5, Python 3.13.1 (3.14.5 for the cross-encoder), 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+sed -n 1,13p examples/retrieval-eval/outputs/cross-encoder.txt
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+date: 2026-10-25T01:52:31Z
+machine: Apple silicon (arm64), macOS 26.5
+python: 3.14.5
+packages: {'sentence-transformers': '6.2.0', 'torch': '2.14.1', 'transformers': '5.20.2', 'numpy': '2.5.4'}
+system: cross-encoder
+command: retrieval_eval.py cross-encoder
+model: cross-encoder/ms-marco-MiniLM-L6-v2
+
+| system | precision@3 | hit@3 | MRR |
+| --- | --- | --- | --- |
+| cross-encoder | 0.275 | 0.794 | 0.803 |
+(44 memories, 34 queries, 27 queries with a correct note in the top 3)
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The MRR is 0.803 and the hit@3 is 0.794, the same as BM25. The header names the versions and the model.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The cross-encoder put the first correct note higher and found no extra correct notes on this set. It does not show the same for other notes or other models.
+
+</Fragment>
+
+</Example>
+
+1. The cross-encoder put the first correct memory higher (MRR 0.643 to 0.803) and left hit@3 at 0.794.
+2. The lexical fallback improved MRR a little and lowered hit@3 and precision.
+3. With 34 queries, one query moves hit@3 by 0.029. Treat small differences as noise.
+
+**Latency.** An Apple silicon laptop under load, CPU only, torch 2.14.1 with 4 threads. Stored runs gave a median of 0.018 to 0.030 seconds and a maximum of 0.050 to 0.083 seconds to re-rank 20 candidates for one prompt. Loading the model took 5 to 8 seconds, which probably includes the first import. This is a rough size on one machine, not a benchmark ([latency.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/latency.txt)).
+
+**Determinism.** The lexical scorer gave identical output over 25 repeated runs in the unit tests. The cross-encoder gave identical scores over 10 repeated runs of all 34 prompts ([latency.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/latency.txt)). Other hardware or thread counts can change the last decimals, so the pipeline rounds scores to five decimals before it sorts.
+
+## What is not tested
+
+The cross-encoder row is not guarded by `results.json`. One small hand-written evaluation set is weak evidence. The latency figures come from one loaded machine on one day. The tests do not cover the cross-encoder unless you install the package.
+
+**Read the matching page:** [Relevance and re-ranking](../../setup/relevance-and-reranking/)
+
+**Next:** [Give every helper the same rules](../ch07-orchestrator/)

@@ -1,0 +1,37 @@
+## Reconciliation: September
+
+**Step 1: Check each statement's arithmetic**
+
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** ✔ (matches recorded closing)
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** ✔ (matches statement closing)
+
+**Step 2: Compare line by line**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier payment | (50.00) | (50.00) | 0.00 |
+| Closing balance | 2,000.00 | 1,985.63 | **14.37** |
+
+**Step 3: Explain the difference**
+
+The entire gap is in the week 2 card settlement: 450.00 was recorded, but 435.63 reached the bank. Only 14.37 is missing, so this isn't a rounding issue. The likely causes are:
+
+1. **Card processor fees or charges** deducted from the settlement (most likely, since card settlements are often net of fees).
+2. **A timing difference**, such as a settlement that arrives in October.
+3. **A recording error**, such as a mis-keyed amount or a chargeback.
+
+**Step 4: Result**
+
+The difference is **14.37**, not zero. I can't make it tie to zero honestly without knowing the cause. Forcing the cash book to 1,985.63 with no supporting reason would hide a real cost or error.
+
+**What I'd do before closing tonight:**
+
+1. Pull the card processor's settlement report for week 2. It should show gross sales, fees, and net payout. If the 14.37 is a fee, it will be itemised there.
+2. If it's a fee, post a journal in the cash book: **Dr Merchant/bank charges 14.37, Cr Cash at bank 14.37**. The cash book then closes at 1,985.63 and ties to the statement with zero difference. This is the legitimate way to get zero.
+3. If it's timing, list it as an outstanding item in the reconciliation. The difference is then explained, though not zero on the face of the report.
+4. If it's an error in the cash book, correct the week 2 entry to the amount that was actually received, after checking the source records.
+
+If you send me the settlement report or tell me what the processor deducted, I'll draft the exact journal entry and update the reconciliation.

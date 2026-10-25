@@ -1,0 +1,113 @@
+---
+import { BASE } from '../data/site';
+import { levels } from '../data/levels';
+
+interface Props {
+  slug: string;
+}
+
+const current = levels.findIndex((level) => Astro.props.slug === `journey/${level.slug}`);
+---
+
+{
+  current >= 0 && (
+    <nav class="level-nav" aria-label="Levels">
+      <p class="level-line">
+        Level {current} of 9 <span class="level-note">(levels run 0 to 8)</span>: {levels[current].goal}
+      </p>
+      <ol class="level-dots">
+        {levels.map((level, index) => (
+          <li>
+            <a
+              href={`${BASE}/journey/${level.slug}/`}
+              aria-current={index === current ? 'step' : undefined}
+              class:list={[{ current: index === current, done: index < current }]}
+            >
+              <span class="dot"><span class="sr-only">Level </span>{index}</span>
+              <span class="dot-label">{level.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
+<script>
+  document.querySelector('.level-dots a.current')?.scrollIntoView({ inline: 'center', block: 'nearest' });
+</script>
+
+<style>
+  .level-nav {
+    margin-top: 0.5rem;
+  }
+  .level-line {
+    margin: 0 0 0.25rem;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+  }
+  .level-note {
+    white-space: nowrap;
+  }
+  .level-dots {
+    display: flex;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0 0 0.25rem;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+  }
+  @media (max-width: 40rem) {
+    .level-dots {
+      mask-image: linear-gradient(to right, transparent, #000 1.25rem, #000 calc(100% - 1.25rem), transparent);
+    }
+  }
+  .level-dots li {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
+  }
+  a {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.125rem 0.25rem;
+    text-decoration: none;
+    color: var(--ahg-muted);
+    font-size: var(--ahg-text-small);
+  }
+  a.current {
+    color: var(--ahg-text);
+    font-weight: 600;
+  }
+  .dot {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 2px solid var(--ahg-accent);
+    border-radius: 999px;
+    font-weight: 600;
+    color: var(--ahg-text);
+  }
+  a.done .dot {
+    background: var(--ahg-accent-soft);
+  }
+  a.current .dot {
+    background: var(--ahg-accent);
+    color: var(--ahg-accent-ink);
+  }
+  .dot-label {
+    max-width: 6.5rem;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    text-align: center;
+  }
+  a:hover .dot {
+    box-shadow: 0 0 0 2px var(--ahg-accent-soft);
+  }
+</style>

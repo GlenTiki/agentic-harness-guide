@@ -1,0 +1,42 @@
+## Reconciliation: September
+
+**Step 1: Check the cash book arithmetic**
+1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** (agrees to the recorded closing balance)
+
+**Step 2: Check the bank statement arithmetic**
+1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** (agrees to the stated closing balance)
+
+**Step 3: Match transactions**
+
+| Item | Cash book | Bank | Status |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | Agreed |
+| Card sales week 1 / card settlement | 600.00 | 600.00 | Matched |
+| Card sales week 2 / card settlement | 450.00 | 435.63 | **Differs by 14.37** |
+| Supplier payment | (50.00) | (50.00) | Matched |
+
+No deposits in transit or unpresented payments appear in the data, so the only reconciling item is the 14.37 shortfall on the week 2 card settlement.
+
+**Step 4: Reconcile the closing balances**
+
+Start from the bank closing balance:
+- Bank closing balance: 1,985.63
+- Add deposits in transit: 0.00
+- Less unpresented payments: 0.00
+- **Adjusted bank balance: 1,985.63**
+
+Start from the cash book closing balance:
+- Cash book closing balance: 2,000.00
+- Less bank-only deduction not yet recorded (14.37): (14.37)
+- **Adjusted cash book balance: 1,985.63**
+
+**Step 5: Check the result**
+
+Adjusted bank balance (1,985.63) − adjusted cash book balance (1,985.63) = **0.00**. The books reconcile once the 14.37 is recorded.
+
+**Adjusting entry needed in the cash book**
+
+Dr Merchant fees / bank charges 14.37
+Cr Card sales receivable (or cash clearing) 14.37
+
+**Caveat:** The 14.37 is the only difference, but the data doesn't say why the settlement was short. It's about 3.2% of 450.00, which is consistent with a card processor fee, but it could also be a chargeback or refund. Check the card processor's settlement report before posting the entry. If it's a chargeback or refund, post it to the matching account instead.

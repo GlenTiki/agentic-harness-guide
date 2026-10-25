@@ -1,0 +1,207 @@
+---
+title: Personas with their own memory
+description: A design for expert personas that keep their own memory, with a small working scaffold of persona files, an append rule and a validator. Treat it as a design.
+status: design
+sidebar:
+  label: "Chapter 8: Personas"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Design only, with a small working scaffold built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch08-personas.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (8 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+One viewpoint. A single reviewer sees only the angle it built from.
+
+## Goal
+
+Scaffold personas with a checklist and a memory file each, and validate the scaffold. Learn what the scaffold does not prove.
+
+## What is in the kit
+
+- Five persona files in `example/personas/`: architect, builder, tester, reviewer and releaser. Each has a role, a phase, a checklist of at least three items and a voice.
+- One memory file for each persona in `example/personas/memory/`. Each line is a time, a hash and a note. The hash chains to the line before, so an edit to an old line shows.
+- `personas.py` with three commands: `check`, `context` and `record`. `record` appends one line and refuses to append to a broken chain.
+- `validate.py` and six failing folders in `fixtures/bad/`.
+
+## Get the kit
+
+Download [ch08-personas.zip](/agentic-harness-guide/downloads/ch08-personas.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch08-personas.zip
+unzip ch08-personas.zip -d kit
+cd kit/ch08-personas
+```
+
+The hash must be `184f902c450a037b8f6ac124a0cd6d087d24e58705e949f1cf7d5383d76d169c`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read the five files in `example/personas/`. Each has a role, a phase and a checklist.
+3. Read one memory file in `example/personas/memory/`. Each line is a time, a hash and a note.
+4. Check the folder: `python3 -I personas.py check`. It prints `personas: OK`.
+5. Print what the tester would load: `python3 -I personas.py context tester`.
+6. Copy the personas into `scratch/`, record a new interaction, and check the copy. Then edit an old note in the copy and check again. The second Example below shows the commands.
+7. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You print what the tester persona would load: its role, checklist, voice and its own memory."
+  evidence="python3 -I personas.py context tester (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I personas.py context tester
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+# tester
+
+You are the tester. You try to break the change.
+
+## Checklist
+
+- What happens on empty input?
+- What happens on a repeat call, and on a crash half way?
+- Does each test fail when the code is wrong?
+
+## Voice
+
+Report each break with the input that caused it.
+
+## What you remember
+
+- An empty search word crashed the first version.
+- A note with a tab character was accepted by mistake once.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The last section, `What you remember`, comes from the persona's memory file. The other persona files have their own.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A persona is a text file plus a memory file. It does not show that a persona finds more defects.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You copy the personas into `scratch/`, record a new note for the tester, check, change one old note by hand, and check again."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I -c "import shutil; shutil.copytree('example/personas', 'scratch/personas', dirs_exist_ok=True)"
+python3 -I personas.py record tester "A very long note broke the list output." --dir scratch/personas
+python3 -I personas.py check --dir scratch/personas
+python3 -I -c "from pathlib import Path; p = Path('scratch/personas/memory/tester.md'); p.write_text(p.read_text().replace('empty search word', 'EMPTY SEARCH WORD'))"
+python3 -I personas.py check --dir scratch/personas
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+personas: OK
+memory/tester.md:1: the chain hash does not match. An earlier line changed, or this one did.
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The first check prints `personas: OK`, because `record` extended the chain. The second prints `the chain hash does not match` for line 1 and exits with code 1.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+An edit to an old line shows. A full rewrite of the file would not.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on six defective folders."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+FAIL memory/architect.md:1: the chain hash does not match. An earlier line changed, or this one did.
+FAIL builder.md: the Checklist section needs at least 3 items.
+FAIL releaser.md: phase must be one of design, build, test, review, release.
+FAIL reviewer.md: duplicate persona name 'builder'.
+FAIL tester.md: memory file memory/tester.md does not exist.
+FAIL memory/ghost.md: no persona uses this memory file.
+validate: FAIL (6 problem(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Six `FAIL` lines appear: a tampered memory line, a short checklist, an unknown phase, a duplicate name, a missing memory file and an orphan memory file.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The scaffold catches six format defects. It does not catch a bad persona.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+This chapter is Design only, with a small working scaffold. The tests verify the file format, the chain check, the refusal to append to a broken memory, the context function and the six folder defects. They do not verify that personas catch more defects, that persona memory improves later work, or how a team lead should choose which persona runs. There is no evidence in this case study that personas help. The chain detects partial edits. It does not stop a full rewrite of a file. In my own setup, roles do not keep memories of their own.
+
+**Read the matching page:** [Personas](../../setup/personas/)
+
+**Next:** [Turn rambling feedback into fixes](../ch09-retro/)

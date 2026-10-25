@@ -1,0 +1,9 @@
+Each of you owes about **€706.67** for the year.
+
+I counted February once, since the list shows it twice (198 both times) and a year only has 12 months. That gives:
+
+212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240 = **€2,120**
+
+€2,120 ÷ 3 = €706.67 each. The cents don't divide evenly, so two of you pay €706.67 and one pays €706.66.
+
+If the second Feb was real (say, a corrected or extra bill), the total is €2,318 and the share is about €772.67 each. Let me know if that's the case.

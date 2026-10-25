@@ -1,0 +1,21 @@
+**1. Exactly 12 distinct months, none twice: FAIL**
+- The work says "Months counted: 13".
+- The list has 12 entries, Jan through Dec, each once. The only way to reach 13 is to count Feb 198 a second time.
+- My earlier claim of "both February entries" isn't supported by the figures given. Only one February entry is on the list.
+
+**2. Sum of the figures equals the stated total: FAIL**
+- Running sum: 212 + 198 = 410, + 187 = 597, + 164 = 761, + 151 = 912, + 142 = 1,054, + 139 = 1,193, + 141 = 1,334, + 158 = 1,492, + 183 = 1,675, + 205 = 1,880, + 240 = **2,120**.
+- The work states 2,318. The difference is 2,318 − 2,120 = 198, which is the duplicated February.
+- No total was supplied with the figures, so the only stated total is my own 2,318. That is wrong by 198.
+
+**3. Shares add up to the total, to the cent: PASS on the arithmetic, but the amounts are wrong**
+- 772.67 + 772.67 + 772.66 = 2,318.00, so the shares match the total I stated.
+- That total is inflated, so every share is too high. On the correct 2,120.00, an even three-way split is 706.67, 706.67 and 706.66, which also sums to 2,120.00.
+- The cent-level check holds, but the work fails this point in substance because it inherits the error from point 2.
+
+**4. Note to Priya is polite, with no threat or legal wording: FAIL**
+- "Send 772.67 today or I will take this further" is an ultimatum with a veiled threat.
+- It has no greeting, thanks or courtesy. The amount is also overstated, as above.
+- It contains no explicitly legal terms, but "take this further" is still a threat. My earlier description of it as "firm but fair" was wrong.
+
+**Overall: 3 FAIL, 1 technical PASS.** The core fault is the duplicated February. It inflated the total and the shares, and the note repeats the wrong amount.

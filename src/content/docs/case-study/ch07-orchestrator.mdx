@@ -1,0 +1,254 @@
+---
+title: Give every helper the same rules
+description: Build brief templates for the lead and for helpers, a check that every helper brief carries the shared rules, and notes on what native Claude Code inherits.
+status: built
+sidebar:
+  label: "Chapter 7: Orchestrator"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch07-orchestrator.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (8 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+One [agent](../../glossary/#agent) does everything, or helpers get a brief with no rules. A helper without the rules can break them.
+
+## Goal
+
+Write briefs from templates and catch any helper brief that is missing the shared rules block.
+
+## What is in the kit
+
+- `templates/orchestrator-brief.md`: outcomes in plain English, expected behaviour, acceptance checks and a next step. A worked example is in `example/briefs/orchestrator-notes-search.md`.
+- `templates/subagent-brief.md` and `shared-rules.md`, a block of six rules.
+- `briefs.py`, which renders a helper brief with the shared rules block and checks every brief in a folder.
+- `settings-for-subagents.example.json` and `hooks/subagent_must_quote_check.py`. The hook makes a helper quote a passing check before it can finish.
+- `agents/reviewer.example.md`, an example agent definition.
+
+## Get the kit
+
+Download [ch07-orchestrator.zip](/agentic-harness-guide/downloads/ch07-orchestrator.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch07-orchestrator.zip
+unzip ch07-orchestrator.zip -d kit
+cd kit/ch07-orchestrator
+```
+
+The hash must be `6af24dfca0a9c7392c5a932064cf3b0e65e5f9a5f3cedd43bdae29a954a93d99`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `templates/orchestrator-brief.md` and the worked example `example/briefs/orchestrator-notes-search.md`. This is what the product manager writes.
+3. Read `shared-rules.md`.
+4. Render a helper brief. The first Example below shows the command.
+5. Check the example briefs: `python3 -I briefs.py example/briefs`.
+6. Change one rule in a copy of an example brief and check again. The check fails.
+7. Read `settings-for-subagents.example.json` and `hooks/subagent_must_quote_check.py`. To use them, copy the `hooks/` folder to `.claude/harness-subagent/hooks/` in your project and merge the settings. The validator installs the kit that way in a scratch project and follows the command in the settings.
+8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You render a helper brief from a title, a task, the files in scope, the acceptance checks and the report format."
+  evidence="python3 -I -c 'import sys; sys.path.insert(0, '.'); import briefs; print(briefs.render_subagent_brief('T', 'Do it.', ['a.py'], ['tests pass'], 'Say what changed.'))' (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I -c "import sys; sys.path.insert(0, '.'); import briefs; print(briefs.render_subagent_brief('T', 'Do it.', ['a.py'], ['tests pass'], 'Say what changed.'))"
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+# Subagent brief: T
+
+## Task
+
+Do it.
+
+## Files in scope
+
+- a.py
+
+## Acceptance checks
+
+- tests pass
+
+## Report format
+
+Say what changed.
+
+<!-- BEGIN SHARED RULES -->
+## Shared rules
+
+1. Work only inside the files named in "Files in scope".
+2. Write a failing test before you write code. Watch it fail.
+3. Run `./check.sh` before you report. Quote its last line.
+4. Describe code in simple English: short sentences, active voice.
+5. Do not push, do not delete data and do not edit `check.sh`.
+6. If the task is unclear, stop and say what is unclear.
+<!-- END SHARED RULES -->
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The brief ends with the shared rules block between `BEGIN SHARED RULES` and `END SHARED RULES`. Every brief gets the same six rules. The `sys.path.insert` part lets isolated Python import `briefs.py` from the kit root.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The renderer adds the rules block. It does not make a helper obey the rules.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You check the example briefs before the edit."
+  evidence="python3 -I briefs.py example/briefs (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I briefs.py example/briefs
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+briefs: 0 brief(s) with problems
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The line says `0 brief(s) with problems`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The examples carry the exact rules block. It does not show the briefs are good briefs.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You copy the example briefs into `scratch/`, change one rule in one copy ('Do not push' becomes 'Push freely'), and check the copies."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+mkdir -p scratch
+python3 -I -c "import shutil; shutil.copytree('example/briefs', 'scratch/briefs', dirs_exist_ok=True)"
+python3 -I -c "from pathlib import Path; p = Path('scratch/briefs/search-feature.md'); p.write_text(p.read_text().replace('Do not push', 'Push freely'))"
+python3 -I briefs.py scratch/briefs
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+search-feature.md: The shared rules block differs from shared-rules.md.
+briefs: 1 brief(s) with problems
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The finding is `search-feature.md: The shared rules block differs from shared-rules.md.` The summary says 1 brief has problems. The exit code is 1.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A changed rule is caught. It does not show that a helper follows the rules that remain.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on five broken briefs and one settings sample with a bad hook path."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+FAIL no-checks.md: The section 'Acceptance checks' is missing or empty.
+FAIL no-rules.md: The shared rules block is missing.
+FAIL no-scope.md: The section 'Files in scope' is missing or empty.
+FAIL orchestrator-no-next-step.md: The section 'Next step' is missing or empty.
+FAIL rule-dropped.md: The shared rules block differs from shared-rules.md.
+FAIL settings SubagentStop: the command path 'python3 -I "${CLAUDE_PROJECT_DIR}/chapters/07-orchestrator/hooks/subagent_must_quote_check.py"' does not resolve to a file when hooks/ sits in .claude/harness-subagent.
+validate: FAIL (6 problem(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Each broken brief gets one `FAIL` line, for example `rule-dropped.md: The shared rules block differs from shared-rules.md.`
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Each brief defect can fail. It does not show the hook runs inside Claude Code.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+The tests check the brief format, the extra hook and the shape of the config files. They do not run Claude Code. The shared rules block makes sure the rules are present in the brief. It cannot make a helper obey them. Enforcement comes from the hooks in chapter 2. What native Claude Code helpers inherit comes from the Claude Code documentation, which the setup page quotes with its fetch date. A helper that you start from a plain command-line program inherits none of it unless you pass the rules in.
+
+**Read the matching page:** [Orchestrator and subagents](../../setup/orchestrator-and-subagents/)
+
+**Next:** [Personas with their own memory](../ch08-personas/)

@@ -1,0 +1,14 @@
+Yes, I'm sure: the total is **€2,120**.
+
+I re-added the 12 figures in pairs as a cross-check:
+
+- Jan + Dec: 212 + 240 = 452
+- Feb + Nov: 198 + 205 = 403
+- Mar + Oct: 187 + 183 = 370
+- Apr + Sep: 164 + 158 = 322
+- May + Aug: 151 + 141 = 292
+- Jun + Jul: 142 + 139 = 281
+
+452 + 403 + 370 + 322 + 292 + 281 = **2,120**
+
+Your figure is exactly 198 higher than mine (2,318 − 2,120 = 198), which is the February bill. February may have been counted twice. If your list has a different number for any month, send it and I'll redo the sum with it.

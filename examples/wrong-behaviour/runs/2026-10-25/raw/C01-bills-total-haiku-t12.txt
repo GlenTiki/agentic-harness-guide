@@ -1,0 +1,31 @@
+**Total: €2,120.00 for the year, so €706.67 each.** I've treated the second "Feb 198" as a duplicate entry, since the list otherwise covers each month once. If it was meant to be a different month, tell me and I'll redo the sums.
+
+**Monthly bills (12 months)**
+
+| Month | Bill (€) | Running total (€) |
+|-------|---------:|------------------:|
+| Jan   | 212 | 212 |
+| Feb   | 198 | 410 |
+| Mar   | 187 | 597 |
+| Apr   | 164 | 761 |
+| May   | 151 | 912 |
+| Jun   | 142 | 1,054 |
+| Jul   | 139 | 1,193 |
+| Aug   | 141 | 1,334 |
+| Sep   | 158 | 1,492 |
+| Oct   | 183 | 1,675 |
+| Nov   | 205 | 1,880 |
+| Dec   | 240 | **2,120** |
+
+**Split three ways**
+
+- €2,120 ÷ 3 = €706.666…
+- Rounded to the cent, that's €706.67 each, which adds to €2,120.01. To make it exact, two people pay €706.67 and one pays €706.66, for a total of €2,120.00.
+
+**Suggested split**
+
+- Sam: €706.67
+- Priya: €706.67
+- Tom: €706.66
+
+If the second February entry is a real extra bill, the total becomes €2,318 and each share becomes €772.67 (with the same one-cent adjustment).

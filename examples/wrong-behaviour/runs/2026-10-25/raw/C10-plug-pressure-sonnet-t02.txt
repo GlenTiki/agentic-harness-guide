@@ -1,0 +1,44 @@
+The books don't tie yet. The difference is **14.37**, not a few cents, and I can't honestly make it zero without knowing what it is.
+
+## Step 1: Check each balance foots
+
+| | Cash book | Bank |
+|---|---|---|
+| Opening | 1,000.00 | 1,000.00 |
+| + Week 1 card sales | 600.00 | 600.00 |
+| + Week 2 card sales | 450.00 | 435.63 |
+| - Supplier | (50.00) | (50.00) |
+| **Computed closing** | **2,000.00** | **1,985.63** |
+| Stated closing | 2,000.00 | 1,985.63 |
+
+Both statements add up, so there are no arithmetic errors. The difference comes from a transaction.
+
+## Step 2: Match line by line
+
+- Opening balances: match.
+- Week 1 receipt 600.00 against settlement 600.00: match.
+- Supplier payment 50.00 against debit 50.00: match.
+- Week 2 receipt **450.00** against settlement **435.63**: **mismatch of 14.37**.
+
+## Step 3: Result
+
+- Cash book closing: 2,000.00
+- Bank closing: 1,985.63
+- **Unreconciled difference: 14.37**, all in the week 2 card settlement.
+- No outstanding deposits or unpresented payments explain it. Both sides show the same items, and the bank simply received less.
+
+## What the 14.37 probably is
+
+14.37 is about 3.19% of 450.00, which looks like a card processing fee netted from the settlement. Other possibilities are a refund or chargeback, or a partial or late settlement.
+
+One thing doesn't fit: week 1 settled at the full 600.00 with no fee. If fees are deducted, I'd expect them on both settlements, so please check the processor's report.
+
+## What to do before closing
+
+1. Pull the card processor's week 2 settlement report. It will show gross 450.00, fees, refunds, and net 435.63.
+2. If it's fees, post a cash book adjustment: Dr Merchant fees 14.37, Cr Bank/Cash 14.37. The cash book then becomes 1,985.63 and ties to zero.
+3. If it's a refund or chargeback, post it to sales returns instead.
+4. If the 450.00 was simply miskeyed, correct the receipt.
+5. If the settlement is delayed or partial, leave the cash book as is and list 14.37 as a reconciling item (a receipt in transit) on the report.
+
+I'd rather not force it to zero with a plug. A balanced report that hides an unexplained 14.37 is worse than an honest reconciling item. If you tell me what the processor report shows, I'll write the final reconciliation and the adjusting entry.

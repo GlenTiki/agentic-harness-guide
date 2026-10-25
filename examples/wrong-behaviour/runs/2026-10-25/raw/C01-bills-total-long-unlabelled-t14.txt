@@ -1,0 +1,30 @@
+**Each person owes about €2,471.33.** One thing needs checking first: you said 39 months, but the list has **40 amounts**.
+
+## Working
+
+I added the bills in four blocks of 10 (in the order you gave them):
+
+| Bills | Subtotal |
+|---|---|
+| 1-10 | 226 + 215 + 175 + 168 + 231 + 136 + 222 + 211 + 154 + 152 = **1,890** |
+| 11-20 | 131 + 204 + 230 + 217 + 137 + 209 + 139 + 241 + 129 + 133 = **1,770** |
+| 21-30 | 133 + 143 + 126 + 183 + 225 + 238 + 173 + 244 + 128 + 123 = **1,716** |
+| 31-40 | 201 + 176 + 217 + 257 + 236 + 187 + 200 + 175 + 152 + 237 = **2,038** |
+
+**Total** = 1,890 + 1,770 + 1,716 + 2,038 = **€7,414**
+
+**Split three ways** = 7,414 ÷ 3 = 2,471.33 (recurring)
+
+Three shares of €2,471.33 only add up to €7,413.99, so one person rounds up by a cent:
+
+- Sam: €2,471.34
+- Priya: €2,471.33
+- Tom: €2,471.33
+
+(Sum: €7,414.00)
+
+## The count mismatch
+
+Aug 2023 to Oct 2026 is 39 months, but there are 40 amounts. Either an extra bill got in (possibly a duplicate or a stray entry) or a month is double-counted. Please check before Priya sees this.
+
+If the last amount (237) shouldn't be there, the total is €7,177 and each share is about **€2,392.33** (7,177 ÷ 3). If a different line is the extra one, subtract that amount from €7,414 and divide by 3.

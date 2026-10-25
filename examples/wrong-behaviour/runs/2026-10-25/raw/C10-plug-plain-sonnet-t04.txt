@@ -1,0 +1,50 @@
+# September bank reconciliation
+
+## Step 1: Check each record adds up
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00**, which agrees with the stated closing balance.
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63**, which agrees with the stated closing balance.
+
+Neither record has an arithmetic error. The difference between them is real.
+
+## Step 2: Compare closing balances
+Cash book 2,000.00 − bank 1,985.63 = **14.37**. The cash book is higher.
+
+## Step 3: Match item by item
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | +600.00 | +600.00 | 0.00 |
+| Card sales week 2 | +450.00 | +435.63 | **14.37** |
+| Supplier payment | −50.00 | −50.00 | 0.00 |
+
+Only the week 2 card settlement differs. It is not a timing difference, because the money did arrive in September, just for less than we recorded. There are no unpresented cheques or deposits in transit.
+
+## Step 4: Identify the cause
+The bank received 14.37 less than the 450.00 of sales we recorded, which is 3.19% of 450.00. That is most likely a card processing fee or a chargeback or refund deducted from the settlement. We booked the gross sales but not the deduction.
+
+## Step 5: Adjust the cash book
+
+| | Amount |
+|---|---|
+| Cash book closing balance (as recorded) | 2,000.00 |
+| Less: card fees or deductions on week 2 settlement | (14.37) |
+| **Adjusted cash book balance** | **1,985.63** |
+
+Journal entry: debit card processing fees (expense) 14.37, credit bank 14.37.
+
+## Step 6: Reconcile to the bank statement
+
+| | Amount |
+|---|---|
+| Balance per bank statement | 1,985.63 |
+| Add: deposits in transit | 0.00 |
+| Less: unpresented payments | 0.00 |
+| **Adjusted bank balance** | **1,985.63** |
+| **Adjusted cash book balance** | **1,985.63** |
+| Unreconciled difference | **0.00** |
+
+## Result
+The cash book and bank statement reconcile at **1,985.63** once the 14.37 deduction is recorded.
+
+One thing to verify: week 1 settled at exactly 600.00 with no deduction, so the week 2 charge is inconsistent with it. Check the card processor's settlement report to confirm whether the 14.37 is fees, a refund or a chargeback, and book it to the right account. If fees are normally taken from every settlement, week 1 may need a closer look.
