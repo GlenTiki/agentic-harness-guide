@@ -6,8 +6,6 @@ description: Learn why an assistant gives different answers to the same question
 import ContextDesk from '../../../components/ContextDesk.astro';
 import Example from '../../../components/Example.astro';
 
-**The lesson:** Ask twice and compare, because a confident answer can still be wrong.
-
 ## Scene
 
 Sam asks a chat assistant for ideas for a friend's birthday dinner, then asks the same question again to double-check. The second answer is different, so Sam has two plans and a mild suspicion that the assistant is making it up as it goes. Try it now: [the five-minute win](#five-minute-win), five steps, no setup.
@@ -18,11 +16,9 @@ Sam asks a chat assistant for ideas for a friend's birthday dinner, then asks th
 
 ## The idea
 
-A **[model](../../glossary/#model)** is the program behind the assistant. It has read a huge amount of writing. It writes the most fitting next piece of text, like a phone's autocomplete that has read a library.
+Ask twice and compare, because a confident answer can still be wrong.
 
-A **[prompt](../../glossary/#prompt)** is the text you send. It is the note you put on the desk.
-
-A **[context window](../../glossary/#context-window)** is the amount of text the assistant can see at once. Picture a desk: it can use what is on the desk and nothing else.
+A **[model](../../glossary/#model)** is the program behind the assistant. It has read a huge amount of writing, and it writes the most fitting next piece of text, like a phone's autocomplete that has read a library. A **[prompt](../../glossary/#prompt)** is the text you send: the note you put on the desk. A **[context window](../../glossary/#context-window)** is the amount of text the assistant can see at once. Picture a desk: it can use what is on the desk and nothing else.
 
 <ContextDesk />
 
@@ -34,29 +30,19 @@ Three things follow:
 
 For anything numeric, ask for a formula and run it in a spreadsheet.
 
-:::tip[New to this]
-A **[token](../../glossary/#token)** is a small chunk of text, often a word or part of a word. The context window is counted in tokens. A long chat, a pasted document and the assistant's own replies all use the same space.
-:::
-
 :::tip[Which app?]
 Any chat app works for the exercises: for example ChatGPT, Claude, Gemini or Microsoft Copilot. Free versions are fine. Look in settings for custom instructions or projects when you reach level 2.
 :::
 
-:::note[Want consistency]
-Save the ask and paste it, do not retype it. Start a new chat for a new job. Some variation stays, so compare figures and structure, not words. The [consistency fast track](../../start-here/consistency-fast-track/) has the full routine.
-:::
-
 ## Try it
-
-You need any chat assistant. Free versions are fine. The three wins take about 25 minutes in all. Minutes count each new chat, paste, read, compare, count and hand-add as one step, rounded up to the next 5.
 
 <p class="audience">Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</p>
 
-**Phone OK.** Every part works on a phone.
+You need any chat assistant, and a free version is fine. The three wins take about 25 minutes in all, counting each new chat, paste, read, compare, count and hand-add as one step and rounding up to the next 5. **Phone OK.** Every part works on a phone.
 
 ### Five-minute win
 
-Five steps, about five minutes. Sam shares a flat with Priya and Tom. Sam pasted last year's bills and February went in twice, because it was copied twice by mistake. Nobody has noticed.
+Five steps, about five minutes. Sam shares a flat with Priya and Tom. Sam pasted last year's bills into the chat with February in twice, because it was copied twice by mistake, and nobody has noticed.
 
 1. Open a new chat.
 2. Paste this:
@@ -69,7 +55,7 @@ Here are our shared bills for last year, in euros per month: Jan 212, Feb 198, F
 4. Count the figures in the list yourself. There are 13 for 12 months.
 5. Add the twelve different figures by hand. The total is 2,120.00 and each share is 706.67 (Sam pays 706.66, so the three shares add up). Does the reply say the same?
 
-In recorded runs of this exact prompt on 2026-10-25, claude-sonnet-5-5 gave 2,120.00 in 20 of 20 trials. claude-haiku-5-5 led with the wrong total 2,318.00 in 1 of 20 trials, and that reply still named the repeated February. Your assistant may differ. A longer list went worse. Here is one recorded run on 40 amounts for 39 months, with one amount pasted twice and nothing to mark it.
+In recorded runs of this exact prompt on 2026-10-25, claude-sonnet-5-5 gave 2,120.00 in 20 of 20 trials. claude-haiku-5-5 led with the wrong total 2,318.00 in 1 of 20 trials, and that reply still named the repeated February. Your assistant may differ, and a longer list went worse: here is one recorded run on 40 amounts for 39 months, with one amount pasted twice and nothing to mark it.
 
 <Example
   label="Observed"
@@ -137,7 +123,7 @@ In all 20 recorded runs of this prompt the headline total was wrong, every reply
 
 </Example>
 
-The fix is a check you can run, not trust in the tone: count the lines, then add them again yourself. The three-line script in the box at the top of the [home page](../../) counts the lines, lists the repeats and adds the rest.
+The tone tells you nothing here: the reply flagged its own doubt and still led with 7,414. A check you can run does tell you, so count the lines, then add them again yourself. The card at the top of the [home page](../../), "What a three-line check finds", runs that check as a short script on these 40 amounts. It prints three values: the line count, 40; the repeated amount, 133; and the total without the repeat, 7281. On a phone, the hand count is the check. If you only want a rough idea of what the 39 months cost, 7,414 is near enough. If you are about to ask Priya for her share, the repeated 133 costs her 44.33 too much (133 divided by three).
 
 Before you paste real data, read [using an assistant at work](../professional-guardrails/).
 
@@ -149,11 +135,11 @@ Six steps, about 10 minutes. Open a new chat and paste this:
 Plan a birthday dinner for a friend who turns 30 next month. There are six of us. Give me one idea for the venue and one for the menu.
 ```
 
-Copy the answer. Open another new chat and paste exactly the same words. Compare. You may get two different venues and menus. If you do, both are fine. Neither is "the" answer. The assistant chose among good options.
+Copy the answer, open another new chat, paste exactly the same words and compare the two replies. You may get two different venues and two different menus, and if you do, both are fine: the assistant chose among good options, and neither is "the" answer. When you compare two replies, look at the figures and the structure rather than the wording, because the wording always varies.
 
 ### Third win: ask for a source, then check it exists
 
-Five steps, about 10 minutes. An assistant can write a reference that looks perfect and does not exist. You find out by looking it up.
+Five steps, about 10 minutes. An assistant can write a reference that looks perfect and does not exist, and you find out by looking it up.
 
 1. Open a new chat and paste this:
 
@@ -164,7 +150,7 @@ Give me two published studies on whether standing desks improve office productiv
 2. Read the reply. A DOI is a short code that names one paper, such as `10.1000/xyz123` (this one is made up).
 3. Look up each DOI. In your browser, type `https://doi.org/` and then the DOI. Do not copy a link from the reply. Type the address yourself.
 4. Compare what opens with what the assistant said. Check the title, the year and the journal.
-5. Open a new chat and paste the same prompt. Compare the two replies. Are the studies the same? Is any number the same? A number such as an effect size is a good one to compare.
+5. Open a new chat, paste the same prompt and compare the two replies. Ask whether the studies are the same and whether any number is the same; an effect size is a good number to compare.
 
 Three results are possible. The DOI opens the paper and the details match: the source is real, but you have not checked that it says what the assistant claims. The lookup fails or opens a different paper: the reference is wrong in a way you could not see by reading. The assistant says it cannot check DOIs: it is right, so look them up yourself.
 
@@ -174,6 +160,8 @@ In recorded runs of this prompt, at least one DOI could not be resolved in 16 of
 
 Paste a very long article into a chat, then ask `What was my first message?` Apps differ in how they answer.
 
+One more quick win? [Why it sounds sure](../why-it-sounds-sure/) is a test, about 15 minutes, of whether the assistant agrees with you when you push back.
+
 Your version: swap in a task of your own, for example a status update to tighten.
 
 [Tick it off](../progress/) on the progress page when you can do the checks in the Checkpoint.
@@ -182,7 +170,7 @@ Your version: swap in a task of your own, for example a status update to tighten
 
 *How it works. Optional reading.*
 
-When you press send, the app packs up the whole conversation and sends it to the model. The model writes a reply one token at a time. At each step it weighs many possible next tokens and picks one. The pick is partly random, so two runs differ. Some apps expose a setting for how adventurous the pick is. A cautious setting gives more repeatable answers, but it does not make the model look facts up. Level 3 covers tools that add search or file access.
+When you press send, the app packs up the whole conversation and sends it to the model, which writes its reply one **[token](../../glossary/#token)** at a time. A token is a small chunk of text, often a word or part of a word, and the context window is counted in tokens. A long chat, a pasted document and the assistant's own replies all use the same space. At each step the model weighs many possible next tokens and picks one, and the pick is partly random, so two runs differ. Some apps expose a setting for how adventurous the pick is. A cautious setting gives more repeatable answers, but it does not make the model look facts up. Level 3 covers tools that add search or file access.
 
 The model has no memory of its own. If it seems to remember yesterday, the app has put yesterday's text back on the desk.
 
@@ -201,14 +189,6 @@ Two causes remain even with the randomness turned down. Sums done in a different
 A duplicated line in the books looks like this slip. A fluent summary hides it until someone recounts. Count the lines and agree the total to an independent source.
 :::
 
-## Expert corner
-
-:::caution[Expert corner]
-Lowering the randomness setting reduces variation but does not remove it in every provider, so do not build a check that expects identical text twice. Compare meaning, or compare a computed result.
-
-The context limit is a ceiling, not a promise. Long inputs can degrade how well details are used, even when they fit. Spend the window on the material that matters.
-:::
-
 ## Agent note
 
 :::note[Agent note]
@@ -220,14 +200,6 @@ When you are unsure, say what is uncertain. Do not fill gaps with plausible text
 
 Check: the reply states the item count and the sum.
 :::
-
-## Mistakes people make
-
-**Treating the assistant as a fact lookup.** It writes likely text. Fix: give it the material and ask it to work from that. Check anything that matters.
-
-**Judging it on one answer.** One reply is one draw from many. Fix: ask twice and compare.
-
-**Expecting it to remember last week.** A new chat is a blank desk. Fix: paste in what matters, or save it where the app loads it (level 2).
 
 ## Checkpoint
 
@@ -259,7 +231,5 @@ You can now:
 ## Bridge
 
 A one-line ask gets a different answer each time and no clue how good it is, so level 1 shows how to say what you want.
-
-One more quick win first? [Why it sounds sure](../why-it-sounds-sure/) is a 10-minute test of whether the assistant agrees with you.
 
 **Next:** [Level 1: Write a good prompt](../01-say-it-properly/)
