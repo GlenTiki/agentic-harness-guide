@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { findExamples, TWIN_PARTS } from './lib/example-parse.mjs';
+import { findExamples, SHOWS_PART, TWIN_PARTS } from './lib/example-parse.mjs';
 
 const docsRoot = path.resolve('src/content/docs');
 const examplesRoot = path.resolve('examples');
@@ -163,11 +163,13 @@ for (const file of markdownFiles) {
     const text = fs.readFileSync(twin, 'utf8');
     if (!/^---\ntitle: ".+"\n/.test(text)) problems.push(`${twinId}.md: twin has no front matter title`);
     if (/^import\s/m.test(text)) problems.push(`${twinId}.md: twin still contains an import line`);
-    const exampleCount = findExamples(source).length;
+    const examples = findExamples(source);
+    const exampleCount = examples.length;
+    const showsCount = examples.filter((example) => example.slots.shows).length;
     if (exampleCount > 0) {
-      for (const part of TWIN_PARTS) {
+      for (const [part, expected] of [...TWIN_PARTS.map((part) => [part, exampleCount]), [SHOWS_PART, showsCount]]) {
         const found = text.split(part).length - 1;
-        if (found !== exampleCount) problems.push(`${twinId}.md: twin has ${found} of ${part}, source has ${exampleCount} examples`);
+        if (found !== expected) problems.push(`${twinId}.md: twin has ${found} of ${part}, source has ${expected}`);
       }
       if (/<Example|<Fragment/.test(text)) problems.push(`${twinId}.md: twin still contains an Example or Fragment tag`);
     }
@@ -176,12 +178,14 @@ for (const file of markdownFiles) {
       problems.push(`${twinId}.md: twin front matter has no status: ${twinStatus}`);
     }
   }
-  const exampleTotal = findExamples(source).length;
+  const sourceExamples = findExamples(source);
+  const exampleTotal = sourceExamples.length;
   if (exampleTotal > 0) {
+    const showsTotal = sourceExamples.filter((example) => example.slots.shows).length;
     const url0 = `${ORIGIN}${twinId === 'index' ? '' : `${twinId}/`}`;
     const fullSection = full.split(`<!-- page: ${url0} -->`)[1]?.split('\n\n---\n\n')[0] ?? '';
-    for (const part of TWIN_PARTS) {
-      if (fullSection.split(part).length - 1 !== exampleTotal) problems.push(`${rel}: llms-full.txt entry lacks ${part} for ${exampleTotal} examples`);
+    for (const [part, expected] of [...TWIN_PARTS.map((part) => [part, exampleTotal]), [SHOWS_PART, showsTotal]]) {
+      if (fullSection.split(part).length - 1 !== expected) problems.push(`${rel}: llms-full.txt entry lacks ${part} for ${expected} examples`);
     }
   }
   const url = `${ORIGIN}${twinId === 'index' ? '' : `${twinId}/`}`;
