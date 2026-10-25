@@ -1,53 +1,32 @@
 ---
 title: "Level 1: Write a good prompt"
-description: "Learn how to write a good prompt: turn a vague ask into a strong one with a goal, constraints, an example, a check step and a refinement loop."
+description: "Learn how to write a good prompt: turn a vague ask into a checkable one with a goal, constraints, an example, a check step and a refinement loop."
 ---
 
 import Example from '../../../components/Example.astro';
 
-**The lesson:** Give the assistant a goal, constraints, an example and a check step.
-
 ## Scene
 
-*Last time: you learned that a model writes likely text, that it varies, and that it only sees what is on its desk. You also pasted a bills list with February in twice and checked the total yourself. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
+*Last time: a model writes likely text, varies from run to run and sees only what is on its desk, and you pasted a bills list with February in twice and checked the total yourself.*
 
-Suppose Sam types "Make my CV better" and gets back a CV that is longer, shinier and lists a skill Sam does not have. (This is an invented case, not a recorded run.) Sam did not say who would read it, which job it was for or what "better" meant. The assistant guessed. It is a good guesser. It is still guessing.
+Suppose Sam types "Make my CV better" and gets back a CV that is longer, shinier and lists a skill Sam does not have. Sam did not say who would read it, which job it was for or what "better" meant, so the assistant guessed. It is a good guesser, and it is still guessing. (The CV is an invented case, not a recorded run.)
 
 :::note[Weak spot]
-Level 0 left you able to see that a sure-sounding answer can be wrong, but nothing yet makes a wrong answer less likely. **A vague ask gets a confident answer to a question you did not mean.** The fix at this level is a clear ask with constraints and a check step. A script can also lint a plain-English spec, as the [simple English page](../../setup/plain-text-and-simple-english/) shows. This level is step 3 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-3-engineer-a-fix), Engineer a fix.
+Nothing in level 0 stops the assistant guessing what you meant. **A vague ask gets a confident answer to a question you did not mean.** The fix at this level is a clear ask with constraints and a check step, which makes the assistant ask about the repeated month instead of guessing. The figures still need a check outside the chat. This level is step 3 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-3-engineer-a-fix), Engineer a fix.
 :::
 
 ## The idea
 
-**A good ask removes guesses.** Each part you add takes one guess away.
-
-There are three things and a habit:
+**A good ask removes guesses.** Each part you add takes one guess away, and there are three parts and a habit:
 
 - **[Goal](../../glossary/#goal).** What the result is for and who will use it.
-- **[Constraints](../../glossary/#constraint).** The limits: what to use, what to avoid, how long, in what shape. The last constraint is the **[check step](../../glossary/#check-step)**: a count or a sum the assistant must write down before it gives a conclusion, and what to do if it fails.
-- **[Example](../../glossary/#example).** A small sample of the result you want. Principle, not measured: an example pulls every answer towards its shape, including its length and word choice. Give two examples that differ, or say which features to copy.
+- **[Constraints](../../glossary/#constraint).** The limits: what to use, what to avoid, how long, in what shape. The last constraint is the **[check step](../../glossary/#check-step)**: a count, before any sum, that the assistant must write down before it gives a conclusion, and what to do if it fails.
+- **[Example](../../glossary/#example).** A small sample of the result you want. An example pulls every answer towards its shape, including its length and word choice (a principle, not a measured result), so give two examples that differ, or say which features to copy.
 - **The habit: the [refinement loop](../../glossary/#refinement-loop).** Ask, read, name what is wrong, ask again. One change per pass.
 
-For numbers, the check is a count and a sum. For writing, ask for a quoted source line for each claim, a word count and `List anything you assumed`. These make a slip easier to spot. You still read the result.
+A constraint is an observable property, such as "each month appears once", not an intention, such as "be accurate", because only a property can be checked by eye. For numbers, the check is a count before any sum, because the count shows a repeat and a sum by the same assistant does not catch its own slip. For writing, ask for a quoted source line for each claim, a word count and `List anything you assumed`. If you have a style guide, a policy or a checklist, paste it as the constraints. For Sam's CV, the goal names the job and the person who will skim it, and the constraints keep every fact true and the length to one page. The example is one bullet in the style Sam wants, and the check asks the assistant to list the facts it used.
 
-**Bring your own standard.** If you have a style guide, a policy or a checklist, paste it as the constraints.
-
-Here is the CV ask, before and after.
-
-```text
-Before:
-Make my CV better.
-
-After:
-Goal: I am applying for an office administrator job at a small accountancy firm. The reader is a busy partner who will skim for ten seconds.
-Constraints: Keep every fact true. Do not invent skills. Use plain words. Keep it to one page. Start each bullet with a past-tense verb.
-Example of the style I want for one bullet: "Booked travel and rooms for a team of 12; cut the cost by moving to a single supplier."
-Check: Before you answer, list the facts you used from my CV. Tell me anything you assumed.
-Here is my CV:
-[paste]
-```
-
-The second ask is longer. It also gets a better answer the first time, which is quicker overall. Here is a template for any ask:
+Here is a template for any ask:
 
 ```text
 Goal: [what the result is for]
@@ -57,17 +36,13 @@ Example: [a small sample of the shape you want]
 Check: State how many [items] you counted and the sum. If the count is not [the count you expect], stop and tell me.
 ```
 
-:::tip[New to this]
-For a quick question, one line is fine. Use the full shape when the result matters, when you will reuse the ask, or when the first answer disappointed you.
-:::
+For a quick question, one line is fine. Use the full shape when the result matters, when you will reuse the ask, or when the first answer disappointed you, and check the figures outside the chat.
 
 ## Try it
 
-You need any chat assistant. This takes about 35 minutes in all. The four passes take about 10. You refine one ask in four passes. Use Sam's bills ask, or swap in a task of your own.
-
 <p class="audience">Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</p>
 
-**Phone OK** for passes 1 to 4 and steps 5 and 6. Step 7 needs a laptop with a spreadsheet, and you can skip it.
+You need any chat assistant. You refine one ask in four passes, then save it, run it and check it, which takes about 35 minutes in all; the four passes alone take about 10. **Phone OK** for passes 1 to 4 and steps 5 and 6.
 
 **The starting ask**, from level 0, with February repeated:
 
@@ -81,18 +56,25 @@ Here are our shared bills for last year, in euros per month: Jan 212, Feb 198, F
 Goal: work out what each of the three of us owes for last year's shared bills, so I can send Priya and Tom one amount each.
 ```
 
-What changed: the assistant now knows the result is one amount per person. It may still total all 13 figures, or quietly decide that February was a typo. Either way it did not ask you. In recorded runs of the starting ask (claude-sonnet-5-5, 20 trials, 2026-10-25) the reply gave 2,120.00 every time, treating the repeat as a typo and saying so. That is a guess you did not approve. This list is short and the guess was safe. The 40-amount list in level 0 was harder.
+What changed: one line, the goal, so the assistant now knows the result is one amount per person. It may still total all 13 figures, or quietly decide that February was a typo, and either way it did not ask you. In the recorded runs of the starting ask the reply treated the repeat as a typo and said so; step 6 has the counts. That is a guess you did not approve.
 
-**Pass 2: add constraints, with the check step as the last line.** Add these lines under the goal:
+**Pass 2: add constraints.** Add this line under the goal:
 
 ```text
 Constraints: Use only the figures I gave you. List each month once. If a month is missing or repeated, tell me and ask instead of guessing. Round each share to the cent. If the three shares do not add to the total, change Sam's share by the difference and say so. Keep the answer under ten lines.
+```
+
+What changed: one line, the constraints, so the assistant must not invent or repeat figures and must flag a problem.
+
+**Pass 3: add the check step as the last constraint.** Add this line under the constraints:
+
+```text
 Check: Before the final answer, state how many months you counted and the sum of the figures. If the count is not 12, stop and tell me.
 ```
 
-What changed: the assistant must not invent or repeat figures, must flag problems and must show its count.
+What changed: one line, the check, so the assistant must write its count before its answer and stop when the count is wrong.
 
-**Pass 3: add an example.** Add a tiny sample of the layout, with different figures so the assistant copies the shape and not the numbers:
+**Pass 4: add an example.** Add a tiny sample of the layout, with different figures so the assistant copies the shape and not the numbers. Put it between the constraints and the check line, so the order is goal, constraints, layout, check, then the list.
 
 ```text
 Layout I want, shown with two made-up months (Jan 100, Feb 50):
@@ -101,7 +83,9 @@ Total: 150.00
 Each of 3 pays: 50.00
 ```
 
-**Pass 4: assemble the ask.** Put the parts in this order and send them as one message, with the original 13-figure list.
+What changed: one block, the example, so the assistant has a shape to copy.
+
+Two more things differ between the passes above and the recorded ask below. It drops the "Split the total between the three of us (Sam, Priya and Tom)" sentence, and it rewrites the list line to begin "Bills, in euros per month". The whole message and one recorded reply:
 
 <Example
   label="Observed"
@@ -155,11 +139,11 @@ In 20 of 20 trials the full ask counted 13 entries and asked before it split. In
 
 </Example>
 
-Reply with February once. The assistant should now give the 12-month result: total 2,120.00, shares 706.67, 706.67 and 706.66.
+The recorded runs stop at this first reply, so nothing records what the assistant did once Sam answered its question. If you reply with February once, the right result is 2,120.00, with shares 706.67, 706.67 and 706.66, so compare its figures with yours before you send anyone an amount.
 
-**Step 5: save the ask.** Save it as `bills-ask-v1` in a notes app or a Word document. Put a blank where the expected count goes ("If the count is not [the count you expect]"), so you can reuse it.
+**Step 5: save the ask.** Save it as `bills-ask-v1` in a notes app or a Word document. Put a blank where the expected count goes, so you can reuse it.
 
-**Step 6: run it in three new chats.** Send the assembled ask in each one, then do the same with the starting ask. Write down how many chats did what the constraints said: stop at 13 months and ask. "Better" here means "did what the constraints said", not "gave a total", because a loose ask can give a clean total by guessing. In the recorded runs (20 trials each, 2026-10-25) the starting ask gave 2,120.00 every time. The full ask asked every time. You decide what a repeated month means. The assistant does not. Level 5 builds this into a proper tiny test.
+**Step 6: run it in three new chats.** Send the assembled ask in each one, then do the same with the starting ask. For each chat write down two things: did it stop at 13 and ask, and was every figure it stated right? In the recorded runs (claude-sonnet-5-5, 20 trials each, 2026-10-25) the full ask asked every time and stated a wrong sum or share at the rate under the Example. The starting ask gave the right total, 2,120.00, in 20 of 20. So the constraints bought you the decision: you decide what a repeated month means, and the assistant does not. They did not buy right arithmetic, because the sum in the check line has the slip The idea names. A structured ask is not a safer ask until you add the figures yourself, with a calculator or the spreadsheet in step 7.
 
 **Step 7: check the sums in a spreadsheet. Optional, needs a spreadsheet such as Sheets or Excel.** Put the months in cells A2 to A13 and the amounts in B2 to B13. In the lines below, the part before the colon names the cell. Type only the formula that starts with `=`.
 
@@ -172,13 +156,9 @@ B18:  =ROUND(B14/3,2)
 B19:  =B14-2*ROUND(B14/3,2)
 ```
 
-B16 counts each different month once, so a repeated month makes B16 smaller than B15. With the corrected list, B14 reads 2,120, B15 and B16 read 12, B17 reads OK, B18 reads 706.67 and B19 reads 706.66. Now add the twelve figures by hand as well. If your hand total, the spreadsheet and the assistant agree, the loop worked. If they do not, copy the mismatch into the chat and say what is wrong. No spreadsheet? Ask the assistant to list the figures one per line, then count the lines yourself.
+B16 counts each different month once, so a repeated month makes B16 smaller than B15. With the corrected list, B14 reads 2,120, B15 and B16 read 12, B17 reads OK, B18 reads 706.67 and B19 reads 706.66. Now add the twelve figures by hand as well. If your hand total, the spreadsheet and the assistant agree, the loop worked; if they do not, copy the mismatch into the chat and say what is wrong. No spreadsheet? Ask the assistant to list the figures one per line, then count the lines yourself.
 
 Apply it: use the same shape for the [budget workflow](../../workflows/build-a-budget/) and the [spreadsheet Monday workflow](../../workflows/spreadsheet-monday/).
-
-:::note[Want consistency]
-Save the final ask as a template with blanks for the figures and the expected count. Level 2 shows a better place for it.
-:::
 
 A ready-made prompt can do the passes for you: see [refiner lite](../../appendix/prompt-refiner/#refiner-lite). It is optional.
 
@@ -190,25 +170,15 @@ Your version: swap in a task of your own, for example a thread in your team chat
 
 *How it works. Optional reading.*
 
-The model fills every gap in your ask with its most likely guess. When the guess is wrong, you get a polished answer to a question you did not ask. Each part of the ask closes a different gap:
+The model fills every gap in your ask with its most likely guess, and when the guess is wrong you get a polished answer to a question you did not ask. Each part of the ask closes a different gap:
 
 - The goal closes the gap about purpose.
 - The constraints close the gap about limits.
 - The example closes the gap about shape, which is hard to describe and easy to show.
-- The check step makes a mistake visible, because the model writes its count before its conclusion.
-
-The loop works because one change per pass tells you which change helped.
+- The check step makes the count visible, because the model writes it before its conclusion, so a repeated month shows.
 
 :::note[At work]
 A close checklist works like a good ask. It has a goal, a [tolerance](../../glossary/#tolerance) (how far a figure may differ before someone investigates), a template to fill in and a tick-box. Someone other than the preparer signs it off.
-:::
-
-## Expert corner
-
-:::caution[Expert corner]
-A check the assistant runs on itself is not an independent check (level 5). In the recorded runs the count was right in 20 of 20 and a stated sum or share was wrong in 10 of 20. A self-reported count helps a human spot a slip. It does not replace an outside test.
-
-State constraints as observable properties, such as "each month appears once", not as intentions, such as "be accurate".
 :::
 
 ## Agent note
@@ -227,14 +197,6 @@ When you total numbers, state how many you added and the sum. Do not list the it
 Check: the reply shows the count and the sum before the result.
 :::
 
-## Mistakes people make
-
-**Changing five things at once.** The answer improves or worsens and you cannot tell why. Fix: change one thing per pass, and note what changed.
-
-**Writing vague constraints.** "Be accurate" and "be professional" cannot be checked. Fix: name something you could verify, such as "list each month once" or "no sentence over 20 words".
-
-**Asking for a check with no plan for a failure.** "Check your work" says nothing about what to do when the check fails. Fix: say what to count, and what to do if it fails.
-
 ## Checkpoint
 
 <p class="audience">Audience: the reader. Agents may skip the quiz.</p>
@@ -244,7 +206,7 @@ You can now:
 - Split an ask into goal, constraints, example and check step.
 - Refine an ask in small passes and say what each pass changed.
 - Write a constraint that you could check by eye.
-- Ask for a count or sum before a conclusion, so a slip shows.
+- Ask for a count before a conclusion so a slip shows, knowing that a sum written by the same assistant does not catch its own slip.
 
 **Self-test**
 
@@ -263,6 +225,6 @@ You can now:
 
 ## Bridge
 
-A strong ask works today, then next week you have to write it all again, so level 2 saves the rules once.
+A clear ask makes the assistant ask instead of guess today, and next week you have to write it all again, so level 2 saves the rules once.
 
 **Next:** [Level 2: House rules](../02-house-rules/)
