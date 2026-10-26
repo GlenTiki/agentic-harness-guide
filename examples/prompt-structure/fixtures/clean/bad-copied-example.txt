@@ -1,0 +1,1 @@
+{"status": "ok", "months_counted": 2, "total": "150.00", "each_pays": "50.00", "sam_pays": "50.00", "check": {"count": 2, "sum": "150.00"}}

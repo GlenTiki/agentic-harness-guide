@@ -1,0 +1,186 @@
+---
+title: Context management
+description: Keep decisions in files, not in the conversation, so compaction and restarts cost nothing.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** treat the conversation as disposable and keep a durable ledger of intent and decisions in a file in the repository. Checkpoint it at phase boundaries. Brief sub-agents from the ledger, never from the chat.
+
+## Why it matters
+
+The context window is finite, as [level 2](../../../journey/02-house-rules/) explains. When it fills, the harness compacts older turns into a summary, and detail is lost. A decision that exists only in the conversation can vanish at the worst moment. A decision written to a file survives compaction, a crashed session and a hand-over to another agent.
+
+## What to enable
+
+**1. A ledger file.** One file, in the repository, written by the agent as it works. A minimal shape:
+
+```json
+{
+  "intent": "Replace the retry loop in the sync job with a bounded backoff",
+  "decisions": [
+    {"at": "2026-03-02T10:14:09Z", "what": "Cap retries at 5", "why": "Upstream rate limit resets in 60 s"}
+  ],
+  "failures": [
+    {"at": "2026-03-02T10:31:40Z", "what": "Unbounded sleep hung the worker", "next": "Add a timeout"}
+  ],
+  "open": ["Decide whether to jitter"]
+}
+```
+
+Use second-resolution UTC timestamps. They sort, compare and survive time zones.
+
+**2. Checkpoints at boundaries.** Write a summary to the ledger when a phase ends: spec agreed, tests written, implementation passing, review done. Do it by instruction ("update the ledger before moving on") and back it with a hook where your harness has a compaction event. Claude Code behaviour: it exposes `PreCompact` and `PostCompact` hook events, so a hook can remind the agent to write state before the summary replaces it, and to reread the ledger afterwards.
+
+**3. Bounded briefs.** When you delegate, build the brief from the ledger: the intent, the relevant decisions, the files in scope and the form of the answer. Do not paste the conversation. See [Sub-agents](../../delegation/sub-agents/).
+
+**4. Compact deliberately.** Compact when a phase ends and the ledger is current, not when the window is nearly full. Clear the conversation between unrelated tasks.
+
+**5. Prefer pointers to pastes.** Tell the agent which file to read. A path costs a few tokens, and the file is read at its current state.
+
+## Where compaction loses a constraint
+
+Compaction replaces older turns with a summary, and a summary keeps what the summariser judged important. A constraint that you stated once and that nothing since has touched is the easiest thing to lose. Here is a Constructed session. It is invented to show the shape of the failure, and this guide holds no recorded compaction. Three constraints are stated early, then 140 turns of ordinary work follow.
+
+```text
+[turn 3]  User: Replace the retry loop in the sync job with a bounded backoff. Do not change the public signature of sync(); other jobs call it.
+[turn 9]  User: Cap retries at 5. The upstream limit resets in 60 seconds, so more than 5 tries is wasted.
+[turn 14] User: Write the failing test first.
+[... 140 turns of reading code, running tests and fixing failures ...]
+[compaction] Older turns were replaced by a summary.
+```
+
+The summary below is also written by hand. It reads well. It is what a summary of progress looks like, which is why the loss is hard to see.
+
+Keep the constraints in the ledger too, each with the phrases that must survive. A small script compares such a ledger with the summary. It counts a constraint as kept when the summary mentions every phrase you listed for it.
+
+<Example
+  label="Computed"
+  task="A maintainer checks which of three ledger constraints a hand-written post-compaction summary still mentions."
+  evidence="python3 -I examples/context-tools/compaction_audit.py examples/context-tools/fixtures/ledger.json examples/context-tools/fixtures/summary-after-compaction.txt"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The session and the summary are Constructed."
+>
+
+<Fragment slot="input">
+
+```text
+Goal: replace the retry loop in the sync job with a bounded backoff.
+Done so far: the retry loop is removed, a backoff helper is added, and the test for the helper passes.
+Open: decide whether to add jitter. Next: update the job that calls the helper.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+kept  C3: Tests first: write the failing test before the change
+LOST  C1: Do not change the public function signature of sync()
+LOST  C2: Cap retries at 5 because the upstream limit resets in 60 seconds
+1 of 3 constraints survive the summary
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+C3 counts as kept because the word "test" appears, yet the summary no longer says to write the test first. The check finds a missing mention. It cannot prove that a mention keeps the rule.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A mechanical comparison of ledger and summary can find a lost constraint without a reader. It does not show how often a real summary loses one; reread the ledger after every compaction either way.
+
+</Fragment>
+
+</Example>
+
+After a compaction, tell the assistant to reread the ledger before it continues. The hook events above let you automate that.
+
+## Choosing the compaction point
+
+Compaction happens at a point in the window. The earlier turns have then used some share of it. That share is your variable. Measure it on your own sessions and do not borrow a number.
+
+1. At each phase boundary of a session, note the tokens used and the size of the window. Your tool shows both, or its usage report does.
+2. Note whether a constraint was dropped after that point. You find out by running the audit above, or by watching for a rule the assistant now breaks.
+3. Write the rows to a CSV: session, boundary, tokens used, window, dropped (0 or 1).
+4. Find the lowest fraction of the window at which you saw a drop. Compact at the last phase boundary below it.
+
+<Example
+  label="Computed"
+  task="A maintainer applies the rule to a log of ten phase boundaries across three sessions."
+  evidence="python3 -I examples/context-tools/compaction_point.py examples/context-tools/fixtures/boundaries.csv"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The log is made up for teaching. These are not measurements."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/context-tools/compaction_point.py examples/context-tools/fixtures/boundaries.csv
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+0.07  s3  spec agreed    ok
+0.09  s1  spec agreed    ok
+0.11  s2  spec agreed    ok
+0.26  s1  tests written  ok
+0.30  s3  tests written  ok
+0.35  s2  tests written  ok
+0.55  s3  implementation ok
+0.60  s1  implementation ok
+0.69  s2  implementation DROPPED
+0.82  s1  review         DROPPED
+lowest fraction with a drop: 0.69
+compact at the last boundary below that fraction: about 0.60 of the window
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The rule picks 0.60, the highest clean boundary under the lowest drop at 0.69. The 0.82 drop in session s1 does not matter, because a lower drop already set the limit.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The rule turns your own log into one number. The fractions here are invented, so they say nothing about where any tool drops constraints. Three sessions are too few, so keep logging.
+
+</Fragment>
+
+</Example>
+
+## Where a fact belongs
+
+Three places hold durable text, and each has a different load rule. The ledger is for this task. An instruction file is read every session. A memory note is read when a search finds it. Ask three questions about the fact: how long does it stay true, who needs it, and when must it be in context.
+
+| Sample fact | Lifetime | Home | Reason |
+| --- | --- | --- | --- |
+| "Cap retries at 5 for this sync job because the upstream limit resets in 60 seconds" | Until the task ends | Ledger, as a decision with its reason | It is true for one task, and a sub-agent needs it in its brief. It would clutter an instruction file for ever. |
+| "Store every time stamp in UTC" | Months, for every task in the repository | Instruction line | Every session needs it, and a missing rule costs a wrong edit. One line is cheap to load each time. |
+| "The reviewer asked for the reason in the commit body after the last incident" | Until your practice changes | Memory note, with a date | It only matters on some tasks. A search can load it when you write a commit. See [Agent memory across sessions](../memory/). |
+
+Move a fact when its answer changes. A task decision that proves general should be promoted to the instruction file, and the ledger entry deleted.
+
+## Failure modes it reduces
+
+- A constraint stated at the start of a long session is lost after compaction, and the agent contradicts it.
+- A sub-agent receives a vague brief and redoes work that is already done.
+- A crash loses an hour of reasoning because it lived only in the chat.
+
+## First step for the maintainer
+
+Create `ledger.json` with the four keys above. Add one line to your instruction file: "Update the ledger after each decision and before ending a phase."
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "`PreCompact` | Before context compaction". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+**Next:** [Agent memory across sessions](../memory/)

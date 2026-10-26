@@ -1,0 +1,297 @@
+---
+title: Diagnosing retrieval failure
+description: Tell a note that was never retrieved from a note that was ranked too low, then fix it with fusion, a similarity floor or a checked index.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** when the right note does not reach the assistant, first decide which of two things failed: the search never returned it (retrieved wrong), or it returned it too low (ranked wrong). The fixes differ. Then add a similarity floor, store the embedder name with the index, and measure each change on your own queries.
+
+No tool-specific setting is named on this page. The scores come from the retrieval kit in [case-study chapter 6](../../../case-study/ch06-rerank/): 44 notes and 34 queries that one person labelled. The dense (embedding) rows are stored outputs from an earlier run, because no embedding model was installed for the offline runs here.
+
+## Why it matters
+
+Memory and search results are text that goes into the context ([context management](../context-management/), [memory](../memory/)). When the wrong notes go in, the assistant answers from them with the same confidence. When the right note stays out, nothing signals the gap. A reply that ignores a rule you wrote is often a retrieval failure, not a failure to follow the rule.
+
+## What to enable
+
+**1. Classify each miss.** Take the queries where the right note did not reach the top k. Look at where it sat in a longer list, the candidate pool. Three outcomes:
+
+| Outcome | Meaning | Where to fix |
+| --- | --- | --- |
+| ok | A correct note is in the top k | Nothing |
+| ranked wrong | A correct note is in the pool but below the top k | The order: fusion, a re-ranker, weights |
+| retrieved wrong | A correct note is not in the pool | The retrieval: a second retriever, the indexed text, the embedder |
+
+A re-ranker cannot help a retrieved-wrong miss, because it only reorders what the pool holds. This is why you classify before you buy one. The count below uses BM25 with a pool of 10 and k = 3.
+
+<Example
+  label="Computed"
+  task="A maintainer classifies each of 34 queries as ok, ranked wrong or retrieved wrong for BM25 search."
+  evidence="python3 -I examples/retrieval-diagnosis/diagnose.py classify"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. Standard library only."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/retrieval-diagnosis/diagnose.py classify
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+BM25 on 34 queries, top 3 judged, candidate pool 10
+  ok               27
+  ranked wrong     1
+  retrieved wrong  6
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+27 queries are ok, which matches the stored BM25 hit@3 of 0.794 (27 of 34). Of the 7 misses, 6 never reached the pool and 1 sat below the top three.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+For this search on this set, a re-ranker could fix at most 1 of the 7 misses. The other 6 need a different retriever. It does not show the split for another search or another set.
+
+</Fragment>
+
+</Example>
+
+**2. Know which retriever suits which query.** A keyword search matches the words in the query. It finds an exact identifier, such as a code, a name or a standard number, because that token appears in few notes. An embedding search matches meaning. It finds a paraphrase that shares no word with the note.
+
+<Example
+  label="Computed"
+  task="A maintainer searches for an exact identifier, the number 8601, with BM25."
+  evidence="python3 -I examples/retrieval-diagnosis/diagnose.py identifier"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/retrieval-diagnosis/diagnose.py identifier
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+query '8601': notes that contain the token = ['utc-timestamps']
+query '8601': BM25 top 3 = ['utc-timestamps']
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+One note holds the token, and BM25 returns that note alone.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Keyword search finds an exact token that appears in one note. I did not embed this query, so the example does not show that an embedding search misses it. Principle, not measured: embeddings blur rare tokens, so test your identifiers on both.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="A maintainer searches for 'What do I take on a trip?', which shares no exact word with the note it needs. BM25 runs now. The dense result is read from the stored output."
+  evidence="python3 -I examples/retrieval-diagnosis/diagnose.py paraphrase   and   examples/retrieval-eval/outputs/dense.txt"
+  env="Python 3.13.1, macOS 26.5. Dense: nomic-embed-text through Ollama 0.34.2, stored run of 2026-10-25."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/retrieval-diagnosis/diagnose.py paraphrase
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+query 'What do I take on a trip?', correct note ['travel-packing-list']
+  BM25, run now:           top 3 = ['sleep-schedule', 'standard-library', 'line-length']
+  dense, stored output:    top 3 = ['travel-packing-list', 'dietary-preference', 'database-choice']
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The note says "trips" and the query says "trip". This BM25 does no stemming, so the one content word does not match. The words "do" and "take" match three unrelated notes instead. The dense search puts the packing note first.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+On this query the embedding search finds what the keyword search cannot. The set was written to use other words than the notes, so it favours embeddings and says nothing about your notes.
+
+</Fragment>
+
+</Example>
+
+**3. Fuse two lists with care.** Reciprocal rank fusion (RRF) gives a note `1 / (k + rank)` in each list and adds the scores. It rewards agreement between the lists. Use k = 60, as the kit does, and give both lists equal weight, unless you measure otherwise. The example fuses the live BM25 list with the stored dense top three.
+
+<Example
+  label="Computed"
+  task="A maintainer fuses the BM25 ranking and the stored dense top three for the query 'How do I protect my files if the laptop dies?'. The correct note is backup-routine."
+  evidence="python3 -I examples/retrieval-diagnosis/diagnose.py fusion"
+  env="Python 3.13.1, macOS 26.5. Dense: stored run of 2026-10-25, which keeps only the top three."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/retrieval-diagnosis/diagnose.py fusion
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+query 'How do I protect my files if the laptop dies?', correct note ['backup-routine']
+  BM25 rank of backup-routine: 5; BM25 top 3 = ['error-messages', 'plain-text-first', 'shell-aliases']
+  dense top 3 (stored; only three are stored) = ['backup-routine', 'plain-text-first', 'secrets-handling']
+  fused plain-text-first   0.03226
+  fused backup-routine     0.03178
+  fused error-messages     0.01639
+  fused secrets-handling   0.01587
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+backup-routine is first in the dense list and fifth in BM25, and scores 0.03178. plain-text-first is second in both lists and scores 0.03226, so it wins.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Fusion can put a note that both lists half like above the note that one list is sure about. This fits the measured table on the [relevance page](../../../setup/relevance-and-reranking/), where the hybrid scored below dense alone. It does not show that fusion is bad in general.
+
+</Fragment>
+
+</Example>
+
+**4. Add a similarity floor, and tune it.** Without a floor, the search returns the best of a bad lot, and an off-topic question still gets notes. A floor drops results whose similarity is too low. Every value is a starting value to tune on your own data, because the right value depends on the scorer and the notes. Sweep it with a set of off-topic queries as well as your normal ones, and count both kinds of error. The sweep below uses a bounded lexical similarity (tf-idf cosine, 0 to 1), because no embedding model was installed here. An embedder's cosine has another scale, so repeat the sweep with yours.
+
+<Example
+  label="Computed"
+  task="A maintainer sweeps four floor values over 34 normal queries and 8 off-topic queries, using tf-idf cosine as the similarity."
+  evidence="python3 -I examples/retrieval-diagnosis/diagnose.py floor"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The eight off-topic queries are in diagnose.py."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/retrieval-diagnosis/diagnose.py floor
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+34 on-topic queries, 8 off-topic queries; similarity = tf-idf cosine, 0 to 1
+ floor  correct kept  correct dropped  off-topic still answered
+  0.05            17                0                   5 of 8
+  0.10            14                3                   2 of 8
+  0.15            12                5                   1 of 8
+  0.20            10                7                   0 of 8
+highest off-topic score 0.156; lowest correct top score 0.070
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Raising the floor removes off-topic answers (5 of 8 down to 0 of 8) and also drops correct ones (0 up to 7). The last line shows why: the highest off-topic score, 0.156, is above the lowest correct score, 0.070.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+No floor value here removes every off-topic answer and keeps every correct one, because the two score ranges overlap. Choose the floor by the cost of each error in your use. The floors in the table are a sweep, not advice.
+
+</Fragment>
+
+</Example>
+
+**5. Store the embedder with the index, and refuse a mismatch.** Vectors from two embedders cannot be compared, even when they have the same length. Vectors of different lengths cannot be compared at all, and some code compares them without an error. Write the embedder name and the vector length into the index file. On load, compare both with the embedder you are about to use, and raise an error if either differs. `examples/retrieval-diagnosis/vector_index.py` does this in about 30 lines and has tests for a wrong name, a wrong length, a damaged vector and a missing field.
+
+<Example
+  label="Computed"
+  task="A maintainer saves a small index, then loads it with the right embedder, a different embedder and a different vector length."
+  evidence="python3 -I examples/retrieval-diagnosis/diagnose.py index"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The index holds two invented three-number vectors."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/retrieval-diagnosis/diagnose.py index
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+load with embedder 'embedder-one', vector length 3: loaded
+load with embedder 'embedder-two', vector length 3: refused
+  index.json: built with embedder 'embedder-one', asked for 'embedder-two'. Rebuild the index.
+load with embedder 'embedder-one', vector length 4: refused
+  index.json: stored vector length 3, the embedder now gives 4. Rebuild the index.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The first load succeeds. The other two stop with a message that names both values and says to rebuild.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A mismatch becomes an error at load time, not a silent drop in quality. The check cannot detect two embedders that share a name, so change the name when you change the model or its settings.
+
+</Fragment>
+
+</Example>
+
+**6. Measure each change.** Score the search before and after every change on the same labelled queries, as [the relevance page](../../../setup/relevance-and-reranking/) does. [Case-study chapter 6](../../../case-study/ch06-rerank/) gives you the kit. Add your off-topic queries to the set.
+
+## Failure modes it reduces
+
+- A re-ranker is added to fix a miss that the search never returned.
+- An off-topic question receives notes and the assistant uses them.
+- A fused list ranks a half-match above the right note.
+- A new embedder is installed and the old index is queried with it, with no error.
+
+## First step for the maintainer
+
+Take the last five times the assistant ignored a rule you had written down. For each, find out whether the note was returned, and where it ranked. Write down which of the two failures it was.
+
+**Next:** [Claude Code hooks: block, format, log](../../control/hooks/)

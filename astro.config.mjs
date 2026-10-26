@@ -172,8 +172,10 @@ export default defineConfig({
           label: 'Instructions and context',
           items: [
             { slug: 'shelf/context/instruction-files' },
+            { slug: 'shelf/context/prompt-structure' },
             { slug: 'shelf/context/context-management' },
             { slug: 'shelf/context/memory' },
+            { slug: 'shelf/context/diagnosing-retrieval-failure' },
           ],
         },
         {

@@ -1,0 +1,141 @@
+---
+title: Agent memory across sessions
+description: What an agent should remember across sessions, what it should forget, and how to keep memory correct.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** persist durable facts and corrected behaviour, never session state. When memory is wrong, edit the existing entry. Do not append a correction below it. Add a recall step so memory is read before a risky action, not only at session start.
+
+## Why it matters
+
+A new session starts with no history. Memory is how corrections survive. It is also a second, silent source of instructions, so a wrong entry works like a wrong rule in an instruction file ([level 2](../../../journey/02-house-rules/)). A stale or wrong entry misleads every later session, so memory needs the same care as code.
+
+## What to enable
+
+**1. Split memory by kind.** Keep two stores, even if both are plain markdown files:
+
+- Facts about the world: who owns what, which environments exist, which tool does which job.
+- Behaviour: corrections you gave the agent, such as "never widen this exception handler".
+
+Different review cadence applies. Facts go stale when the world changes. Behaviour goes stale when your practice changes.
+
+**2. Persist this, not that.**
+
+| Persist | Do not persist |
+| --- | --- |
+| A rule you corrected twice | Today's task list |
+| The reason behind a non-obvious decision | The content of the current conversation |
+| A stable fact, such as where the staging environment lives | A value that changes daily |
+| A pointer to the source of truth | A copy of the source of truth |
+
+Never store secrets or personal data in memory files that are committed or shared.
+
+**3. Refine, do not append.** When a session disproves or narrows an entry, rewrite the entry where it stands. Merge duplicates into the older file and delete the leftover. An appended correction leaves the wrong claim in place, and recall will inject the wrong claim by itself.
+
+**4. Cap what loads at startup.** Claude Code behaviour: it loads the first 200 lines or 25 KB of its auto-generated memory index at the start of each session, so keep the index to short one-line pointers and put detail in topic files that load on demand.
+
+**5. Add recall hooks.** Search memory against the text of an outgoing action. A pre-tool hook can take the prompt for a sub-agent, or the content of an edit, run a keyword search over memory and add the top matches to context. Make it advisory. A wrong match should cost a glance, not a block.
+
+**6. Date entries and cite sources.** Record the date and where the fact came from. A future reader can then judge whether to trust it.
+
+## A stale note that outranks a fresh one
+
+A memory search ranks notes by how well they match the prompt. Age plays no part in a plain keyword ranking. A note that was true in March can then outrank the note that replaced it in October, and both notes load. The loader in [chapter 5](../../../case-study/ch05-memory/) works this way: it ranks with BM25, and the text it hands to the assistant leaves out each note's `updated` date.
+
+The demo below uses that loader on three invented notes. Two of them disagree about where staging runs. The script finds the pair, repairs the older note in place, deletes the duplicate and ranks again. It works on a temporary copy, so the stored notes never change.
+
+<Example
+  label="Computed"
+  task="A maintainer asks where staging is deployed, with an old note and a newer note that contradict each other, then repairs the notes in place."
+  evidence="python3 -I examples/memory-staleness/staleness_demo.py"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The notes are invented."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/memory-staleness/staleness_demo.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+before: ranking for 'Where is the staging environment deployed?'
+  1. staging-host    score 5.423  updated 2026-03-02T09:00:00Z
+  2. staging-moved   score 0.941  updated 2026-10-01T09:00:00Z
+  loaded 2 notes, about 74 tokens
+
+text the assistant receives:
+[staging-host] Where the staging environment is deployed.
+Staging is deployed to the old-cluster host. Deploy with the cluster script.
+
+[staging-moved] Staging now runs on the new platform.
+Staging runs on the new platform. The old-cluster host was switched off. Deploy with the platform command.
+
+notes that may contradict each other:
+  staging-host (updated 2026-03-02T09:00:00Z) and staging-moved (updated 2026-10-01T09:00:00Z)
+
+after the repair: ranking for 'Where is the staging environment deployed?'
+  1. staging-host    score 4.206  updated 2026-10-26T09:00:00Z
+  loaded 1 notes, about 41 tokens
+
+text the assistant receives:
+[staging-host] Where the staging environment is deployed.
+Staging runs on the new platform. The old-cluster host was switched off. Deploy with the platform command.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Before the repair, the March note scores 5.423 and the October note scores 0.941, so the old claim comes first. The assistant receives both claims with no dates. After the repair one note is left, with the October date and the current claim.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+For this prompt and this ranking, age did not help the newer note, and a pair of notes can contradict each other with nothing in the loaded text to say which is current. It does not show that every memory system behaves this way; check yours.
+
+</Fragment>
+
+</Example>
+
+Three habits follow from this.
+
+1. Edit the old note where it stands. A new note beside it leaves both in the search results, as the output shows.
+2. Show the date in the loaded text if your loader can. A date lets the assistant, and you, judge a claim.
+3. Run a pair check now and then. The script flags notes of the same type that share at least two tags. That is a heuristic. It finds candidates for you to read and proves nothing.
+
+## What belongs in memory, an instruction file or a ledger
+
+Use the answer to one question: what happens if the assistant does not have it?
+
+| If it is missing | Put it in | Example |
+| --- | --- | --- |
+| Every session makes the same mistake | Instruction file, one line | "Store every time stamp in UTC." |
+| This task goes wrong or repeats work | Ledger, for the task | "Retries are capped at 5." |
+| Some tasks go wrong, and you can search for them | Memory note, dated | "The reviewer wants the reason in the commit body." |
+
+Do not copy one fact into two of them. [Context management](../context-management/) shows a worked placement of three sample facts.
+
+## Failure modes it reduces
+
+- The agent repeats a mistake you corrected last month.
+- A correction is appended below a wrong claim, and the wrong claim is the one that gets recalled.
+- Memory fills with session chatter and the useful rules drown.
+- A remembered fact outlives the system it described.
+
+## First step for the maintainer
+
+Create one `memory/` directory with an index file of one-line entries. Add an entry the next time you correct the agent. Review the index monthly and delete what is no longer true.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/memory. Quoted line: "Each Claude Code session begins with a fresh context window." Claude Code on that date: 2.1.310. The docs page states no version of its own. The hooks reference was not re-fetched for this page: Not checked against current docs.</p>
+
+**Next:** [Diagnosing retrieval failure](../diagnosing-retrieval-failure/)
