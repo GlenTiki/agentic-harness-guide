@@ -31,7 +31,7 @@ capabilities:
 
 **4. Consent per surface.** Treat each surface as its own decision: each mailbox, each repository, each chat channel, each device. Granting access to one does not grant the next.
 
-**5. Redact before egress.** Strip personal data and secrets before text goes to a model provider, a search service or a log shipper. Replace values with stable placeholders and restore them locally after the response returns. Put the redaction step in the same seam as the capability check so no path skips it. Redaction is a filter with a miss rate. Measure recall on a labelled sample, and keep the capability gate as the primary control.
+**5. Redact before egress.** Strip personal data and secrets before text goes to a model provider, a search service or a log shipper. Replace values with stable placeholders and restore them locally after the response returns. Put the redaction step in the same seam as the capability check so no path skips it. Redaction is a filter with a miss rate. Measure recall on a labelled sample, and keep the capability gate as the primary control. The worked method, with a tested script, is in [Removing personal data before sharing](../removing-personal-data/).
 
 **6. Record the subprocessors.** Keep a list of every external service that can receive data, with what it receives. If a service is not on the list, the seam refuses the call.
 
@@ -48,4 +48,4 @@ capabilities:
 
 Write the registry with every external action the agent can take today. Set all but the read-only ones to `disabled`. Add one test that proves a disabled capability makes the call fail.
 
-**Next:** [Untrusted input and prompt injection](../untrusted-input/)
+**Next:** [Removing personal data before sharing](../removing-personal-data/)

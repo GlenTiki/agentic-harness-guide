@@ -3,6 +3,8 @@ title: Human-in-the-loop
 description: Decide in advance which actions always need a person, and batch the decisions so approvals stay meaningful.
 ---
 
+import Example from '../../../../components/Example.astro';
+
 *Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
@@ -38,6 +40,90 @@ Approval has a cost, and [level 4](../../../journey/04-trust-but-verify/) names 
 **7. Ask once.** An approval for an action stays valid for the same action in the same scope. Do not re-ask for it, and do not stretch it to cover a wider scope.
 
 **8. Keep explicit holds in force.** If a person says "wait", nothing in the agent's plan overrides that, including a passing review.
+
+## Keep the always-ask list short
+
+Split actions on two questions. Can you undo it? How far does it reach if it is wrong? Reversibility and blast radius give three groups.
+
+| Group | Test | Handling |
+| --- | --- | --- |
+| Unattended | Reversible, and it stays on your machine or in a branch | Run it. Keep a log |
+| Ask | Hard to reverse, or it reaches other people or shared systems | A person approves each one, with the exact content |
+| Never | Disables a control, or cannot be bounded | Refuse. The agent does not do it, even when asked in passing |
+
+Every item in the ask group costs attention. Move an action down to unattended only when you can make it reversible, for example by working on a branch or keeping a backup. Do not move it down because asking is tedious.
+
+### Ten actions, classified
+
+Constructed. These are example actions with example reasons. Your list will differ.
+
+| Action | Group | Reason |
+| --- | --- | --- |
+| Edit a file on a working branch | Unattended | Version control undoes it |
+| Run the test suite | Unattended | Reads and reports, writes only temporary files |
+| Install a package from your approved registry into a throwaway environment | Unattended | The environment can be deleted |
+| Push a new branch to your own remote | Ask | Reversible, but others can see it and builds may start |
+| Open a pull request | Ask | It notifies people and carries your name |
+| Send a drafted email | Ask | A sent message cannot be recalled |
+| Delete a database table | Ask | The backup, if any, is the only undo |
+| Change a billing plan | Ask | It spends money |
+| Force-push a shared branch | Never | It overwrites other people's work |
+| Edit the settings file or a hook that limits the agent | Never | It removes the control that makes the other rows safe |
+
+The "never" rows are a policy choice. They are also the rows an `ask` prompt protects worst, because a person who approves them a few times will approve the next one without reading.
+
+### A batch that hides one risky item
+
+Batching ten routine questions into one form reduces interruptions. It also lets one risky item ride along.
+
+<Example
+  label="Constructed"
+  task="A person receives one approval form with ten items and is asked to approve all of them."
+  env="Invented form, not a recorded run"
+>
+
+<Fragment slot="input">
+
+```text
+Approve all? (10 items)
+ 1. Rename variable total to subtotal in report.py
+ 2. Update the docstring in report.py
+ 3. Add a test for the empty-list case
+ 4. Run the formatter on report.py
+ 5. Run the test suite
+ 6. Regenerate the lock file
+ 7. Run `git push --force origin main`
+ 8. Remove the unused import in report.py
+ 9. Fix a typo in README.md
+10. Delete the generated build/ folder
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Approve now, in one step:  1, 2, 3, 4, 5, 6, 8, 9, 10   (unattended group)
+Refuse, shown first and on its own: 7  git push --force origin main
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Item 7 is the only one in the "never" group of the table above. Nine items are safe, and they set a pattern of "yes" before the reader reaches 7.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the design problem and one handling rule. It does not show that people approve such a batch. Approval fatigue is not measured in this guide.
+
+</Fragment>
+
+</Example>
+
+Two rules keep batches safe. Approve a batch only for items in the unattended group. Show any ask or never item first, on its own, with the exact command.
 
 ## Failure modes it reduces
 

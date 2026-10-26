@@ -3,6 +3,8 @@ title: Claude Code permissions, sandboxing
 description: "Claude Code permissions: use least privilege, deny rules and an operating system sandbox to limit what a runaway agent can touch."
 ---
 
+import Example from '../../../../components/Example.astro';
+
 *Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
@@ -41,6 +43,67 @@ Approval prompts do not scale. A person who clicks "yes" two hundred times a day
 **7. Control network egress separately.** Prefer an allow list of domains over a deny list. For web fetches, allow specific domains by rule.
 
 **8. Protect the files that constrain the agent.** The agent can edit what constrains it. If it can write to `.claude/settings.json`, to a hook script or to your capability registry, it can loosen its own limits. Add deny rules for writes to those paths. Add a file-integrity check or a CI check that fails when they change without review. This is the mechanism behind "turning off a safety control" in the [approval list](../../operations/human-in-the-loop/): the write is denied, and the check catches a change that gets through some other way. A deny rule on file tools does not stop a shell command from writing the same file. The project settings file sits inside the working directory, so a sandbox that allows writes there does not protect it. That is why the integrity or CI check matters more than the deny rule.
+
+## A deny rule that misses an equivalent command
+
+The page above says a rule matches the command text as written. The matcher below makes that visible. It is a teaching sketch, not Claude Code's matcher. It tests a text rule, `Bash(rm -rf *)`, as a glob over the command string. A second check, written the way the [hooks page](../hooks/) suggests, splits the command into words first.
+
+<Example
+  label="Computed"
+  task="A maintainer runs eight commands past a text deny rule and past a check that splits the command into words."
+  evidence="python3 -I examples/deny-rule-bypass/matcher.py"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```bash
+python3 -I examples/deny-rule-bypass/matcher.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+command                 text rule   parsed check  note
+rm -rf build            deny        deny          the written spelling
+rm -fr build            no match    deny          flags swapped
+rm -r -f build          no match    deny          flags split
+/bin/rm -rf build       no match    deny          full path to the program
+sh -c 'rm -rf build'    no match    deny          wrapped in a shell
+python3 clean.py        no match    no match      script that runs the removal
+cat .env                no match    no match      second route to a denied file
+echo hi                 no match    no match      harmless
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The text rule catches one spelling in five. The parsed check catches all five, then misses the script and the `cat` of a file that a `Read(./.env)` rule denies for the file tool. No check that reads command text can see what `clean.py` does inside.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows that equivalent commands get different results from a text rule. It does not show how Claude Code matches rules. The docs line cited at the end of this page says `Bash(git push *)` does not match `git -C . push origin main`. The test `examples/deny-rule-bypass/test_matcher.py` fixes each row.
+
+</Fragment>
+
+</Example>
+
+### Which layer for which risk
+
+Constructed. Three sample risks and the layer that fits each. The reasoning follows from the example above and from the sandbox scope in item 4. It is a design choice, not a measurement.
+
+| Risk | Rule | Hook | Sandbox |
+| --- | --- | --- | --- |
+| The agent reads `.env` | Deny `Read(./.env)` for the file tool | A hook cannot see file reads that the shell does by other means | Deny reads of the same path for shell commands |
+| The agent force-pushes | An `ask` rule for the common spelling | A hook that parses the command, with its [known bypasses](../hooks/#what-this-hook-does-not-cover) | None: the push uses an allowed network route. Limit credentials instead |
+| A script the agent runs sends data out | None: the command text looks harmless | Weak: it sees the script name only | Primary: an empty network allow list |
+
+Read the table by asking what the control can see. A rule sees a tool name and a text pattern. A hook sees the whole call and can run code on it. A sandbox sees what the process does, whatever it was called.
 
 ## Failure modes it reduces
 
