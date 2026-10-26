@@ -52,4 +52,4 @@ Copy the confirm list above into your instruction file. Then add an `ask` rule f
 
 <p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
-**Next:** [Recommended baseline](../../reference/baseline/)
+**Next:** [Change control for the harness](../change-control/)

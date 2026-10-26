@@ -189,6 +189,7 @@ export default defineConfig({
           label: 'Delegation',
           items: [
             { slug: 'shelf/delegation/sub-agents' },
+            { slug: 'shelf/delegation/topology' },
             { slug: 'shelf/delegation/worktree-isolation' },
             { slug: 'shelf/delegation/skills' },
             { slug: 'shelf/delegation/mcp-servers' },
@@ -202,6 +203,7 @@ export default defineConfig({
             { slug: 'shelf/quality/independent-review' },
             { slug: 'shelf/quality/evals' },
             { slug: 'shelf/quality/small-prs' },
+            { slug: 'shelf/quality/line-citations' },
           ],
         },
         {
@@ -210,6 +212,7 @@ export default defineConfig({
             { slug: 'shelf/operations/observability' },
             { slug: 'shelf/operations/cost-and-resources' },
             { slug: 'shelf/operations/human-in-the-loop' },
+            { slug: 'shelf/operations/change-control' },
           ],
         },
         {

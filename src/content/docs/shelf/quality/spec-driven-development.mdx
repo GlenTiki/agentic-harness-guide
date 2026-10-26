@@ -3,6 +3,8 @@ title: Spec-driven development
 description: Write a short spec before the agent writes code, and make the spec the contract for tests and review.
 ---
 
+import Example from '../../../../components/Example.astro';
+
 *Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
@@ -47,6 +49,69 @@ One paragraph: what changes for whom, and why.
 **6. List rejected alternatives.** One line per option you considered and why you dropped it. This saves the next reader, human or agent, from re-proposing it.
 
 **7. Keep the spec where agents read it.** A path in the instruction file is enough: "Specs live in `docs/specs/`. Read the relevant one before changing code."
+
+## A sentence an agent will fill
+
+An agent does not stop at a gap. It picks the most likely reading and writes code for it. Each guess is reasonable, so the diff looks fine.
+
+<Example
+  label="Constructed"
+  task="You read one spec sentence and list the choices an agent must make to code it."
+  evidence="Written to illustrate. The list is my reading of the sentence. No model was run."
+  env="Invented spec sentence. No tool or model."
+>
+
+<Fragment slot="input">
+
+```text
+Send a reminder to customers with overdue invoices.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Choice                 A plausible guess
+What is overdue        The due date has passed
+Which invoices         Every unpaid invoice, including disputed ones
+Who gets one           The customer's main email address
+How often              Every day until paid
+What the reminder says One template for all
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Each guess is sensible alone. Together they send a daily email to a customer who is disputing the invoice. The sentence did not forbid it.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+One short sentence hides five decisions. It does not show what a given agent would choose.
+
+</Fragment>
+
+</Example>
+
+Rewrite the sentence as criteria that a test can check, and name what is out of scope:
+
+```markdown
+- Given an invoice unpaid 7 days after its due date and not marked disputed,
+  when the daily job runs, then one reminder goes to the billing contact.
+- Given the same invoice the next day, then no second reminder goes out.
+- Given a disputed invoice, then no reminder goes out.
+
+Out of scope: a second reminder, a late fee.
+```
+
+The 7 days and the one-reminder rule are examples of decisions the owner must make. The spec forces them into view before code exists.
+
+## Update the spec with the change
+
+When scope moves, edit the spec in the same commit as the code. If the spec stays old, the next reader treats the new behaviour as a bug, and the next agent "fixes" it back. A behaviour file that changes with no spec change is a prompt to ask why. It is a flag for a reviewer, not a block, because many changes need no spec edit. *Principle, not measured.*
 
 ## Failure modes it reduces
 
