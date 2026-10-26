@@ -1,0 +1,1 @@
+{"status": "stop", "months_counted": 13, "reason": "Feb appears twice, so there are only 12 distinct months."}

@@ -1,0 +1,177 @@
+---
+title: Prompt structure and validation
+description: Order an ask, choose between an example and a constraint, ask for structured output with a validator, and re-run a fixed case set after a model change.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 1: Say it properly](../../../journey/01-say-it-properly/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** write the ask as goal, constraints, output shape and check, in that order. Make the check a required field of the output shape. Accept a reply only when a script has parsed it and re-computed what it can. Keep a fixed set of cases and re-run it whenever the prompt or the model changes.
+
+No tool-specific setting is named on this page. The ideas work in any chat tool or harness that lets you read the reply as text.
+
+## Why it matters
+
+A good ask still gets a wrong reply some of the time. [Level 1](../../../journey/01-say-it-properly/) shows the parts of a good ask. This page turns those parts into something a script can enforce. A reply that a script can reject is a reply you do not have to read for form, so your attention goes to the content.
+
+## What to enable
+
+**1. Fix the order of the ask.** Put the parts in one order every time: goal, constraints, output shape, check. The check goes last because it is the last thing the reader or the script needs to see, and because it is the part that depends on all the others. Here is a complete ask for the running shared-bills task, built to be validated:
+
+```text
+Goal: work out what each of the three of us owes for last year's shared bills.
+Constraints: use only the figures below. If a month is missing or repeated, stop and say which month.
+Output shape: one JSON object and nothing else.
+  Complete set: {"status": "ok", "months_counted": N, "total": "0.00", "each_pays": "0.00", "sam_pays": "0.00", "check": {"count": N, "sum": "0.00"}}
+  Incomplete set: {"status": "stop", "months_counted": N, "reason": "text that names the month"}
+Check: fill in check.count and check.sum from the figures before you fill in total.
+Figures: Jan 212, Feb 198, [... ten more months ...]
+```
+
+Principle, not measured: I have no recorded run that compares one order of these parts with another. Use the order as a convention that keeps your asks comparable, not as a result.
+
+**2. Choose between an example, a constraint and both.**
+
+| You need | Give | What it costs |
+| --- | --- | --- |
+| A shape that is easy to show and hard to describe | An example | The reply may copy the example's content as well as its shape |
+| A rule that has a reason or an exception | A constraint | It says nothing about layout |
+| Both a layout and a rule | Both, kept apart | More text, so more to keep consistent |
+
+The anchoring cost is the one people miss. An example carries its values, its length and its wording. Show the shape with values that cannot be real, such as two invented months. Then let the script do the second defence: it re-computes the answer from the input, so a reply that repeats the example's numbers fails. The fixture `bad-copied-example` below does that. Principle, not measured: I did not run an assistant to see how often it copies an example, so the fixture is a hand-written reply and shows what the script would do, not what an assistant does.
+
+**3. Expect the check to be the part that goes missing.** An ask with many constraints and a strict layout gives the reader many things to satisfy. A reply can meet the layout and leave out the check, because the layout still looks complete. Principle, not measured: no recorded run in this guide shows an assistant dropping a check under an over-constrained ask. The defence does not depend on how often it happens. List the check as a required field. A reply without it then fails mechanically.
+
+**4. Validate the reply with a script.** Ask for a schema (a fixed list of fields with fixed types), then check four things in this order:
+
+1. The reply parses as JSON and is one object.
+2. It has exactly the expected fields, no more and no fewer, with the expected types.
+3. Every value that can be re-computed from the input matches the re-computation.
+4. On the stop path, the reason names the problem month.
+
+Run the script on stored replies first, so that you see it accept and reject.
+
+<Example
+  label="Computed"
+  task="A maintainer runs the validator and a syntax-only check on eight stored replies to the same ask, to see which replies each one accepts."
+  evidence="python3 -I examples/prompt-structure/reply_check.py fixtures"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The eight replies are hand-written, not assistant output."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/prompt-structure/reply_check.py fixtures
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+case       reply                  syntax-only  validator reason
+clean      bad-check-dropped      accept       reject    missing key: check
+clean      bad-copied-example     accept       reject    total should be 2120.00, got '150.00'; each_pays should be 706.67, got '50.00'; sam_pays should be 706.66, got '50.00'; check.count should be 12, got 2; check.sum should be 2120.00, got '150.00'; months_counted should be 12, got 2
+clean      bad-prose-around-json  reject       reject    not JSON: Expecting value
+clean      bad-wrong-sum          accept       reject    total should be 2120.00, got '2210.00'; each_pays should be 706.67, got '736.67'; sam_pays should be 706.66, got '736.66'; check.sum should be 2120.00, got '2210.00'
+clean      good-ok                accept       accept    
+feb-twice  bad-stop-vague         accept       reject    reason does not name the problem month Feb
+feb-twice  bad-total-anyway       accept       reject    status must be "stop": 13 figures, not 12 distinct months
+feb-twice  good-stop              accept       accept    
+validator verdicts that disagree with the file name: 0
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The syntax-only column accepts seven of the eight replies, including `bad-check-dropped`, which meets the layout and has no check. The validator accepts two. `bad-total-anyway` is a reply that totals 13 figures instead of stopping.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A script that only checks that the reply parses lets a reply with no check through; the full validator does not. It does not show how often an assistant writes such replies.
+
+</Fragment>
+
+</Example>
+
+When the validator rejects a reply, send the error text back once and ask for a corrected reply. Allow at most two retries, then stop and report. Do not loosen the validator to make a reply pass.
+
+The validator checks form and re-computable values. It cannot check a judgement, such as whether a summary is fair. For that you need a reviewer ([level 5](../../../journey/05-check-the-work/)).
+
+**5. Re-run a fixed case set when the model or the prompt changes.** A prompt that passes today can fail after a model change, with no edit to your files. Keep a regression check:
+
+1. Fix a case set. Include the normal case and each known awkward input (a repeated month, a missing month).
+2. Set the pass criterion before you run. Here it is: every stored reply for every case passes the validator.
+3. Pin the model. Use the exact model identifier. If your tool offers a name that always points at the newest version, that name can change the model without any change in your files. Record the identifier with the results.
+4. Store the raw replies of each run, with the model identifier, the date and the prompt text.
+5. Change the pinned model or the prompt only after the new one passes the same cases.
+
+<Example
+  label="Computed"
+  task="A maintainer runs the same three cases against the stored replies of two models, to see whether the newer one passes the criterion."
+  evidence="python3 -I examples/prompt-structure/reply_check.py regress model-v1   and   python3 -I examples/prompt-structure/reply_check.py regress model-v2"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The model names and replies are invented stand-ins."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/prompt-structure/reply_check.py regress model-v1
+python3 -I examples/prompt-structure/reply_check.py regress model-v2
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+model under test: model-v1   pinned model: model-v1
+clean         2 of 2 replies pass
+feb-twice     2 of 2 replies pass
+june-missing  2 of 2 replies pass
+criterion: every stored reply for every case passes
+result: PASS
+model under test: model-v2   pinned model: model-v1
+clean         2 of 2 replies pass
+feb-twice     1 of 2 replies pass
+june-missing  2 of 2 replies pass
+criterion: every stored reply for every case passes
+result: FAIL
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The second run exits with code 1 because one `feb-twice` reply totals the repeated month instead of stopping. The other five replies pass.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A fixed case set and a stated criterion turn "the new model feels different" into a failing line. The replies are invented, so this does not show that any real model change causes this failure.
+
+</Fragment>
+
+</Example>
+
+Two replies per case is too few for a real check. Zero failures in n runs still allows a failure rate of roughly 3 divided by n (the rule of three), which is about 30% at n = 10. [Evals for LLM-driven steps](../../quality/evals/) covers repeat counts and holding the rubric still. [The evidence page](../../../evidence/) lists the runs this guide has.
+
+## Failure modes it reduces
+
+- A reply that looks complete but has no check.
+- A reply that copies the numbers of the example in the ask.
+- A prompt that passes on Monday and fails after the model changes.
+- A validator loosened one reply at a time until it accepts anything.
+
+## First step for the maintainer
+
+Take one ask you send often. Write its output shape as a list of fields. Write a 30-line script that rejects a reply with a missing field or a wrong total. Keep five real replies as fixtures, two of them bad.
+
+**Next:** [Context management](../context-management/)

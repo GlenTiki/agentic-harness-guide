@@ -55,4 +55,4 @@ Write `AGENTS.md` with three sections: commands, rules the agent cannot discover
 
 <p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/memory. Quoted line: "By default, Claude reads `AGENTS.md` only when you have no `CLAUDE.md` in your working directory or above it." Claude Code on that date: 2.1.310. The docs page states no version of its own. The same page gives a feature floor: "Reading `AGENTS.md` directly requires Claude Code v2.1.277 or later." The Codex and agents.md pages: Not checked against current docs.</p>
 
-**Next:** [Context management](../context-management/)
+**Next:** [Prompt structure and validation](../prompt-structure/)

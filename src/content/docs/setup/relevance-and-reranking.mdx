@@ -183,6 +183,10 @@ On this set and this day, the scores are as stored. Re-running needs Ollama and 
 6. You keep the cheapest variant that gives the precision you need.
 7. You prove the evaluation can fail: shuffle the relevance marks and confirm the scores drop.
 
+## Diagnose a miss
+
+Before you add a re-ranker, find out whether the right note was retrieved at all. [Diagnosing retrieval failure](../../shelf/context/diagnosing-retrieval-failure/) separates "retrieved wrong" from "ranked wrong" and covers a similarity floor and an index that refuses a changed embedder.
+
 ## Build it
 
 [Case-study chapter 6: Re-ranking](../../case-study/ch06-rerank/) is a downloadable kit. It works without the model installed, using a deterministic lexical fallback.

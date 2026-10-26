@@ -1,0 +1,22 @@
+{
+ "server": "tracker",
+ "note": "Invented tool list for a ticket tracker. Descriptions are written to show the size, not copied from a product.",
+ "tools": [
+  {"name": "search_issues", "description": "Search issues by text, status, assignee or label. Returns up to 50 matches with id, title, status and assignee. Use this to find an issue before reading or changing it.",
+   "input_schema": {"type": "object", "properties": {"query": {"type": "string", "description": "Free text to match in the title and body."}, "status": {"type": "string", "enum": ["open", "closed", "any"]}, "assignee": {"type": "string"}, "label": {"type": "string"}, "limit": {"type": "integer", "minimum": 1, "maximum": 50}}, "required": ["query"]}},
+  {"name": "get_issue", "description": "Read one issue by id, including its description, comments and history.",
+   "input_schema": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"]}},
+  {"name": "create_issue", "description": "Create a new issue. Changes the tracker. Ask the user before you call it.",
+   "input_schema": {"type": "object", "properties": {"title": {"type": "string"}, "body": {"type": "string"}, "assignee": {"type": "string"}, "labels": {"type": "array", "items": {"type": "string"}}}, "required": ["title"]}},
+  {"name": "update_issue", "description": "Change the title, body, status, assignee or labels of an issue. Changes the tracker. Ask the user before you call it.",
+   "input_schema": {"type": "object", "properties": {"id": {"type": "string"}, "title": {"type": "string"}, "body": {"type": "string"}, "status": {"type": "string", "enum": ["open", "closed"]}, "assignee": {"type": "string"}, "labels": {"type": "array", "items": {"type": "string"}}}, "required": ["id"]}},
+  {"name": "add_comment", "description": "Add a comment to an issue. Changes the tracker and notifies watchers. Ask the user before you call it.",
+   "input_schema": {"type": "object", "properties": {"id": {"type": "string"}, "text": {"type": "string"}}, "required": ["id", "text"]}},
+  {"name": "list_labels", "description": "List every label in use, with the number of issues that carry it.",
+   "input_schema": {"type": "object", "properties": {}}},
+  {"name": "list_members", "description": "List the people who can be assigned an issue.",
+   "input_schema": {"type": "object", "properties": {}}},
+  {"name": "get_board", "description": "Read a board and the issues in each of its columns. Use search_issues instead when you know what you are looking for.",
+   "input_schema": {"type": "object", "properties": {"board": {"type": "string"}, "column": {"type": "string"}}, "required": ["board"]}}
+ ]
+}

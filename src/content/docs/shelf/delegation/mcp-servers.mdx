@@ -3,6 +3,8 @@ title: MCP server security
 description: Connect tools through the Model Context Protocol (MCP) with least privilege, pinned versions and reviewed descriptions.
 ---
 
+import Example from '../../../../components/Example.astro';
+
 *Deep dive for [level 3: Give it hands](../../../journey/03-give-it-hands/).*
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
@@ -46,6 +48,79 @@ claude mcp list
 **7. Remember the sandbox boundary.** MCP servers run outside Claude Code's shell sandbox. Their reach is whatever the server process can do. Run servers that handle untrusted content in a container.
 
 **8. Treat output as data.** A search result, a ticket body or a page the server returns can contain injected instructions. See [Untrusted input](../../control/untrusted-input/).
+
+## Tool definitions use context before any call
+
+The assistant knows a tool exists only because it reads the tool's definition: the name, the description and the input schema. In a harness that sends every definition up front, those definitions sit in the [context window](../../../glossary/#context-window) before the first call and stay there. Check how your harness loads them. A server with many tools can then cost more than a long instruction file.
+
+Measure it on a server you use. Export its tool list as JSON, then count characters. The script below counts the name, the description and the schema as compact JSON, and converts to tokens with the rule of thumb of 4 characters per token. That rule is rough, so confirm the total with your tool's own token count.
+
+<Example
+  label="Computed"
+  task="A maintainer measures the size of an invented list of eight tracker tools."
+  evidence="python3 -I examples/tool-definitions/tool_cost.py examples/tool-definitions/sample_tools.json"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The tool list is invented and small; real servers differ."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/tool-definitions/tool_cost.py examples/tool-definitions/sample_tools.json
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+tool            chars  tokens
+search_issues     483     121
+update_issue      386      97
+create_issue      270      68
+get_board         232      58
+add_comment       218      55
+get_issue         152      38
+list_labels       109      28
+list_members       90      23
+total            1940     485   (8 tools)
+descriptions alone: 757 chars, 190 tokens
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The schema of `search_issues` is larger than its description. `update_issue` and `create_issue`, which change the tracker, are the next largest. Descriptions alone are 757 of the 1,940 characters.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Eight small tools take about 485 tokens by the rule of thumb. It does not show what your servers cost, so run the script on a real tool list. Remove tools you do not use, and shorten schemas before descriptions.
+
+</Fragment>
+
+</Example>
+
+## How a description steers selection
+
+The assistant chooses a tool by reading its description next to the task. Principle, not measured: I ran no test on how descriptions change tool choice, so treat this as a design rule. A description is an instruction, so write it like one:
+
+- Say what the tool does in the first sentence, and what it returns.
+- Say when not to use it and name the better tool, as `get_board` does in the sample list.
+- Say that a tool changes something, and that the user must agree first. The sample list does this for each write tool.
+- Do not give two tools overlapping descriptions. The assistant then has no basis to choose.
+
+The same property is the risk in item 4 above. A description from a server you do not control can steer the assistant. Read the descriptions before you enable a server.
+
+## When a connector beats a script run through the shell
+
+| Choose | When |
+| --- | --- |
+| A connector | The service needs a credential that you do not want in a script. You want a separate permission rule for each tool, such as allow the read and ask for the write. Other people or other agents repeat the action. |
+| A script run through the shell | The task is rare or a one-off. A trusted command-line tool already does the job. The output is long and you want to filter it before the assistant sees it. You want the step kept as a file in the repository and run without the assistant. |
+
+The costs differ. A connector's definitions occupy context in every session, as the measurement shows. A script costs context only when you run it. A script run through the shell, though, is allowed by whatever the shell permission allows, which is usually broader than one named tool. Start with the script for a rare task. Move to a connector when you repeat the task and want the narrower permission.
 
 ## Failure modes it reduces
 

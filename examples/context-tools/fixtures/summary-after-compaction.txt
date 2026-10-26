@@ -1,0 +1,3 @@
+Goal: replace the retry loop in the sync job with a bounded backoff.
+Done so far: the retry loop is removed, a backoff helper is added, and the test for the helper passes.
+Open: decide whether to add jitter. Next: update the job that calls the helper.
