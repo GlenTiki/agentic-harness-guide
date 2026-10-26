@@ -31,7 +31,9 @@
     "check:health": "node scripts/check-health.mjs && node scripts/check-health-selftest.mjs",
     "health": "npm run build && node scripts/record-health.mjs",
     "check:feedback": "node scripts/check-feedback.mjs && node --test scripts/feedback-digest.test.mjs",
-    "feedback": "node scripts/feedback-digest.mjs"
+    "feedback": "node scripts/feedback-digest.mjs",
+    "narrative:facts": "node scripts/narrative-facts.mjs",
+    "test:narrative": "node --test scripts/narrative-facts.test.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.5",

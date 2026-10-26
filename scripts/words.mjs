@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { countWords } from './lib/prose.mjs';
 
 const root = path.resolve('src/content/docs');
 const caps = [
@@ -7,17 +8,6 @@ const caps = [
   [/^workflows\/(?!index)/, 1800],
 ];
 const strict = process.argv.includes('--strict');
-
-const prose = (source) =>
-  source
-    .replace(/^---\n[\s\S]*?\n---\n/, '')
-    .replace(/^```[\s\S]*?^```/gm, ' ')
-    .replace(/^(import|export)\s.*$/gm, ' ')
-    .replace(/<[^>]*>/g, ' ')
-    .replace(/\]\([^)]*\)/g, ']')
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ');
-
-const count = (source) => (prose(source).match(/[\p{L}\p{N}][\p{L}\p{N}'’.,%/-]*/gu) ?? []).length;
 
 const files = [];
 const walk = (dir) => {
@@ -34,7 +24,7 @@ const rows = files
   .map((file) => {
     const rel = path.relative(root, file).replace(/\.mdx?$/, '');
     const cap = caps.find(([pattern]) => pattern.test(rel))?.[1];
-    return { rel, words: count(fs.readFileSync(file, 'utf8')), cap };
+    return { rel, words: countWords(fs.readFileSync(file, 'utf8')), cap };
   })
   .sort((a, b) => a.rel.localeCompare(b.rel));
 

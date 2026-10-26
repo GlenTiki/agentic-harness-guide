@@ -1,0 +1,31 @@
+{
+  "actor": {
+    "assistant": ["assistant", "assistants"],
+    "agent": ["agent", "agents"],
+    "robot": ["robot", "robots"],
+    "model": ["model", "models"],
+    "AI": ["AI"]
+  },
+  "check": {
+    "check": ["check", "checks", "checked", "checking"],
+    "verify": ["verify", "verifies", "verified", "verifying", "verification"],
+    "validate": ["validate", "validates", "validated", "validating", "validation"],
+    "review": ["review", "reviews", "reviewed", "reviewing", "reviewer", "reviewers"]
+  },
+  "control": {
+    "hook": ["hook", "hooks"],
+    "gate": ["gate", "gates", "gated", "gating"],
+    "guard": ["guard", "guards", "guardrail", "guardrails"],
+    "checkpoint": ["checkpoint", "checkpoints"]
+  },
+  "rule": {
+    "rule": ["rule", "rules"],
+    "instruction": ["instruction", "instructions"],
+    "constraint": ["constraint", "constraints"]
+  },
+  "helper": {
+    "helper": ["helper", "helpers"],
+    "sub-agent": ["sub-agent", "sub-agents", "subagent", "subagents"],
+    "worker": ["worker", "workers"]
+  }
+}
