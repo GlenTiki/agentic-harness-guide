@@ -1,0 +1,13 @@
+{
+  "name": "supplier-invoice-handling",
+  "cues": ["bank_details_changed", "number_seen_before", "supplier_known", "total_vs_order"],
+  "rows": [
+    {"id": "R1", "when": {"bank_details_changed": "yes"}, "choice": "hold and phone the supplier on the number in your own records"},
+    {"id": "R2", "when": {"number_seen_before": "yes"}, "choice": "hold, do not pay, tell the supplier"},
+    {"id": "R3", "when": {"supplier_known": "no"}, "choice": "hold and ask the owner"},
+    {"id": "R4", "when": {"total_vs_order": "over_large"}, "choice": "query the supplier before paying"},
+    {"id": "R5", "when": {"total_vs_order": "no_order"}, "choice": "ask who ordered it before paying"},
+    {"id": "R6", "when": {"total_vs_order": "over_small"}, "choice": "pay on the due date and note the difference"},
+    {"id": "R7", "when": {"total_vs_order": "matches"}, "choice": "pay on the due date"}
+  ]
+}

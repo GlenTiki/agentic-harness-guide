@@ -94,6 +94,107 @@ This is the shape of a good retro reply. The case-study parser is rule based and
 
 A proposal is the start of the [weak-spot loop](../engineer-weak-spots/). The first proposal above names a weak spot ("a month can be counted twice"). It engineers a check, and it asks for a proof that the check can fail. The retro supplies the notice and the name. The loop supplies the rest.
 
+## A worked loop
+
+This is a Constructed trace of two retros on the same feature, with one proposal accepted, one rejected and one stalled. It is invented for teaching. It is not a recorded run, and it uses the four parts above.
+
+<Example
+  label="Constructed"
+  task="You read the proposals from a retro and decide each one, with a reason you can look up later."
+  evidence="none, written by the author"
+  env="not a model output"
+>
+
+<Fragment slot="input">
+
+```text
+Retro, week 1. Proposals returned by the agent:
+P1  Add a distinct-month check before any total. Prove it fails on a list with February twice.
+P2  Ask a second person to approve every note to Mina.
+P3  Ask you for one sentence in your own voice for Mina notes.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Decisions
+P1  Accepted. Check written, seen failing on the February list, then passing. Rule added: "Count distinct months before any total."
+P2  Rejected. Reason: it slows every note for a problem seen once. Revisit if the stiff wording is reported a second time and P3 has not fixed it.
+P3  Accepted, not yet done. Owner: you. Needed: one sentence.
+
+Retro, week 2
+Went well: the distinct-month check stopped a repeated March.
+What happened: the note to Mina was stiff again.
+Decisions: P3 is still waiting for the sentence. P2 trigger is met, so it is reopened.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+P2 carries its reason and its reopening condition, so week 2 can act on it without a new argument. P1 has a check seen to fail. P3 has an owner and a named missing item.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows a loop with a decision and a reason for each proposal. It does not show how often retros produce proposals this clean.
+
+</Fragment>
+
+</Example>
+
+## When the loop itself fails
+
+The worst failure is quiet: feedback is given, recorded and acknowledged, and no rule changes. The next trace shows it.
+
+<Example
+  label="Constructed"
+  task="You scan four weeks of retro lines to see whether any feedback changed a rule. The log is invented for teaching. It is not a recorded run."
+  evidence="none, written by the author"
+  env="not a model output"
+>
+
+<Fragment slot="input">
+
+```text
+week 1  What happened: note to Mina was stiff.      Rule changes this week: 1 (distinct months)
+week 2  What happened: note to Mina was stiff.      Rule changes this week: 0
+week 3  What happened: note to Mina was stiff.      Rule changes this week: 0
+week 4  What happened: note to Mina was stiff.      Rule changes this week: 0
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Diagnosis
+The same "what happened" line appears 4 times. The only rule change is for a different problem.
+The proposal for it (P3, one sentence from you) has been waiting since week 1, with no owner date.
+Fix: give P3 a date, or decide not to fix it and say so. A complaint that repeats with no decision is a failed loop.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The retro was held every week and nothing improved, so holding it is not the measure. The measure is the link between a repeated line and a change.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows how to spot a loop that records and never acts. It does not say how many repeats to allow. Three is a reasonable starting value to tune on your own log.
+
+</Fragment>
+
+</Example>
+
+Keep a count in the retro log of lines repeated without a decision. If it is not zero at the end of the month, deal with that before you add anything new.
+
 ## Eventually consistent with what you want
 
 I use the phrase "eventually consistent" in its plain meaning. After many loops the system should settle on what you want, even though any single run may be wrong. Three signals suggest it is settling:

@@ -55,4 +55,4 @@ exit 1
 
 Search your instructions, hooks and scripts for `while`, `sleep` and `retry`. Add a maximum to every one that lacks one.
 
-**Next:** [Human-in-the-loop](../human-in-the-loop/)
+**Next:** [Choose a model tier](../model-tier/)

@@ -120,6 +120,117 @@ While the work runs, watch three signals.
 
 When the agent drifts, do not restart. Add the missing fact in a sentence and say "carry on". The principle is that one added fact costs less than a restart, because the earlier work stays in the thread. This is a hypothesis, not a measured result. If the same drift happens twice, treat it as a weak spot and run the [five-step loop](../engineer-weak-spots/#the-loop): notice, name, engineer a fix, prove the fix can fail, keep it.
 
+## Turn an unwritten preference into a spec sentence and a check
+
+Some of what you want is not written anywhere, and you may not know you want it until it is missing. Three steps get it out.
+
+1. **Ask for the last time it went wrong.** "Mina does not like long messages" is a feeling. "Last month's note to Mina came back with a question" is a case. Start from the case.
+2. **Ask what you would see if it were wrong.** The answer is the observable condition. If you cannot say what you would see, you cannot check it.
+3. **Write one sentence with the condition in it, and one check that can fail.** Prefer a check a script can run. Where only a person can judge, name the person and the question.
+
+<Example
+  label="Constructed"
+  task="A shop owner turns a vague preference about notes to a colleague into a spec sentence and a check. The exchange is invented for teaching. It is not a recorded run."
+  evidence="none, written by the author"
+  env="not a model output"
+>
+
+<Fragment slot="input">
+
+```text
+Preference, as first said: "Mina does not like long messages."
+Last time it went wrong: the August note was a page and she rang to ask what it meant.
+What you would see if it were wrong: Mina asks what to do, or the action is not in the first line.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Spec sentence: The note to Mina is at most 60 words, has no table, and its first line says what she must do and by when.
+Check 1 (script): count the words; fail above 60. Fail if a line starts with a pipe character.
+Check 2 (Mina, once a month): "Could you act on this note from its first line alone? Yes or no."
+Both checks must be seen to fail on the August note before they are trusted.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The number 60 is a first guess. The August note is the test case that must fail. The first line carries an action and a date, which a script cannot check and Mina can.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the steps from feeling to check. It does not show that 60 words is right for anyone else, so tune the number on your own notes.
+
+</Fragment>
+
+</Example>
+
+## Step in now, or wait for the checkpoint
+
+Every interruption costs the agent's momentum and some of your attention. Every wait risks work built on a wrong reading. Principle, not measured: choose by what it costs to undo.
+
+| Step in now when | Wait for the checkpoint when |
+| --- | --- |
+| The next action cannot be undone, or leaves your working files | The work is reversible and cheap to redo |
+| The agent has misread the goal, so everything after is wasted | The issue is wording or style that a later pass can fix |
+| The same drift has happened twice in this run | It is the first time, and a check is about to run |
+| A rule you set is about to be broken | The plan is unusual but not unsafe |
+
+A short correction costs a sentence. State the missing fact and say "carry on". If you find yourself stepping in on every run for the same reason, the fix is a spec sentence or a check, not more vigilance.
+
+## A spec that only a stranger can read
+
+A spec you wrote encodes what you know and forgets to say it. You cannot see the gap, because you fill it automatically when you read. A reader who was not there cannot. A reviewer in the same conversation as the author shares the author's assumptions, which is why [independent review](../../shelf/quality/independent-review/) asks for a fresh context.
+
+The test is cheap. Give the spec, and only the spec, to a fresh reader: a colleague, or an assistant in a new chat with no history. Ask them to list every point where they would have to guess.
+
+<Example
+  label="Constructed"
+  task="A cold reader is asked what they would have to guess in a one-line spec. The spec and the questions are invented for teaching. It is not a recorded run."
+  evidence="none, written by the author"
+  env="not a model output"
+>
+
+<Fragment slot="input">
+
+```text
+Spec, as the writer meant it: "Flag any supplier invoice that is overdue."
+Instruction to the cold reader: list each point where you would have to guess. Do not guess.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+1. Overdue against which date: the invoice date plus the terms, or the due date printed on the page?
+2. Is an invoice due on a Saturday overdue on Saturday, or on the next working day?
+3. Does a part-paid invoice count, and is it overdue for the whole amount?
+4. Flag where: a list, a message, a colour in the sheet?
+Rewritten: "Flag, in the Overdue column, each supplier invoice whose printed due date is earlier than today and whose unpaid balance is above zero. A due date on a Saturday or Sunday counts as the next Monday."
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The writer meant the printed due date and never thought of weekends or part payments. Each question is a place where two readers would build different checks.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows what a stranger finds that the writer cannot. It does not show that an assistant finds the same gaps every time.
+
+</Fragment>
+
+</Example>
+
 ## Why the lead can keep one long thread
 
 Helpers do the bulky reading and return a short report. The lead keeps the plan and the reports, not the raw files. This is why I expect a lead agent to stay in one thread for longer. It is a design intent, not a measurement. See the hypotheses below.

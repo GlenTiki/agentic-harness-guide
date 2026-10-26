@@ -1,0 +1,11 @@
+[
+  {"name": "plain match", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R7"},
+  {"name": "small overcharge", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "supplier_known": "yes", "total_vs_order": "over_small"}, "expect": "R6"},
+  {"name": "large overcharge", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "supplier_known": "yes", "total_vs_order": "over_large"}, "expect": "R4"},
+  {"name": "no order on file", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "supplier_known": "yes", "total_vs_order": "no_order"}, "expect": "R5"},
+  {"name": "new supplier", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "supplier_known": "no", "total_vs_order": "matches"}, "expect": "R3"},
+  {"name": "same number twice", "cues": {"bank_details_changed": "no", "number_seen_before": "yes", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R2"},
+  {"name": "new bank details on a clean invoice", "cues": {"bank_details_changed": "yes", "number_seen_before": "no", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R1"},
+  {"name": "new bank details and a repeat number", "cues": {"bank_details_changed": "yes", "number_seen_before": "yes", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R1"},
+  {"name": "cue missing: order status not recorded", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "supplier_known": "yes"}, "expect": null}
+]
