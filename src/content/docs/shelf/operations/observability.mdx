@@ -17,7 +17,7 @@ When something goes wrong, the question is "what did the agent do, in what order
 
 ## What to enable
 
-**1. One line per tool call, from two events.** Do not log secrets. Add the log directory to `.gitignore` unless you mean to commit it. Log from `PreToolUse` and from `PostToolUse`. Claude Code behaviour: `PostToolUse` runs after a call succeeds. A failed call produces no `PostToolUse` line, because Claude Code has a separate `PostToolUseFailure` event. A call that was blocked before it ran did not succeed, so it produces none either. The `PreToolUse` line shows what the agent tried, and a missing `post` line next to it shows what did not complete. Each line carries a UTC timestamp, the session id, a sequence number, the phase, the tool and the target.
+**1. One line per tool call, from two events.** Do not log secrets. Add the log directory to `.gitignore` unless you mean to commit it. Log from `PreToolUse` and from `PostToolUse`. Claude Code behaviour: `PostToolUse` runs after a call succeeds. A failed call produces no `PostToolUse` line, because Claude Code has a separate `PostToolUseFailure` event. A call that was blocked before it ran did not succeed, so it produces none either. The `PreToolUse` line shows what the agent tried, and a missing `post` line next to it shows what did not complete. Each line is one JSON object with a UTC timestamp, the session id, a sequence number, the phase, the tool, the tool-call id and the target. `jq` escapes every string, so a command with a new line or a `|` in it stays on one line. The tool-call id pairs a `pre` line with its `post` line when calls run in parallel.
 
 ```bash
 #!/usr/bin/env bash
@@ -37,52 +37,57 @@ target=$(jq -r '.tool_input.file_path // .tool_input.command // ""' <<<"$input" 
   s/(--password[= ])\S+/$1\[REDACTED]/ig;
   s/(\s-u\s+[^\s:]+:)\S+/$1\[REDACTED]/g;
 ' | head -c 200)
-printf '%s | %s | %06d | %s | %s | %s\n' \
-  "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$session" "$seq" "$phase" \
-  "$(jq -r '.tool_name' <<<"$input")" "$target" >> "$log_dir/actions.log"
+jq -cn --arg time "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg session "$session" --argjson seq "$seq" \
+  --arg phase "$phase" --arg tool "$(jq -r '.tool_name' <<<"$input")" \
+  --arg id "$(jq -r '.tool_use_id // ""' <<<"$input")" --arg target "$target" \
+  '{time: $time, session: $session, seq: $seq, phase: $phase, tool: $tool, id: $id, target: $target}' >> "$log_dir/actions.jsonl"
 ```
 
-Save it as `.claude/hooks/log-action.sh`. Register it on both events with the commands `${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh pre` and `${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh post`. The log goes to `${CLAUDE_PROJECT_DIR}/.agent-log`, so it lands in one place whatever directory the session is in. Check the path first with `test -f`. A missing shell script exits 127 and the hook then silently logs nothing (see [Hooks](../../control/hooks/)).
+Save it as `.claude/hooks/log-action.sh`. Register it on both events with the commands `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" pre` and `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" post`. In `settings.json`, escape the inner quotes as `\"`. Quote the path so a folder name with a space still works, and name `bash` so the file needs no executable permission. If you run the file directly, run `chmod +x` on it first. The log goes to `${CLAUDE_PROJECT_DIR}/.agent-log`, so it lands in one place whatever directory the session is in. Check the path first with `test -f`. A missing shell script exits 127 and the hook then silently logs nothing (see [Hooks](../../control/hooks/)).
 
 <Example
   label="Computed"
-  task="A maintainer feeds five hook calls to the logging script to see what lands in the log and which secrets the filter misses."
-  evidence="The script above, run with CLAUDE_PROJECT_DIR set to an empty folder."
-  env="macOS 26.5, bash script, jq 1.8.2, perl 5.34.1, 2026-10-25"
+  task="A maintainer feeds six hook calls to the logging script to see what lands in the log, which secrets the filter misses, and whether a multi-line command stays on one line."
+  evidence="The script above, saved as .claude/hooks/log-action.sh, run with CLAUDE_PROJECT_DIR set to an empty folder."
+  env="macOS 26.5, bash script, jq 1.8.2, perl 5.34.1, 2026-10-26"
 >
 
 <Fragment slot="input">
 
 ```bash
-echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"curl -H \"Authorization: Bearer abc123\" https://x.example"}}' | ./log-action.sh pre
-echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"curl -H Authorization:Bearer abc123 https://x.example"}}' | ./log-action.sh pre
-echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"curl -H \"X-Api-Key: k1\" https://x.example"}}' | ./log-action.sh post
-echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"mysql -phunter3 -e x"}}' | ./log-action.sh post
-echo '{"session_id":"s1","tool_name":"Bash","tool_input":{"command":"deploy --token=abc123"}}' | ./log-action.sh post
+echo '{"session_id":"s1","tool_use_id":"t1","tool_name":"Bash","tool_input":{"command":"curl -H \"Authorization: Bearer abc123\" https://x.example"}}' | bash .claude/hooks/log-action.sh pre
+echo '{"session_id":"s1","tool_use_id":"t2","tool_name":"Bash","tool_input":{"command":"curl -H Authorization:Bearer abc123 https://x.example"}}' | bash .claude/hooks/log-action.sh pre
+echo '{"session_id":"s1","tool_use_id":"t3","tool_name":"Bash","tool_input":{"command":"curl -H \"X-Api-Key: k1\" https://x.example"}}' | bash .claude/hooks/log-action.sh post
+echo '{"session_id":"s1","tool_use_id":"t4","tool_name":"Bash","tool_input":{"command":"mysql -phunter3 -e x"}}' | bash .claude/hooks/log-action.sh post
+echo '{"session_id":"s1","tool_use_id":"t5","tool_name":"Bash","tool_input":{"command":"deploy --token=abc123"}}' | bash .claude/hooks/log-action.sh post
+echo '{"session_id":"s1","tool_use_id":"t6","tool_name":"Bash","tool_input":{"command":"echo hi\n2026-10-25T00:00:00Z | s1 | 000099 | post | Bash | forged"}}' | bash .claude/hooks/log-action.sh pre
+wc -l < "$CLAUDE_PROJECT_DIR/.agent-log/actions.jsonl"
 ```
 </Fragment>
 
 <Fragment slot="output">
 
 ```text
-2026-10-25T01:06:19Z | s1 | 000001 | pre | Bash | curl -H "Authorization: Bearer [REDACTED] https://x.example
-2026-10-25T01:06:19Z | s1 | 000002 | pre | Bash | curl -H Authorization:Bearer [REDACTED] https://x.example
-2026-10-25T01:06:19Z | s1 | 000003 | post | Bash | curl -H "X-Api-Key: k1" https://x.example
-2026-10-25T01:06:19Z | s1 | 000004 | post | Bash | mysql -phunter3 -e x
-2026-10-25T01:06:20Z | s1 | 000005 | post | Bash | deploy --token=[REDACTED]
+6
+{"time":"2026-10-26T19:41:48Z","session":"s1","seq":1,"phase":"pre","tool":"Bash","id":"t1","target":"curl -H \"Authorization: Bearer [REDACTED] https://x.example"}
+{"time":"2026-10-26T19:41:48Z","session":"s1","seq":2,"phase":"pre","tool":"Bash","id":"t2","target":"curl -H Authorization:Bearer [REDACTED] https://x.example"}
+{"time":"2026-10-26T19:41:48Z","session":"s1","seq":3,"phase":"post","tool":"Bash","id":"t3","target":"curl -H \"X-Api-Key: k1\" https://x.example"}
+{"time":"2026-10-26T19:41:48Z","session":"s1","seq":4,"phase":"post","tool":"Bash","id":"t4","target":"mysql -phunter3 -e x"}
+{"time":"2026-10-26T19:41:48Z","session":"s1","seq":5,"phase":"post","tool":"Bash","id":"t5","target":"deploy --token=[REDACTED]"}
+{"time":"2026-10-26T19:41:48Z","session":"s1","seq":6,"phase":"pre","tool":"Bash","id":"t6","target":"echo hi\n2026-10-25T00:00:00Z | s1 | 000099 | post | Bash | forged"}
 ```
 
 </Fragment>
 
 <Fragment slot="notice">
 
-Lines 1, 2 and 5 hide the secret. Lines 3 and 4 write `k1` and `hunter3` to the log in clear text. The sequence numbers run 1 to 5, so a gap would show.
+`wc -l` printed 6: six calls, six lines. Line 6 held a forged log line after a new line, and it stays inside one `target` string as `\n`. Lines 1, 2 and 5 hide the secret. Lines 3 and 4 write `k1` and `hunter3` to the log in clear text.
 
 </Fragment>
 
 <Fragment slot="shows">
 
-It shows that a short pattern list misses some shapes, so the filter is not a guarantee. It does not show what the filter misses on other inputs.
+It shows that a short pattern list misses some shapes, so the filter is not a guarantee, and that one event is one line. It does not show what the filter misses on other inputs.
 
 </Fragment>
 

@@ -32,7 +32,7 @@ An instruction file is advice, and nothing guarantees the model follows it. That
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
-        "hooks": [{ "type": "command", "command": "${CLAUDE_PROJECT_DIR}/.claude/hooks/format-changed.sh" }]
+        "hooks": [{ "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/format-changed.sh\"" }]
       }
     ]
   }
@@ -109,12 +109,14 @@ The same file is at `examples/hook-sample/block_force_push.py`. A test file next
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [{ "type": "command", "command": "python3 ${CLAUDE_PROJECT_DIR}/.claude/hooks/block_force_push.py" }]
+        "hooks": [{ "type": "command", "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_force_push.py\"" }]
       }
     ]
   }
 }
 ```
+
+Quote the expanded path, as the example does. A shell splits an unquoted path that contains a space into several words. Run through `sh -c` in a scratch folder with a space in its name, the quoted command ran the script, and the unquoted one exited 2 because Python could not open the split path. On that hook, exit 2 blocks the call. Name the interpreter (`python3` or `bash`) in the command, so the script needs no executable permission. If you run a script directly instead, run `chmod +x` on it first.
 
 **A broken hook can block every Bash call, or do nothing.** A missing Python script exits with code 2, which blocks. A missing shell script exits with code 127, which is a non-blocking error, so the hook silently does nothing.
 
