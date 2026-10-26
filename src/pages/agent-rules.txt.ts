@@ -13,6 +13,7 @@ const workflowOrder = [
   'define-a-workflow',
   'research-a-decision',
   'design-reps',
+  'build-a-kitchen-assistant',
 ];
 
 const writeScope =

@@ -58,6 +58,7 @@ const workflowOrder = [
   'define-a-workflow',
   'research-a-decision',
   'design-reps',
+  'build-a-kitchen-assistant',
 ];
 const readFirst = [
   'start-here/why-bother',
@@ -66,6 +67,7 @@ const readFirst = [
   'start-here/professional-route',
   'start-here/engineer-route',
   'start-here/cheat-sheet',
+  'start-here/what-the-time-is-for',
   'glossary',
 ];
 const shelfFirst = ['shelf/foundations/principles', 'shelf/reference/baseline', 'shelf/reference/anti-patterns'];
