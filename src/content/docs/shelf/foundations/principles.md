@@ -26,7 +26,7 @@ This shelf says agent for the assistant and sub-agent for the helper. See the [g
 ## Failure modes they reduce
 
 - A rule in a prompt is forgotten after compaction. Principle 1 moves it to a hook.
-- A fetched web page tells the agent to run a command. Principle 4 stops it from acting.
+- A fetched web page tells the agent to run a command. Principle 4 tells the agent to treat the page as data. A permission rule or a hook is what stops it if the agent acts anyway.
 - A reviewer approves code that changed after the review. Principle 6 makes that visible when a merge check compares digests.
 
 ## First step for the maintainer
