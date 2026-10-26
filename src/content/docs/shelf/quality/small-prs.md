@@ -44,4 +44,4 @@ description: Slice agent work into small, single-concern changes that a person c
 
 Add one line to the instruction file: "Plan the work as slices of one concept, under eight files and four hundred lines each. Stop and ask before exceeding that."
 
-**Next:** [Observability and audit log](../../operations/observability/)
+**Next:** [Citing code by line number](../line-citations/)

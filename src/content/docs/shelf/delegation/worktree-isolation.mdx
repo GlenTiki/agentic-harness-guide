@@ -1,0 +1,307 @@
+---
+title: Git worktrees for parallel agents
+description: Give every AI agent that writes files its own git worktree, so parallel work cannot collide.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** run each write-capable agent in its own git worktree on its own branch. Read-only agents can share the main checkout. Name the base branch explicitly and check it before you merge.
+
+## Why it matters
+
+Two agents in one working directory share the same files, the same index and the same `HEAD`. One agent's `git checkout` or `git stash` changes what the other sees. The symptoms are confusing: edits that disappear, commits on the wrong branch, tests that fail for a reason nobody introduced. A worktree is a second checkout of the same repository, so each agent gets its own files and branch while sharing history.
+
+A worktree isolates files. It does not isolate ports, development databases, containers, package caches, lockfile installs, environment files or external services. Two agents in two worktrees can still start a server on the same port, migrate the same database or install over the same cache. Give each worktree its own port range, its own database name suffix and its own ephemeral containers. [Level 6](../../../journey/06-hire-a-team/) makes the same point for helpers.
+
+## What to enable
+
+**1. Create one worktree per writer.**
+
+Example, do not run:
+
+```bash
+git worktree add ../repo-feature-a -b agent/feature-a main
+git worktree add ../repo-feature-b -b agent/feature-b main
+```
+
+**2. Let the harness do it if it can.** Claude Code behaviour: a sub-agent with `isolation: worktree` in its frontmatter runs in a temporary worktree. The worktree is cleaned up automatically if the agent makes no changes. When it does make changes, you get the branch and path back to review.
+
+**3. Know where the worktree branches from.** Claude Code behaviour: the worktree branches from your default branch, not from the parent session's current `HEAD`. If the lead agent is on an unmerged feature branch, the isolated agent does not see that work. Either merge first, or tell the agent the base in the brief and check it afterwards:
+
+```bash
+git merge-base --is-ancestor <base-commit> <agent-branch> && echo "based on the right commit"
+```
+
+**4. Keep each worktree's identity clear.** Give worktrees a path and a branch name that say who owns them. Do not nest one inside another.
+
+**5. Beware of environment variables that point git elsewhere.** If `GIT_DIR` or `GIT_WORK_TREE` is set in the shell, `git -C <path>` still operates on the repository those variables name. Unset them in scripts and in agent briefs, or pass them explicitly.
+
+**6. Sequence writers on the same files.** Worktrees stop file collisions, not merge conflicts. If two agents edit the same function, you resolve it at merge. Split the work by file or module instead.
+
+**7. Merge deliberately, then clean up.** Follow the order in the section below. A squash merge does not make the agent branch an ancestor of main, so judge "merged" by the pull request, not by ancestry.
+
+## See the collision
+
+The script builds throwaway repositories in a temporary folder and removes them when it ends. Writer A changes the `owner` line of one file. Writer B changes the `status` line of the same file. Each writer reads the file before the other writes, which is what two agents do when they start together.
+
+<Example
+  label="Computed"
+  task="Two writers edit one file in one checkout. You look for A's change."
+  evidence="python3 examples/worktree-collisions/shared_checkout.py"
+  env="Python 3.13.1, git 2.50.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/worktree-collisions/shared_checkout.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+-- one checkout, both writers read before either wrote --
+title: draft
+owner: nobody
+note: unchanged
+note: unchanged
+note: unchanged
+status: writer B
+git status: M notes.txt
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The `owner` line still reads `nobody`. Writer A's edit is gone, and `git status` shows one modified file with no warning.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Last writer wins silently in one checkout. It does not show how often agents read and write in this order.
+
+</Fragment>
+
+</Example>
+
+Give each writer a worktree and the picture changes. When the writers touch different lines, the merge of both branches exits 0 and keeps both edits (the `status: writer B` and `owner: writer A` lines both appear in the same run). When they touch the same line, git refuses:
+
+<Example
+  label="Computed"
+  task="Two writers edit the same line, each in its own worktree. You merge both branches."
+  evidence="python3 examples/worktree-collisions/shared_checkout.py"
+  env="Python 3.13.1, git 2.50.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/worktree-collisions/shared_checkout.py   # second half of the output
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+-- two worktrees, writer B edits 'owner' --
+merge of branch b, exit code: 1
+title: draft
+<<<<<<< HEAD
+owner: writer A
+=======
+owner: writer B
+>>>>>>> agent/b
+[... three unchanged note lines and the status line omitted ...]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The exit code is 1 and the file holds both versions between markers. Nothing is lost, and a person or agent must choose.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A worktree turns a silent overwrite into a loud conflict. It does not remove the conflict, so split work by file where you can.
+
+</Fragment>
+
+</Example>
+
+## A port survives separate folders
+
+A worktree is a folder. A port belongs to the machine. The script starts one process in each of two folders and gives both the same port.
+
+<Example
+  label="Computed"
+  task="Two processes in two folders bind the same port. You look at the second."
+  evidence="python3 examples/worktree-collisions/port_and_base.py"
+  env="Python 3.13.1, git 2.50.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/worktree-collisions/port_and_base.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+-- two folders, one port --
+process in folder-a bound
+process in folder-b failed: EADDRINUSE
+-- one port per folder, taken from the folder's position in the list --
+process in folder-a bound
+process in folder-b bound
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The second process fails with `EADDRINUSE` although its folder is separate. The last two lines show the fix: a different port for each folder.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Folder isolation does not cover ports. A shared development database fails the same way, with a quieter symptom: both agents write rows into one schema.
+
+</Fragment>
+
+</Example>
+
+Derive the port, the database name and the container name from the worktree name or its position in a list, and write the values into the brief. Do not leave the choice to each agent.
+
+## Choose how to isolate
+
+| Method | What it isolates | Cost | Choose it when |
+| --- | --- | --- | --- |
+| Worktree | Files and branch. Not ports, databases or installs. | A second checkout, a branch to merge and clean up | Several agents write to one repository |
+| Copy of the folder | Files, and untracked files too. Not ports or databases. | Disk space, and no history link, so a merge is a manual diff | The work is outside git, or needs ignored files such as local data |
+| Serial writes | Everything, because only one writer runs | Wall-clock time: the writers wait their turn | The writers touch the same files, or share one database that you cannot split |
+
+*Principle, not measured: the costs above follow from how each method works. The guide did not time them.* Reading can always run in parallel. Only writing needs a method.
+
+## Merge and clean up after parallel runs
+
+1. Wait until every writer has stopped.
+2. Read each branch's diff. Reject a branch that touches files outside its brief.
+3. Check that the branch descends from the current base, as in the example below. If the check exits 1, rebase the branch and run the gates again.
+4. Merge one branch. Run the full gates. Only then take the next branch, and check its base again, because the first merge moved the base.
+5. Remove each worktree with `git worktree remove`, then delete its branch. Keep a failed branch until you know why it failed.
+
+<Example
+  label="Computed"
+  task="The base branch moves after a worktree was made. You check the agent branch before you merge it."
+  evidence="python3 examples/worktree-collisions/port_and_base.py"
+  env="Python 3.13.1, git 2.50.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/worktree-collisions/port_and_base.py   # third part of the output
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+-- main moved after the worktree was made --
+branch descends from current main, exit code: 1
+after rebasing the branch onto main, exit code: 0
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Exit code 1 means main has commits that the agent branch lacks. After the rebase the same check exits 0.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The check finds a stale base. It does not say whether the rebase left the agent's change correct, so run the gates again.
+
+</Fragment>
+
+</Example>
+
+## A case that cannot be isolated
+
+A repository can hold another repository inside it that the outer repository ignores. A worktree of the outer repository contains only tracked files, so the inner repository is not there.
+
+<Example
+  label="Computed"
+  task="A repository ignores a nested repository. You make a worktree and look for it."
+  evidence="python3 examples/worktree-collisions/port_and_base.py"
+  env="Python 3.13.1, git 2.50.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/worktree-collisions/port_and_base.py   # last part of the output
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+-- a nested repository that the outer repository ignores --
+inner exists in the main checkout: True
+inner exists in the worktree: False
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The worktree has no `inner` folder. An agent that needs it would edit the one in the main checkout, which every other agent also sees.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A worktree of the outer repository cannot isolate work in the inner one. It shows one ignored layout, not every nested layout.
+
+</Fragment>
+
+</Example>
+
+Run the writers that touch the inner repository one at a time. Read-only agents can still share it.
+
+## Failure modes it reduces
+
+- Parallel agents overwrite each other's edits.
+- An agent works from a stale base and its changes conflict with everything.
+- A cleanup command run in the wrong directory deletes someone else's work.
+- A leftover worktree holds a branch you want to reuse.
+- Two worktrees collide on a port or a database that the checkout did not isolate.
+- A nested ignored repository is edited by two agents because no worktree contains it.
+
+## First step for the maintainer
+
+Before the next parallel task, create two worktrees by hand, point one agent at each, and merge both back. You will see the base-branch behaviour first-hand.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/sub-agents. Quoted line: "Set to `worktree` to run the subagent in a temporary git worktree, giving it an isolated copy of the repository branched by default from your default branch rather than the parent session's `HEAD`." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+**Next:** [Agent skills and SKILL.md](../skills/)

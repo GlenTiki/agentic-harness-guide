@@ -1,0 +1,116 @@
+---
+title: One assistant, helpers or a pipeline
+description: Choose a delegation shape by its cost and merge burden, size each brief, bound each return, and know when to delegate nothing.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** start with one assistant. Add parallel helpers when the parts are independent and you can already state each return. Use a pipeline only when each stage needs the exact output of the one before. Give every helper a brief with a return format and a length limit.
+
+## Why it matters
+
+Every hand-off is a seam. At a seam, text moves from one context to another, and whatever the sender knew but did not write down is gone. A shape with more seams has more places to lose a caveat. [Level 6](../../../journey/06-hire-a-team/) introduces the brief. This page helps you choose the shape and size the brief.
+
+## Three shapes
+
+| Shape | How it runs | Cost | Merge burden |
+| --- | --- | --- | --- |
+| One assistant | One context does every step in order | The lowest number of runs. The context fills with every step. | None |
+| Parallel helpers | A lead sends independent briefs and combines the returns | One fresh context per helper. Each helper re-reads what it needs. | The lead must combine returns that may overlap or disagree. Writers also need [isolation](../worktree-isolation/). |
+| Pipeline | Stage one feeds stage two, and stage two feeds stage three | One run per stage, one after another | None to combine, but each stage inherits the errors of the one before. See the reliability table in [level 7](../../../journey/07-run-it-for-real/). |
+
+*Principle, not measured: the table follows from how each shape works. The guide did not time or cost any of them.*
+
+## A caveat lost at a seam
+
+A helper knows things that its return does not say. Whatever the return omits, the lead never sees. In this example the brief asks only for a total.
+
+<Example
+  label="Constructed"
+  task="A lead asks a helper to total September refunds. The helper meets a row in another currency."
+  evidence="Written to illustrate. No recorded run in the guide tests this seam."
+  env="Invented brief and return. No model was run."
+>
+
+<Fragment slot="input">
+
+```text
+Brief to the helper:
+Total the Amount column of refunds.csv for September.
+Return: the total.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Helper return:
+Total: 412.50
+
+Lead's line to the owner:
+September refunds came to 412.50.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The helper's context held a row in US dollars, which it added as if it were euros. The return has no place for that fact, so the lead repeats a total that is wrong without knowing it.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A brief with no field for exceptions makes exceptions invisible. It does not show how often a real helper does this.
+
+</Fragment>
+
+</Example>
+
+The fix is in the return format, not in a plea to "be careful". Ask for the facts the lead needs to judge the result:
+
+```text
+Return, in this order and at most 10 lines:
+1. The total.
+2. The number of rows read.
+3. One line for each row you excluded or could not convert, with the row number and the reason.
+```
+
+## Size the brief and bound the return
+
+A brief has four parts: the goal, the scope fence, the return format and a stop rule. Level 6 explains each. Two rules help you size them.
+
+1. **Give the helper the least context that lets it finish.** Name the files. Do not paste the whole conversation. Everything you paste is context the helper must read and may act on.
+2. **Fix the return before the helper starts.** State the fields and a length limit. If the helper must produce more, tell it to write the long output to a file and return the path.
+
+The reason is arithmetic. Every return lands in the lead's context. The numbers below are invented to show the sum.
+
+| Helpers | Words per return | Words added to the lead |
+| --- | --- | --- |
+| 5 | 2,000 (a transcript) | 10,000 |
+| 5 | 150 (a bounded return) | 750 |
+
+*Illustrative numbers, made up for teaching. They are not measurements.*
+
+With the bound, the lead can run many more helpers before its own context fills. Without it, the lead pays for the helpers' noise and loses room for the task.
+
+## When not to delegate
+
+Keep the work in one context when any of these is true:
+
+- You can already state the return. If you know the answer's shape, doing the work costs about the same as briefing it.
+- The work needs live context that the helper would not have, such as what you decided ten minutes ago and never wrote down.
+- Writing the brief costs more than doing the task.
+
+## A reviewer who has the reasoning
+
+A reviewer who is handed the author's reasoning may read the work as the author does. That is the design argument for giving a reviewer the raw data and the criterion, as [level 6](../../../journey/06-hire-a-team/) says. *Principle, not measured.* The guide's one isolated test of this found that a simulated same-context reviewer did as well as a fresh one on its task, so the guide does not claim a gain from fresh context. See the [C07 result on the evidence page](../../../evidence/). Choose independence for the design reason, and measure it on your own task.
+
+Not checked against current docs.
+
+**Next:** [Git worktrees for parallel agents](../worktree-isolation/)

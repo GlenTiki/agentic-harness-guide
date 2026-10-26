@@ -3,6 +3,8 @@ title: Agent skills and SKILL.md
 description: Package a repeatable procedure as an agent skill with a SKILL.md file, so it loads only when needed.
 ---
 
+import Example from '../../../../components/Example.astro';
+
 *Deep dive for [level 6: Hire a team](../../../journey/06-hire-a-team/).*
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
@@ -36,6 +38,71 @@ description: Draft release notes from merged pull requests since the last tag. U
 **5. A skill beats a prompt when** the procedure repeats, has a stable trigger, includes scripts or templates, or must be shared across a team. A prompt beats a skill when the task is novel or the steps change each time.
 
 **6. Treat third-party skills as code.** A skill can include scripts and can pre-approve tools. Read it before you install it, and pin the version.
+
+## A trigger that fires too often
+
+The description is the only part of a skill that is always in context, so it is the trigger. A description that says what the skill does but not what it is not for will match nearby tasks. The two descriptions below are for the same release-notes skill.
+
+<Example
+  label="Constructed"
+  task="You compare two trigger descriptions for one release-notes skill against three requests."
+  evidence="Written to illustrate. The table is my reading of the wording. No model was run."
+  env="Invented descriptions and requests. No tool or model."
+>
+
+<Fragment slot="input">
+
+```text
+Description A: Help with releases and changes.
+
+Description B: Draft release notes from pull requests merged since the last tag.
+Use when asked to prepare or write release notes. Do not use for a single
+changelog edit, a version bump or a deploy. Those have their own skills.
+
+Requests:
+1. Write release notes for version 2.4.
+2. Bump the version to 2.5.
+3. Fix the typo in the changelog.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+request   A matches          B matches
+1         yes                yes
+2         yes (releases)     no (named as excluded)
+3         yes (changes)      no (named as excluded)
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Description A has no word that rules out requests 2 and 3, and it shares the words "releases" and "changes" with both. Description B names the job, the signal and the three nearest tasks it must leave alone.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A description can state its own boundary in words. It does not show how a given model weighs the wording, so test it in a fresh session.
+
+</Fragment>
+
+</Example>
+
+Write a trigger in this order:
+
+1. Start with the verb and the output: "Draft release notes from pull requests".
+2. Give the signal: "Use when asked to prepare release notes".
+3. Name when not to use it, with the nearest task it could be confused with and where that task goes.
+
+## A trigger that goes stale
+
+A description goes stale in two ways. The procedure changes and the description does not, so the skill loads for a job it no longer does. Or a new skill takes over part of the job and the old description still claims it. *Principle, not measured.*
+
+For each skill, keep two requests that must trigger it and two that must not. Run all four in a fresh session after every edit to the skill or after you add a neighbour. Review every description when you add a skill, because a new skill changes the neighbours of the others.
 
 ## Failure modes it reduces
 

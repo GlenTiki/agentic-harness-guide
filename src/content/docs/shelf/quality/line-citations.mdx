@@ -1,0 +1,116 @@
+---
+title: Citing code by line number
+description: Line-number citations rot when code moves, so prefer heading anchors, validate numeric citations at commit and exempt dated snapshots with a marker.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** cite a heading anchor in prose and a line number only for code. Check every line citation at commit. Fail the commit on an unresolved citation in a live document. Mark a dated snapshot with a first-line comment so the check skips it.
+
+## Why it matters
+
+A citation such as `src/pricing.py:3` is true on the day you write it. The next edit that adds a line above it makes it point at the wrong code, and nothing warns the reader. An agent that follows the citation reads the wrong function and reports it with confidence. The page on [link and reference checks](../../../setup/link-and-reference-checks/) describes the same drift for links. This page adds the line-number case.
+
+## What to enable
+
+**1. Prefer an anchor.** In Markdown, link to a heading, such as `spec.md#acceptance-criteria`. A heading survives edits that add lines. Use a line number for code, where no heading exists.
+
+**2. Name the symbol next to the number.** Write the citation with the thing it points at, so a checker can tell when the line no longer holds it. The checker in this guide reads a citation in this form: the path and line in backticks, then `defines`, then the symbol in backticks.
+
+**3. Check at commit.** A check that runs only when someone remembers will not run.
+
+**4. Hard fail in live documents.** A live document is one a reader or agent acts on today: a spec, a README, an instruction file. An unresolved citation there stops the commit. A warning that people can ignore becomes noise.
+
+**5. Mark snapshots.** A dated report or journal entry records what was true then. Its citations are meant to age. Put `<!-- snapshot: YYYY-MM-DD -->` as the first line and the checker skips the file. The marker must be the first line, so it cannot be added quietly lower down.
+
+## See it fail
+
+The fixture has a spec that cites two functions in `src/pricing.py`, and a snapshot note with a citation that is long out of date. In the `after` copy, the only change is that `vat_inclusive` moved from line 3 to line 8 and `round_to_cent` moved up. The spec text is identical.
+
+<Example
+  label="Computed"
+  task="You run the checker on the fixture before the function moves."
+  evidence="python3 examples/line-citations/check_citations.py examples/line-citations/fixtures/before"
+  env="Python 3.13.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/line-citations/check_citations.py examples/line-citations/fixtures/before
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+0 unresolved, 1 snapshot exempt
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The snapshot note cites `src/pricing.py:40`, which does not exist, and the checker does not report it. The marker exempts that file.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Citations that match and a marked snapshot give a clean run. It does not show that the cited code is the right evidence for the claim.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the checker on the same documents after the function moves."
+  evidence="python3 examples/line-citations/check_citations.py examples/line-citations/fixtures/after"
+  env="Python 3.13.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/line-citations/check_citations.py examples/line-citations/fixtures/after
+echo "exit=$?"
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+docs/spec.md:3: src/pricing.py:3 does not hold vat_inclusive
+docs/spec.md:5: src/pricing.py:7 does not hold round_to_cent
+2 unresolved, 1 snapshot exempt
+exit=1
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Both lines exist in the file, so a check for "line within the file" would pass. The check fails because the named function is no longer on that line. The exit code is 1, which stops a commit.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Moving a function breaks the citation and the check sees it. It does not catch a citation that names no symbol and still points at a valid line.
+
+</Fragment>
+
+</Example>
+
+## Limits of this checker
+
+It reads only citations in backticks that carry the `defines`, `calls` or `sets` form for the symbol check. It matches the symbol name as text on the cited line, so a comment that mentions the name satisfies it. It does not parse code. A language-aware tool would be stricter, and costs more to maintain. Add a fixture that fails for every rule you add, as the [reference check page](../../../setup/link-and-reference-checks/#prove-each-check-can-fail) says.
+
+**Next:** [Observability and audit log](../../operations/observability/)

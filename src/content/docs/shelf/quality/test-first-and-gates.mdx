@@ -1,0 +1,220 @@
+---
+title: Test-first and quality gates
+description: Write the failing test first, and run the same automated gates locally and in CI on every change.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** have the agent write a failing test before it writes the code, and run one fixed set of gates on every change: types, lint, formatting, complexity and the full test suite. Run them in a pre-commit hook and again in CI. Never skip a hook to get a commit through.
+
+## Why it matters
+
+[Level 5](../../../journey/05-check-the-work/) introduces the test. A command can exit with status 0 and still be wrong: weakening a test or special-casing an input also gives green. The guide did not measure how often an agent does this. A failing test written first defines the target. Automated gates define the floor. Together they make "done" something a machine can check.
+
+## What to enable
+
+**1. Red, green, refactor.** Instruct the agent to write the test, run it, and confirm it fails for the right reason before implementing. A test that has never failed has not proved anything.
+
+**2. One command for all gates.** Give the project a single entry point, so the agent, the hook and CI all run the same thing:
+
+```make
+check:
+	ruff check .
+	ruff format --check .
+	mypy --strict src
+	pytest -q
+```
+
+Substitute your own tools. The principle is the same set everywhere.
+
+**3. Pick gates that are deterministic.** A gate does not read the agent's argument. Static types, a linter, a formatter, a cyclomatic complexity limit and the full suite all give the same verdict for the same input. Set a complexity ceiling per function so a large change is harder to hide in one dense routine.
+
+**4. Run them at three points.** In the agent loop, through a post-edit hook for the quick ones and a stop hook for the full suite. In pre-commit, so a red commit is rejected where the hook runs. In CI, so a red push fails the required check. See [Hooks](../../control/hooks/).
+
+**5. Never skip hooks.** Do not use flags that bypass pre-commit. If a hook fails, fix the cause. If the hook is wrong, fix the hook in its own change. Tell the agent this in the instruction file. If you want the harness to refuse it, add a pre-tool hook that blocks a command containing the bypass flag. The hook covers only commands it sees, as the [hooks page](../../control/hooks/) explains.
+
+**6. Test behaviour, not implementation.** Assert whole outcomes. Prefer full equality over a substring check, which passes when extra wrong content is present.
+
+**7. Inject dependencies instead of patching.** Pass the clock, the client and the file path as parameters with production defaults. Tests then pass fakes without reaching into other modules. When a test needs to patch an internal name, the code is missing a seam.
+
+**8. Watch for gate gaming.** Review test diffs as closely as code diffs. Flag deleted assertions, widened tolerances, new skip markers and new lint suppressions.
+
+## A test that cannot fail
+
+A gate checks an exit code. It does not check that the test asserts anything. The script below runs two tests against three versions of a price function. The function should add a percentage to a price in cents, so 10000 at 23 should give 12300. The `buggy` version adds the rate as cents. The `stub` version returns 0. The `vacuous` test only checks that the result is not `None`.
+
+<Example
+  label="Computed"
+  task="You run a vacuous test and a real test against a correct, a buggy and an empty implementation."
+  evidence="python3 examples/gate-gaming/gates.py matrix"
+  env="Python 3.13.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/gate-gaming/gates.py matrix
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+test     implementation  gate exit code
+vacuous  correct         0
+vacuous  buggy           0
+vacuous  stub            0
+real     correct         0
+real     buggy           1
+real     stub            1
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The vacuous test exits 0 against all three versions, including the empty one. The real test exits 1 against the buggy and the empty versions.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A green gate with a vacuous test proves nothing. It does not show how often an agent writes one.
+
+</Fragment>
+
+</Example>
+
+The matrix is also the check. Replace the code under test with a stub and rerun: a test that stays green guards nothing.
+
+## See the test fail first
+
+Run the new test before the code exists, and read why it fails. A test that fails with `NotImplementedError` or an import error is red for the wrong reason. A test that fails with the wrong value is red for the right one.
+
+<Example
+  label="Computed"
+  task="You run the real test against the stub, then against the correct code."
+  evidence="python3 examples/gate-gaming/gates.py red-green"
+  env="Python 3.13.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/gate-gaming/gates.py red-green
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+real test against stub: exit code 1 AssertionError: 12300 != 0
+real test against correct: exit code 0
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The first line names the expected value, 12300, and the actual value, 0. The test says what is missing. After the code is right, the same test exits 0.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The order is red, then green. It does not show that the code is right for inputs the test does not cover.
+
+</Fragment>
+
+</Example>
+
+## A test that sometimes fails
+
+A flaky test passes and fails on the same code. The usual cause is an input the test does not control: the clock, random numbers, a network call or the order of a set. The test below takes the first item of a set of three strings. Python picks the set order from a hash seed that changes every run, so the script sets the seed to ten fixed values to reproduce ten runs.
+
+<Example
+  label="Computed"
+  task="You run a test that depends on set order under ten hash seeds, then the sorted version."
+  evidence="python3 examples/gate-gaming/gates.py flaky"
+  env="Python 3.13.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 examples/gate-gaming/gates.py flaky
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+unsorted set, hash seeds 0 to 9, exit codes: 0011010001
+passes: 6 fails: 4
+sorted, same seeds, exit codes: 0000000000
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Six runs pass and four fail on identical code. The sorted version passes under every seed.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+One cause of flakiness, reproduced. It does not give a rate for your suite.
+
+</Fragment>
+
+</Example>
+
+An agent that meets a flaky gate will often rerun it until it passes, or add a retry. Do not accept either. Fix the input the test does not control, or delete the test and record why. Rerunning a suspect test several times with different seeds, as the script does, is how you find these before they cost a merge.
+
+## Where each check runs
+
+*Principle, not measured: the table follows from when each check fires. The guide did not time any of them.*
+
+| Placement | Runs | Cost | Weakness |
+| --- | --- | --- | --- |
+| Post-edit hook | After each file edit | A delay on every edit, so keep it to a formatter or a lint of that file | Cannot see a cross-file failure |
+| Stop hook | When the agent says it is done | A wait at the end. The hook must fire once and then let the agent stop, or the session never ends. | Only covers sessions that reach the stop |
+| Pre-commit | At commit, on the staged files | A delay on every commit | A bypass flag skips it |
+| CI | On push, on a clean checkout | Minutes per push, and the feedback is late | Slowest to tell the agent |
+
+Put the fastest checks earliest and the full suite last. Make CI the one that cannot be skipped from the agent's machine.
+
+## Classify review findings
+
+A review that blocks on every finding teaches people to bypass the review. Sort each finding into one of three classes and block only on the first.
+
+| Class | Meaning | Action |
+| --- | --- | --- |
+| Blocking | The change is wrong, unsafe or breaks the spec | Fix before merge |
+| Advisory | A better way exists, and the change still works | Note it in the review. The author decides. |
+| Deferred | Real, but out of scope for this change | File it in the tracker with an owner. A deferred item with no owner is dropped. |
+
+*Constructed examples:* "a query built by joining user input into a string" is blocking. "A variable name is vague" is advisory. "This function is long and should be split" is deferred to its own change. *Principle, not measured.*
+
+## Failure modes it reduces
+
+- A "fix" turns the suite green by deleting the failing assertion.
+- Code lands that passes locally and fails in CI because the commands differ.
+- A hook failure leads to `--no-verify`, and the next bug ships.
+- A test passes before the fix exists, so it never guarded anything.
+
+## First step for the maintainer
+
+Create the single `check` command. Wire it to a pre-commit hook and to your CI workflow. Add one line to your instruction file: "Run `make check` before declaring any task done."
+
+<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+**Next:** [Independent review](../independent-review/)
