@@ -55,7 +55,7 @@ Owner: A typing slip on their side, or a fraud attempt. A slip would have the ol
 Interviewer: What would a new member of staff have done?
 Owner: Paid it. The invoice matched the order, the supplier is one we know, and the system showed no warning.
 Interviewer: What would have changed your mind?
-Owner: If they had told me about the change by phone first. Or if it was a big supplier with a letter on headed paper.
+Owner: If I had rung the supplier on the number in my own records and they had confirmed the change. A phone call or a letter that came from them, rather than from me, proves nothing, because anyone can send those.
 Interviewer: And the process document?
 Owner: It says check the total against the order. It does not say check the bank details. I never wrote that down.
 ```
@@ -64,7 +64,7 @@ Owner: It says check the total against the order. It does not say check the bank
 
 <Fragment slot="notice">
 
-The owner's cue (the account number changed) and her action (phone before paying) are absent from the written process. The last answer says so directly. The exits ("told me by phone first") give two rows to test.
+The owner's cue (the account number changed) and her action (phone before paying) are absent from the written process. The last answer says so directly. The exit is a condition, not a mood: she would pay after she confirmed the change herself, through a contact she already trusted. Contact details that arrive with the invoice do not count. That gives one row to test, and a second row for when the condition is not met.
 
 </Fragment>
 
@@ -87,11 +87,11 @@ Record each gap as a note: the written step, what was done, the cue. Each note i
 
 **5. Record it as a decision table.** A table has three parts: the cues you can read from the case, the options on offer, and the expert's choice. Keep each cue to a value you can read off the input, such as yes or no, not a feeling. Order the rows and say that the first match wins, so the order is part of the rule.
 
-**6. Test the table, not the prose.** For each row, write at least one case that must fire it. Add a case that must fire no row, because the table should say "I do not know" when the cues are missing. Then check which row fired, separately from whether the answer text sounds right. The script below does the check for a table in a file.
+**6. Test the table, not the prose.** For each row, write at least one case that must fire it. Add a case for each cue, with that cue missing, because a payment row must need every prerequisite cue. A missing cue must lead to "ask, do not pay", never to a payment. Give the table a last row that fires when nothing else does, and make that row the safe one. Then check which row fired, separately from whether the answer text sounds right. The script below does the check for a table in a file.
 
 <Example
   label="Computed"
-  task="A maintainer checks that nine cases fire the rows an expert chose, including a case that must fire no row."
+  task="A maintainer checks that thirteen cases fire the rows an expert chose, including five cases where a cue is missing or invalid."
   evidence="cd examples/decision-table && python3 -I fire_check.py table.json cases.json && python3 test_fire_check.py"
   env="Python 3.13, no dependencies, 2026-10-26"
 >
@@ -99,15 +99,17 @@ Record each gap as a note: the written step, what was done, the cue. Each note i
 <Fragment slot="input">
 
 ```text
-table.json: seven rows, each with the cues it needs and the expert's choice. First match wins.
+table.json: eight rows, each with the cues it needs and the expert's choice. First match wins. The payment rows need all four cues.
   R1  bank_details_changed = yes   hold and phone the supplier on the number in your own records
   R2  number_seen_before   = yes   hold, do not pay, tell the supplier
   R3  supplier_known       = no    hold and ask the owner
   R4  total_vs_order       = over_large   query the supplier before paying
   R5  total_vs_order       = no_order     ask who ordered it before paying
-  R6  total_vs_order       = over_small   pay on the due date and note the difference
-  R7  total_vs_order       = matches      pay on the due date
-cases.json: nine cases, each with the row it must fire (or null for no row).
+  R6  all three safety cues clear, total_vs_order = over_small   pay on the due date and note the difference
+  R7  all three safety cues clear, total_vs_order = matches      pay on the due date
+  R8  nothing else matched (fallback)   ask, do not pay
+"all three safety cues clear" means bank_details_changed = no, number_seen_before = no, supplier_known = yes.
+cases.json: thirteen cases, each with the row it must fire.
 ```
 
 </Fragment>
@@ -119,25 +121,29 @@ ok   plain match: fired R7, wanted R7
 ok   small overcharge: fired R6, wanted R6
 ok   large overcharge: fired R4, wanted R4
 ok   no order on file: fired R5, wanted R5
-ok   new supplier: fired R3, wanted R3 (also matches R7)
-ok   same number twice: fired R2, wanted R2 (also matches R7)
-ok   new bank details on a clean invoice: fired R1, wanted R1 (also matches R7)
-ok   new bank details and a repeat number: fired R1, wanted R1 (also matches R2, R7)
-ok   cue missing: order status not recorded: fired no row, wanted no row
-9 of 9 cases fired the expected row
+ok   new supplier: fired R3, wanted R3
+ok   same number twice: fired R2, wanted R2
+ok   new bank details on a clean invoice: fired R1, wanted R1
+ok   new bank details and a repeat number: fired R1, wanted R1 (also matches R2)
+ok   cue missing: order status not recorded: fired R8, wanted R8
+ok   cue missing: bank details not checked: fired R8, wanted R8
+ok   cue missing: invoice number not checked: fired R8, wanted R8
+ok   cue missing: supplier not recorded: fired R8, wanted R8
+ok   cue not one of the allowed values: fired R8, wanted R8
+13 of 13 cases fired the expected row
 ```
 
 </Fragment>
 
 <Fragment slot="notice">
 
-Four cases also match R7 or R2. Only the order of the rows makes the careful choice win. The tests in `test_fire_check.py` swap R1 and R2 and the run fails on "new bank details and a repeat number", so a reordered table cannot slip through.
+One case matches two rows (R1 and R2), so only the order of the rows makes the careful choice win. The tests in `test_fire_check.py` swap R1 and R2 and the run fails on "new bank details and a repeat number", so a reordered table cannot slip through. The four missing-cue cases fire the fallback R8 because R6 and R7 need every prerequisite cue. Without that, a table with only "total matches" would pay on a single cue.
 
 </Fragment>
 
 <Fragment slot="shows">
 
-It shows how to test which row fired. It does not show that an assistant reads the cues correctly from a real invoice. That is a second test, on the extraction step.
+It shows how to test which row fired, and that a missing cue leads to a question and not to a payment. It does not show that an assistant reads the cues correctly from a real invoice. That is a second test, on the extraction step.
 
 </Fragment>
 
@@ -161,6 +167,6 @@ Two rough ideas to measure on your own data. They are not results, and nothing h
 
 ## First step for the maintainer
 
-Choose one decision that an expert in your work makes by feel. Ask for one real, rare case where it went wrong or nearly did. Run the four questions, write three to five rows, add one no-row case, and run the check.
+Choose one decision that an expert in your work makes by feel. Ask for one real, rare case where it went wrong or nearly did. Run the four questions, write three to five rows, add one case per missing cue with a safe fallback row, and run the check.
 
 **Next:** [Small PRs and trunk-based flow](../small-prs/)

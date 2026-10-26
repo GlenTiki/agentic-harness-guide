@@ -2,6 +2,8 @@
 """Measure how much context a tool list occupies before any call. Standard library only.
 
 Usage: python3 -I tool_cost.py TOOLS.json
+TOOLS.json is the JSON-RPC response to an MCP tools/list request ({"result": {"tools": [...]}}), or just the object that
+holds "tools". Each tool carries MCP's "inputSchema"; the older spelling "input_schema" is accepted as an alias.
 The size is the length of each tool's name, description and input schema as JSON text.
 Tokens use the rule of thumb of 4 characters per token. It is not a real tokenizer; use your tool's own count to confirm.
 """
@@ -12,8 +14,16 @@ from pathlib import Path
 CHARS_PER_TOKEN = 4
 
 
+def input_schema(tool):
+    return tool["inputSchema"] if "inputSchema" in tool else tool["input_schema"]
+
+
+def tool_list(document):
+    return (document["result"] if "result" in document else document)["tools"]
+
+
 def definition_chars(tool):
-    return len(tool["name"]) + len(tool["description"]) + len(json.dumps(tool["input_schema"], separators=(",", ":")))
+    return len(tool["name"]) + len(tool["description"]) + len(json.dumps(input_schema(tool), separators=(",", ":")))
 
 
 def estimate_tokens(chars):
@@ -24,7 +34,7 @@ def main(argv):
     if not argv:
         print(__doc__)
         return 2
-    tools = json.loads(Path(argv[0]).read_text())["tools"]
+    tools = tool_list(json.loads(Path(argv[0]).read_text()))
     sizes = sorted(((definition_chars(t), t["name"]) for t in tools), reverse=True)
     total = sum(chars for chars, _ in sizes)
     print(f"{'tool':<14} {'chars':>6} {'tokens':>7}")

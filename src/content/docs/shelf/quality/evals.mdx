@@ -46,7 +46,7 @@ Also count the failures the judge caught, because a judge is there to catch fail
 <Example
   label="Computed"
   task="A maintainer compares a model judge with human labels on 20 outputs and applies a criterion written in advance: kappa at least 0.6 and at least 0.8 of the human-labelled failures caught."
-  evidence="cd examples/judge-calibration && python3 -I calibrate.py labels.csv 0.6 0.8 && python3 test_judge_calibration.py"
+  evidence="cd examples/judge-calibration; python3 -I calibrate.py labels.csv 0.6 0.8 (exits 1: the judge is rejected, which is the expected result for this fixture); python3 test_judge_calibration.py (exits 0)"
   env="Python 3.13, no dependencies, 2026-10-26"
 >
 
@@ -58,6 +58,8 @@ Human labels: 12 pass, 8 fail. The judge agrees on 16 rows.
 Disagreements: judge fails 2 outputs the human passed, judge passes 2 outputs the human failed.
 python3 -I calibrate.py labels.csv 0.6 0.8
 ```
+
+Run it as its own command. It exits 1 here, which is the expected calibration result for this fixture, so do not chain it with `&&` to the tests. Run `python3 test_judge_calibration.py` as a second, independent command.
 
 </Fragment>
 
@@ -87,7 +89,9 @@ It shows how to apply a criterion to a judge. It does not show how any real judg
 
 </Example>
 
-When the judge fails the criterion, read the disagreements. Narrow its question, add one example per kind of miss, and re-run on the same labelled set. Do not edit the labels to suit the judge.
+When the judge fails the criterion, read the disagreements. Narrow its question and add one example per kind of miss. Do not edit the labels to suit the judge.
+
+Split the labelled outputs into two sets before you start. The development set is the one you read, tune against and re-run as often as you like. The acceptance set is labelled once, kept unread by whoever tunes the judge, and scored once per candidate judge. Every change you make in response to development-set misses fits the judge to that set, so its score stops being an estimate of how the judge behaves on new outputs. Apply the criterion to the acceptance set only. Keep the development cases as a regression check, since a fix for one miss should not break a case that passed. If you score the acceptance set repeatedly and adjust after each score, it has become a second development set: label a new one. The 20 cases above are a development set; the example does not give an acceptance score.
 
 ## Regression suite for a prompt change
 

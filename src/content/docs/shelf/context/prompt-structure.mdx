@@ -23,12 +23,12 @@ A good ask still gets a wrong reply some of the time. [Level 1](../../../journey
 
 ```text
 Goal: work out what each of the three of us owes for last year's shared bills.
-Constraints: use only the figures below. If a month is missing or repeated, stop and say which month.
+Constraints: use only the figures below. The set is complete only when it holds each of Jan to Dec exactly once. If a month is missing, repeated or not a month name, stop and say which month. each_pays is the total divided by 3, rounded half up to the cent. Sam pays the remainder: the total minus two times each_pays.
 Output shape: one JSON object and nothing else.
   Complete set: {"status": "ok", "months_counted": N, "total": "0.00", "each_pays": "0.00", "sam_pays": "0.00", "check": {"count": N, "sum": "0.00"}}
   Incomplete set: {"status": "stop", "months_counted": N, "reason": "text that names the month"}
 Check: fill in check.count and check.sum from the figures before you fill in total.
-Figures: Jan 212, Feb 198, [... ten more months ...]
+Figures: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240
 ```
 
 Principle, not measured: I have no recorded run that compares one order of these parts with another. Use the order as a convention that keeps your asks comparable, not as a result.
@@ -48,7 +48,7 @@ The anchoring cost is the one people miss. An example carries its values, its le
 **4. Validate the reply with a script.** Ask for a schema (a fixed list of fields with fixed types), then check four things in this order:
 
 1. The reply parses as JSON and is one object.
-2. It has exactly the expected fields, no more and no fewer, with the expected types.
+2. It has exactly the expected fields, no more and no fewer, with the expected types. A count such as `months_counted` must be a whole number, so `12.0` is rejected. The figures must name exactly the twelve months Jan to Dec, so twelve distinct names that include a non-month do not count as a complete set.
 3. Every value that can be re-computed from the input matches the re-computation.
 4. On the stop path, the reason names the problem month.
 
@@ -79,7 +79,7 @@ clean      bad-prose-around-json  reject       reject    not JSON: Expecting val
 clean      bad-wrong-sum          accept       reject    total should be 2120.00, got '2210.00'; each_pays should be 706.67, got '736.67'; sam_pays should be 706.66, got '736.66'; check.sum should be 2120.00, got '2210.00'
 clean      good-ok                accept       accept    
 feb-twice  bad-stop-vague         accept       reject    reason does not name the problem month Feb
-feb-twice  bad-total-anyway       accept       reject    status must be "stop": 13 figures, not 12 distinct months
+feb-twice  bad-total-anyway       accept       reject    status must be "stop": 13 figures, not the 12 months Jan to Dec once each
 feb-twice  good-stop              accept       accept    
 validator verdicts that disagree with the file name: 0
 ```

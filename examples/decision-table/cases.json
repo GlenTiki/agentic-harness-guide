@@ -7,5 +7,9 @@
   {"name": "same number twice", "cues": {"bank_details_changed": "no", "number_seen_before": "yes", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R2"},
   {"name": "new bank details on a clean invoice", "cues": {"bank_details_changed": "yes", "number_seen_before": "no", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R1"},
   {"name": "new bank details and a repeat number", "cues": {"bank_details_changed": "yes", "number_seen_before": "yes", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R1"},
-  {"name": "cue missing: order status not recorded", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "supplier_known": "yes"}, "expect": null}
+  {"name": "cue missing: order status not recorded", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "supplier_known": "yes"}, "expect": "R8"},
+  {"name": "cue missing: bank details not checked", "cues": {"number_seen_before": "no", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R8"},
+  {"name": "cue missing: invoice number not checked", "cues": {"bank_details_changed": "no", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R8"},
+  {"name": "cue missing: supplier not recorded", "cues": {"bank_details_changed": "no", "number_seen_before": "no", "total_vs_order": "matches"}, "expect": "R8"},
+  {"name": "cue not one of the allowed values", "cues": {"bank_details_changed": "maybe", "number_seen_before": "no", "supplier_known": "yes", "total_vs_order": "matches"}, "expect": "R8"}
 ]

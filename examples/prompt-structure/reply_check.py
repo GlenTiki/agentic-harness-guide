@@ -54,25 +54,26 @@ def check_ok(reply, figures):
         errors.append(f"check.count should be {len(figures)}, got {check['count']!r}")
     if check["sum"] != money(total):
         errors.append(f"check.sum should be {money(total)}, got {check['sum']!r}")
-    if reply["months_counted"] != len(figures):
+    if reply["months_counted"] != len(figures) or not is_int(reply["months_counted"]):
         errors.append(f"months_counted should be {len(figures)}, got {reply['months_counted']!r}")
     return errors
 
 
 def check_stop(reply, figures):
     if reply.get("status") != "stop":
-        return [f'status must be "stop": {len(figures)} figures, not 12 distinct months']
+        return [f'status must be "stop": {len(figures)} figures, not the 12 months Jan to Dec once each']
     errors = key_errors(reply, STOP_KEYS)
     if errors:
         return errors
     names = [m for m, _ in figures]
     repeated = sorted({m for m in names if names.count(m) > 1})
     missing = [m for m in MONTHS if m not in names]
+    unrecognised = sorted({m for m in names if m not in MONTHS})
     errors = []
-    if reply["months_counted"] != len(figures):
+    if reply["months_counted"] != len(figures) or not is_int(reply["months_counted"]):
         errors.append(f"months_counted should be {len(figures)}, got {reply['months_counted']!r}")
     reason = reply["reason"] if isinstance(reply["reason"], str) else ""
-    errors += [f"reason does not name the problem month {m}" for m in repeated + missing if m not in reason]
+    errors += [f"reason does not name the problem month {m}" for m in repeated + missing + unrecognised if m not in reason]
     return errors
 
 
@@ -85,7 +86,7 @@ def validate(text, figures):
     if not isinstance(reply, dict):
         return ["reply is not a JSON object"]
     names = [m for m, _ in figures]
-    complete = len(names) == 12 and len(set(names)) == 12
+    complete = len(names) == 12 and set(names) == set(MONTHS)
     return check_ok(reply, figures) if complete else check_stop(reply, figures)
 
 
