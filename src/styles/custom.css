@@ -291,7 +291,7 @@ details.go-deeper[open] > summary {
   vertical-align: baseline;
 }
 
-@media (hover: none) {
+@media (hover: none), (max-width: 50rem) {
   .expressive-code pre[data-language='text'] code {
     white-space: pre-wrap;
     overflow-wrap: anywhere;
