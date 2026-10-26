@@ -104,17 +104,24 @@ The folder `examples/fast-feedback/` in this repository holds two scripts and th
 <Example
   label="Computed"
   task="You run the watch loop on a folder, then save a wrong total and then the right one, to see how soon each result appears."
-  evidence="python3 -I examples/fast-feedback/watch.py <scratch-folder> --max-runs 3 -- python3 -I check.py, run on 2026-10-25 with two edits to notes.txt one and a half seconds apart"
-  env="Python 3.13.1, macOS, 2026-10-25"
+  evidence="python3 -I examples/fast-feedback/watch.py scratch-watch --max-runs 3 -- python3 -I check.py, run on 2026-10-26 with two edits to notes.txt one and a half seconds apart"
+  env="Python 3.13.1, macOS, 2026-10-26"
 >
 
 <Fragment slot="input">
 
+The folder `examples/fast-feedback/watch-demo/` holds `check.py` and a starting `notes.txt` that reads `total: 2120`. `check.py` exits 1 and prints a message unless the number in `notes.txt` is 2120. Run these commands from the repository root. The command runs inside the watched folder, so `check.py` is found there.
+
 ```text
-check.py (in the watched folder) exits 1 if notes.txt holds 2318.
-python3 -I watch.py <scratch-folder> --max-runs 3 -- python3 -I check.py
-Edit 1: notes.txt becomes "total: 2318".
-Edit 2: notes.txt becomes "total: 2120".
+cp -R examples/fast-feedback/watch-demo scratch-watch
+python3 -I examples/fast-feedback/watch.py scratch-watch --max-runs 3 -- python3 -I check.py
+```
+
+In a second terminal, from the repository root, wait about a second and then save each edit in turn:
+
+```text
+echo "total: 2318" > scratch-watch/notes.txt
+echo "total: 2120" > scratch-watch/notes.txt
 ```
 
 </Fragment>
@@ -122,23 +129,23 @@ Edit 2: notes.txt becomes "total: 2120".
 <Fragment slot="output">
 
 ```text
-PASS 2026-10-25T19:57:15Z exit=0
-FAIL 2026-10-25T19:57:16Z exit=1
+PASS 2026-10-26T19:42:15Z exit=0
+FAIL 2026-10-26T19:42:17Z exit=1
 notes.txt: found 2318, expected 2120
-PASS 2026-10-25T19:57:18Z exit=0
+PASS 2026-10-26T19:42:19Z exit=0
 ```
 
 </Fragment>
 
 <Fragment slot="notice">
 
-The `FAIL` line appears one second after the first `PASS`, with the failing command's own message under it. The final `PASS` follows the second edit. The times are real, so yours will differ.
+The `FAIL` line follows the first edit, with the failing command's own message under it. The final `PASS` follows the second edit. The times are real, so yours will differ.
 
 </Fragment>
 
 <Fragment slot="shows">
 
-A poll loop gives a red result within about a second of a save. It does not show that the command checks anything useful.
+In this run the red result appeared within the one-second resolution of the timestamps after the save. It does not show that the command checks anything useful.
 
 </Fragment>
 
