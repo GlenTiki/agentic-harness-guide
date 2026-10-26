@@ -21,7 +21,7 @@ A step that runs once a day can afford the most capable option. A step that runs
 | --- | --- | --- | --- | --- |
 | Reasoning model | Ambiguous input, several steps of judgement, rare cases | Highest per call | Slowest, as it spends effort before it answers | Low: you write a prompt |
 | Plain model | Extraction, drafting, routing with clear instructions | Middle | Middle | Low: you write a prompt |
-| Small tuned model | A stable, high-volume classification with plenty of labelled examples | Lowest per call, plus the cost of building it | Fastest | Highest: you own the training data, the hosting and the retraining |
+| Small tuned model | A stable, high-volume classification with plenty of labelled examples | Lowest per call, plus the cost of building it | Fastest | Highest: you own the labelled data, the hosting and the refitting |
 
 *Principle, not measured. The columns are the trade-off to expect, not results. A task that is simple and stable can make a reasoning model a poor buy. A task that is ambiguous can make a small model a false economy.*
 
@@ -29,7 +29,7 @@ Three questions pick the row.
 
 1. **Is the input ambiguous?** If a human expert needs to think, start with the reasoning tier.
 2. **How many calls a day, and how fast must each be?** A step on the critical path of a person waiting has a latency budget. A nightly batch does not.
-3. **Will the task stay the same?** A small tuned model pays off only if the labels are stable. When the categories change every month, retraining costs more than the saving.
+3. **Will the task stay the same?** A small tuned model pays off only if the labels are stable. When the categories change every month, refitting costs more than the saving.
 
 ## Keep the choice swappable
 
@@ -100,7 +100,7 @@ To use it, write one adapter per tier that wraps your provider's client in a `co
 1. Collect real inputs with the answer you want for each. Start with 30 to 100, a starting range to tune. A few cases cannot separate two tiers that differ a little.
 2. Run each tier on the same cases. Record right answers, unusable replies, and time per call.
 3. Work out cost per 1,000 calls from your own bill, not from a price list.
-4. Add the maintenance column: who retrains, who hosts, who is paged.
+4. Add the maintenance column: who refits, who hosts, who is paged.
 5. Pick the cheapest tier whose right-answer count meets the criterion you wrote beforehand. Use the exact-count method on the [evals page](../../quality/evals/) to tell a real gap from noise.
 
 Re-run when the task, the model or your inputs change.
