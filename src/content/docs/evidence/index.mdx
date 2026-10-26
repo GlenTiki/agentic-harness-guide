@@ -103,14 +103,16 @@ Claim tested: Text inside a document can steer the assistant; rules reduce it.
 
 ### C07-reviewer
 
-**Fresh reviewer against same-context reviewer on the February-slip work**
+**Fresh reviewer against simulated same-context reviewer on the February-slip work**
 
 Claim tested: A reviewer without the author's reasoning catches defects the author misses.
 
 | Arm | Model | n | Pass / partial / fail | Mean (min to max) | Wrong k of n | 95% interval | Stability | Template |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | fresh | claude-sonnet-5-5 | 10 | 10 / 0 / 0 | 1.0 (1.0 to 1.0) | 0 of 10 | 0% to 28% | stable | A |
-| same-context | claude-sonnet-5-5 | 10 | 10 / 0 / 0 | 1.0 (1.0 to 1.0) | 0 of 10 | 0% to 28% | stable | A |
+| simulated same-context | claude-sonnet-5-5 | 10 | 10 / 0 / 0 | 1.0 (1.0 to 1.0) | 0 of 10 | 0% to 28% | stable | A |
+
+The same-context arm is simulated: the author's reasoning is pasted into a new prompt. It is not a second turn in the original chat.
 
 ### C10-plug
 

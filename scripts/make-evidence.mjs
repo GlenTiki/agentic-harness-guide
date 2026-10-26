@@ -54,7 +54,7 @@ const table = (caseRows) => {
   head.push('Stability', 'Template');
   const lines = [`| ${head.join(' | ')} |`, `| ${head.map(() => '---').join(' | ')} |`];
   for (const r of caseRows) {
-    const cells = [r.arm, r.models.join(', '), r.n, `${r.pass} / ${r.partial} / ${r.fail}`, `${score(r.mean)} (${score(r.min)} to ${score(r.max)})`, `${r.wrong_k} of ${r.wrong_n}`, `${pct(r.wilson95[0])} to ${pct(r.wilson95[1])}`];
+    const cells = [r.arm === 'same-context' ? 'simulated same-context' : r.arm, r.models.join(', '), r.n, `${r.pass} / ${r.partial} / ${r.fail}`, `${score(r.mean)} (${score(r.min)} to ${score(r.max)})`, `${r.wrong_k} of ${r.wrong_n}`, `${pct(r.wilson95[0])} to ${pct(r.wilson95[1])}`];
     if (showHeadline) cells.push(`${r.headline_wrong_k} of ${r.n}`);
     if (showDoi) cells.push(`${r.unresolved_doi_k} of ${r.n}`);
     cells.push(r.stability, templateOf(r));
@@ -63,10 +63,14 @@ const table = (caseRows) => {
   return lines.join('\n');
 };
 
+const SIMULATION_NOTE = "The same-context arm is simulated: the author's reasoning is pasted into a new prompt. It is not a second turn in the original chat.";
+
 const caseSection = (id) => {
   const meta = cases.get(id);
   const caseRows = rows.filter((r) => r.case === id);
-  return `### ${id}\n\n**${plainCanary(meta?.title ?? id)}**\n\nClaim tested: ${plainCanary(meta?.claim ?? 'not recorded')}\n\n${table(caseRows)}`;
+  const title = plainCanary(meta?.title ?? id).replace('same-context reviewer', 'simulated same-context reviewer');
+  const note = caseRows.some((r) => r.arm === 'same-context') ? `\n\n${SIMULATION_NOTE}` : '';
+  return `### ${id}\n\n**${title}**\n\nClaim tested: ${plainCanary(meta?.claim ?? 'not recorded')}\n\n${table(caseRows)}${note}`;
 };
 
 const silent = rows.filter((r) => templateOf(r) === 'A');
