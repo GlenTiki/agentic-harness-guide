@@ -60,6 +60,7 @@ const workflowOrder = [
   'design-reps',
 ];
 const readFirst = [
+  'start-here/why-bother',
   'start-here/how-to-read',
   'start-here/consistency-fast-track',
   'start-here/professional-route',

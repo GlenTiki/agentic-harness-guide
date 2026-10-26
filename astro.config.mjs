@@ -52,6 +52,7 @@ export default defineConfig({
         {
           label: 'Start here',
           items: [
+            { slug: 'start-here/why-bother' },
             { slug: 'start-here/how-to-read' },
             { slug: 'start-here/consistency-fast-track' },
             { slug: 'start-here/professional-route' },
@@ -89,6 +90,7 @@ export default defineConfig({
             { slug: 'method/engineer-weak-spots' },
             { slug: 'method/product-manager-and-team-lead' },
             { slug: 'method/the-feedback-loop' },
+            { slug: 'method/be-the-product-manager-of-your-own-tooling' },
           ],
         },
         {
