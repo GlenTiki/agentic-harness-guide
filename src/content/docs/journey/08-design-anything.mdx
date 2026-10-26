@@ -74,14 +74,17 @@ Keep the six steps on a card. When you are stuck, ask the next question on the c
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant, plus pen and paper. It is your own design work, so it has about 5 steps and no time. Phone OK.
+You need any chat assistant, plus pen and paper. It is your own design work, so it has about 8 steps and no time. Phone OK.
 
 Pick a job from your own life with several steps: planning a trip, moving a bank account, preparing a talk. Then:
 
 1. Write the outcome and its checkable done in two lines.
 2. List five or six steps a careful human would take.
 3. Mark each step J (judgement), M (mechanical) or R (risky).
-4. Paste this to an assistant to challenge your design:
+4. Name the owner of each step (you, a helper or a script) and the tools and access it needs.
+5. Place at least one check, and a human checkpoint before anything risky.
+6. Write what happens when a step fails or the job dies halfway, what goes in the log, and one limit.
+7. Paste this to an assistant to challenge your design:
 
 ```text
 Here is a job design. Do not rewrite it. Review it with these questions and answer each in at most two lines.
@@ -92,14 +95,14 @@ Here is a job design. Do not rewrite it. Review it with these questions and answ
 4. Which step could be a plain script instead of an assistant?
 5. What happens if the job dies halfway?
 
-Job: [paste your two-line outcome and your marked steps]
+Job: [paste your two-line outcome, your marked steps, and your owners, checks and failure notes]
 ```
 
 Your reply will differ. Here is a hand-written one for a trip-planning job:
 
 <Example
   label="Constructed"
-  task="A trip planner pastes a two-line outcome and marked steps, and asks the assistant to review the design in five short answers."
+  task="A trip planner pastes the outcome, marked steps, owners, checks and failure notes, and asks the assistant to review the design in five short answers."
 >
 
 <Fragment slot="input">
@@ -139,7 +142,7 @@ I wrote this reply to show what a useful review looks like; no model produced it
 
 </Example>
 
-5. Fix one thing it found. You have just run the six steps on a real job.
+8. Fix one thing it found. You have just run the six steps on a real job.
 
 Tick it off: add the outcomes you can now do on [your progress page](../progress/).
 
@@ -200,7 +203,7 @@ This chapter is control design. Segregation of duties means the preparer does no
 :::caution[Expert corner]
 A method surfaces decisions. It does not make them for you. Over-decomposition adds hand-offs, and each hand-off multiplies the failure chance as in level 7. Add structure only where a check or an access boundary justifies it.
 
-A human checkpoint on every run is worse than none ([level 4](../04-trust-but-verify/) explains approval fatigue). Place it on irreversibility and exceptions, and show a small, checkable summary. In an engineering team, this is release design: tests, review, staged rollout and rollback.
+A human approval at every intermediate step breeds approval fatigue ([level 4](../04-trust-but-verify/) explains it). Keep the approval before each consequential action, such as a payment, and place any other checkpoint on irreversibility and exceptions, and show a small, checkable summary. In an engineering team, this is release design: tests, review, staged rollout and rollback.
 :::
 
 ## Agent note

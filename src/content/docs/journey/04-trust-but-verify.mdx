@@ -152,7 +152,7 @@ Put your three boxes (may do, must ask, never) at the top of your instruction fi
 
 *How it works. Optional reading.*
 
-Principle, not measured: everything arrives as text in one stream, and nothing in it marks "this is the boss" against "this is a document". Telling the assistant to be careful is a request, not a control. In the recorded runs the no-rule arm did no worse than the rule arm (0 of 20 each), so the runs do not show that the rule helped.
+Principle, not measured: everything arrives as text in one stream. Message roles and markers such as `<document>` identify the source of each part. They do not guarantee that the assistant resists instructions embedded in data. Telling the assistant to be careful is a request, not a control. In the recorded runs the no-rule arm did no worse than the rule arm (0 of 20 each), so the runs do not show that the rule helped.
 
 A human checkpoint works only if the person can tell what they are approving. "Approve this action? Y/N" teaches people to click yes. That habit is called [approval fatigue](../../glossary/#approval-fatigue). Compare the prompt below.
 

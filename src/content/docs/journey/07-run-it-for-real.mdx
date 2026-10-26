@@ -63,7 +63,7 @@ The first line is ten steps at 95%. The second line is nine steps at 95% times o
 
 <Fragment slot="shows">
 
-The multiplication is a best case that assumes the steps fail independently; it does not say how your own job behaves, so run it on cases where you know the answer and count.
+The multiplication is the result under an independence assumption. If the steps fail together, the real result can be higher or lower. It does not say how your own job behaves, so run it on cases where you know the answer and count.
 
 </Fragment>
 
@@ -74,7 +74,7 @@ A check on the weak step, and a retry, win runs back. The [evals](../../glossary
 <details class="go-deeper">
 <summary>Go deeper, for people who write code: what a check on the weak step buys</summary>
 
-A check catches 90% of a step's errors. If the retry always works, a step right with chance p becomes p + (1 - p) x 0.90. If the retry works half the time, it becomes p + (1 - p) x 0.45. Case C checks the weak step only. Case D checks every step. The numbers are made up. The same sums work in a spreadsheet. The code uses `python3 -I`: the `-I` keeps Python from reading your own files, so the result is the same on every machine.
+A check catches 90% of a step's errors. If the retry always works, a step right with chance p becomes p + (1 - p) x 0.90. If the retry works half the time, it becomes p + (1 - p) x 0.45. Case C checks the weak step only. Case D checks every step. The numbers are made up. The same sums work in a spreadsheet. The code uses `python3 -I`. `-I` makes Python ignore environment variables and the current folder when it imports modules. It does not stop Python reading files, and it does not make results identical on every machine.
 
 <Example
   label="Computed"
