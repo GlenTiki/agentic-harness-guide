@@ -1,0 +1,166 @@
+---
+title: Capture expert judgement
+description: Elicit what an expert notices, record it as a decision table, and test that the right row fires, separately from how good the answer reads.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** when a task depends on an expert's judgement, interview the expert on a few rare, high-stakes cases, write what you learn as a decision table, and test the table directly. Do not expect more documents to supply this.
+
+## Why it matters
+
+Principle, not measured: an expert's skill sits in what they notice and in how they handle the case the written process does not fit. A procedure document records the common path. An assistant that reads ten more procedure documents learns the common path better and still lacks the exception.
+
+The usual symptom is an answer that reads well and is wrong in the one case that mattered. Judging the answer by its prose will not catch it. You need to know which rule the assistant applied. That is why this page ends in a test on the rule, not on the wording.
+
+## What to enable
+
+**1. Audit broadly and shallowly first.** Before you interview anyone, list the decisions in the work and ask for one line each: what is decided, how often, what goes wrong. The aim is to choose which cases to probe. Pick the rare ones where a mistake costs the most, because those are the ones the written process handles worst.
+
+**2. Interview on one real case.** Pick a case that happened. Ask four questions, in this order, and let the expert talk.
+
+1. What did you notice?
+2. What did you consider?
+3. What would a novice have done?
+4. What would have changed your mind?
+
+The third question brings out the cue the expert uses without naming it. The fourth gives you the edge of the rule, which is where a decision table needs its rows.
+
+<Example
+  label="Constructed"
+  task="A shop owner is interviewed about one supplier invoice she held back. The excerpt is invented for teaching, about a mundane domain. It is not a recorded interview."
+  evidence="none, written by the author"
+  env="not a real interview"
+>
+
+<Fragment slot="input">
+
+```text
+Interviewer: Tell me about the invoice from the packaging supplier in March that you did not pay.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Interviewer: What did you notice?
+Owner: The total was right. The bank details were not. Last quarter they ended in 41, this one ended in 14.
+Interviewer: What did you consider?
+Owner: A typing slip on their side, or a fraud attempt. A slip would have the old number somewhere else on the page. It did not.
+Interviewer: What would a new member of staff have done?
+Owner: Paid it. The invoice matched the order, the supplier is one we know, and the system showed no warning.
+Interviewer: What would have changed your mind?
+Owner: If they had told me about the change by phone first. Or if it was a big supplier with a letter on headed paper.
+Interviewer: And the process document?
+Owner: It says check the total against the order. It does not say check the bank details. I never wrote that down.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The owner's cue (the account number changed) and her action (phone before paying) are absent from the written process. The last answer says so directly. The exits ("told me by phone first") give two rows to test.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the shape of one useful interview. It does not show that an interview always finds the rule.
+
+</Fragment>
+
+</Example>
+
+**3. Watch the work as well as asking.** People describe their process, and their process as they describe it is neater than what they do. Sit with the expert for a few real cases and write down what they open, what they skip and what makes them stop. A rare case may not turn up while you watch. That is why the interview on a past case comes first, and the observation checks the common cases against what was said.
+
+**4. Spot a rule the owner cannot state.** Two signs:
+
+- The written process says one thing and the expert does another. In the interview above, the process says "check the total" and she checks the bank details.
+- The expert says "it just looks wrong" or "I would not do that". Ask what you would see if it were right, and what you would see if it were wrong. Keep asking for a visible cue until you can point at it on the page.
+
+Record each gap as a note: the written step, what was done, the cue. Each note is a candidate row.
+
+**5. Record it as a decision table.** A table has three parts: the cues you can read from the case, the options on offer, and the expert's choice. Keep each cue to a value you can read off the input, such as yes or no, not a feeling. Order the rows and say that the first match wins, so the order is part of the rule.
+
+**6. Test the table, not the prose.** For each row, write at least one case that must fire it. Add a case that must fire no row, because the table should say "I do not know" when the cues are missing. Then check which row fired, separately from whether the answer text sounds right. The script below does the check for a table in a file.
+
+<Example
+  label="Computed"
+  task="A maintainer checks that nine cases fire the rows an expert chose, including a case that must fire no row."
+  evidence="cd examples/decision-table && python3 -I fire_check.py table.json cases.json && python3 test_fire_check.py"
+  env="Python 3.13, no dependencies, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+table.json: seven rows, each with the cues it needs and the expert's choice. First match wins.
+  R1  bank_details_changed = yes   hold and phone the supplier on the number in your own records
+  R2  number_seen_before   = yes   hold, do not pay, tell the supplier
+  R3  supplier_known       = no    hold and ask the owner
+  R4  total_vs_order       = over_large   query the supplier before paying
+  R5  total_vs_order       = no_order     ask who ordered it before paying
+  R6  total_vs_order       = over_small   pay on the due date and note the difference
+  R7  total_vs_order       = matches      pay on the due date
+cases.json: nine cases, each with the row it must fire (or null for no row).
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+ok   plain match: fired R7, wanted R7
+ok   small overcharge: fired R6, wanted R6
+ok   large overcharge: fired R4, wanted R4
+ok   no order on file: fired R5, wanted R5
+ok   new supplier: fired R3, wanted R3 (also matches R7)
+ok   same number twice: fired R2, wanted R2 (also matches R7)
+ok   new bank details on a clean invoice: fired R1, wanted R1 (also matches R7)
+ok   new bank details and a repeat number: fired R1, wanted R1 (also matches R2, R7)
+ok   cue missing: order status not recorded: fired no row, wanted no row
+9 of 9 cases fired the expected row
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Four cases also match R7 or R2. Only the order of the rows makes the careful choice win. The tests in `test_fire_check.py` swap R1 and R2 and the run fails on "new bank details and a repeat number", so a reordered table cannot slip through.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows how to test which row fired. It does not show that an assistant reads the cues correctly from a real invoice. That is a second test, on the extraction step.
+
+</Fragment>
+
+</Example>
+
+**7. Treat a surprise as a signal.** Log each question the system could not answer and each time the expert overrode it. Each entry is a missing row or a missing cue, not a missing document. Review the log on a fixed day, and turn the repeats into rows.
+
+## How much have you captured
+
+Two rough ideas to measure on your own data. They are not results, and nothing here says what a good number is.
+
+- **Rows.** The count of rows in the table, and how many were added in each interview. When new interviews stop adding rows, you have probably covered the cases that come up. When they keep adding rows, you have not.
+- **Time.** Give one expert and one novice, with the table, the same ten cases. Compare the time and the number of wrong choices. If the table helps the novice little, the missing part is in the cues, not the choices.
+
+## Failure modes it reduces
+
+- A fluent answer that applies the common rule to a rare case.
+- A document that says "check the total" while the owner checks something else.
+- A table that nobody can test, so the first sign of a wrong row is a wrong payment.
+- A rule that only exists in one person's head and leaves with them.
+
+## First step for the maintainer
+
+Choose one decision that an expert in your work makes by feel. Ask for one real, rare case where it went wrong or nearly did. Run the four questions, write three to five rows, add one no-row case, and run the check.
+
+**Next:** [Small PRs and trunk-based flow](../small-prs/)

@@ -201,6 +201,7 @@ export default defineConfig({
             { slug: 'shelf/quality/test-first-and-gates' },
             { slug: 'shelf/quality/independent-review' },
             { slug: 'shelf/quality/evals' },
+            { slug: 'shelf/quality/expert-judgement' },
             { slug: 'shelf/quality/small-prs' },
           ],
         },
@@ -209,6 +210,7 @@ export default defineConfig({
           items: [
             { slug: 'shelf/operations/observability' },
             { slug: 'shelf/operations/cost-and-resources' },
+            { slug: 'shelf/operations/model-tier' },
             { slug: 'shelf/operations/human-in-the-loop' },
           ],
         },

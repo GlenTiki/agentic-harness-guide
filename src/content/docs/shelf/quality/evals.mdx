@@ -1,0 +1,177 @@
+---
+title: Evals for LLM-driven steps
+description: Test every step that a model decides, using real output as fixtures and a rubric you do not move.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** give every step where a model makes a decision its own eval. Build the fixtures from real model output. Before you trust a check, make it fail on purpose. Score new runs against the old rubric.
+
+## Why it matters
+
+Unit tests cover code that returns the same answer each time. A model step varies from run to run, so a single passing run proves little. A step with no eval is a step you cannot change safely, because you cannot tell whether a change helped.
+
+## What to enable
+
+**1. One eval per decision point.** List every place a model chooses something: a router picks a tool, a classifier picks a label, a reviewer picks a verdict, a parser reads model text. Give each a small set of cases with expected outcomes. A stub that returns a canned answer tests your wiring and not the model, so do not count it as an eval.
+
+**2. Use real output as fixtures.** If your code parses model output, capture actual replies and test against those. Hand-written examples are tidier than real replies and hide the quirks that break parsers, such as extra prose, code fences and missing fields.
+
+**3. Repeat runs.** Run each case several times. Report the pass count out of the total. Three runs cannot establish reliability either way. If a step passes all n runs, the failure rate is only bounded near 3 in n (the rule of three), so three clean runs leave a bound near 100 percent. Three runs are weak evidence. A step that works 95 percent of the time passes all three runs about 86 percent of the time (0.95 x 0.95 x 0.95). A step that works 67 percent of the time still passes all three about 30 percent of the time. One clean result in three tells you little about which step you have. For small samples, use a binomial confidence interval and state it. A single run would show none of this.
+
+**4. Prove the check can go red.** Before you rely on a green result, change the input or the code so that it must fail, and confirm it does. A grader with a typo in its pattern reports "no failures" for everything. Include a known-positive control in each run.
+
+**5. Hold the rubric still.** When you change a prompt or a model, score the new output with the old rubric and the old cases. If you change the rubric at the same time, you cannot attribute the difference. Change one thing, then re-baseline deliberately.
+
+**6. Keep graders deterministic where you can.** Prefer an executable check, such as "does this output parse" or "does this command exit 0", over another model's opinion. When you must use a model as a grader, give it a narrow question and spot-check its grades by hand.
+
+**7. Pin and record the model.** A silent model change moves your baseline. Pin the model version where your provider allows it. Record the model name, the version and the date with every run. Re-run the cases when the provider announces a change, and when the scores move without a change of yours.
+
+**8. Record the baseline.** Store the cases, the raw outputs and the scores. A later run can then be compared and replayed without calling the model again.
+
+**9. Pilot before scale.** On a long run, try five samples first. Dump the parsed output. Confirm that nothing is filtered by a hard-coded list and no placeholder is unresolved. Then run everything. Before you send real inputs to a hosted model or a model grader, read [using an assistant at work](../../../journey/professional-guardrails/) for what may leave your organisation.
+
+## Calibrate a model judge against human labels
+
+When a model grades another model's output, treat the judge as a measuring instrument and calibrate it. Label a set of outputs by hand as pass or fail. Run the judge on the same outputs. Then compare.
+
+Raw agreement is the share of cases where the two labels match. It flatters a judge when one label is common. A judge that passes everything agrees with the human on every output the human passed. The fix is a chance-corrected statistic, Cohen's kappa: the agreement beyond what you would expect if each rater labelled at random with their own pass rate. It is 1 for perfect agreement and 0 for chance level.
+
+Also count the failures the judge caught, because a judge is there to catch failures. Write the pass criterion before you look at the numbers. The two values below are starting points to set for your own stakes, not standards.
+
+<Example
+  label="Computed"
+  task="A maintainer compares a model judge with human labels on 20 outputs and applies a criterion written in advance: kappa at least 0.6 and at least 0.8 of the human-labelled failures caught."
+  evidence="cd examples/judge-calibration && python3 -I calibrate.py labels.csv 0.6 0.8 && python3 test_judge_calibration.py"
+  env="Python 3.13, no dependencies, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+labels.csv: 20 rows of case, human, judge. Constructed data, invented for teaching.
+Human labels: 12 pass, 8 fail. The judge agrees on 16 rows.
+Disagreements: judge fails 2 outputs the human passed, judge passes 2 outputs the human failed.
+python3 -I calibrate.py labels.csv 0.6 0.8
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+cases 20
+raw agreement 0.800
+kappa 0.583 (criterion at least 0.6)
+failures caught 0.750 (criterion at least 0.8)
+judge rejected
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Agreement of 0.800 sounds good. Kappa is 0.583 because the two raters would agree on 52 percent of cases by chance here (0.6 x 0.6 + 0.4 x 0.4). The judge also missed 2 of 8 failures. The tests include a judge that always says pass: it scores 0.9 agreement on a set with one failure in ten, and kappa 0.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows how to apply a criterion to a judge. It does not show how any real judge performs, and 20 cases are too few for a tight estimate: use more before you rely on the number.
+
+</Fragment>
+
+</Example>
+
+When the judge fails the criterion, read the disagreements. Narrow its question, add one example per kind of miss, and re-run on the same labelled set. Do not edit the labels to suit the judge.
+
+## Regression suite for a prompt change
+
+A regression suite answers one question: did this change make anything worse? It needs four things fixed before the change.
+
+1. **Cases.** A set of inputs with known good outcomes, drawn from real input, kept in the repository.
+2. **A criterion.** The pass rule written before the run. For example, every case passes at least 9 times in 10 runs, and no case that passed before now fails in more than 2.
+3. **A pinned model.** The model version recorded in the suite, so a score moving means the prompt moved it. Re-baseline on purpose when you change the model.
+4. **The old numbers.** Store the previous run so you can compare the two sets of counts, not recall them.
+
+```text
+suite: invoice-routing
+model: <the exact model id you pin>
+runs_per_case: 10
+cases: cases/*.json
+pass: every case at least 9 of 10; no case worse than its stored baseline by more than 2
+```
+
+That block is an illustration of the fields to keep, not a file format any tool reads.
+
+## Reading a difference in few runs
+
+The rule of three bounds what a clean run proves. The opposite case is just as common: a prompt change moves a step from 3 failures in 20 runs to 2. That is one fewer failure. Is the new prompt better?
+
+Compute it before you claim it. Two exact calculations need no statistics library. The first asks how often a step whose rate had not changed would show 2 or fewer failures in 20 runs. The second, Fisher's exact test, compares the two sets of counts directly.
+
+<Example
+  label="Computed"
+  task="A maintainer checks whether 2 failures in 20 runs is evidence of improvement over 3 in 20, and whether 0 in 20 is."
+  evidence="cd examples/judge-calibration && python3 -I binomial.py 3 20 2 20 && python3 -I binomial.py 3 20 0 20"
+  env="Python 3.13, no dependencies, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I binomial.py 3 20 2 20
+python3 -I binomial.py 3 20 0 20
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+old prompt: 3 failures in 20 runs (rate 0.15)
+new prompt: 2 failures in 20 runs
+P(2 or fewer failures in 20 runs | true rate unchanged at 0.15) = 0.405
+Fisher exact, one-sided: 0.500
+old prompt: 3 failures in 20 runs (rate 0.15)
+new prompt: 0 failures in 20 runs
+P(0 or fewer failures in 20 runs | true rate unchanged at 0.15) = 0.039
+Fisher exact, one-sided: 0.115
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+A step that did not change would show 2 or fewer failures about 4 times in 10 (0.405). One fewer failure is no evidence. Even 0 failures in 20 gives 0.115 against the old counts, so it is suggestive and not settled. The first calculation treats the old rate as known, which is generous to the new prompt.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows how to size a claim from run counts. It does not tell you how many runs you need: that depends on the difference you care about, so choose it first and compute from there.
+
+</Fragment>
+
+</Example>
+
+If you must decide with few runs, say so in the record: "2 of 20 against 3 of 20, no evidence of a difference". Add more runs or more cases instead of reading the gap.
+
+## Failure modes it reduces
+
+- A prompt change quietly lowers quality and nobody notices.
+- A parser works on tidy fixtures and fails on real replies.
+- A green dashboard hides a grader that never fails.
+- A before/after comparison is meaningless because the rubric moved.
+- A judge that agrees 80 percent of the time and still misses a quarter of the failures.
+- A prompt change that is called an improvement on one fewer failure in 20 runs.
+
+## First step for the maintainer
+
+Choose the one model-driven step you worry about most. Collect ten real inputs, write the expected outcome for each, and run them three times. That table is your first baseline.
+
+**Next:** [Capture expert judgement](../expert-judgement/)

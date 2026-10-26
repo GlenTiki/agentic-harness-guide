@@ -23,6 +23,20 @@ This shelf says agent for the assistant and sub-agent for the helper. See the [g
 6. **Bind approval to evidence.** An approval applies to one exact diff, one exact digest. Any edit voids it.
 7. **Keep a human at the irreversible edges.** Pushes, spend, outbound messages and destructive operations need a person. Everything reversible can run unattended.
 
+## When two principles conflict
+
+The principles do not always point the same way. Here is a Constructed case, invented for teaching. It is not a recorded run.
+
+A small shop's assistant drafts a reminder to a customer who owes an invoice. Principle 7 says an outbound message needs a person. Principle 3 says keep context small and durable, which pushes towards automatic drafts from a short ledger. The shop has 40 overdue customers each month, and sending each draft for approval one by one is slow enough that the owner starts approving without reading. That breaks principle 6, because an approval that was not read is not bound to evidence.
+
+How to choose:
+
+1. **Rank by what is hardest to undo.** An email to a customer cannot be recalled. A slow queue can be fixed. Principle 7 wins.
+2. **Keep the winner whole and bend the loser.** Every message still goes through a person. Make the review cheaper instead: show the owner the customer, the amount, the invoice date and the draft on one line each, and sort the large or unusual ones to the top.
+3. **Write the decision down.** Note which principle gave way, why, and what would reopen it, for example "if reviewing 40 drafts takes more than the owner is willing to spend, cut the list, not the review".
+
+The rule of thumb: when two principles collide, keep the one that guards the irreversible edge, and spend your effort making the other cheaper to meet.
+
 ## Failure modes they reduce
 
 - A rule in a prompt is forgotten after compaction. Principle 1 moves it to a hook.
