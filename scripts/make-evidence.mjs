@@ -113,7 +113,7 @@ ${caseIds.map(caseSection).join('\n\n')}
 Arms in template C also had 0 unflagged wrong replies, but they are not listed here because their headline answer was wrong. The bound is the rule of three: about 3 divided by n.
 
 ${silent.map((r) => `- ${r.case}, arm ${r.arm}: ${r.wrong_k} of ${r.wrong_n}, bound about ${pct(r.rule_of_three_upper)}.`).join('\n')}
-${notRun.length ? `\nCases with no run:\n\n${notRun.map((c) => `- ${c.id}: ${plainCanary(c.title)} (status ${c.status}).`).join('\n')}\n` : ''}
+${notRun.length ? `\nCases with no run:\n\n${notRun.map((c) => `- ${c.id}: ${plainCanary(c.title)} (status ${c.status}).`).join('\n')}\n${notRun.some((c) => c.id === 'C12-retrieval') ? '\nC12-retrieval has stored outputs in examples/retrieval-eval/outputs. The setup pages use them. They are re-runnable results, not part of the graded counts above.\n' : ''}` : ''}
 ## Where the data is
 
 - [RESULTS.md](${GITHUB}/blob/main/examples/wrong-behaviour/RESULTS.md): the table this page is built from, with the exact wording per arm.
