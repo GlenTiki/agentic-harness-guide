@@ -20,7 +20,7 @@ Some people give an [agent](../../glossary/#agent) a task list. My working pract
 | Helpers | [Sub-agents](../../glossary/#sub-agent) | One bounded task each, then a short report |
 | Expert viewpoints | Simulated personas | One review lens each, such as security or the reader of the final page |
 
-In my experience the lead agent is faster at the typing and worse at knowing what you meant. Your job is to close that gap with words, not with code.
+My working hypothesis, not a measured result, is that the lead agent is faster at the typing and worse at knowing what you meant. Your job is to close that gap with words, not with code.
 
 ## What you say
 
@@ -118,7 +118,7 @@ While the work runs, watch three signals.
 2. **The checks.** Did a check run, and did it go red when it should?
 3. **The record.** Is there a log of what the agent did, so you can read it later?
 
-When the agent drifts, do not restart. Add the missing fact in a sentence and say "carry on". In my experience the agent keeps what it has already learned, so you pay for one correction and not a fresh start. I have not measured this. If the same drift happens twice, treat it as a weak spot and run the [five-step loop](../engineer-weak-spots/#the-loop): notice, name, engineer a fix, prove the fix can fail, keep it.
+When the agent drifts, do not restart. Add the missing fact in a sentence and say "carry on". The principle is that one added fact costs less than a restart, because the earlier work stays in the thread. This is a hypothesis, not a measured result. If the same drift happens twice, treat it as a weak spot and run the [five-step loop](../engineer-weak-spots/#the-loop): notice, name, engineer a fix, prove the fix can fail, keep it.
 
 ## Why the lead can keep one long thread
 

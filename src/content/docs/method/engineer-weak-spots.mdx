@@ -148,7 +148,7 @@ These eight fixes come from my own setup. I list them without file names or numb
 | Context compaction wiped the session state. The recovery file was months old. | Save objective state before compaction. Replay it at the next session start. | [Monitor and showcase](../../setup/monitor-and-showcase/) |
 | Parallel helpers that write files collided in one checkout. | Block any helper call that looks like a write unless it is isolated or read-only. | [Orchestrator and subagents](../../setup/orchestrator-and-subagents/) |
 | Line-number citations rotted when a document grew. | Warn after an edit, block new line-number citations at commit, block drift at commit and at stop. | [Link and reference checks](../../setup/link-and-reference-checks/) |
-| A rule that lived only in recall memory was skipped in busy sessions. | Promote repeat offenders into the always-loaded instructions. Add a hook for the checkable ones. | [Memory](../../setup/memory/) |
+| Hypothesis: a rule that lives only in recall memory is skipped in busy sessions. | Promote repeat offenders into the always-loaded instructions. Add a hook for the checkable ones. | [Memory](../../setup/memory/) |
 | A directive to a helper broke a standing rule. Recall searched only the user's prompt. | Search memory with the outgoing brief as well. | [Memory](../../setup/memory/) |
 | Long sessions forgot costly measured facts. | Re-inject a short maintained fact file every N prompts. | [Memory](../../setup/memory/) |
 | Every stop started a re-index and the machine ran out of memory. | Gate the hook by capability, lock the indexer, run heavy work through an admission wrapper. | [Local models](../../setup/local-models/) |

@@ -38,7 +38,7 @@ Use those tools if they fit. The case study builds a small resolver from scratch
 
 ## How the resolver works
 
-1. Find every Markdown link and every path in code spans that looks like a file.
+1. Find every Markdown link (inline links, images and reference definitions). It skips fenced code and code spans, so a path written only in backticks is not checked.
 2. For a relative file link, check that the file exists, relative to the file that contains the link.
 3. For a link with `#fragment`, check that the target file has a heading that makes the same anchor.
 4. Report each failure with the file and the line of the link.

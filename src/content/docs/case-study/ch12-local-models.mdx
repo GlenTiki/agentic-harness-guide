@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 
 *Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
 
-**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch12-local-models.zip`, with Python 3.13.1.
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch12-local-models.zip`, with Python 3.13.1. The one exception is the stored dense and hybrid outputs, which you read from a clone of the guide repository, not from the kit.
 
 **Time.** Running the steps takes about 5 minutes (5 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
 
@@ -194,7 +194,7 @@ These numbers come from a run of the optional steps on 2026-10-25. The stored ou
 
 <Example
   label="Computed"
-  task="You read the stored score line of each dense and hybrid run on the 44 memories and 34 queries."
+  task="From the root of a clone of the guide repository (not the kit), you read the stored score line of each dense and hybrid run on the 44 memories and 34 queries."
   evidence="examples/retrieval-eval/outputs/dense.txt dense-prefixes.txt hybrid.txt hybrid-prefixes.txt"
   env="Apple silicon laptop, macOS 26.5, Python 3.13.1 (3.14.5 for the cross-encoder), 2026-10-25"
 >
@@ -239,8 +239,6 @@ For comparison, chapter 6 measured a cross-encoder on the same set: precision@3 
 2. The fusion with BM25 scored lower than dense alone. I did not investigate why.
 3. The prefix variant is one query better on hit@3. That is within noise on 34 queries.
 4. The set is small, written by one person and built to use other words than the memories. It does not show that dense retrieval is better in general. Measure on your own memories.
-
-The whole run (embedding 44 memories and 34 queries) took between 0.7 and 1.3 seconds across the runs on one machine, including a warm-up.
 
 ## What is not tested
 
