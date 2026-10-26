@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 
 The case study rebuilds the ideas in the [setup pages](../setup/) from nothing. It wraps a tiny plain-text notes tool in a small harness kit. Each chapter removes one [weak spot](../method/engineer-weak-spots/), and each chapter has a check that you can see go red.
 
-**Status.** Built in the case study, with one exception: chapter 8 is Design only, with a small working scaffold. Every command and output on the chapter pages was run on 2026-10-25 from a fresh unzip of that chapter's kit, with Python 3.13.1. Each kit also passed `validate.py` and went red on `validate.py --bad`.
+**Status.** Built in the case study, with one exception: chapter 8 is Design only, with a small working scaffold. Every command and output on the chapter pages was run on 2026-10-25 from a fresh unzip of that chapter's kit, with Python 3.13.1. The exceptions are the stored retrieval outputs in chapters 6 and 12, which you read from a clone of the guide repository. Each kit also passed `validate.py` and went red on `validate.py --bad`.
 
 ## How to use a chapter
 
@@ -24,7 +24,7 @@ The repository behind the case study is private. The kits are the way in. Whethe
 
 Each kit holds the chapter spec, a chapter note (`CHAPTER.md`), the validation script, the code, the tests, the examples, the failing fixture and a `README.md`. The README and `CHAPTER.md` give the same commands as the page. Some links inside a kit's `CHAPTER.md` point to other chapters. They work only in the full repository.
 
-**Python.** Every kit needs Python 3.9 or newer and uses only the standard library. The kit README says it was run from a fresh folder under Python 3.9.6, 3.12.8, 3.13.1 and 3.14.5. Versions 3.10 and 3.11 were not tested. The default `python3` on my machine is 3.13.1, so the outputs on these pages come from 3.13.1. Type `python3.12` instead of `python3` if you want that version. The commands use `python3 -I`. The `-I` flag keeps Python from reading your own files, so the result is the same on every machine.
+**Python.** Every kit needs Python 3.9 or newer and uses only the standard library. The kit README says it was run from a fresh folder under Python 3.9.6, 3.12.8, 3.13.1 and 3.14.5. Versions 3.10 and 3.11 were not tested. The default `python3` on my machine is 3.13.1, so the outputs on these pages come from 3.13.1. Type `python3.12` instead of `python3` if you want that version. The commands use `python3 -I`. `-I` makes Python ignore environment variables and the current folder when it imports modules. It does not stop Python reading files, and it does not make results identical on every machine.
 
 **Systems.** The commands are for macOS and Linux. I did not test Windows.
 
