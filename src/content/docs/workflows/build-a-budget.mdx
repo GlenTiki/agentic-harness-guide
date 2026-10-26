@@ -102,7 +102,7 @@ Definition of done: Every number traces to a figure given. The three shares add 
 What to do if unsure: Say so and leave a marked blank. Do not guess.
 ```
 
-Now agree it to source. Sam checks the arithmetic and does not trust the reply. The sums are plain arithmetic, so a spreadsheet gives the same answers. The script is for people who write code. Python's `-I` option keeps Python from reading your own files, so the result is the same on every machine.
+Now agree it to source. Sam checks the arithmetic and does not trust the reply. The sums are plain arithmetic, so a spreadsheet gives the same answers. The script is for people who write code. `-I` makes Python ignore environment variables and the current folder when it imports modules. It does not stop Python reading files, and it does not make results identical on every machine.
 
 <Example
   label="Computed"
@@ -162,7 +162,7 @@ Mina asks Sam to compare the shop's September budget with the actual result. The
 Goal: Compare Mina's September budget with the actual result for her candle shop, and show which lines need an explanation.
 Inputs: The budget and actual figures below, excluding VAT. Anything not given is [NEEDED].
 Constraints: Use only these figures. Never estimate a missing figure. List every assumption on its own line. Do not choose an accounting treatment. Do not supply a reason for any variance.
-Output format: A table of line, budget, actual, variance and percentage. Then flag any line more than 5% and more than 50.00 from budget. Then show profit if the largest cost line rises 10%, and if sales fall 10%, with costs held fixed.
+Output format: A table of line, budget, actual, variance and percentage. Then flag any sales or cost line (not Total costs or Profit) more than 5% and more than 50.00 from budget. Then show profit if the largest cost line rises 10%, and if sales fall 10%, with costs held fixed.
 Definition of done: Each variance is actual minus budget. Each flagged line has "Reason needed from Mina". Every assumption is marked.
 What to do if unsure: Leave a blank and mark it. Do not guess.
 ```
@@ -223,7 +223,7 @@ sales -10%: 2702.0
 
 <Fragment slot="notice">
 
-Only materials passes both tests. The same 10% move costs 153.00 on materials and 600.00 on sales.
+Of these three lines, only materials passes both tests. The other lines in the table are under 50.00 from budget. Total costs (+173.00, +6.9%) would also pass, which is why the prompt flags lines and not subtotals. The same 10% move costs 153.00 on materials and 600.00 on sales.
 
 </Fragment>
 

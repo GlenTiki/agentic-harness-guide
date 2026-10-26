@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 
 *If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
-Monday morning. Sam pastes twelve months of shared bills into a chat and asks for the total. The assistant adds the numbers in prose and gives one confident figure. A person adding the column in a spreadsheet would see every row. An assistant adding in prose shows no rows to count, so a month listed twice goes unseen.
+Monday morning. Sam pastes twelve months of shared bills into a chat and asks for the total. The assistant adds the numbers in prose and gives one confident figure. A person adding the column in a spreadsheet would see every row. A total in prose does not show which rows were counted. In the guide's long-list run (40 lines for 39 months), the headline total was wrong in 20 of 20 trials, and each reply flagged the 40 amounts for 39 months ([evidence](../../evidence/)). A formula and a check cell make the count visible to you.
 
 ## The idea
 
@@ -197,7 +197,7 @@ It shows a check cell that compares two independent records; it does not show th
 
 </Example>
 
-Next, the budget in column B, the actual in column C, the variance in D and the percentage in E. Materials is row 3 and other costs is row 8. A positive variance on a cost is adverse. A positive variance on sales is favourable. The flag is true only when a line is more than 50.00 and more than 5% from budget. The percentage is a fraction, so 5% is 0.05.
+Next, the budget in column B, the actual in column C, the variance in D and the percentage in E. Materials is row 3 and other costs is row 8. Fill the variance and percentage formulas down every budget line, rows 3 to 8, so row 8 has its own. A positive variance on a cost is adverse. A positive variance on sales is favourable. The flag is true only when a line is more than 50.00 and more than 5% from budget. The percentage is a fraction, so 5% is 0.05.
 
 <Example
   label="Computed"
@@ -209,10 +209,12 @@ Next, the budget in column B, the actual in column C, the variance in D and the 
 <Fragment slot="input">
 
 ```text
-Variance (D3)      =C3-B3
-Percentage (E3)    =D3/B3
+D3 =C3-B3          E3 =D3/B3          (fill both down to row 8)
+D8 =C8-B8          E8 =D8/B8
 Flag (materials)   =AND(ABS(D3)>50,ABS(E3)>0.05)
 Flag (other costs) =AND(ABS(D8)>50,ABS(E8)>0.05)
+
+Failing case: change C8 from 112.00 to 170.00, then read the other-costs flag.
 ```
 
 </Fragment>
@@ -220,23 +222,30 @@ Flag (other costs) =AND(ABS(D8)>50,ABS(E8)>0.05)
 <Fragment slot="output">
 
 ```text
-Variance (D3)      130
-Percentage (E3)    0.0929 (9.3% once formatted as a percentage)
+D3                 130
+E3                 0.0929 (9.3% once formatted as a percentage)
+D8                 12
+E8                 0.12
 Flag (materials)   TRUE
 Flag (other costs) FALSE
+
+With C8 = 170.00:
+D8                 70
+E8                 0.7
+Flag (other costs) TRUE
 ```
 
 </Fragment>
 
 <Fragment slot="notice">
 
-Other costs are 12.0% over but only 12.00, so the flag stays FALSE. Format column E as a percentage, or 0.0929 shows instead of 9.3%.
+Other costs are 12.0% over but only 12.00, so the flag stays FALSE until C8 becomes 170.00. If D8 and E8 are blank, the flag is also FALSE, so fill them down first. Change C8 back afterwards. Format column E as a percentage, or 0.0929 shows instead of 9.3%.
 
 </Fragment>
 
 <Fragment slot="shows">
 
-It shows the rule "more than 5% and more than 50.00"; the rule is an example, and the [small shop month-end](../small-shop-month-end/#step-6-explain-the-variances) page says why it uses "and".
+It shows the rule "more than 5% and more than 50.00" turning TRUE as well as FALSE; the rule is an example, and the [small shop month-end](../small-shop-month-end/#step-6-explain-the-variances) page says why it uses "and".
 
 </Fragment>
 
@@ -258,7 +267,7 @@ Before you paste real figures from a real business, anonymise them and read [con
 
 *How it works. Optional reading.*
 
-An assistant writes text one piece at a time. A long sum "in its head" can give a likely-looking total. In the guide's recorded runs, 10 of 20 replies stated a wrong sum for a 13-figure list ([level 1](../../journey/01-say-it-properly/), [evidence](../../evidence/)). A formula moves the arithmetic to a tool that does it the same way every time.
+An assistant writes text one piece at a time. A long sum "in its head" can give a likely-looking total. In the guide's recorded level 1 run of the full ask, 10 of 20 replies stated a sum or share that was wrong while they stopped to ask ([level 1](../../journey/01-say-it-properly/), [evidence](../../evidence/)). A formula moves the arithmetic to a tool that does it the same way every time.
 
 Asking for the formula also gives you something to read. You can see that the range is A2:A13 and not A2:A12, and you can test the formula on a case with a known answer. A total in prose cannot be tested.
 

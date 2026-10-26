@@ -144,7 +144,7 @@ Systems and access (what is allowed; what enforces it)
   Folder "Supplier bills (PDF)"
     read only; enforced by a read-only credential on that folder
   Sheet "Supplier bills"
-    write, after confirmation of each batch (Mina alone sets "paid"); enforced by a credential for this sheet and a protected range on the "paid" column; the confirmation is advice
+    write, after confirmation of each batch (Mina alone sets "paid"); enforced by a credential for this sheet and a protected range on the "status" column that excludes the credential, so only Mina can edit it; the confirmation is advice
   Team chat #shop-money
     one message per Friday, nothing else; enforced by a token scoped to this channel; the one-message limit is advice
   Bank, payments, other channels
@@ -157,7 +157,7 @@ Rules
 
 Done
   1 row per PDF; no duplicate supplier and invoice number; credit notes negative;
-  second extraction agrees on a random five; Friday total equals unpaid rows sum;
+  second extraction by a different method; human check of five random PDFs, with the disagreement rate reported; Friday total equals unpaid rows sum;
   bank-detail changes flagged to a human; separate reviewer passes; any failure
   stops the post; approved by a person who is not the preparer or the fallback
   reviewer.
@@ -180,7 +180,7 @@ Owner
 | --- | --- | --- | --- | --- |
 | 1 | Read the folder only. The assistant lists what it found into the chat. | The list matches the folder, row for row. | Two clean weeks of lists. | A read-only credential |
 | 2 | Draft: the assistant writes the proposed rows and the Friday message into a draft file. Nothing is written to the sheet or the team chat. | Rows match the PDFs. The totals are right. | You change no rows for two weeks running (about 12 rows). | Advice: the credential still allows no writes |
-| 3 | Write with confirmation: rows go to the sheet after Mina's yes. The Friday message is still a draft. | The sheet matches the PDFs after every batch. | Four batches in a row need no edits. | A credential for one sheet and a protected range on "paid" |
+| 3 | Write with confirmation: rows go to the sheet after Mina's yes. The Friday message is still a draft. | The sheet matches the PDFs after every batch. | Four batches in a row need no edits. | A credential for one sheet and a protected range on the "status" column |
 | 4 | Post the Friday message to the team chat after Mina's yes. | The message total equals the sheet total. | It runs for a month. | A token scoped to one channel |
 
 Writing alone is not on the list. A sheet next to payments is not a low-risk, easily undone task. With about 25 rows a month, a rate such as one in ten cannot be told apart from chance, so the move-on test is no edits at all. That is a minimum, not proof of reliability. Thirty clean runs only bound the failure rate near 1 in 10: see the rule of three in [level 7](../../journey/07-run-it-for-real/) and the [sampling rule](../../journey/professional-guardrails/#checking-and-sampling).
@@ -209,7 +209,7 @@ Each refinement pass should move one class of guess into the specification: scop
 
 The specification is a contract, so treat changes to it as reviewed changes. A rollout that adds a write path should update the specification before the access, and the grant should be tighter than the specification.
 
-Check three conditions together before any rollout: private data in scope, untrusted content in scope, and a route out. Level 4 calls this the [lethal trifecta](../../journey/04-trust-but-verify/#expert-corner). Here the PDFs are untrusted, the bills are private, and the team chat is a route out. The controls are the single permitted post, no other channels and the reviewer, not the assistant's good behaviour.
+Check three conditions together before any rollout: private data in scope, untrusted content in scope, and a route out. Level 4 calls this the [lethal trifecta](../../journey/04-trust-but-verify/#expert-corner). Here the PDFs are untrusted, the bills are private, and the team chat is a route out. The controls are no other channels (the scoped token), the reviewer, and Mina's send checkpoint. The one-post rule is advice, not a control.
 :::
 
 ## Agent note
@@ -258,7 +258,7 @@ You can now:
 <details>
 <summary>Answers</summary>
 
-1. "Updates" has no edge, so it permits anything a post can carry. A single named post is an allowlist entry. Anything else is refused.
+1. "Updates" has no edge, so it permits anything a post can carry. A single named post is a narrower request, but it is advice: the channel token allows any message to that channel. Mina's send-or-stop checkpoint is what holds the line, and the scoped token limits where a message can go.
 2. A pass for untrusted input and a second look at direction. Customer emails are untrusted text, and they would add a route for hostile instructions. Keep that connector read-only and flag any instructions found in the email.
 3. Stay in week 2. Find what the four have in common, fix the instruction or the check, and re-run. The move-on rule is no edits for two weeks, so it is not met. With 25 rows, four edits is a small sample, so do not quote a percentage from it.
 
