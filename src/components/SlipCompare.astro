@@ -1,28 +1,23 @@
 ---
 import { BASE, REPO_URL } from '../data/site';
 
-const script = `wc -l < amounts.txt
-uniq -d amounts.txt
-uniq amounts.txt | awk '{s+=$1} END {print s}'`;
 const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
 ---
 
 <section class="slip-compare" aria-labelledby="slip-heading">
-  <h2 id="slip-heading" class="slip-heading">One list of 40 bills, two ways to get the total</h2>
-  <div class="slip-cards">
-    <article class="slip slip-wrong">
-      <h3>What the assistant said <span class="slip-tag">Observed</span></h3>
-      <p class="slip-quote">The list has 40 amounts, not 39. [...] Total: <strong>€7,414</strong> [...] Sam: €2,471.34</p>
-      <p class="slip-note">The first total stated was wrong in 20 of 20 trials. The right total is 7,281. Every reply flagged 40 amounts for 39 months, so the doubt was visible. None found the amount pasted twice.</p>
-      <p class="slip-env">claude-sonnet-5-5, Claude Code 2.1.310, no tools, 2026-10-25. <a href={`${blob}/runs/2026-10-25/raw/C01-bills-total-long-unlabelled-t01.txt`}>Raw reply</a>, <a href={`${blob}/cases/C01-bills-total.json`}>case</a>, <a href={`${BASE}/evidence/`}>all counts</a>.</p>
-    </article>
-    <article class="slip slip-right">
-      <h3>What a three-line check finds <span class="slip-tag">Computed</span></h3>
-      <pre class="slip-code"><code set:text={script} /></pre>
-      <p class="slip-quote">Output: <strong>40</strong>, then <strong>133</strong>, then <strong>7281</strong>.</p>
-      <p class="slip-note">The 133 sits on lines 20 and 21. You decide if it is a paste error. Run on the 40 amounts in the case file.</p>
-    </article>
+  <h2 id="slip-heading" class="slip-heading">The same 40 bills, added two ways</h2>
+  <div class="slip-pair">
+    <div class="slip slip-wrong">
+      <p class="slip-label">The assistant said</p>
+      <p class="slip-figure">Total: €7,414</p>
+    </div>
+    <div class="slip slip-right">
+      <p class="slip-label">The right total</p>
+      <p class="slip-figure">€7,281</p>
+    </div>
   </div>
+  <p class="slip-reason">One bill was pasted twice. The reply said "40 amounts for 39 months" and added them all anyway.</p>
+  <p class="slip-caption">Observed: wrong in 20 of 20 recorded runs. claude-sonnet-5-5, Claude Code 2.1.310, 2026-10-25. <a href={`${blob}/runs/2026-10-25/raw/C01-bills-total-long-unlabelled-t01.txt`}>Raw reply</a>, <a href={`${BASE}/evidence/`}>all counts</a>.</p>
 </section>
 
 <style>
@@ -36,60 +31,32 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
     font-weight: 600;
     border: 0;
   }
-  .slip-cards {
+  .slip-pair {
     display: grid;
     gap: 0.75rem;
-    grid-template-columns: minmax(0, 1fr);
-  }
-  @media (min-width: 40rem) {
-    .slip-cards {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      align-items: start;
-    }
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .slip {
-    padding: 0.75rem 1rem;
+    padding: 0.75rem;
     border-radius: var(--ahg-radius-card);
     border: 1px solid currentColor;
-    border-inline-start-width: 0.35rem;
-  }
-  .slip-provenance {
-    margin: 0 0 0.5rem;
-    font-size: var(--sl-text-sm);
-    color: var(--ahg-muted);
-  }
-  .slip-tag {
-    display: inline-block;
-    margin-inline-start: 0.4rem;
-    padding: 0 0.4rem;
-    border: 1px solid currentColor;
-    border-radius: 0.25rem;
-    font-size: var(--sl-text-xs);
-    font-weight: 600;
-    white-space: nowrap;
-  }
-  .slip h3 {
-    margin: 0 0 0.25rem;
-    font-size: var(--sl-text-base);
-    color: inherit;
+    border-block-start-width: 0.35rem;
   }
   .slip p {
-    margin: 0.25rem 0 0;
-    color: var(--ahg-text);
+    margin: 0;
+  }
+  .slip-label {
     font-size: var(--sl-text-sm);
+    font-weight: 600;
+    color: inherit;
   }
-  .slip-code {
-    margin: 0.25rem 0 0;
-    padding: 0.4rem 0.6rem;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    font-size: var(--sl-text-xs);
-    background: var(--ahg-panel);
+  .slip-figure {
+    margin-top: 0.25rem;
+    font-size: clamp(1.25rem, 6vw, 2rem);
+    font-weight: 700;
+    line-height: 1.2;
     color: var(--ahg-text);
-    border-radius: 0.25rem;
-  }
-  .slip-env {
-    font-size: var(--sl-text-xs);
+    overflow-wrap: anywhere;
   }
   .slip-wrong {
     background: var(--ahg-wrong-soft);
@@ -98,5 +65,15 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
   .slip-right {
     background: var(--ahg-right-soft);
     color: var(--ahg-right);
+  }
+  .slip-reason {
+    margin: 0.75rem 0 0;
+    font-size: var(--sl-text-base);
+    color: var(--ahg-text);
+  }
+  .slip-caption {
+    margin: 0.5rem 0 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
   }
 </style>
