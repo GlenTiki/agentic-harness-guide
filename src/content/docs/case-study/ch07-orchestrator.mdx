@@ -27,7 +27,7 @@ Write briefs from templates and catch any helper brief that is missing the share
 - `templates/orchestrator-brief.md`: outcomes in plain English, expected behaviour, acceptance checks and a next step. A worked example is in `example/briefs/orchestrator-notes-search.md`.
 - `templates/subagent-brief.md` and `shared-rules.md`, a block of six rules.
 - `briefs.py`, which renders a helper brief with the shared rules block and checks every brief in a folder.
-- `settings-for-subagents.example.json` and `hooks/subagent_must_quote_check.py`. The hook makes a helper quote a passing check before it can finish.
+- `settings-for-subagents.example.json` and `hooks/subagent_must_quote_check.py`. The hook blocks a helper's first attempt to finish unless its last message contains the text `ALL CHECKS PASSED`. It blocks once: when the harness sets `stop_hook_active`, the hook exits 0 so that it cannot loop. It checks the text only. It does not run the check, and a helper can repeat the text without running anything.
 - `agents/reviewer.example.md`, an example agent definition.
 
 ## Get the kit
