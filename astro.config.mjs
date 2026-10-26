@@ -182,6 +182,7 @@ export default defineConfig({
             { slug: 'shelf/control/hooks' },
             { slug: 'shelf/control/permissions-and-sandboxing' },
             { slug: 'shelf/control/capability-gating' },
+            { slug: 'shelf/control/removing-personal-data' },
             { slug: 'shelf/control/untrusted-input' },
           ],
         },

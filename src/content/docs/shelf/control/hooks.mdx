@@ -303,6 +303,154 @@ Why each route gets past the script:
 
 Treat the hook as one layer. It reduces the common routes. It does not close every route.
 
+## Traps that bite in practice
+
+### A pipe into tail hides the exit status
+
+A shell pipeline returns the exit status of its last command. A check piped into `tail` therefore reports the status of `tail`, which succeeds. Capture the output to a file, keep the status, then show the tail.
+
+<Example
+  label="Computed"
+  task="A maintainer compares a failing command piped into tail with the same command whose output is captured first."
+  evidence="sh -c 'false | tail -n 1; echo $?' and the captured form below"
+  env="sh on macOS 26.5, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```bash
+sh -c 'false | tail -n 1; echo $?'
+sh -c 'false > out.txt; status=$?; tail -n 1 out.txt; echo $status'
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+0
+1
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+`false` always fails. The pipe reports 0. The captured form reports 1. In Bash, `set -o pipefail` also makes the pipe report 1, but `sh` setups differ, so the file form is the portable fix.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the status of a pipeline in `sh`. It does not show how any harness reads a status.
+
+</Fragment>
+
+</Example>
+
+### A stop check that blocks once
+
+A stop hook that blocks every time never lets the agent finish. Key the block to the session identifier. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
+
+<Example
+  label="Computed"
+  task="A maintainer sends five stop events from two sessions through the one-shot hook."
+  evidence="python3 -I examples/hook-traps/test_one_shot_stop.py"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```bash
+python3 -I examples/hook-traps/test_one_shot_stop.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+session=s1 exit=2 expect=2
+session=s1 exit=0 expect=0
+session=s1 exit=0 expect=0
+session=s2 exit=2 expect=2
+session=s2 exit=0 expect=0
+unreadable input exit=2 expect=2
+ok
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Each session is blocked once, and the second session starts fresh. Unreadable input blocks, as in the sample above. The page does not claim the docs field `stop_hook_active`, which was not checked.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the script's logic with made-up session names. It does not show a real session, or where the harness keeps your marker files. Delete old markers on a schedule.
+
+</Fragment>
+
+</Example>
+
+### Three outcomes, and which exit code means "deliberate"
+
+A pre-action check has three outcomes. A hard deny stops the call. A soft deny stops the call and tells the model why, so it can choose another route. A pass lets the call run. Your tool decides which exit code or output means which. In Claude Code, exit code 2 blocks and sends standard error back, and any other non-zero code does not block (see item 3 above). Check your own tool's docs before you rely on a code, because another harness may treat 1 as the deliberate denial.
+
+### Every blocking check needs a bypass route
+
+A block with no way round gets disabled the first time it is wrong. Give each blocking check a documented bypass that a person controls, such as an environment variable the agent cannot set, or a one-line change to the settings file. Log each use of it. The bypass belongs in the check's block message, so the person sees it when the check fires.
+
+### The wrong repository
+
+A hook that asks git about a repository can answer about another one. Git reads `GIT_DIR`, `GIT_WORK_TREE` and `GIT_INDEX_FILE` from the environment, and `git -C` does not override them. If a session started inside a nested repository, the hook inspects that one.
+
+<Example
+  label="Computed"
+  task="A maintainer builds two throwaway repositories and asks git about the outer one while GIT_DIR points at the inner one."
+  evidence="sh examples/hook-traps/nested_repo_trap.sh"
+  env="git 2.50.1, macOS 26.5, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```bash
+sh examples/hook-traps/nested_repo_trap.sh
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+hook asks about outer, environment points at inner:
+  last commit: commit in inner
+same call with the git variables removed:
+  last commit: commit in outer
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The first call names the outer folder and still reads the inner repository. The fix is to run git with `env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows git's behaviour with an inherited variable. It does not show how your harness sets the environment, so print it in a test hook.
+
+</Fragment>
+
+</Example>
+
+### Several hooks and latency
+
+The docs say: "When an event fires, its matching hooks run in parallel." So the wait for an event is about the slowest hook, not the sum. The part of the page read on 2026-10-26 did not state how conflicting decisions combine, such as one hook denying and another allowing. Not verified. Test it with two hooks that disagree before you rely on an order. The same page gives command hooks a default timeout of 600 seconds, so set a shorter one on each. This guide did not time any hook.
+
 ## Failure modes it reduces
 
 - The agent runs a destructive command because the instruction file said not to, and the rule was lost after compaction.
