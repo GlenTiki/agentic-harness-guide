@@ -81,7 +81,7 @@ chatty-fake: {"right": 0, "bad_replies": 6, "total": 6} calls=6
 
 <Fragment slot="notice">
 
-The three clients are scripted fakes, so these scores say nothing about any real model. Look at the third line: a client that gets every answer "right" in a sentence scores 0 right and 6 bad replies, because the seam counts an unusable reply apart from a wrong label.
+The three clients are scripted fakes, so these scores say nothing about any real model. Look at the third line: `chatty-fake` answers every case with the same sentence, "I think this is urgent!", which is not one of the allowed labels. The seam scores 0 right and 6 bad replies, because it counts an unusable reply apart from a wrong label. The sentence is not a correct answer in disguise: it is wrong for the routine cases and malformed for all of them.
 
 </Fragment>
 

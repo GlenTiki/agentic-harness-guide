@@ -5,19 +5,25 @@ import sys
 
 
 def matching_rows(table, cues):
-    return [row["id"] for row in table["rows"] if all(cues.get(cue) == value for cue, value in row["when"].items())]
+    return [
+        row["id"]
+        for row in table["rows"]
+        if not row.get("fallback") and all(cues.get(cue) == value for cue, value in row["when"].items())
+    ]
 
 
 def first_row(table, cues):
     matches = matching_rows(table, cues)
-    return matches[0] if matches else None
+    if matches:
+        return matches[0]
+    return next((row["id"] for row in table["rows"] if row.get("fallback")), None)
 
 
 def check(table, cases, out=sys.stdout):
     failures = 0
     for case in cases:
         matches = matching_rows(table, case["cues"])
-        fired = matches[0] if matches else None
+        fired = first_row(table, case["cues"])
         ok = fired == case["expect"]
         failures += not ok
         label = fired or "no row"

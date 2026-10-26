@@ -23,6 +23,13 @@ class Seam(unittest.TestCase):
         chatty = seam.FakeClient({}, default="I think this is urgent!")
         self.assertEqual(seam.score(chatty, CASES), {"right": 0, "bad_replies": 6, "total": 6})
 
+    def test_the_chatty_reply_is_the_same_sentence_for_every_case_including_routine_ones(self):
+        chatty = seam.FakeClient({}, default="I think this is urgent!")
+        replies = {chatty.complete(f"Answer with one word.\n\n{text}") for text, _ in CASES}
+        self.assertEqual(replies, {"I think this is urgent!"})
+        self.assertIn("routine", {label for _, label in CASES})
+        self.assertNotIn(replies.pop().strip().lower(), seam.LABELS)
+
     def test_swapping_the_client_changes_nothing_else(self):
         first = seam.score(seam.FakeClient({"Fridge alarm is sounding": "urgent"}), CASES)
         second = seam.score(seam.FakeClient({"Fridge alarm is sounding": "urgent"}), CASES)

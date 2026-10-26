@@ -42,6 +42,33 @@ class EdgeCases(unittest.TestCase):
         self.assertEqual(reply_check.validate(vague, figures), ["reason does not name the problem month Jun"])
 
 
+class ContractEnforcement(unittest.TestCase):
+    def good_ok(self):
+        return json.loads((HERE / "fixtures/clean/good-ok.txt").read_text())
+
+    def test_twelve_distinct_names_that_are_not_the_twelve_months_are_not_a_complete_set(self):
+        figures = CLEAN[:-1] + [["NotAMonth", CLEAN[-1][1]]]
+        errors = reply_check.validate(json.dumps(self.good_ok()), figures)
+        self.assertEqual(errors, ['status must be "stop": 12 figures, not the 12 months Jan to Dec once each'])
+
+    def test_a_stop_for_an_unrecognised_month_must_name_it(self):
+        figures = CLEAN[:-1] + [["NotAMonth", CLEAN[-1][1]]]
+        vague = '{"status": "stop", "months_counted": 12, "reason": "Dec is missing."}'
+        self.assertEqual(reply_check.validate(vague, figures), ["reason does not name the problem month NotAMonth"])
+        named = '{"status": "stop", "months_counted": 12, "reason": "Dec is missing and NotAMonth is not a month."}'
+        self.assertEqual(reply_check.validate(named, figures), [])
+
+    def test_a_float_months_counted_is_rejected_on_the_ok_path(self):
+        reply = self.good_ok()
+        reply["months_counted"] = 12.0
+        self.assertEqual(reply_check.validate(json.dumps(reply), CLEAN), ["months_counted should be 12, got 12.0"])
+
+    def test_a_float_months_counted_is_rejected_on_the_stop_path(self):
+        figures = CASES["june-missing"]["figures"]
+        text = '{"status": "stop", "months_counted": 11.0, "reason": "Jun is missing."}'
+        self.assertEqual(reply_check.validate(text, figures), ["months_counted should be 11, got 11.0"])
+
+
 class Regression(unittest.TestCase):
     def run_model(self, model):
         with redirect_stdout(io.StringIO()):

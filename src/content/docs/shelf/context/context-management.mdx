@@ -44,7 +44,7 @@ Use second-resolution UTC timestamps. They sort, compare and survive time zones.
 
 ## Where compaction loses a constraint
 
-Compaction replaces older turns with a summary, and a summary keeps what the summariser judged important. A constraint that you stated once and that nothing since has touched is the easiest thing to lose. Here is a Constructed session. It is invented to show the shape of the failure, and this guide holds no recorded compaction. Three constraints are stated early, then 140 turns of ordinary work follow.
+Compaction replaces older turns with a summary, and a summary keeps what the summariser judged important. Principle, not measured: a constraint that you stated once and that nothing since has touched is a candidate to be dropped, because a summary has no reason to repeat it. Here is a Constructed session. It is invented to show the shape of the failure, and this guide holds no recorded compaction. Three constraints are stated early, then 140 turns of ordinary work follow.
 
 ```text
 [turn 3]  User: Replace the retry loop in the sync job with a bounded backoff. Do not change the public signature of sync(); other jobs call it.

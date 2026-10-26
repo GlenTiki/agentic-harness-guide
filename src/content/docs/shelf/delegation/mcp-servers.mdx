@@ -53,7 +53,7 @@ claude mcp list
 
 The assistant knows a tool exists only because it reads the tool's definition: the name, the description and the input schema. In a harness that sends every definition up front, those definitions sit in the [context window](../../../glossary/#context-window) before the first call and stay there. Check how your harness loads them. A server with many tools can then cost more than a long instruction file.
 
-Measure it on a server you use. Export its tool list as JSON, then count characters. The script below counts the name, the description and the schema as compact JSON, and converts to tokens with the rule of thumb of 4 characters per token. That rule is rough, so confirm the total with your tool's own token count.
+Measure it on a server you use. A server returns its tools in the response to a `tools/list` request: a JSON-RPC message whose `result` object holds a `tools` array, and each tool has `name`, `description` and `inputSchema`. Save that response, or only its `result` object, to a file. The script reads either one and also accepts the older spelling `input_schema`. The sample file is an invented response of that shape. Then count characters. The script below counts the name, the description and the schema as compact JSON, and converts to tokens with the rule of thumb of 4 characters per token. That rule is rough, so confirm the total with your tool's own token count.
 
 <Example
   label="Computed"
