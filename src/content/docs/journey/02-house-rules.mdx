@@ -14,7 +14,7 @@ import Example from '../../../components/Example.astro';
 A new flatmate moves in. Sam explains the house rules once: bins go out on Tuesday, the top shelf is shared, the heating goes off at night. Sam's assistant is the opposite. Every new chat is a flatmate who has just arrived, and the rules have to be explained from scratch.
 
 :::note[Weak spot]
-Level 1 fixed one ask, but the next chat starts empty. **The assistant forgets your rules at the start of every session.** The fix at this level is an instruction file. This level is step 5 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-5-keep-it), Keep it: the rule is saved once, where every chat reads it. A file is still advice, so later levels add controls that run outside the assistant, such as [hooks](../../setup/hooks/).
+Level 1 fixed one ask, but a new chat does not contain the earlier conversation. **The assistant does not carry your rules into a new chat unless you save them where it loads them.** The fix at this level is an instruction file. This level is step 5 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-5-keep-it), Keep it: the rule is saved once, where every chat reads it. A file is still advice, so later levels add controls that run outside the assistant, such as [hooks](../../setup/hooks/).
 :::
 
 ## The idea
@@ -152,6 +152,8 @@ The reply asked for June in 10 of 10 trials with the rules. It did the same in 1
 </Example>
 
 5. Now send June (142). Check the final total yourself: it should be 2,120.00, and two of the three shares are 706.67 while Sam's is 706.66.
+
+6. Open a brand-new chat and ask what it knows about your bills, without pasting anything. Note what it already has: saved instructions, memory or project context may load even though the earlier conversation does not. Switch off whatever you did not mean to keep.
 
 A rule is a request, not a lock ([level 4](../04-trust-but-verify/) says why), and the assistant can still miscount. Level 3 reduces the slip by reading the data directly. Level 5 checks the count with a test.
 

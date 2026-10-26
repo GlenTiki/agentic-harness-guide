@@ -9,7 +9,7 @@ import Example from '../../../components/Example.astro';
 
 ## Scene
 
-*Last time: you learned that a model writes likely text, that it varies, and that it only sees what is on its desk. You also pasted a bills list with February in twice and checked the total yourself. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
+*Last time: you learned that a model writes likely text, that it varies, and that it only sees what is on its desk. You also checked a total yourself in a spreadsheet. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing. The next exercise uses a new, shorter list with the months labelled.*
 
 Suppose Sam types "Make my CV better" and gets back a CV that is longer, shinier and lists a skill Sam does not have. (This is an invented case, not a recorded run.) Sam did not say who would read it, which job it was for or what "better" meant. The assistant guessed. It is a good guesser. It is still guessing.
 
@@ -47,7 +47,7 @@ Here is my CV:
 [paste]
 ```
 
-The second ask is longer. It also gets a better answer the first time, which is quicker overall. Here is a template for any ask:
+The second ask is longer. Principle, not measured: stated constraints make it easier to say what you expect and to check the result. Compare the results on a fixed case before you trust a longer ask. Here is a template for any ask:
 
 ```text
 Goal: [what the result is for]
@@ -69,7 +69,7 @@ You need any chat assistant. This takes about 35 minutes in all. The four passes
 
 **Phone OK** for passes 1 to 4 and steps 5 and 6. Step 7 needs a laptop with a spreadsheet, and you can skip it.
 
-**The starting ask**, from level 0, with February repeated:
+**The starting ask**, a new exercise with a shorter list and labelled months, with February repeated:
 
 ```text
 Here are our shared bills for last year, in euros per month: Jan 212, Feb 198, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split the total between the three of us (Sam, Priya and Tom).
@@ -143,13 +143,13 @@ Question: is the second Feb 198 an accidental duplicate, or did you mean a diffe
 
 <Fragment slot="notice">
 
-The count line worked: 13 entries, so it stopped and asked. The sums are wrong. The 13 figures add to 2,318, not 2,518, and the 12-month total is 2,120, not 2,320.
+The reply counted 13 entries and asked, but it carried on with a conditional split instead of waiting for your answer. The sums are wrong. The 13 figures add to 2,318, not 2,518, and the 12-month total is 2,120, not 2,320.
 
 </Fragment>
 
 <Fragment slot="shows">
 
-In 20 of 20 trials the full ask counted 13 entries and asked before it split. In 10 of 20, a sum or share it stated was wrong for both the 13-figure list and the 12-month list, so you still add the figures yourself. One model, one prompt, one day.
+In 20 of 20 trials the full ask counted 13 entries and asked. A stop that waits for your answer was not measured, and the displayed reply did not wait. In 10 of 20, a sum or share it stated was wrong for both the 13-figure list and the 12-month list, so you still add the figures yourself. One model, one prompt, one day.
 
 </Fragment>
 
