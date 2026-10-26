@@ -103,22 +103,24 @@ It shows the shape of a first pass; it does not show what a real refiner will wr
 **Pass 2: steps, owners, inputs and outputs.**
 
 ```text
-1. Capture details. Owner: manager. Input: nothing. Output: a completed form.
+1. Capture details. Owner: manager. Input: nothing. Output: a completed form that names a buddy who has said yes.
 2. Validate details. Owner: assistant. Input: the form. Output: a list of missing fields, or "complete".
 3. Draft requests (accounts, equipment). Owner: assistant. Input: the form and the role's standard list. Output: draft requests. Risky: no, drafts only.
 4. Approve and grant. Owner: manager and system owners. Input: the drafts. Output: accounts and equipment. Risky: yes.
-5. Build week-one plan. Owner: assistant. Input: the form and a template. Output: a plan.
+5. Build week-one plan and draft the welcome message. Owner: assistant. Input: the form and a template. Output: a plan and a draft message.
 6. Check the plan. Owner: a separate reviewer and a script. Input: the plan and the start date. Output: pass or a list of problems.
 7. Send welcome. Owner: manager. Input: a draft message. Output: a sent message. Risky: yes.
 8. Watch progress. Owner: assistant on a schedule. Input: the [ledger](../../glossary/#ledger) (the written record of items, owners and status). Output: a flag to the manager if an item is stalled.
+9. Accept. Owner: manager, then a reviewer who is not the preparer. Input: the ledger. Output: each item ticked, then an approval. Risky: yes.
 ```
 
-What changed: eight steps, each with a named owner. Two risky steps (4 and 7) are marked and given to people. The assistant never creates accounts.
+What changed: nine steps, each with a named owner. Three risky steps (4, 7 and 9) are marked and given to people. The assistant never creates accounts.
 
 **Pass 3: checks, human checkpoints and failure.**
 
 ```text
 Checks:
+- Step 1: the buddy is named and has said yes.
 - Step 2: required fields present, start date is in the future.
 - Step 3: requested access matches the role's standard list. Extras are flagged.
 - Step 6: every working day has at least one item; nothing is dated before the start date.
@@ -126,9 +128,11 @@ Checks:
 Human checkpoints:
 - Step 4: the manager approves every request. Systems are changed by their owners only.
 - Step 7: the manager sends. The assistant only drafts.
+- Step 9: the manager ticks each item, then a reviewer who is not the preparer approves.
 
 If a step fails:
 - Steps 1 to 3: stop, tell the manager what is missing, wait.
+- Step 9: if an item is not ticked or the reviewer does not approve, the onboarding stays open and the manager is told which item.
 - Step 6: send the plan back with the problems listed, once. If it fails again, hold the plan, pass nothing on, and tell the manager the same day which checks failed.
 - Step 8: if the watcher cannot read the ledger, say so. Do not report "all clear".
 - Step 5: if it fails, retry once. Building a plan twice is safe, because it writes a draft and sends nothing. A step that sends or grants would need a record check first, so a retry cannot do it twice.
@@ -142,14 +146,15 @@ What changed: every weak step has a check, every risky step has a human checkpoi
 
 | Step | Owner | Input | Output | Check | Human checkpoint | If it fails |
 | --- | --- | --- | --- | --- | --- | --- |
-| 1 Capture details | Manager | None | Form | Required fields | None | Ask again |
+| 1 Capture details | Manager | None | Form with a buddy who said yes | Required fields, buddy named | None | Ask again |
 | 2 Validate | Assistant | Form | Missing list or "complete" | Start date in the future | None | Stop, tell manager |
 | 3 Draft requests | Assistant | Form, role list | Draft requests | Matches role list | None | Stop, flag extras |
 | 4 Approve and grant | Manager, system owners | Drafts | Accounts, equipment | Owner confirms | Human yes | Hold, no partial grants |
-| 5 Build plan | Assistant | Form, template | Plan | None here | None | Retry once (safe: it writes a draft only) |
+| 5 Build plan, draft welcome | Assistant | Form, template | Plan, draft message | None here | None | Retry once (safe: it writes a draft only) |
 | 6 Check plan | Reviewer, script | Plan, start date | Pass or problems | Every day has an item | None | Return once, then hold and tell the manager the same day |
 | 7 Send welcome | Manager | Draft | Sent message | Manager reads it | Human yes | Do not send |
 | 8 Watch | Assistant | Ledger | Flag | Reads ledger | None | Say "cannot read" |
+| 9 Accept | Manager, then a reviewer who is not the preparer | Ledger | Ticked items, approval | Every done item ticked | Human yes | Stay open, tell manager which item |
 
 ### The one-page diagram, in text
 
@@ -161,6 +166,8 @@ What changed: every weak step has a check, every risky step has a human checkpoi
                                                        (7 SEND WELCOME, manager)
                                                                      |
                                               [8 Watch: day 3 and day 10 flags]
+                                                                     |
+                                         (9 ACCEPT: manager ticks, reviewer approves)
 
 Legend: [ ] assistant or script step   ( ) human checkpoint
 Every step writes one line to the log. Every run has a run identity.
