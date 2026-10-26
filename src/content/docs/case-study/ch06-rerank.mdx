@@ -141,7 +141,7 @@ The evaluation set is itself checked. It does not show the labels are right.
 
 ### Measured results
 
-The set has 44 memories and 34 queries. Precision@3 is low for every system because most queries have one correct memory, so the best possible value is 0.333.
+The set has 44 memories and 34 queries. Precision@3 is low for every system because most queries have one correct memory, so a single-answer query scores at most 0.333 (1 of 3). Two queries have two correct memories, so the best possible mean for the whole set is 0.353 ((32 + 2 x 2) / (34 x 3)).
 
 | system | precision@3 | hit@3 | MRR |
 | --- | --- | --- | --- |
@@ -203,7 +203,7 @@ The cross-encoder put the first correct note higher and found no extra correct n
 2. The lexical fallback improved MRR a little and lowered hit@3 and precision.
 3. With 34 queries, one query moves hit@3 by 0.029. Treat small differences as noise.
 
-**Latency.** An Apple silicon laptop under load, CPU only, torch 2.14.1 with 4 threads. Stored runs gave a median of 0.018 to 0.030 seconds and a maximum of 0.050 to 0.083 seconds to re-rank 20 candidates for one prompt. Loading the model took 5 to 8 seconds, which probably includes the first import. This is a rough size on one machine, not a benchmark ([latency.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/latency.txt)).
+**Latency.** An Apple silicon laptop under load, CPU only, torch 2.14.1 with 4 threads. The two stored runs (5 and 10 repeats) gave medians of 0.0295 and 0.0233 seconds and maxima of 0.0834 and 0.0823 seconds to re-rank 20 candidates for one prompt. Loading the model took 7.37 and 6.29 seconds. This is a rough size on one machine, not a benchmark ([latency.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/latency.txt)).
 
 **Determinism.** The lexical scorer gave identical output over 25 repeated runs in the unit tests. The cross-encoder gave identical scores over 10 repeated runs of all 34 prompts ([latency.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/latency.txt)). Other hardware or thread counts can change the last decimals, so the pipeline rounds scores to five decimals before it sorts.
 

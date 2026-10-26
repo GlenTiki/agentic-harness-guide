@@ -79,7 +79,7 @@ A final small step multiplies the score by a recency boost. The boost grows with
 
 ### Why the hooks use keyword search only
 
-A per-prompt hook runs on every prompt. Loading an embedding model each time is slow. I once noted that dropping the dense step costs about a point of recall. That is an anecdote, no run kept. Treat it as a note from my setup, not as a result.
+A per-prompt hook runs on every prompt. Loading an embedding model each time is slow. I have no measurement of what dropping the dense step costs in my setup. Treat the keyword-only choice as a design principle (a cheap step on every prompt), not as a result. The measured table below is the only evidence on the guide for dense search.
 
 A separate retrieval hook runs the fuller search that adds the dense step. It keeps a short per-prompt cache and sits behind a capability switch, so it runs only when the switch is on and enough memory is free. I can also call the fuller search by hand. When free memory is low, the retrieval hook falls back to keyword search and a plain file list.
 
@@ -106,7 +106,7 @@ A cross-encoder costs more per query, as the documentation above says. It might 
 
 ## What I measured
 
-All of this is from the case study kits, not from my setup. The set has 44 memory notes and 34 queries, with the relevant notes marked by hand by one person. Every query uses different words from its note. The results use the top 3 (k = 3). With one correct note for most queries, the best possible precision@3 is 0.333.
+All of this is from the case study kits, not from my setup. The set has 44 memory notes and 34 queries, with the relevant notes marked by hand by one person. Every query uses different words from its note. The results use the top 3 (k = 3). Most queries have one correct note, and a single-answer query scores at most 0.333 (1 of 3). Two queries have two correct notes. From the stored labels, the best possible mean precision@3 for the whole set is 0.353 ((32 + 2 x 2) / (34 x 3)).
 
 You can reproduce the first two rows from the [chapter 6 kit](../../case-study/ch06-rerank/) with `python3 -I evaluate.py`, which needs no extra package.
 
@@ -171,7 +171,7 @@ On this set and this day, the scores are as stored. Re-running needs Ollama and 
 3. The hybrid scored below dense alone. I did not investigate why. My own setup chose its fusion by judgement and has not measured it.
 4. With 34 queries, one query moves hit@3 by 0.029. The set was built to use other words than the notes, so it favours meaning-based methods. It does not show that dense retrieval is better in general.
 
-**Latency.** I timed the cross-encoder on an Apple silicon laptop under load, CPU only, 4 threads, `sentence-transformers` 6.2.0. Stored runs gave a median of 0.018 to 0.030 seconds and a maximum of 0.050 to 0.083 seconds to re-rank 20 candidates for one prompt. Loading the model took 5 to 8 seconds, which probably includes the first import. This is a rough size on one machine, not a benchmark ([latency.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/latency.txt)). The scores were identical over 10 repeated runs (same file).
+**Latency.** I timed the cross-encoder on an Apple silicon laptop under load, CPU only, 4 threads, `sentence-transformers` 6.2.0. The two stored runs (5 and 10 repeats) gave medians of 0.0295 and 0.0233 seconds and maxima of 0.0834 and 0.0823 seconds to re-rank 20 candidates for one prompt. Loading the model took 7.37 and 6.29 seconds. This is a rough size on one machine, not a benchmark ([latency.txt](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/outputs/latency.txt)). The scores were identical over 10 repeated runs (same file).
 
 ## End-to-end flow
 

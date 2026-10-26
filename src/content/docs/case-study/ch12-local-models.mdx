@@ -240,8 +240,6 @@ For comparison, chapter 6 measured a cross-encoder on the same set: precision@3 
 3. The prefix variant is one query better on hit@3. That is within noise on 34 queries.
 4. The set is small, written by one person and built to use other words than the memories. It does not show that dense retrieval is better in general. Measure on your own memories.
 
-The whole run (embedding 44 memories and 34 queries) took between 0.7 and 1.3 seconds across the runs on one machine, including a warm-up.
-
 ## What is not tested
 
 The hashing embedder is for tests only. It scored below BM25 on this set, as expected, because it only matches shared words. Part 4 of the spec lists options for models larger than memory (llama.cpp memory mapping, the "LLM in a flash" paper, AirLLM). I ran none for this chapter. The section is descriptive, and the spec gives no speed numbers on purpose. The dense numbers come from one local model on one laptop and one small evaluation set.
