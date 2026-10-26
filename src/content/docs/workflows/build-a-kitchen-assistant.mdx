@@ -1,0 +1,392 @@
+---
+title: "Workflow: build a kitchen assistant"
+description: Build four small, tested scripts that catalogue recipes, track stock, make a shopping list and suggest a dish. Needs Python 3 and a terminal.
+---
+
+import Example from '../../../components/Example.astro';
+
+## Scene
+
+*Last time (level 8): you turned a job into steps, checks and stop points.*
+
+*If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
+
+Sam cooks on Sundays. The recipes live in three notebooks, a phone note and Priya's memory. The fridge holds one egg, a lot of mustard and a question. On Saturday night Sam asks an assistant to "plan the week's food" and gets a confident menu for a kitchen that does not exist.
+
+## The idea
+
+**A throwaway tool you build in an afternoon can make a hobby richer, if each part is small enough to check.** Cooking is a safe place to practise, because a wrong answer costs a dinner, not a payment.
+
+The kitchen assistant has four parts. Each part is one command in one short script. Each has a test and a fixture, and each refuses loudly when it is unsure:
+
+1. **Catalogue.** Turn a dictated recipe into an entry with ingredients and quantities. Reject an entry that has a line it cannot parse.
+2. **Stock.** Apply plain text commands such as "used 2 eggs" to a file. Stock never goes below zero silently.
+3. **Shopping list.** Take chosen recipes, subtract stock and list what is short. Mismatched units fail.
+4. **Suggestion.** Rank the recipes with a scoring rule you can read, and print the reasons.
+
+The assistant writes the script. You read it, run the tests and decide what the rules are. A model does not pick the dish. A scoring rule does, so you can see why and change it. This is the same shape as every other workflow: an owner, a rule and a check ([level 8](../../journey/08-design-anything/)).
+
+## Try it
+
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
+
+*Needs a laptop.* You need Python 3 and a terminal. The guide ships the finished script at `examples/kitchen-assistant/kitchen_assistant.py`, with a test file and fixtures. This takes about 10 steps: read the script, run the tests, run each command on the fixtures, then replace the fixtures with your own recipes.
+
+The recipes, stock and cooking log are invented (Constructed). The outputs are real runs of the script (Computed). Run the tests first:
+
+```text
+python3 -I -m unittest discover -s examples/kitchen-assistant -t examples/kitchen-assistant
+```
+
+Twelve tests pass. To build your own version, paste this into a coding assistant, then read what it returns before you run it:
+
+```text
+Write one dependency-free Python 3 script with four commands: recipe, stock, list, suggest. Parse only the line shapes I give you. If a line does not parse, refuse and change nothing. Keep stock in grams, millilitres and counts. Never let stock go below zero. Write a unit test for every refusal. Do not invent nutrition figures.
+```
+
+### Part 1: catalogue a dictated recipe
+
+Sam dictates into a phone note. The text arrives as plain lines: a title, an optional "serves" line, then one ingredient per line. The command reads the file and saves an entry only if every line parses.
+
+<Example
+  label="Computed"
+  task="Sam saves a dictated pancake recipe to the catalogue, so each ingredient has a name, a number and a unit."
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe examples/kitchen-assistant/fixtures/pancakes.txt catalogue.json"
+  env="Python 3, 2026-10-26. The recipe is invented."
+>
+
+<Fragment slot="input">
+
+```text
+Pancakes
+serves 4
+2 eggs
+200 g flour
+300 ml milk
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+saved Pancakes, serves 4
+  eggs: 2
+  flour: 200 g
+  milk: 300 ml
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Eggs have no unit, so the script stores them as a count. Grams and millilitres stay as they are.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the catalogue shape for a well-formed recipe; it does not show that a speech tool will dictate every line this cleanly.
+
+</Fragment>
+
+</Example>
+
+Dictation is the weak link, so the script must not guess. A line it cannot read stops the whole entry.
+
+<Example
+  label="Computed"
+  task="Sam dictates a recipe that has a line the script cannot read, to see that the entry is rejected and nothing is saved."
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe examples/kitchen-assistant/fixtures/bad-recipe.txt other.json"
+  env="Python 3, 2026-10-26. Exit status 1. The recipe is invented."
+>
+
+<Fragment slot="input">
+
+```text
+Pancakes
+serves 4
+2 eggs
+200 g flour
+a pinch of salt
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+refused: line 5: cannot parse: 'a pinch of salt'
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The message names the line number and the text. The file other.json was not created, and the test checks that.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows a loud refusal in place of a silent skip; the cost is that Sam must rewrite the line as "1 g salt" or add a rule for it.
+
+</Fragment>
+
+</Example>
+
+### Part 2: keep the inventory by talking to it
+
+Stock is a JSON file. Each command is a short sentence. "Used" subtracts, "bought" adds. Kilograms and litres convert to grams and millilitres on the way in, so the file keeps one unit per item.
+
+<Example
+  label="Computed"
+  task="Sam records a meal and a shop, then tries to use more eggs than the file holds, to see the third command refused."
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py stock examples/kitchen-assistant/fixtures/stock.json 'used 2 eggs'"
+  env="Python 3, 2026-10-26. Start stock: 6 eggs, 1500 g flour, 200 ml milk, 250 g butter. Third command exits 1."
+>
+
+<Fragment slot="input">
+
+```text
+used 2 eggs
+bought 1 kg flour
+used 9 eggs
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+ok: eggs 4
+ok: flour 2.5 kg
+refused: only 4 eggs in stock, cannot use 9
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The refusal reports the real stock, 4. The file still holds 4 eggs afterwards, because the script writes only when the whole command succeeds.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the no-negative-stock rule; it does not show how the script copes with a command such as "used a few eggs", which it also refuses.
+
+</Fragment>
+
+</Example>
+
+### Part 3: build the shopping list
+
+Sam picks two recipes for the week. The script adds the quantities each one needs, subtracts stock and prints what is short. Flour is held in grams, so a recipe in grams and a bag in kilograms still compare.
+
+<Example
+  label="Computed"
+  task="Sam asks for the list for pancakes and an omelette, using the stock left after part 2."
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py list catalogue.json examples/kitchen-assistant/fixtures/stock.json Pancakes Omelette"
+  env="Python 3, 2026-10-26. The omelette is 3 eggs, 20 g butter and 50 g cheese. Stock is 4 eggs, 2500 g flour, 200 ml milk, 250 g butter."
+>
+
+<Fragment slot="input">
+
+```text
+Pancakes
+Omelette
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+buy 50 g cheese
+buy 1 eggs
+buy 100 ml milk
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The two recipes need 5 eggs and Sam holds 4, so one is short. Flour and butter are covered, so they are absent. "1 eggs" is a wording flaw the script does not fix.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows set subtraction across two recipes; it ignores pack sizes, so Sam still rounds 100 ml of milk up to a carton.
+
+</Fragment>
+
+</Example>
+
+Now the failing case. The stock file keeps oil in millilitres and a recipe asks for it in grams. Converting would need the oil's density, which the script does not know, so it stops.
+
+<Example
+  label="Computed"
+  task="Sam lists a fried rice recipe that asks for oil in grams, against stock that keeps oil in millilitres."
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py list rice.json examples/kitchen-assistant/fixtures/stock-oil.json 'Fried rice'"
+  env="Python 3, 2026-10-26. Exit status 1. The recipe is invented."
+>
+
+<Fragment slot="input">
+
+```text
+Fried rice
+serves 2
+300 g rice
+2 eggs
+50 g oil
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+refused: oil is needed in g but kept in ml
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+No partial list is printed. A list that quietly skipped oil would look complete and be wrong.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows that mass and volume are never mixed; it does not say which unit is right, and Sam must fix the recipe or the stock.
+
+</Fragment>
+
+</Example>
+
+### Part 4: suggest a dish, with reasons
+
+The suggestion is a sum, not a model. For each recipe, the score is the ingredients in stock, minus the ingredients missing, plus the number of times Sam cooked it (counted up to 3). The script prints every score, so a surprising choice has a visible cause.
+
+<Example
+  label="Computed"
+  task="Sam asks what to cook, with a log in which pancakes appear twice and the omelette once."
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py suggest catalogue.json examples/kitchen-assistant/fixtures/stock.json examples/kitchen-assistant/fixtures/cooked.json"
+  env="Python 3, 2026-10-26. Log: Pancakes, Pancakes, Omelette. Stock as in part 3."
+>
+
+<Fragment slot="input">
+
+```json
+["Pancakes", "Pancakes", "Omelette"]
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Pancakes: score 3 = 2 in stock - 1 missing + 2 cooked
+Omelette: score 2 = 2 in stock - 1 missing + 1 cooked
+choose Pancakes (still need: milk)
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Each recipe has two ingredients in stock and one missing, so habit decides: pancakes lead by one. The last line names the milk Sam still lacks.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows a rule you can read and tune; the weights are Sam's taste, not a measured optimum, and a tie goes to the title that sorts first.
+
+</Fragment>
+
+</Example>
+
+## Under the bonnet
+
+*How it works. Optional reading.*
+
+### Where the approval line goes
+
+Principle, not measured. Split the kitchen assistant by what a mistake costs:
+
+- **Reads and drafts need no approval.** The assistant may read the stock file, read the catalogue and draft a shopping list or a menu. A wrong draft costs a minute.
+- **Stock edits are reversible but need a glance.** A wrong "used 2 eggs" corrupts later lists. Keep a copy of the file and show the changed line, as the script does.
+- **Money and orders need a person.** The assistant may draft the basket. A person reads it, then confirms before anything is ordered or bought. Give the assistant no payment access.
+
+This is the [human checkpoint](../../glossary/#human-checkpoint) from level 8, placed where the cost changes from minutes to money.
+
+### Calories and nutrition
+
+Nutrition needs a trusted data source and a person who checks the numbers. This page ships no calorie code and invents no nutrition figure.
+
+## Expert corner
+
+:::caution[Expert corner]
+A parser that accepts only the shapes you list is a feature. It turns dictation errors into refusals. The cost is rework: every new phrase ("a pinch", "a tin of") needs a rule and a test. Add rules for phrases you actually dictate, not for all cooking.
+
+The suggestion rule has three terms and no fitted weights. Keep it that way until you have a log long enough to compare against what you cooked. A model-based suggestion may be richer, but you cannot read why it chose. Use it, if at all, to draft recipes, and keep the choice rule yours.
+
+Stock drifts from the fridge. Count the fridge now and then and overwrite the file. No script can detect a missed "used".
+:::
+
+## Agent note
+
+:::note[Agent note]
+**Topic: personal tools with real stock and money.**
+
+Parse only the line shapes the owner defined. Refuse a line you cannot parse, and name the line. Never let a quantity go below zero. Never convert between mass and volume. Do not state a nutrition figure unless the user supplies a trusted source.
+
+You may read the inventory and draft a list. Do not order or pay. Show the draft and wait for a person to confirm.
+
+Check: a command that cannot be read or would make stock negative returns a refusal and leaves every file unchanged.
+:::
+
+## Mistakes people make
+
+**Letting dictation errors through.** Speech tools mishear, and a quiet default hides it. Fix: refuse the entry and name the line.
+
+**Mixing units to be helpful.** A recipe in grams and stock in millilitres look close enough. Fix: stop, and let the owner decide the conversion.
+
+**Trusting the first suggestion.** A rule with no history favours whatever you cooked most. Fix: read the printed scores and change a weight when the choice feels wrong.
+
+## Checkpoint
+
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
+
+You can now:
+
+- Reject a dictated recipe that has a line the script cannot parse.
+- Keep stock in one unit per item and refuse a negative result.
+- Explain why a shopping list stops on mismatched units.
+- Read a scoring rule and say why it chose a dish.
+- Place the approval line between a draft list and an order.
+
+**Self-test**
+
+1. The stock file holds 4 eggs and the command says "used 5 eggs". What should happen?
+2. A recipe needs 100 ml of honey and stock holds 150 g. Should the script convert?
+3. The assistant drafts a basket of the items on the list. Who confirms it, and when?
+
+<details>
+<summary>Answers</summary>
+
+1. The script refuses, reports that 4 are in stock and leaves the file unchanged.
+2. No. Grams and millilitres need a density the script does not hold. It refuses, and the owner fixes the unit.
+3. A person confirms, before anything is ordered or bought. The assistant only drafts.
+
+</details>
+
+## Bridge
+
+The tool works, and the next question is what the time it gives back is for.
+
+**Next:** [What the time is for](../../start-here/what-the-time-is-for/)

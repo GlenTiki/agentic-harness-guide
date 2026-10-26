@@ -57,6 +57,7 @@ export default defineConfig({
             { slug: 'start-here/professional-route' },
             { slug: 'start-here/engineer-route' },
             { slug: 'start-here/cheat-sheet' },
+            { slug: 'start-here/what-the-time-is-for' },
             { slug: 'glossary' },
           ],
         },
@@ -148,6 +149,7 @@ export default defineConfig({
             { slug: 'workflows/define-a-workflow' },
             { slug: 'workflows/research-a-decision' },
             { slug: 'workflows/design-reps' },
+            { slug: 'workflows/build-a-kitchen-assistant' },
           ],
         },
         {

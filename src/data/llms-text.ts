@@ -1,7 +1,7 @@
 import { AUTHOR, LAST_REVIEWED, LICENCE, REPO_URL, SITE_URL } from './site';
 
 const summary =
-  'A plain-English guide to getting dependable, checkable work from an AI assistant: nine journey levels, ten workflows and a reference shelf for engineers, written against Claude Code with notes on Codex CLI.';
+  'A plain-English guide to getting dependable, checkable work from an AI assistant: nine journey levels, eleven workflows and a reference shelf for engineers, written against Claude Code with notes on Codex CLI.';
 
 export const blockquote = `> ${summary}`;
 
