@@ -159,7 +159,7 @@ This skill uses only `name` and `description`. Claude Code and the open specific
 
 ### The seven evals
 
-An [eval](../../glossary/#eval) is a fixed test for a prompt. The skill ships with seven, as plain files in `examples/prompt-refiner/evals/`. Each has an input, a list of what a good refinement must contain, and a list of what counts as a failure. Six are tuned cases: the skill was changed until they passed. The seventh is a held-out case that was never used to tune the skill.
+An [eval](../../glossary/#eval) is a fixed test for a prompt. The skill ships with seven, as plain files in `examples/prompt-refiner/evals/`. Each has an input, a list of what a good refinement must contain, and a list of what counts as a failure. Six were used while the skill was written. The seventh is a held-out case that was never used to change the skill. Two later wording edits to rules 4 and 5 fixed gaps found in review; they were not tuned on these evals, and several evals still show partial grades below.
 
 These are smoke results, not a measurement. Three runs per eval is a small sample.
 
