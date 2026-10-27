@@ -26,10 +26,9 @@ TESTS = {
 SET_ORDER_CODE = "def first_tag(tags):\n    return next(iter(tags))\n"
 SET_ORDER_TEST = (
     "import unittest\nfrom tags import first_tag\n\n\nclass Tags(unittest.TestCase):\n"
-    "    def test_first_tag(self):\n        self.assertEqual('red', first_tag({'red', 'green', 'blue'}))\n"
+    "    def test_first_tag(self):\n        self.assertEqual('blue', first_tag({'red', 'green', 'blue'}))\n"
 )
 SET_ORDER_FIXED = "def first_tag(tags):\n    return sorted(tags)[0]\n"
-SET_ORDER_FIXED_TEST = SET_ORDER_TEST.replace("'red'", "'blue'")
 
 
 def run_unittest(files, extra_env=None):
@@ -67,7 +66,7 @@ def flaky(seeds=range(10)):
     print("unsorted set, hash seeds 0 to 9, exit codes:", "".join(str(code) for code in outcomes))
     print("passes:", outcomes.count(0), "fails:", len(outcomes) - outcomes.count(0))
     fixed = [
-        run_unittest({"tags.py": SET_ORDER_FIXED, "test_tags.py": SET_ORDER_FIXED_TEST}, {"PYTHONHASHSEED": str(s)}).returncode
+        run_unittest({"tags.py": SET_ORDER_FIXED, "test_tags.py": SET_ORDER_TEST}, {"PYTHONHASHSEED": str(s)}).returncode
         for s in seeds
     ]
     print("sorted, same seeds, exit codes:", "".join(str(code) for code in fixed))

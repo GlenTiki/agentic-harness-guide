@@ -9,7 +9,7 @@ import Example from '../../../../components/Example.astro';
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
-**Recommendation:** start with one assistant. Add parallel helpers when the parts are independent and you can already state each return. Use a pipeline only when each stage needs the exact output of the one before. Give every helper a brief with a return format and a length limit.
+**Recommendation:** start with one assistant. Add parallel helpers when the parts are independent, you can state each return, and producing each part costs more than briefing and reviewing a helper. Use a pipeline only when each stage needs the exact output of the one before. Give every helper a brief with a return format and a length limit.
 
 ## Why it matters
 
@@ -42,6 +42,14 @@ A helper knows things that its return does not say. Whatever the return omits, t
 Brief to the helper:
 Total the Amount column of refunds.csv for September.
 Return: the total.
+
+refunds.csv (invented):
+date,order,amount,currency
+2026-08-30,R-0999,40.00,EUR
+2026-09-02,R-1001,120.00,EUR
+2026-09-09,R-1002,85.50,EUR
+2026-09-14,R-1003,75.00,USD
+2026-09-21,R-1004,132.00,EUR
 ```
 
 </Fragment>
@@ -60,7 +68,7 @@ September refunds came to 412.50.
 
 <Fragment slot="notice">
 
-The helper's context held a row in US dollars, which it added as if it were euros. The return has no place for that fact, so the lead repeats a total that is wrong without knowing it.
+The September rows add to 412.50: 120.00 plus 85.50 plus 75.00 plus 132.00. The August row is out of scope. Row R-1003 is in US dollars, and the helper added it as if it were euros. The return has no place for the currency column, so the lead repeats a total that is wrong without knowing it.
 
 </Fragment>
 
@@ -103,7 +111,7 @@ With the bound, the lead can run many more helpers before its own context fills.
 
 Keep the work in one context when any of these is true:
 
-- You can already state the return. If you know the answer's shape, doing the work costs about the same as briefing it.
+- Producing the answer costs less than briefing a helper and reviewing its return. Knowing the answer is not the same as knowing its format. A known format makes a brief easy to write. It does not make the work cheaper. If you already know the answer and only have to write it down, do it yourself.
 - The work needs live context that the helper would not have, such as what you decided ten minutes ago and never wrote down.
 - Writing the brief costs more than doing the task.
 

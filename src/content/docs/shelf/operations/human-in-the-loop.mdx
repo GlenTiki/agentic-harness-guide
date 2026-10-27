@@ -9,25 +9,31 @@ import Example from '../../../../components/Example.astro';
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
-**Recommendation:** run reversible, local work unattended and require a person for irreversible or outward-facing actions. Write the list down. Batch routine questions into one form, and ask a person only for what an agent cannot decide.
+**Recommendation:** run reversible, local work unattended, require a person for irreversible or outward-facing actions, and forbid the agent from the few actions that remove its own limits. Write both lists down. Batch routine questions into one form, and ask a person only for what an agent cannot decide.
 
 ## Why it matters
 
-Approval has a cost, and [level 4](../../../journey/04-trust-but-verify/) names it approval fatigue. Ask too often and people may click through without reading, which is worse than not asking. Principle, not measured. Ask too rarely and an agent takes an action that cannot be undone. A written list puts the attention where the risk is.
+Approval has a cost, and [level 4](../../../journey/04-trust-but-verify/) names it approval fatigue. Ask too often and people may click through without reading, which is worse than not asking. *Principle, not measured.* Ask too rarely and an agent takes an action that cannot be undone. A written list puts the attention where the risk is.
 
 ## What to enable
 
-**1. Always confirm these.** Treat the following as requiring explicit approval from a person in the active session:
+**1. Write two lists.** The first list holds actions that need explicit approval from a person in the active session:
 
-- Pushing to a shared remote, and force-pushing anywhere.
+- Pushing to a shared remote without force, and force-pushing a branch only you use.
 - Opening or merging a pull request on a repository you do not own.
 - Spending money or changing billing.
 - Sending any message to another person: email, chat, a comment on an issue.
 - Deleting data, dropping tables or removing logs and failure records.
 - Writing credentials to disk or widening an access scope.
-- Turning off a safety control, a hook or a capability gate. The mechanism is a denied write to the settings files, hook scripts and capability registry, plus a check that fails when they change. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
 
-**2. Apply the list in the harness.** Do not rely on the agent remembering it. Claude Code behaviour: an `ask` permission rule such as `Bash(git push *)` makes the harness prompt for the commands it matches. It does not match every way to write the same command, so add a pre-tool hook that parses the command where the action matters. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/) and [Hooks](../../control/hooks/).
+The second list holds actions the agent never does, even when a person approves in passing:
+
+- Force-pushing a shared branch.
+- Turning off a safety control, a hook or a capability gate, or editing the settings files, hook scripts and capability registry that limit the agent.
+
+A human maintainer does any approved maintenance on the second list, outside the agent session. The mechanism for the second list is a denied write to those files, plus a check that fails when they change. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
+
+**2. Apply the lists in the harness.** Do not rely on the agent remembering it. Claude Code behaviour: an `ask` permission rule such as `Bash(git push *)` makes the harness prompt for the commands it matches. It does not match every way to write the same command, so add a pre-tool hook that parses the command where the action matters. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/) and [Hooks](../../control/hooks/).
 
 **3. Separate drafting from sending.** The agent drafts a message, a pull request or a command. A person authorises the send. This fits any outward action and costs little.
 
@@ -49,7 +55,7 @@ Split actions on two questions. Can you undo it? How far does it reach if it is 
 | --- | --- | --- |
 | Unattended | Reversible, and it stays on your machine or in a branch | Run it. Keep a log |
 | Ask | Hard to reverse, or it reaches other people or shared systems | A person approves each one, with the exact content |
-| Never | Disables a control, or cannot be bounded | Refuse. The agent does not do it, even when asked in passing |
+| Never | Disables a control, overwrites shared work or cannot be bounded | Refuse. The agent does not do it, even when asked in passing. A human maintainer does it outside the session if it is approved |
 
 Every item in the ask group costs attention. Move an action down to unattended only when you can make it reversible, for example by working on a branch or keeping a backup. Do not move it down because asking is tedious.
 
@@ -70,7 +76,7 @@ Constructed. These are example actions with example reasons. Your list will diff
 | Force-push a shared branch | Never | It overwrites other people's work |
 | Edit the settings file or a hook that limits the agent | Never | It removes the control that makes the other rows safe |
 
-The "never" rows are a policy choice. They are also the rows an `ask` prompt protects worst, because a person who approves them a few times will approve the next one without reading.
+The "never" rows are a policy choice. They are also the rows an `ask` prompt protects worst, because a person who approves them a few times may approve the next one without reading. Enforce them with a deny rule or a blocking hook, and send the rare approved case to a human maintainer.
 
 ### A batch that hides one risky item
 
@@ -134,7 +140,7 @@ Two rules keep batches safe. Approve a batch only for items in the unattended gr
 
 ## First step for the maintainer
 
-Copy the confirm list above into your instruction file. Then add an `ask` rule for `git push` so the harness prompts for the first item.
+Copy both lists above into your instruction file. Then add an `ask` rule for `git push` so the harness prompts for the first approval item. Add a deny rule or a blocking hook for force-pushes to shared branches and for writes to the settings and hook files.
 
 <p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
 
