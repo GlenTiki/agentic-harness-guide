@@ -136,11 +136,11 @@ The order is red, then green. It does not show that the code is right for inputs
 
 ## A test that sometimes fails
 
-A flaky test passes and fails on the same code. The usual cause is an input the test does not control: the clock, random numbers, a network call or the order of a set. The test below takes the first item of a set of three strings. Python picks the set order from a hash seed that changes every run, so the script sets the seed to ten fixed values to reproduce ten runs.
+A flaky test passes and fails on the same code. The usual cause is an input the test does not control: the clock, random numbers, a network call or the order of a set. The intended ordering is alphabetical: `first_tag` returns the tag that sorts first, so for `red`, `green` and `blue` the answer is `blue`. The first version takes the first item of the set. Python picks the set order from a hash seed that changes every run, so the script sets the seed to ten fixed values to reproduce ten runs. The second version sorts the tags. Both versions run the same test file, with the same input and the same expected value.
 
 <Example
   label="Computed"
-  task="You run a test that depends on set order under ten hash seeds, then the sorted version."
+  task="You run one test against a set-order implementation and a sorted implementation under ten hash seeds."
   evidence="python3 examples/gate-gaming/gates.py flaky"
   env="Python 3.13.1, macOS, 2026-10-26"
 >
@@ -156,8 +156,8 @@ python3 examples/gate-gaming/gates.py flaky
 <Fragment slot="output">
 
 ```text
-unsorted set, hash seeds 0 to 9, exit codes: 0011010001
-passes: 6 fails: 4
+unsorted set, hash seeds 0 to 9, exit codes: 1100101111
+passes: 3 fails: 7
 sorted, same seeds, exit codes: 0000000000
 ```
 
@@ -165,7 +165,7 @@ sorted, same seeds, exit codes: 0000000000
 
 <Fragment slot="notice">
 
-Six runs pass and four fail on identical code. The sorted version passes under every seed.
+Three runs pass and seven fail on identical code. The sorted version passes the unchanged test under every seed. Only the implementation changed.
 
 </Fragment>
 
@@ -177,7 +177,7 @@ One cause of flakiness, reproduced. It does not give a rate for your suite.
 
 </Example>
 
-An agent that meets a flaky gate will often rerun it until it passes, or add a retry. Do not accept either. Fix the input the test does not control, or delete the test and record why. Rerunning a suspect test several times with different seeds, as the script does, is how you find these before they cost a merge.
+*Principle, not measured:* an agent that meets a flaky gate can rerun it until it passes, or add a retry. Do not accept either. Fix the input the test does not control, or delete the test and record why. Rerunning a suspect test several times with different seeds, as the script does, is how you find these before they cost a merge.
 
 ## Where each check runs
 
@@ -186,7 +186,7 @@ An agent that meets a flaky gate will often rerun it until it passes, or add a r
 | Placement | Runs | Cost | Weakness |
 | --- | --- | --- | --- |
 | Post-edit hook | After each file edit | A delay on every edit, so keep it to a formatter or a lint of that file | Cannot see a cross-file failure |
-| Stop hook | When the agent says it is done | A wait at the end. The hook must fire once and then let the agent stop, or the session never ends. | Only covers sessions that reach the stop |
+| Stop hook | When the agent says it is done | A wait at the end. A gate must check the current test result at every stop and cap the retries, or the session never ends. See [a stop gate](../../control/hooks/#a-stop-gate-that-checks-the-result). | Only covers sessions that reach the stop |
 | Pre-commit | At commit, on the staged files | A delay on every commit | A bypass flag skips it |
 | CI | On push, on a clean checkout | Minutes per push, and the feedback is late | Slowest to tell the agent |
 

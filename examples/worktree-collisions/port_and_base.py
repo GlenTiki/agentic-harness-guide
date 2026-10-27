@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Two processes in two folders bind one port. Then check whether a branch descends from the current base."""
 import pathlib
-import socket
+import select
 import subprocess
 import sys
 import tempfile
@@ -16,15 +16,10 @@ BIND = (
     "except OSError as e:\n"
     "    print(sys.argv[2], 'failed:', errno.errorcode[e.errno], flush=True)\n"
     "else:\n"
-    "    print(sys.argv[2], 'bound', flush=True)\n"
+    "    print(sys.argv[2], 'bound', s.getsockname()[1], flush=True)\n"
     "    sys.stdin.readline()\n"
 )
-
-
-def free_port():
-    with socket.socket() as probe:
-        probe.bind(("127.0.0.1", 0))
-        return probe.getsockname()[1]
+WAIT_SECONDS = 10
 
 
 def start(folder, port, label):
@@ -34,24 +29,47 @@ def start(folder, port, label):
     )
 
 
+def read_line(process, seconds=WAIT_SECONDS):
+    ready, _, _ = select.select([process.stdout], [], [], seconds)
+    if not ready:
+        raise TimeoutError(f"no output within {seconds} seconds")
+    return process.stdout.readline().strip()
+
+
+def stop(processes):
+    for process in processes:
+        process.kill()
+        process.communicate()
+
+
+def bound_port(line):
+    return int(line.rsplit(" ", 1)[1])
+
+
 def port_collision(root):
     folders = [root / "folder-a", root / "folder-b"]
     for folder in folders:
         folder.mkdir()
-    print("-- two folders, one port --")
-    port = free_port()
-    first = start(folders[0], port, "process in folder-a")
-    print(first.stdout.readline().strip())
-    second = start(folders[1], port, "process in folder-b")
-    print(second.stdout.readline().strip())
-    second.wait()
-    print("-- one port per folder, taken from the folder's position in the list --")
-    base = free_port()
-    ports = [base + index for index, _ in enumerate(folders)]
-    other = [start(folder, number, f"process in {folder.name}") for folder, number in zip(folders, ports)]
-    print("\n".join(p.stdout.readline().strip() for p in other))
-    for process in [first, *other]:
-        process.communicate("\n")
+    started = []
+    try:
+        print("-- two folders, one port --")
+        first = start(folders[0], 0, "process in folder-a")
+        started.append(first)
+        line = read_line(first)
+        print(line.rsplit(" ", 1)[0])
+        second = start(folders[1], bound_port(line), "process in folder-b")
+        started.append(second)
+        print(read_line(second))
+        print("-- each folder asks the operating system for a free port --")
+        lines = []
+        for folder in folders:
+            process = start(folder, 0, f"process in {folder.name}")
+            started.append(process)
+            lines.append(read_line(process))
+        print("\n".join(text.rsplit(" ", 1)[0] for text in lines))
+        print("ports differ:", len({bound_port(text) for text in lines}) == len(lines))
+    finally:
+        stop(started)
 
 
 def descends_from_base(root):

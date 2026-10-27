@@ -19,7 +19,7 @@ const workflowOrder = [
 const writeScope =
   'Ask before you do something that changes anything outside your own working files: sending, paying, deleting, posting, granting access, pushing, installing, or editing a file the user did not ask you to change. Record the yes as the user\'s chat message or a ledger line.';
 const questionBudget =
-  'Ask once per task, in one message, with every open item and your default for each (at most five items). If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action.';
+  'Ask once per task, in one message, with every open item and your default for each (at most five items). After a tangent, re-present only an unanswered decision that blocks a change. Never ask again for an answer already given. If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action.';
 const budgetPointer = 'Every question in this section counts against the question budget at the top of this file.';
 
 const preamble = `# Agent rules

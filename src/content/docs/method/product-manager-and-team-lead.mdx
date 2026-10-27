@@ -71,11 +71,22 @@ This is the shape of a plan worth approving. It does not show what any assistant
 
 ## You may ramble
 
-You do not need a tidy brief. You can think out loud and change your mind. A good lead agent turns that into questions, and a question budget keeps it short: one message, every open item, a default for each.
+You do not need a tidy brief. Share your unfinished thoughts in the conversation, correct yourself and change direction. The transcript then holds the context you supplied. The lead agent should expect this, even when your reply does not answer its question.
+
+Ask the lead to keep the work organised:
+
+1. Keep the current task, its next step and its unanswered questions in a [ledger](../../glossary/#ledger).
+2. Apply a clear correction. If a new direction leaves the priority unclear, ask whether to park the current task or work on both. Recommend one and explain why.
+3. Before parallel work, agree which tasks run together and give each its own output. If they must edit the same output, do them in order.
+4. Return to an unanswered question when its answer is needed. Restate the task, the decision, why it matters and the recommendation. Keep answers already given.
+
+The [question budget](../../agent-rules.txt) groups the initial questions. Re-present an unanswered decision when it blocks a change; do not ask the user to repeat answers.
+
+A tangent does not cancel the task. Silence or an unrelated answer does not supply approval. A clear stop ends the affected work. Work that depends on an unanswered decision waits; other authorised work can continue.
 
 <Example
   label="Constructed"
-  task="You ramble, and the lead repeats back what it heard. I wrote this reply to show the shape. It is not a recorded run."
+  task="You suggest another task while a question about the current task remains open. This transcript is invented for teaching, not a recorded run."
   evidence="none, written by the author"
   env="not a model output"
 >
@@ -83,7 +94,9 @@ You do not need a tidy brief. You can think out loud and change your mind. A goo
 <Fragment slot="input">
 
 ```text
-Okay so the summary, it should count months, and maybe also the totals by flatmate, actually no, that is a different thing, but the duplicate thing matters, oh and Mina does not like tables.
+Current task: draft a plain-English month-end note for Mina in summary.md. Do not send it.
+Pending question: Should the note use one paragraph or a short list?
+You: No tables, anyway. Also, could we make a shopping list from my kitchen inventory? I keep thinking of things while you work. Maybe that should come first.
 ```
 
 </Fragment>
@@ -91,20 +104,24 @@ Okay so the summary, it should count months, and maybe also the totals by flatma
 <Fragment slot="output">
 
 ```text
-I heard four things. 1. Count months and stop on a repeat. 2. Totals by flatmate, which you put aside. 3. Plain wording for Mina. 4. No tables. I will do 1, 3 and 4 now and park 2. Is that right?
+Assistant: No tables. The note is still in progress. I recommend finishing it first and recording the shopping-list idea for later. That keeps one task active. Do you want that, or should I work on both in parallel?
+You: Both, please. Use inventory.txt for the shopping list. Save it locally; don't order anything.
+Assistant: Agreed. I will keep the note in summary.md and the shopping list in shopping-list.md. I can prepare the shopping list while the note waits for your answer. For Mina's note, one paragraph or a short list? That decides the layout. I recommend a short list so she can find each action.
+You: One paragraph. She reads it on her phone.
+Assistant: One paragraph, no tables. Both tasks are recorded separately. I will draft the note and prepare the shopping list. Nothing will be sent or ordered.
 ```
 
 </Fragment>
 
 <Fragment slot="notice">
 
-The reply repeats four items, drops the one you put aside and asks once.
+The first reply captures the new idea without dropping the note. The next reply records the agreed split and repeats only the unanswered layout question, with its reason. The user's final answer resolves it.
 
 </Fragment>
 
 <Fragment slot="shows">
 
-This is the behaviour to ask for. It does not show that an assistant sorts rambling this well.
+It shows a proposed way to handle a tangent and a partial answer; it does not measure how reliably an assistant preserves either task.
 
 </Fragment>
 

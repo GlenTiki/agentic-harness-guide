@@ -24,10 +24,14 @@ Instruction files load every session, so everything in them costs context all th
 name: release-notes
 description: Draft release notes from merged pull requests since the last tag. Use when asked to prepare a release.
 ---
-1. Run `git log <last-tag>..HEAD --merges --oneline`.
-2. Group entries by area. Skip dependency bumps.
-3. Write one line per change. Link each pull request.
+1. Run `git log <last-tag>..HEAD --oneline`. Do not add `--merges`.
+2. Get the list of pull requests merged since the date of that tag from your code host.
+3. Reconcile. Match each pull request to a commit by the pull request number in the subject. List every pull request with no commit, and every commit with no pull request, under "Unreconciled". Do not drop them.
+4. Group entries by area. Skip dependency bumps.
+5. Write one line per change. Link each pull request.
 ```
+
+The `--merges` flag lists only merge commits. A squash merge or a rebase merge makes ordinary commits, so the flag would hide those changes. A merge commit also does not have to name a pull request. Whether the host puts the pull request number in the commit subject depends on its settings, so check yours before you rely on step 3.
 
 **2. Write the description as the trigger.** The harness uses it to decide when to load the skill. Say what the skill does and when to use it. Put the main use first, because long descriptions are truncated in the listing.
 
@@ -41,7 +45,7 @@ description: Draft release notes from merged pull requests since the last tag. U
 
 ## A trigger that fires too often
 
-The description is the only part of a skill that is always in context, so it is the trigger. A description that says what the skill does but not what it is not for will match nearby tasks. The two descriptions below are for the same release-notes skill.
+The description is the only part of a skill that is always in context, so it is the trigger. *Principle, not measured:* a description that says what the skill does but not what it is not for can match nearby tasks. The two descriptions below are for the same release-notes skill.
 
 <Example
   label="Constructed"

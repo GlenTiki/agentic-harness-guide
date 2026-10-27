@@ -1,6 +1,6 @@
 ---
 title: Git worktrees for parallel agents
-description: Give every AI agent that writes files its own git worktree, so parallel work cannot collide.
+description: Give each agent its own files and branch with a git worktree, and isolate shared ports, databases and other resources separately.
 ---
 
 import Example from '../../../../components/Example.astro';
@@ -38,11 +38,59 @@ git merge-base --is-ancestor <base-commit> <agent-branch> && echo "based on the 
 
 **4. Keep each worktree's identity clear.** Give worktrees a path and a branch name that say who owns them. Do not nest one inside another.
 
-**5. Beware of environment variables that point git elsewhere.** If `GIT_DIR` or `GIT_WORK_TREE` is set in the shell, `git -C <path>` still operates on the repository those variables name. Unset them in scripts and in agent briefs, or pass them explicitly.
+**5. Beware of environment variables that point git elsewhere.** Three variables override what `git -C <path>` finds. `GIT_DIR` selects the repository metadata: history and refs. `GIT_WORK_TREE` selects the folder that git reads as the working files. `GIT_INDEX_FILE` selects the index, the list of staged content. The throwaway-repository run below shows each one. Unset all three in scripts and in agent briefs, or pass them explicitly, unless you mean to aim git at another repository.
 
 **6. Sequence writers on the same files.** Worktrees stop file collisions, not merge conflicts. If two agents edit the same function, you resolve it at merge. Split the work by file or module instead.
 
 **7. Merge deliberately, then clean up.** Follow the order in the section below. A squash merge does not make the agent branch an ancestor of main, so judge "merged" by the pull request, not by ancestry.
+
+## What each git variable selects
+
+The script builds two throwaway repositories, `outer` and `inner`, each with one commit. It sets one variable at a time and runs git against the other repository.
+
+<Example
+  label="Computed"
+  task="You set GIT_DIR, GIT_WORK_TREE and GIT_INDEX_FILE one at a time and look at what git reports."
+  evidence="sh examples/worktree-collisions/git_env_roles.sh"
+  env="git 2.50.1, macOS, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+sh examples/worktree-collisions/git_env_roles.sh
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+-- GIT_DIR names outer's metadata, git -C inner --
+last commit: commit in outer
+-- GIT_WORK_TREE names inner's folder, git -C outer --
+git dir: .git
+status:  M f
+-- GIT_INDEX_FILE names an empty index, git -C outer --
+D  f
+?? f
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+With `GIT_DIR` set, `git -C inner` reads the history of `outer`. With `GIT_WORK_TREE` set, git keeps the `outer` metadata (`.git`) but compares the files in `inner`, so the same file shows as modified. With `GIT_INDEX_FILE` set to a missing index file, which git reads as empty, git sees the staged file as deleted and the folder file as new.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Each variable overrides one part of the repository, and `-C` does not undo any of them. It does not show how your harness sets these variables, so print them in a test hook.
+
+</Fragment>
+
+</Example>
 
 ## See the collision
 
@@ -141,7 +189,7 @@ A worktree turns a silent overwrite into a loud conflict. It does not remove the
 
 ## A port survives separate folders
 
-A worktree is a folder. A port belongs to the machine. The script starts one process in each of two folders and gives both the same port.
+A worktree is a folder. A port belongs to the machine. The script starts a process in the first folder and lets the operating system choose its port. It then starts a process in the second folder on that same port. In the second part, each folder asks the operating system for a free port. Every wait has a ten-second limit, and the script stops all child processes when it ends.
 
 <Example
   label="Computed"
@@ -164,16 +212,17 @@ python3 examples/worktree-collisions/port_and_base.py
 -- two folders, one port --
 process in folder-a bound
 process in folder-b failed: EADDRINUSE
--- one port per folder, taken from the folder's position in the list --
+-- each folder asks the operating system for a free port --
 process in folder-a bound
 process in folder-b bound
+ports differ: True
 ```
 
 </Fragment>
 
 <Fragment slot="notice">
 
-The second process fails with `EADDRINUSE` although its folder is separate. The last two lines show the fix: a different port for each folder.
+The second process fails with `EADDRINUSE` although its folder is separate. The last three lines show the fix: each folder gets a port from the operating system, and the two ports differ.
 
 </Fragment>
 
@@ -185,7 +234,7 @@ Folder isolation does not cover ports. A shared development database fails the s
 
 </Example>
 
-Derive the port, the database name and the container name from the worktree name or its position in a list, and write the values into the brief. Do not leave the choice to each agent.
+Derived numbers do not reserve a port: a port that is free now can be taken before the process binds it. Let the operating system assign the port at bind time and report it, or hold the socket open until the process takes it over. Derive the database name and the container name from the worktree name, and write the values into the brief. Do not leave the choice to each agent.
 
 ## Choose how to isolate
 

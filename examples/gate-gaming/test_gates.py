@@ -30,6 +30,16 @@ class Gates(unittest.TestCase):
         self.assertEqual(set(codes), {"0", "1"})
         self.assertEqual(lines[2], "sorted, same seeds, exit codes: 0000000000")
 
+    def test_sorted_version_passes_the_unchanged_test_under_every_seed(self):
+        sys.path.insert(0, str(HERE))
+        import gates
+
+        codes = [
+            gates.run_unittest({"tags.py": gates.SET_ORDER_FIXED, "test_tags.py": gates.SET_ORDER_TEST}, {"PYTHONHASHSEED": str(seed)}).returncode
+            for seed in range(10)
+        ]
+        self.assertEqual(codes, [0] * 10)
+
 
 if __name__ == "__main__":
     unittest.main()

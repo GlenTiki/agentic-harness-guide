@@ -227,9 +227,63 @@ It shows what the script does with each input. It does not show that the harness
 
 The script blocks `--force-with-lease` too. That flag is safer than `--force`, but it can still overwrite remote work, so this sample sends the decision back to a person. Change that line if your team decides otherwise.
 
-This run sent eight tool calls through the sample hook and recorded what it decided. Exit code 0 lets a call through. Exit code 2 blocks it. The recording keeps metadata only.
+<Example
+  label="Computed"
+  task="A maintainer pipes eight made-up tool calls, one at a time, into the sample pre-tool hook script and records each exit code."
+  evidence="node scripts/record-artefacts.mjs (the hook section writes src/data/runs/hook-sample-run.json)"
+  env="Python 3.13.1, macOS 26.5, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+The script starts the hook once per call and feeds it a JSON line such as `{"tool_name": "Bash", "tool_input": {"command": "git status"}}`. The eight commands, in order:
+
+```text
+1. git status
+2. git log --oneline
+3. git push -u origin feature-fix
+4. git push --force
+5. git commit -m "update notes"
+6. git push origin +main
+7. echo hello
+8. git push -f origin main
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+call  exit code  decision
+1     0          allow
+2     0          allow
+3     0          allow
+4     2          block
+5     0          allow
+6     2          block
+7     0          allow
+8     2          block
+```
+
+The chart shows the same eight events with the time each script run took. The recording keeps metadata only. See the [recorded data](https://github.com/GlenTiki/agentic-harness-guide/blob/main/src/data/runs/hook-sample-run.json).
 
 <HookTimeline run={hookRun} id="hooks-page-timeline" />
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Exit code 0 lets a call through. Exit code 2 blocks it. Calls 4, 6 and 8 are blocked. The durations are the time of one standalone script start, including the start of the Python process.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It is a standalone script measurement with made-up tool-call JSON. It is not a harness session, and no harness called the hook. It does not show harness-level latency or the effect of hooks that run in parallel.
+
+</Fragment>
+
+</Example>
 
 **5. Write good block messages.** The message is the only thing the model sees. Say what was blocked, why, and what to do instead.
 
@@ -348,13 +402,13 @@ It shows the status of a pipeline in `sh`. It does not show how any harness read
 
 </Example>
 
-### A stop check that blocks once
+### A one-shot stop reminder
 
-A stop hook that blocks every time never lets the agent finish. Key the block to the session identifier. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
+A stop hook that blocks every time never lets the agent finish. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
 
 <Example
   label="Computed"
-  task="A maintainer sends five stop events from two sessions through the one-shot hook."
+  task="A maintainer sends five stop events from two sessions through the one-shot reminder."
   evidence="python3 -I examples/hook-traps/test_one_shot_stop.py"
   env="Python 3.13.1, macOS 26.5, 2026-10-26"
 >
@@ -389,7 +443,57 @@ Each session is blocked once, and the second session starts fresh. Unreadable in
 
 <Fragment slot="shows">
 
-It shows the script's logic with made-up session names. It does not show a real session, or where the harness keeps your marker files. Delete old markers on a schedule.
+It shows the script's logic with made-up session names. It does not show a real session, or where the harness keeps your marker files. Delete old markers on a schedule. After the first stop, the script lets every later stop through, even if the tests fail.
+
+</Fragment>
+
+</Example>
+
+### A stop gate that checks the result
+
+A real gate runs the tests at every stop and reads the result. If the tests fail, it blocks and returns the failure text to the agent. It counts the failed attempts for the session. After three, it lets the agent stop and writes an escalation file that holds the last failure output, so a person reviews the session. The limit of three is a starting value: it bounds the cost of a loop, so tune it on your own sessions. The script reads the test command from `TEST_COMMAND`. A timeout counts as a failed attempt. Missing or corrupt state and invalid session identifiers block with exit code 2. Set `STOP_STATE_DIR` to an existing directory. Use `exec` before the command to replace its shell; this sample does not manage descendant processes.
+
+<Example
+  label="Computed"
+  task="A maintainer sends seven stop events from two sessions through the gate, with a failing test command and then a passing one."
+  evidence="python3 -I examples/hook-traps/test_gated_stop.py"
+  env="Python 3.13.1, macOS 26.5, 2026-10-27T00:23:42Z. Standard output shown; test-runner diagnostics use standard error."
+>
+
+<Fragment slot="input">
+
+```bash
+python3 -I examples/hook-traps/test_gated_stop.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+session=s1 tests=fail exit=2 expect=2
+session=s1 tests=fail exit=2 expect=2
+session=s1 tests=pass exit=0 expect=0
+session=s1 tests=fail exit=2 expect=2
+session=s2 tests=fail exit=2 expect=2
+session=s2 tests=fail exit=2 expect=2
+session=s2 tests=fail exit=0 expect=0
+escalation files: ['s2.escalate']
+unreadable input exit=2 expect=2
+ok
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Session `s1` fails twice, passes on its third stop, and then fails again with a fresh count. Session `s2` fails three times. On the third failure the gate lets the stop through and writes `s2.escalate`. Later failing stops also pass once the count reaches three; the escalation file remains for human review. Unreadable input blocks.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the gate logic with the shell commands `true` and `false` in place of a real suite. The regression tests also exercise timeouts and state errors. It does not show a real harness, a production suite, or how a person sees the escalation file. The docs say exit code 2 on `Stop` continues the conversation. Whether stdout or standard error reaches the person at exit 0 was not checked, so read the file rather than the terminal.
 
 </Fragment>
 
@@ -449,7 +553,7 @@ It shows git's behaviour with an inherited variable. It does not show how your h
 
 ### Several hooks and latency
 
-The docs say: "When an event fires, its matching hooks run in parallel." So the wait for an event is about the slowest hook, not the sum. The part of the page read on 2026-10-26 did not state how conflicting decisions combine, such as one hook denying and another allowing. Not verified. Test it with two hooks that disagree before you rely on an order. The same page gives command hooks a default timeout of 600 seconds, so set a shorter one on each. This guide did not time any hook.
+The docs say: "When an event fires, its matching hooks run in parallel." So the wait for an event is about the slowest hook, not the sum. The part of the page read on 2026-10-26 did not state how conflicting decisions combine, such as one hook denying and another allowing. Not verified. Test it with two hooks that disagree before you rely on an order. The same page gives command hooks a default timeout of 600 seconds, so set a shorter one on each. This guide measured no harness-level latency and no parallel-hook latency. The only timings are the standalone script runs in the chart above.
 
 ## Failure modes it reduces
 
