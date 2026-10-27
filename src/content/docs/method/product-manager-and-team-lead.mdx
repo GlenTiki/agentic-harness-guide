@@ -9,7 +9,7 @@ import Example from '../../../components/Example.astro';
 
 **Status.** Runs in my setup: the lead-agent pattern, the delegation counters and the plain-English briefs. Design only: personas that keep their own memory (see [personas](../../setup/personas/)). The benefits listed under "Hypotheses" are not measured.
 
-Some people give an [agent](../../glossary/#agent) a task list. My working practice is a different split. You say what you want and how you will know it works. The agent works out the steps. You watch, step in, and add context when the agent drifts. I think this saves rework, but I have not measured it.
+Some people give an [agent](../../glossary/#agent) a task list. My working practice is a different split. You say what you want and how you will know it works. The agent works out the steps. The lead shows results and brings you decisions that need your judgement. You add context when the work drifts. I think this saves rework, but I have not measured it.
 
 ## Two jobs, not one
 
@@ -24,7 +24,7 @@ My working hypothesis, not a measured result, is that the lead agent is faster a
 
 ## What you say
 
-Describe the outcome and the expected behaviour. Skip the how. End with "tell me your plan before you start". That makes the agent explain its next step, so you can correct it before it acts. In my experience one such exchange usually costs less than undoing a wrong edit.
+Describe the outcome and the expected behaviour. Skip the how. The example below uses approval before edits: "tell me your plan before you start". You can correct that plan before it acts. A separately authorised scope can use [merge before use review](../be-the-product-manager-of-your-own-tooling/#choose-when-work-lands). You choose the arrangement; the agent cannot infer it.
 
 <Example
   label="Constructed"
@@ -127,9 +127,9 @@ It shows a proposed way to handle a tangent and a partial answer; it does not me
 
 </Example>
 
-## Monitor, step in, keep adding context
+## Review, step in, keep adding context
 
-While the work runs, watch three signals.
+You need not supervise the helpers. At the [guided review](../be-the-product-manager-of-your-own-tooling/#a-review-you-can-return-to-cold), inspect three signals.
 
 1. **The plan.** Does the next step match what you meant?
 2. **The checks.** Did a check run, and did it go red when it should?
@@ -247,6 +247,10 @@ It shows what a stranger finds that the writer cannot. It does not show that an 
 </Fragment>
 
 </Example>
+
+Read-only research helpers compare approaches before design. Reports separate what the host documents, what this run changed, and what remains unobserved. A written file does not prove activation.
+
+For each defect, a reviewer should return a reproduced failure, evidence and the smallest correction. Run the check before and after the fix. Agreement alone does not prove the check detects the defect.
 
 ## Why the lead can keep one long thread
 

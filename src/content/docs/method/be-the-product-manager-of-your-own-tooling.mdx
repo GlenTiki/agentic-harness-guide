@@ -13,7 +13,7 @@ import Example from '../../../components/Example.astro';
 
 In this loop the assistant is the tech lead. You are the product manager of your own tools.
 
-The tech lead builds, explains and recommends. The product manager decides what is worth building. You do not need to read the code to hold that role. You need to try the result and say what you want.
+The tech lead coordinates helpers, checks their work, runs the demo and recommends your next action. The product manager decides what is worth building. You do not need to read the code to hold that role. You need to try the result and say what you want.
 
 ## One cycle
 
@@ -28,6 +28,18 @@ Each cycle has five steps. Repeat them until you say stop.
 The assistant leads and tells you what to do next. You decide. A menu of equal options pushes the work back on you, so the assistant picks one and gives its reason.
 
 You can change direction during a cycle. Ask the assistant to [keep the current task and unanswered questions visible](../product-manager-and-team-lead/#you-may-ramble) while you agree what happens next.
+
+## Choose when work lands
+
+The example waits for you to try each slice. Alternatively, authorise a named repository and a named change scope to merge before use review. Name the review branch too. Authorised commits and pushes to that branch prepare the candidate for CI. Merging follows the required checks. Deployment needs separate authority, including deployment triggered by a push.
+
+Before merging, a competing provider must accept the plan and exact candidate. Require a separate competing-provider clean-code review and any security review. Local checks and executed CI must pass for that exact revision. Missing review or unexecuted CI blocks merging. Technical acceptance is not user acceptance. Later negative feedback directs a correction.
+
+Neither mode authorises egress, spending or messages, lifts holds, or extends to client repositories. Your stop still applies.
+
+## A review you can return to cold
+
+Run the demo on the exact version first. Show the benefit, reason and actual before and after output. Give one action, what good looks like, and what each answer unblocks. Put revision identifiers and evidence links last. If the demo cannot run or its output cannot be shared safely, mark the review blocked. Never invent an actual result.
 
 ## Two cycles
 
@@ -52,14 +64,14 @@ You: I run a small shop. I want to read my month-end notes and understand them w
 
 ```text
 Cycle 1
-Assistant: I built a page that shows your notes file. Each line that holds an amount is highlighted. Nothing is explained yet.
-Assistant: Open reader.html in your browser and load notes-october.txt. I am watching the page's log to see which lines it highlights.
+Assistant: This reader helps you find the amounts before we add explanations. I ran the demo: before, "Fees €40" was plain; after, "Fees €40" is highlighted. Nothing is explained yet.
+Assistant: Open reader.html and load notes-october.txt. Check that the amounts you expect are highlighted. I am watching the log. If it works, we can add explanations. If a line is missed, we fix that first.
 You: (opens it) It works. The delivery line is not highlighted.
 Assistant: Confirmed in the log: that line writes the amount as "EUR 40" and my rule only matches "€40". Recommendation: fix the rule to accept both, then add the explanations. Next step for you: tell me if any other amount style appears in your notes.
 You: Yes, "40 euro" too.
 
 Cycle 2
-Assistant: I fixed the rule to accept all three styles. Every amount line is now highlighted. Open the page again.
+Assistant: I reran the demo after the fix. Before, "Delivery EUR 40" was plain; after, it is highlighted. The check also accepts "€40" and "40 euro". Open the page again and check the amounts.
 You: (opens it) Good. Now I want the explanations.
 Assistant: Recommendation: add one explanation for the line you ask about, on click, instead of explaining every line. Reason: your notes have 60 lines and most need no explanation. I will start with a click on any highlighted line.
 You: No. I don't want to click. Show a short explanation under each highlighted line.
@@ -82,11 +94,15 @@ It shows the shape of the loop, with a rejection and a steer. It does not show h
 
 </Example>
 
+## What needs you now
+
+I want one ranked list of what needs my attention: a design goal here, not a built queue. Each item explains its position, recommends an action and says what the answer unblocks. You review results and product choices, not helpers. Unanswered decisions block dependent work; other authorised work can continue.
+
 ## The assistant tells you what to do next
 
 Recommending the next improvement needs evidence. One source is a log of what you did. If you do the same step by hand again and again, that step is a candidate for a tool.
 
-The script below reads an actions log in the format of the [observability page](../../shelf/operations/observability/). It counts the steps that finished more than once. It ranks them by the total minutes, and it prints a recommendation for the top three.
+This script ranks opportunities to automate work, not items waiting for your attention. It reads an actions log in the format of the [observability page](../../shelf/operations/observability/). It counts the steps that finished more than once. It ranks them by the total minutes, and it prints a recommendation for the top three.
 
 The log may also carry a `minutes` field on a line, the time one run of the step took. The observability format does not have this field. Without it, a step counts as 1 minute. The script ignores `pre` lines, because a `pre` line is an attempt and not a finished step.
 
@@ -143,6 +159,6 @@ Treat the recommendation as a suggestion. You decide. Before you build the tool,
 
 - It must not give a list of options with no recommendation.
 - It must not report a slice as working without a check of the outcome in the system.
-- It must not start the next slice before you have tried the last.
+- It must not skip the user check required by the chosen mode, or treat technical review as proof of user acceptance.
 
 **Next:** [The setup behind the guide](../../setup/)
