@@ -229,6 +229,19 @@ details.agent-note > .starlight-aside {
 
 figure.diagram {
   margin: 1.5rem 0;
+  background: var(--ahg-panel);
+  border: 1px solid var(--ahg-line);
+  border-radius: var(--ahg-radius-card);
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
+  transition: border-color var(--ahg-motion-fast) ease-out, box-shadow var(--ahg-motion-fast) ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  figure.diagram:hover {
+    border-color: color-mix(in srgb, var(--ahg-line) 65%, var(--ahg-accent) 35%);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.07);
+  }
 }
 
 figure.diagram svg {
@@ -240,7 +253,7 @@ figure.diagram svg {
 figure.diagram figcaption {
   font-size: var(--sl-text-sm);
   color: var(--ahg-muted);
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
 }
 
 details.go-deeper {

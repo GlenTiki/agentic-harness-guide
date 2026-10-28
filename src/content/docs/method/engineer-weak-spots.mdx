@@ -4,6 +4,7 @@ description: A loop that turns each repeated mistake into a fix you can test. No
 ---
 
 import Example from '../../../components/Example.astro';
+import WeakSpotLoop from '../../../components/WeakSpotLoop.astro';
 
 *Audience: a person who wants a method, not a tool. An agent reading this page should not run any command here unless the user asks.*
 
@@ -26,39 +27,7 @@ That is the whole method. The rest of this page adds a diagram, the same example
 
 The loop has five steps. Each step has one output you can point at. Other pages refer to a step by its number and name.
 
-<figure>
-<svg viewBox="0 0 640 250" role="img" aria-labelledby="loop-title loop-desc" xmlns="http://www.w3.org/2000/svg" style={{ maxWidth: '100%', height: 'auto', fontFamily: 'var(--sl-font-system)' }}>
-<title id="loop-title">The weak-spot loop</title>
-<desc id="loop-desc">Five boxes in a row joined by arrows. Notice the slip. Name the weak spot. Engineer a fix. Prove the fix can fail. Keep the fix. A dashed arrow runs from Keep back to Notice, because the next slip starts the loop again.</desc>
-<defs>
-<marker id="loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-<path d="M0 0L10 5L0 10z" fill="var(--sl-color-gray-3)" />
-</marker>
-</defs>
-<rect x="8" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.5" />
-<text x="64" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">1 Notice</text>
-<text x="64" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">the slip happens</text>
-<rect x="136" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.5" />
-<text x="192" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">2 Name</text>
-<text x="192" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">the weak spot</text>
-<rect x="264" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.5" />
-<text x="320" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">3 Engineer</text>
-<text x="320" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">a check or a block</text>
-<rect x="392" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-accent)" stroke-width="2" />
-<text x="448" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">4 Prove</text>
-<text x="448" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">it can go red</text>
-<rect x="520" y="40" width="112" height="64" rx="8" fill="var(--sl-color-gray-6)" stroke="var(--sl-color-gray-4)" stroke-width="1.5" />
-<text x="576" y="68" text-anchor="middle" font-size="14" font-weight="600" fill="var(--sl-color-text)">5 Keep</text>
-<text x="576" y="88" text-anchor="middle" font-size="11" fill="var(--sl-color-gray-2)">in the repeat path</text>
-<path d="M120 72H134" stroke="var(--sl-color-gray-3)" stroke-width="1.5" fill="none" marker-end="url(#loop-arrow)" />
-<path d="M248 72H262" stroke="var(--sl-color-gray-3)" stroke-width="1.5" fill="none" marker-end="url(#loop-arrow)" />
-<path d="M376 72H390" stroke="var(--sl-color-gray-3)" stroke-width="1.5" fill="none" marker-end="url(#loop-arrow)" />
-<path d="M504 72H518" stroke="var(--sl-color-gray-3)" stroke-width="1.5" fill="none" marker-end="url(#loop-arrow)" />
-<path d="M576 104V200H64V108" stroke="var(--sl-color-gray-3)" stroke-width="1.5" stroke-dasharray="5 4" fill="none" marker-end="url(#loop-arrow)" />
-<text x="320" y="224" text-anchor="middle" font-size="12" fill="var(--sl-color-gray-2)">the next slip starts the loop again</text>
-</svg>
-<figcaption>The weak-spot loop. The accent box is the step most people skip.</figcaption>
-</figure>
+<WeakSpotLoop />
 
 <h3 id="loop-1-notice">1. Notice</h3>
 

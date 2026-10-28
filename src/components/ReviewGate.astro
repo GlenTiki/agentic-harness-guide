@@ -1,51 +1,394 @@
-<figure class="diagram">
-  <svg viewBox="0 0 480 560" role="img" aria-labelledby="rg-t rg-d" xmlns="http://www.w3.org/2000/svg">
+<figure class="diagram" data-diagram="review-gate">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Review gate controls">
+    <div class="btn-group" role="group" aria-label="Step selection">
+      <button type="button" class="ctrl-btn active" data-step="0">1. Diff</button>
+      <button type="button" class="ctrl-btn" data-step="1">2. Local gates</button>
+      <button type="button" class="ctrl-btn" data-step="2">3. Fresh review</button>
+      <button type="button" class="ctrl-btn" data-step="3">4. CI run</button>
+      <button type="button" class="ctrl-btn" data-step="4">5. Human approval</button>
+      <button type="button" class="ctrl-btn" data-step="5">6. Merge</button>
+    </div>
+    <button type="button" class="ctrl-btn reset-btn" data-action="invalidate">
+      ⚠ Simulate edit (break digest)
+    </button>
+  </div>
+
+  <svg viewBox="0 0 480 570" role="img" aria-labelledby="rg-t rg-d" xmlns="http://www.w3.org/2000/svg">
     <title id="rg-t">Review gate sequence</title>
     <desc id="rg-d">The author agent produces a diff. Local gates run. A fresh-context reviewer, ideally from a different provider, reviews the exact diff and records a verdict bound to its digest. Any change to the diff invalidates the verdict and returns to the gates. CI runs on the final revision, then a human approves the merge.</desc>
     <defs>
       <marker id="rg-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
         <path d="M0 0L10 5L0 10z" class="arrow" />
       </marker>
+      <marker id="rg-a-wrong" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow-wrong" />
+      </marker>
+      <pattern id="rg-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1" class="grid-dot" />
+      </pattern>
     </defs>
-    <rect x="130" y="10" width="220" height="48" rx="8" class="box" />
-    <text x="240" y="40" class="label">Author produces a diff</text>
 
-    <rect x="130" y="108" width="220" height="48" rx="8" class="box" />
-    <text x="240" y="138" class="label">Local gates pass</text>
+    <rect width="480" height="570" fill="url(#rg-grid)" opacity="0.4" rx="10" />
 
-    <rect x="130" y="206" width="220" height="64" rx="8" class="box hot" />
-    <text x="240" y="232" class="label">Fresh-context review</text>
-    <text x="240" y="252" class="sub">verdict bound to the diff digest</text>
+    <g class="flow">
+      <!-- Step 0: Author produces diff -->
+      <g class="node" data-node="0" tabindex="0" role="button" aria-label="Step 1: Author produces a diff">
+        <rect x="130" y="10" width="220" height="50" rx="8" class="box" />
+        <rect x="130" y="10" width="6" height="50" rx="3" class="accent-bar" />
+        <text x="240" y="40" class="label">Author produces a diff</text>
+      </g>
 
-    <rect x="130" y="320" width="220" height="48" rx="8" class="box" />
-    <text x="240" y="350" class="label">CI on the final revision</text>
+      <!-- Step 1: Local gates -->
+      <g class="node" data-node="1" tabindex="0" role="button" aria-label="Step 2: Local gates pass">
+        <rect x="130" y="110" width="220" height="50" rx="8" class="box" />
+        <rect x="130" y="110" width="6" height="50" rx="3" class="accent-bar" />
+        <text x="240" y="140" class="label">Local gates pass</text>
+      </g>
 
-    <rect x="130" y="418" width="220" height="48" rx="8" class="box hot" />
-    <text x="240" y="448" class="label">Human approves the merge</text>
+      <!-- Step 2: Fresh-context review -->
+      <g class="node" data-node="2" tabindex="0" role="button" aria-label="Step 3: Fresh-context review">
+        <rect x="130" y="210" width="220" height="66" rx="8" class="box hot" />
+        <rect x="130" y="210" width="6" height="66" rx="3" class="accent-bar active" />
+        <text x="240" y="238" class="label">Fresh-context review</text>
+        <text x="240" y="258" class="sub">verdict bound to diff digest</text>
+      </g>
 
-    <rect x="130" y="506" width="220" height="44" rx="8" class="box" />
-    <text x="240" y="534" class="label">Merge and verify</text>
+      <!-- Step 3: CI -->
+      <g class="node" data-node="3" tabindex="0" role="button" aria-label="Step 4: CI on final revision">
+        <rect x="130" y="326" width="220" height="50" rx="8" class="box" />
+        <rect x="130" y="326" width="6" height="50" rx="3" class="accent-bar" />
+        <text x="240" y="356" class="label">CI on the final revision</text>
+      </g>
 
-    <path d="M240 58V106" class="line" marker-end="url(#rg-a)" />
-    <path d="M240 156V204" class="line" marker-end="url(#rg-a)" />
-    <path d="M240 270V318" class="line" marker-end="url(#rg-a)" />
-    <path d="M240 368V416" class="line" marker-end="url(#rg-a)" />
-    <path d="M240 466V504" class="line" marker-end="url(#rg-a)" />
+      <!-- Step 4: Human approval -->
+      <g class="node" data-node="4" tabindex="0" role="button" aria-label="Step 5: Human approves the merge">
+        <rect x="130" y="426" width="220" height="50" rx="8" class="box hot" />
+        <rect x="130" y="426" width="6" height="50" rx="3" class="accent-bar active" />
+        <text x="240" y="456" class="label">Human approves the merge</text>
+      </g>
 
-    <path d="M130 238H50V34H128" class="line dash" marker-end="url(#rg-a)" />
-    <text x="40" y="140" class="side" transform="rotate(-90 40 140)">findings or any new edit: back to the author</text>
+      <!-- Step 5: Merge -->
+      <g class="node" data-node="5" tabindex="0" role="button" aria-label="Step 6: Merge and verify">
+        <rect x="130" y="516" width="220" height="46" rx="8" class="box" />
+        <rect x="130" y="516" width="6" height="46" rx="3" class="accent-bar" />
+        <text x="240" y="544" class="label">Merge and verify</text>
+      </g>
+
+      <!-- Connecting forward lines -->
+      <path d="M240 60V108" class="line" data-path="0" marker-end="url(#rg-a)" />
+      <path d="M240 160V208" class="line" data-path="1" marker-end="url(#rg-a)" />
+      <path d="M240 276V324" class="line" data-path="2" marker-end="url(#rg-a)" />
+      <path d="M240 376V424" class="line" data-path="3" marker-end="url(#rg-a)" />
+      <path d="M240 476V514" class="line" data-path="4" marker-end="url(#rg-a)" />
+
+      <!-- Loop-back line on reset -->
+      <path d="M130 243H48V35H128" class="line dash loopback" data-path="loopback" marker-end="url(#rg-a)" />
+      <text x="38" y="140" class="side" transform="rotate(-90 38 140)">findings or any new edit: back to the author</text>
+    </g>
   </svg>
+
+  <div class="diagram-readout" aria-live="polite">
+    <p class="readout-title"><span class="badge-step">Step 1</span> Author produces a diff</p>
+    <p class="readout-desc">The author agent completes its slice and writes a unified diff. The diff is hashed into a SHA-256 digest before any review begins.</p>
+  </div>
+
   <figcaption>The review gate. Any edit after the verdict changes the digest and sends the work back through the gates.</figcaption>
 </figure>
 
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="review-gate"]');
+    if (!root) return;
+
+    const steps = [
+      {
+        title: 'Step 1: Author produces a diff',
+        desc: 'The author agent writes a self-contained vertical slice. The candidate diff receives an immutable SHA-256 digest.',
+      },
+      {
+        title: 'Step 2: Local gates pass',
+        desc: 'Types, unit tests, linters, formatting, and complexity checks execute locally before external review is requested.',
+      },
+      {
+        title: 'Step 3: Fresh-context review',
+        desc: 'An independent reviewer in a clean context inspects the exact candidate. The approval verdict is cryptographically bound to the diff digest.',
+      },
+      {
+        title: 'Step 4: CI on the final revision',
+        desc: 'Automated CI pipeline runs against the exact pushed commit digest. A job that never executed is not a pass.',
+      },
+      {
+        title: 'Step 5: Human approves the merge',
+        desc: 'The human inspects running evidence in a preview or demo and supplies the final authority to merge.',
+      },
+      {
+        title: 'Step 6: Merge and verify',
+        desc: 'Trunk merges the verified branch. Post-merge telemetry and smoke tests confirm production behavior.',
+      },
+    ];
+
+    let current = 0;
+    const titleEl = root.querySelector('.readout-title');
+    const descEl = root.querySelector('.readout-desc');
+    const btns = root.querySelectorAll('[data-step]');
+    const resetBtn = root.querySelector('[data-action="invalidate"]');
+    const loopback = root.querySelector('.loopback');
+
+    const render = (invalidated = false) => {
+      btns.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === current && !invalidated);
+        btn.setAttribute('aria-pressed', idx === current && !invalidated ? 'true' : 'false');
+      });
+
+      root.querySelectorAll('.node').forEach((node, idx) => {
+        node.classList.toggle('selected', idx === current && !invalidated);
+      });
+
+      root.querySelectorAll('.line:not(.loopback)').forEach((line, idx) => {
+        line.classList.toggle('active-path', idx === current && !invalidated);
+      });
+
+      if (invalidated) {
+        loopback?.classList.add('loop-active');
+        loopback?.setAttribute('marker-end', 'url(#rg-a-wrong)');
+        if (titleEl && descEl) {
+          titleEl.innerHTML = '<span class="badge-step badge-blocked">Digest mismatch</span> Invalidation triggered';
+          descEl.textContent = 'A single byte changed in the candidate diff! The SHA-256 digest no longer matches the reviewer approval verdict. The gate resets: all work returns to Step 1.';
+        }
+      } else {
+        loopback?.classList.remove('loop-active');
+        loopback?.setAttribute('marker-end', 'url(#rg-a)');
+        const s = steps[current];
+        if (titleEl && descEl && s) {
+          titleEl.innerHTML = `<span class="badge-step">Step ${current + 1}</span> ${s.title.replace(/^Step \d+: /, '')}`;
+          descEl.textContent = s.desc;
+        }
+      }
+    };
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        current = Number(btn.getAttribute('data-step') || 0);
+        render(false);
+      });
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      render(true);
+      setTimeout(() => {
+        current = 0;
+        render(false);
+      }, 2400);
+    });
+
+    root.querySelectorAll('.node').forEach((node) => {
+      node.addEventListener('click', () => {
+        current = Number(node.getAttribute('data-node') || 0);
+        render(false);
+      });
+    });
+
+    render(false);
+  })();
+</script>
+
 <style>
-  svg { font-family: var(--sl-font-system); }
-  .box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
-  .hot { stroke: var(--sl-color-accent); stroke-width: 2; }
-  .label { fill: var(--sl-color-text); font-size: 15px; font-weight: 600; text-anchor: middle; }
-  .sub { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
-  .side { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
-  .line { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.8; }
-  .dash { stroke-dasharray: 5 4; stroke: var(--sl-color-accent); }
-  .arrow { fill: var(--sl-color-gray-3); }
+  .diagram {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .diagram-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--ahg-touch);
+    padding: 0.25rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent);
+  }
+
+  .ctrl-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+    font-weight: 700;
+  }
+
+  .reset-btn {
+    color: var(--ahg-wrong);
+    border-color: var(--ahg-wrong);
+    font-weight: 600;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    font-family: var(--sl-font-system);
+  }
+
+  .grid-dot { fill: var(--ahg-line); }
+
+  .node {
+    cursor: pointer;
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .node:hover, .node:focus-visible {
+    transform: translateY(-1px);
+    outline: none;
+  }
+
+  .box {
+    fill: var(--ahg-panel);
+    stroke: var(--ahg-line);
+    stroke-width: 1.5;
+    transition: stroke var(--ahg-motion-fast) ease-out, fill var(--ahg-motion-fast) ease-out;
+  }
+
+  .hot {
+    stroke: var(--ahg-accent);
+    stroke-width: 2;
+  }
+
+  .accent-bar { fill: var(--ahg-line); }
+  .accent-bar.active { fill: var(--ahg-accent); }
+
+  .node.selected .box {
+    fill: var(--ahg-accent-soft);
+    stroke: var(--ahg-accent-strong);
+    stroke-width: 2.5;
+  }
+
+  .label {
+    fill: var(--ahg-text);
+    font-size: 14px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+
+  .sub {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .side {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--ahg-line);
+    stroke-width: 1.8;
+    transition: stroke var(--ahg-motion-fast) ease-out;
+  }
+
+  .line.active-path {
+    stroke: var(--ahg-accent);
+    stroke-width: 2.5;
+  }
+
+  .dash { stroke-dasharray: 5 4; }
+
+  .loopback.loop-active {
+    stroke: var(--ahg-wrong);
+    stroke-width: 2.5;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .line.active-path {
+      stroke-dasharray: 6 4;
+      animation: gateFlow 1s linear infinite;
+    }
+    .loopback.loop-active {
+      animation: gateFlow 0.8s linear infinite reverse;
+    }
+  }
+
+  @keyframes gateFlow {
+    to { stroke-dashoffset: -20; }
+  }
+
+  .arrow { fill: var(--ahg-line); }
+  .arrow-wrong { fill: var(--ahg-wrong); }
+
+  .diagram-readout {
+    margin-top: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+  }
+
+  .readout-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem;
+    font-size: var(--ahg-text-small);
+    font-weight: 700;
+    color: var(--ahg-text);
+  }
+
+  .badge-step {
+    padding: 0.1rem 0.45rem;
+    background: var(--ahg-accent-soft);
+    border: 1px solid var(--ahg-accent);
+    border-radius: 999px;
+    color: var(--ahg-accent-strong);
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+  }
+
+  .badge-step.badge-blocked {
+    background: var(--ahg-wrong-soft);
+    border-color: var(--ahg-wrong);
+    color: var(--ahg-wrong);
+  }
+
+  .readout-desc {
+    margin: 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    line-height: 1.45;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
 </style>

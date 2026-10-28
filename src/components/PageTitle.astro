@@ -1,7 +1,11 @@
 ---
 import Default from '@astrojs/starlight/components/PageTitle.astro';
 import LevelNav from './LevelNav.astro';
+import ChapterArt from './ChapterArt.astro';
+
+const slug = Astro.locals.starlightRoute.entry.id;
 ---
 
-<LevelNav slug={Astro.locals.starlightRoute.entry.id} />
+<LevelNav slug={slug} />
 <Default {...Astro.props}><slot /></Default>
+<ChapterArt slug={slug} />

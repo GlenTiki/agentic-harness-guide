@@ -4,6 +4,7 @@ description: Write your rules once in an instruction file, so you stop repeating
 ---
 
 import Example from '../../../components/Example.astro';
+import ContextDesk from '../../../components/ContextDesk.astro';
 
 **The lesson:** Write your rules once, in a file the assistant reads at the start of every session.
 
@@ -26,6 +27,8 @@ Three ideas make this work:
 - **The instruction file** holds rules you write: how you want things done.
 - **[Memory](../../glossary/#memory)** holds facts the assistant keeps between chats: things it learned about you or the job.
 - **[Context hygiene](../../glossary/#context-hygiene)** is the habit of keeping the desk tidy, so the useful things stay on it.
+
+<ContextDesk />
 
 Many chat apps let you save your house rules in their settings or in a named project. For a plain-chat routine, read the [consistency fast track](../../start-here/consistency-fast-track/). (For engineers: [instruction files](../../shelf/context/instruction-files/) on the shelf.)
 

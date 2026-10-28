@@ -1,0 +1,366 @@
+<figure class="diagram" data-diagram="weak-spot-loop">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Weak-spot loop controls">
+    <div class="btn-group" role="group" aria-label="Step navigation">
+      <button type="button" class="ctrl-btn active" data-step="1">1. Notice</button>
+      <button type="button" class="ctrl-btn" data-step="2">2. Name</button>
+      <button type="button" class="ctrl-btn" data-step="3">3. Engineer</button>
+      <button type="button" class="ctrl-btn" data-step="4">4. Prove (red run)</button>
+      <button type="button" class="ctrl-btn" data-step="5">5. Keep</button>
+    </div>
+    <button type="button" class="ctrl-btn test-btn" data-action="toggle-red">
+      🧪 Run red/green test
+    </button>
+  </div>
+
+  <svg viewBox="0 0 640 250" role="img" aria-labelledby="loop-title loop-desc" xmlns="http://www.w3.org/2000/svg">
+    <title id="loop-title">The weak-spot loop</title>
+    <desc id="loop-desc">Five boxes in a row joined by arrows. Notice the slip. Name the weak spot. Engineer a fix. Prove the fix can fail. Keep the fix. A dashed arrow runs from Keep back to Notice, because the next slip starts the loop again.</desc>
+    <defs>
+      <marker id="loop-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow" />
+      </marker>
+      <marker id="loop-arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow-red" />
+      </marker>
+      <pattern id="wsl-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1" class="grid-dot" />
+      </pattern>
+    </defs>
+
+    <rect width="640" height="250" fill="url(#wsl-grid)" opacity="0.3" rx="10" />
+
+    <!-- Step 1: Notice -->
+    <g class="loop-node" data-loop-step="1" tabindex="0" role="button" aria-label="Step 1: Notice the slip">
+      <rect x="8" y="40" width="112" height="66" rx="8" class="box" />
+      <rect x="8" y="40" width="4" height="66" rx="2" class="accent-bar" />
+      <text x="64" y="68" class="label">1 Notice</text>
+      <text x="64" y="88" class="sub">the slip happens</text>
+    </g>
+
+    <!-- Step 2: Name -->
+    <g class="loop-node" data-loop-step="2" tabindex="0" role="button" aria-label="Step 2: Name the weak spot">
+      <rect x="136" y="40" width="112" height="66" rx="8" class="box" />
+      <rect x="136" y="40" width="4" height="66" rx="2" class="accent-bar" />
+      <text x="192" y="68" class="label">2 Name</text>
+      <text x="192" y="88" class="sub">the weak spot</text>
+    </g>
+
+    <!-- Step 3: Engineer -->
+    <g class="loop-node" data-loop-step="3" tabindex="0" role="button" aria-label="Step 3: Engineer a check">
+      <rect x="264" y="40" width="112" height="66" rx="8" class="box" />
+      <rect x="264" y="40" width="4" height="66" rx="2" class="accent-bar" />
+      <text x="320" y="68" class="label">3 Engineer</text>
+      <text x="320" y="88" class="sub">a check or a block</text>
+    </g>
+
+    <!-- Step 4: Prove (The red run) -->
+    <g class="loop-node" data-loop-step="4" tabindex="0" role="button" aria-label="Step 4: Prove it can go red">
+      <rect x="392" y="40" width="112" height="66" rx="8" class="box hot prove-box" />
+      <rect x="392" y="40" width="4" height="66" rx="2" class="accent-bar active prove-bar" />
+      <text x="448" y="68" class="label prove-label">4 Prove</text>
+      <text x="448" y="88" class="sub prove-sub">it can go red</text>
+    </g>
+
+    <!-- Step 5: Keep -->
+    <g class="loop-node" data-loop-step="5" tabindex="0" role="button" aria-label="Step 5: Keep in repeat path">
+      <rect x="520" y="40" width="112" height="66" rx="8" class="box" />
+      <rect x="520" y="40" width="4" height="66" rx="2" class="accent-bar" />
+      <text x="576" y="68" class="label">5 Keep</text>
+      <text x="576" y="88" class="sub">in the repeat path</text>
+    </g>
+
+    <!-- Forward connectors -->
+    <path d="M120 73H134" class="line" marker-end="url(#loop-arrow)" />
+    <path d="M248 73H262" class="line" marker-end="url(#loop-arrow)" />
+    <path d="M376 73H390" class="line" marker-end="url(#loop-arrow)" />
+    <path d="M504 73H518" class="line" marker-end="url(#loop-arrow)" />
+
+    <!-- Loop back connector -->
+    <path d="M576 106V200H64V108" class="line dash" marker-end="url(#loop-arrow)" />
+    <text x="320" y="224" class="side mid">the next slip starts the loop again</text>
+  </svg>
+
+  <div class="diagram-readout" aria-live="polite">
+    <p class="readout-title"><span class="badge-step">Step 1</span> Notice</p>
+    <p class="readout-desc">Write down what went wrong while you still remember it. Include what you saw, not what you guessed.</p>
+  </div>
+
+  <figcaption>The weak-spot loop. The accent box is the step most people skip.</figcaption>
+</figure>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="weak-spot-loop"]');
+    if (!root) return;
+
+    const steps = {
+      1: {
+        title: 'Step 1: Notice',
+        desc: 'Write down what went wrong while you still remember it. Capture the verbatim output or error, not an assumption.',
+      },
+      2: {
+        title: 'Step 2: Name the weak spot',
+        desc: 'State the weak spot in one clear sentence: "A month can be counted twice." A name that concrete is a property you can test.',
+      },
+      3: {
+        title: 'Step 3: Engineer a fix',
+        desc: 'Prefer a mechanical check, a linter, or a pre-tool hook over human memory. A reminder is advice; a check returns pass or fail.',
+      },
+      4: {
+        title: 'Step 4: Prove it can go red',
+        desc: 'Feed the check the defect on purpose! If it stays green when given a repeated month, the check measures nothing.',
+      },
+      5: {
+        title: 'Step 5: Keep in the repeat path',
+        desc: 'Wire the check into CI, a git hook, or standing instructions. A check you must remember to run is just another weak spot.',
+      },
+    };
+
+    let current = 1;
+    let isRed = false;
+    const titleEl = root.querySelector('.readout-title');
+    const descEl = root.querySelector('.readout-desc');
+    const btns = root.querySelectorAll('[data-step]');
+    const testBtn = root.querySelector('[data-action="toggle-red"]');
+    const proveBox = root.querySelector('.prove-box');
+    const proveSub = root.querySelector('.prove-sub');
+
+    const render = () => {
+      btns.forEach((btn) => {
+        const s = Number(btn.getAttribute('data-step') || 1);
+        btn.classList.toggle('active', s === current);
+        btn.setAttribute('aria-pressed', s === current ? 'true' : 'false');
+      });
+
+      root.querySelectorAll('.loop-node').forEach((node) => {
+        const s = Number(node.getAttribute('data-loop-step') || 1);
+        node.classList.toggle('selected', s === current);
+      });
+
+      if (isRed) {
+        proveBox?.classList.add('is-red-mode');
+        if (proveSub) proveSub.textContent = 'FAIL (exit 1) ✓';
+      } else {
+        proveBox?.classList.remove('is-red-mode');
+        if (proveSub) proveSub.textContent = 'it can go red';
+      }
+
+      const s = steps[current];
+      if (titleEl && descEl && s) {
+        titleEl.innerHTML = `<span class="badge-step">Step ${current}</span> ${s.title.replace(/^Step \d+: /, '')}`;
+        descEl.textContent = s.desc;
+      }
+    };
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        current = Number(btn.getAttribute('data-step') || 1);
+        render();
+      });
+    });
+
+    testBtn?.addEventListener('click', () => {
+      current = 4;
+      isRed = !isRed;
+      render();
+    });
+
+    root.querySelectorAll('.loop-node').forEach((node) => {
+      node.addEventListener('click', () => {
+        current = Number(node.getAttribute('data-loop-step') || 1);
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>
+
+<style>
+  .diagram {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .diagram-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--ahg-touch);
+    padding: 0.25rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent);
+  }
+
+  .ctrl-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+    font-weight: 700;
+  }
+
+  .test-btn {
+    color: var(--ahg-wrong);
+    border-color: var(--ahg-wrong);
+    font-weight: 600;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    font-family: var(--sl-font-system);
+  }
+
+  .grid-dot { fill: var(--ahg-line); }
+
+  .loop-node {
+    cursor: pointer;
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .loop-node:hover, .loop-node:focus-visible {
+    transform: translateY(-1px);
+    outline: none;
+  }
+
+  .box {
+    fill: var(--ahg-panel);
+    stroke: var(--ahg-line);
+    stroke-width: 1.5;
+    transition: stroke var(--ahg-motion-fast) ease-out, fill var(--ahg-motion-fast) ease-out;
+  }
+
+  .hot {
+    stroke: var(--ahg-accent);
+    stroke-width: 2;
+  }
+
+  .prove-box.is-red-mode {
+    fill: var(--ahg-wrong-soft);
+    stroke: var(--ahg-wrong);
+    stroke-width: 2.5;
+  }
+
+  .accent-bar { fill: var(--ahg-line); }
+  .accent-bar.active { fill: var(--ahg-accent); }
+
+  .loop-node.selected .box {
+    fill: var(--ahg-accent-soft);
+    stroke: var(--ahg-accent-strong);
+    stroke-width: 2.5;
+  }
+
+  .label {
+    fill: var(--ahg-text);
+    font-size: 14px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+
+  .sub {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .side {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+  }
+
+  .mid { text-anchor: middle; }
+
+  .line {
+    fill: none;
+    stroke: var(--ahg-line);
+    stroke-width: 1.8;
+  }
+
+  .dash {
+    stroke-dasharray: 5 4;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .dash {
+      animation: loopFlow 1.2s linear infinite;
+    }
+  }
+
+  @keyframes loopFlow {
+    to { stroke-dashoffset: -18; }
+  }
+
+  .arrow { fill: var(--ahg-line); }
+  .arrow-red { fill: var(--ahg-wrong); }
+
+  .diagram-readout {
+    margin-top: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+  }
+
+  .readout-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem;
+    font-size: var(--ahg-text-small);
+    font-weight: 700;
+    color: var(--ahg-text);
+  }
+
+  .badge-step {
+    padding: 0.1rem 0.45rem;
+    background: var(--ahg-accent-soft);
+    border: 1px solid var(--ahg-accent);
+    border-radius: 999px;
+    color: var(--ahg-accent-strong);
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+  }
+
+  .readout-desc {
+    margin: 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    line-height: 1.45;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
+</style>

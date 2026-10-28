@@ -1,55 +1,464 @@
-<figure class="diagram">
-  <svg viewBox="0 0 480 560" role="img" aria-labelledby="hl-t hl-d" xmlns="http://www.w3.org/2000/svg">
+<figure class="diagram" data-diagram="hook-lifecycle">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Hook lifecycle controls">
+    <div class="btn-group" role="group" aria-label="Mode selection">
+      <button type="button" class="ctrl-btn active" data-mode="normal" aria-pressed="true">
+        <span class="status-dot green"></span>Normal call (exit 0)
+      </button>
+      <button type="button" class="ctrl-btn" data-mode="blocked" aria-pressed="false">
+        <span class="status-dot red"></span>Blocked call (exit 2)
+      </button>
+    </div>
+    <div class="btn-group" role="group" aria-label="Step navigation">
+      <button type="button" class="ctrl-btn" data-step="0">1. Propose</button>
+      <button type="button" class="ctrl-btn" data-step="1">2. Pre-tool</button>
+      <button type="button" class="ctrl-btn" data-step="2">3. Permission</button>
+      <button type="button" class="ctrl-btn" data-step="3">4. Tool runs</button>
+      <button type="button" class="ctrl-btn" data-step="4">5. Post-tool</button>
+      <button type="button" class="ctrl-btn" data-step="5">6. Stop</button>
+    </div>
+    <button type="button" class="ctrl-btn play-btn" data-action="autoplay" aria-label="Auto-play lifecycle animation">
+      ▶ Auto-play
+    </button>
+  </div>
+
+  <svg viewBox="0 0 480 570" role="img" aria-labelledby="hl-t hl-d" xmlns="http://www.w3.org/2000/svg">
     <title id="hl-t">Hook lifecycle</title>
     <desc id="hl-d">A model proposes a tool call. A pre-tool hook can block it with exit code 2, otherwise the permission check and the tool run. A post-tool hook then reacts. A stop hook runs when the agent finishes.</desc>
     <defs>
       <marker id="hl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
         <path d="M0 0L10 5L0 10z" class="arrow" />
       </marker>
+      <marker id="hl-a-wrong" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow-wrong" />
+      </marker>
+      <marker id="hl-a-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow-accent" />
+      </marker>
+      <pattern id="hl-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1" class="grid-dot" />
+      </pattern>
     </defs>
+
+    <rect width="480" height="570" fill="url(#hl-grid)" opacity="0.4" rx="10" />
+
     <g class="flow">
-      <rect x="130" y="10" width="220" height="44" rx="8" class="box" />
-      <text x="240" y="37" class="label">Model proposes a tool call</text>
+      <!-- Step 0: Model proposes -->
+      <g class="node" data-node="0" tabindex="0" role="button" aria-label="Step 1: Model proposes a tool call">
+        <rect x="130" y="10" width="220" height="46" rx="8" class="box" />
+        <rect x="130" y="10" width="6" height="46" rx="3" class="accent-bar" />
+        <text x="240" y="38" class="label">Model proposes a tool call</text>
+      </g>
 
-      <rect x="130" y="100" width="220" height="56" rx="8" class="box hot" />
-      <text x="240" y="124" class="label">PreToolUse hook</text>
-      <text x="240" y="144" class="sub">inspect, rewrite, allow or block</text>
+      <!-- Step 1: PreToolUse -->
+      <g class="node" data-node="1" tabindex="0" role="button" aria-label="Step 2: PreToolUse hook">
+        <rect x="130" y="102" width="220" height="58" rx="8" class="box hot" />
+        <rect x="130" y="102" width="6" height="58" rx="3" class="accent-bar active" />
+        <text x="240" y="127" class="label">PreToolUse hook</text>
+        <text x="240" y="147" class="sub">inspect, rewrite, allow or block</text>
+      </g>
 
-      <rect x="130" y="206" width="220" height="44" rx="8" class="box" />
-      <text x="240" y="233" class="label">Permission rules</text>
+      <!-- Step 2: Permission rules -->
+      <g class="node" data-node="2" tabindex="0" role="button" aria-label="Step 3: Permission rules">
+        <rect x="130" y="208" width="220" height="46" rx="8" class="box" />
+        <rect x="130" y="208" width="6" height="46" rx="3" class="accent-bar" />
+        <text x="240" y="236" class="label">Permission rules</text>
+      </g>
 
-      <rect x="130" y="300" width="220" height="44" rx="8" class="box" />
-      <text x="240" y="327" class="label">Tool runs</text>
+      <!-- Step 3: Tool runs -->
+      <g class="node" data-node="3" tabindex="0" role="button" aria-label="Step 4: Tool runs">
+        <rect x="130" y="302" width="220" height="46" rx="8" class="box" />
+        <rect x="130" y="302" width="6" height="46" rx="3" class="accent-bar" />
+        <text x="240" y="330" class="label">Tool runs</text>
+      </g>
 
-      <rect x="130" y="394" width="220" height="56" rx="8" class="box hot" />
-      <text x="240" y="418" class="label">PostToolUse hook</text>
-      <text x="240" y="438" class="sub">format, lint, log, warn</text>
+      <!-- Step 4: PostToolUse -->
+      <g class="node" data-node="4" tabindex="0" role="button" aria-label="Step 5: PostToolUse hook">
+        <rect x="130" y="396" width="220" height="58" rx="8" class="box hot" />
+        <rect x="130" y="396" width="6" height="58" rx="3" class="accent-bar active" />
+        <text x="240" y="421" class="label">PostToolUse hook</text>
+        <text x="240" y="441" class="sub">format, lint, log, warn</text>
+      </g>
 
-      <rect x="130" y="494" width="220" height="56" rx="8" class="box hot" />
-      <text x="240" y="518" class="label">Stop hook</text>
-      <text x="240" y="538" class="sub">final gate before the agent ends</text>
+      <!-- Step 5: Stop hook -->
+      <g class="node" data-node="5" tabindex="0" role="button" aria-label="Step 6: Stop hook">
+        <rect x="130" y="498" width="220" height="58" rx="8" class="box hot" />
+        <rect x="130" y="498" width="6" height="58" rx="3" class="accent-bar active" />
+        <text x="240" y="523" class="label">Stop hook</text>
+        <text x="240" y="543" class="sub">final gate before the agent ends</text>
+      </g>
 
-      <path d="M240 54V98" class="line" marker-end="url(#hl-a)" />
-      <path d="M240 156V204" class="line" marker-end="url(#hl-a)" />
-      <path d="M240 250V298" class="line" marker-end="url(#hl-a)" />
-      <path d="M240 344V392" class="line" marker-end="url(#hl-a)" />
-      <path d="M240 450V492" class="line" marker-end="url(#hl-a)" />
+      <!-- Forward flow paths -->
+      <path d="M240 56V100" class="line" data-path="0" marker-end="url(#hl-a)" />
+      <path d="M240 160V206" class="line" data-path="1" marker-end="url(#hl-a)" />
+      <path d="M240 254V300" class="line" data-path="2" marker-end="url(#hl-a)" />
+      <path d="M240 348V394" class="line" data-path="3" marker-end="url(#hl-a)" />
+      <path d="M240 454V496" class="line" data-path="4" marker-end="url(#hl-a)" />
 
-      <path d="M350 128H430V32H350" class="line dash" marker-end="url(#hl-a)" />
-      <text x="444" y="80" class="side" transform="rotate(90 444 80)">exit 2: reason to model</text>
+      <!-- Exit 2 Refusal loop path -->
+      <path d="M350 131H432V33H352" class="line dash return-path" data-path="refusal" marker-end="url(#hl-a)" />
+      <text x="444" y="82" class="side" transform="rotate(90 444 82)">exit 2: reason to model</text>
     </g>
   </svg>
+
+  <div class="diagram-readout" aria-live="polite">
+    <p class="readout-title"><span class="badge-step">Step 1</span> Model proposes a tool call</p>
+    <p class="readout-desc">The model outputs a structured tool request with command and parameters. Execution pauses until the harness checks it.</p>
+  </div>
+
   <figcaption>The hook lifecycle. A blocking exit code at the pre-tool step sends the reason back to the model instead of running the tool.</figcaption>
 </figure>
 
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="hook-lifecycle"]');
+    if (!root) return;
+
+    const steps = [
+      {
+        title: 'Step 1: Model proposes a tool call',
+        desc: 'The model outputs a structured tool request with command and arguments. The action is held before execution.',
+        node: 0,
+        path: 0,
+      },
+      {
+        title: 'Step 2: PreToolUse hook inspects call',
+        desc: 'Your script inspects the tool call on standard input. In normal mode it exits 0 (allow). In blocked mode it exits 2 with standard error sent back to the model.',
+        node: 1,
+        path: 1,
+      },
+      {
+        title: 'Step 3: Permission rules',
+        desc: 'The harness verifies allowlists, denylists, and user confirmations before launching external processes.',
+        node: 2,
+        path: 2,
+      },
+      {
+        title: 'Step 4: Tool runs',
+        desc: 'The command or MCP tool executes in its isolated environment. Standard output and exit codes are recorded.',
+        node: 3,
+        path: 3,
+      },
+      {
+        title: 'Step 5: PostToolUse hook formats and logs',
+        desc: 'Runs immediately after tool completion to format changed files, update the audit log, or trigger linters.',
+        node: 4,
+        path: 4,
+      },
+      {
+        title: 'Step 6: Stop hook inspects finished work',
+        desc: 'Runs when the agent attempts to stop. It runs tests, checks for leftover tasks, and rejects an incomplete stop.',
+        node: 5,
+        path: null,
+      },
+    ];
+
+    let currentStep = 0;
+    let mode = 'normal';
+    let timer = null;
+
+    const titleEl = root.querySelector('.readout-title');
+    const descEl = root.querySelector('.readout-desc');
+    const stepBtns = root.querySelectorAll('[data-step]');
+    const modeBtns = root.querySelectorAll('[data-mode]');
+    const playBtn = root.querySelector('[data-action="autoplay"]');
+    const returnPath = root.querySelector('.return-path');
+
+    const render = () => {
+      stepBtns.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === currentStep);
+        btn.setAttribute('aria-pressed', idx === currentStep ? 'true' : 'false');
+      });
+
+      root.querySelectorAll('.node').forEach((node, idx) => {
+        node.classList.toggle('selected', idx === currentStep);
+      });
+
+      root.querySelectorAll('.line:not(.return-path)').forEach((line, idx) => {
+        line.classList.toggle('active-path', idx === currentStep);
+      });
+
+      if (mode === 'blocked') {
+        returnPath?.classList.add('blocked-active');
+        returnPath?.setAttribute('marker-end', 'url(#hl-a-wrong)');
+      } else {
+        returnPath?.classList.remove('blocked-active');
+        returnPath?.setAttribute('marker-end', 'url(#hl-a)');
+      }
+
+      const info = steps[currentStep];
+      if (titleEl && descEl && info) {
+        if (mode === 'blocked' && currentStep === 1) {
+          titleEl.innerHTML = '<span class="badge-step badge-blocked">Blocked</span> PreToolUse hook exits 2';
+          descEl.textContent = 'The hook catches a risky command and exits with code 2. Standard error returns to the model as an error reason. The tool never runs!';
+        } else {
+          titleEl.innerHTML = `<span class="badge-step">Step ${currentStep + 1}</span> ${info.title.replace(/^Step \d+: /, '')}`;
+          descEl.textContent = info.desc;
+        }
+      }
+    };
+
+    stepBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (timer) clearInterval(timer);
+        if (playBtn) playBtn.textContent = '▶ Auto-play';
+        currentStep = Number(btn.getAttribute('data-step') || 0);
+        render();
+      });
+    });
+
+    modeBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        mode = btn.getAttribute('data-mode') || 'normal';
+        modeBtns.forEach((b) => {
+          const isThis = b === btn;
+          b.classList.toggle('active', isThis);
+          b.setAttribute('aria-pressed', isThis ? 'true' : 'false');
+        });
+        if (mode === 'blocked') currentStep = 1;
+        render();
+      });
+    });
+
+    playBtn?.addEventListener('click', () => {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+        playBtn.textContent = '▶ Auto-play';
+      } else {
+        playBtn.textContent = '⏸ Pause';
+        timer = setInterval(() => {
+          currentStep = (currentStep + 1) % steps.length;
+          render();
+        }, 1600);
+      }
+    });
+
+    root.querySelectorAll('.node').forEach((node) => {
+      node.addEventListener('click', () => {
+        const idx = Number(node.getAttribute('data-node') || 0);
+        currentStep = idx;
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>
+
 <style>
-  svg { font-family: var(--sl-font-system); }
-  .box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
-  .hot { stroke: var(--sl-color-accent); stroke-width: 2; }
-  .label { fill: var(--sl-color-text); font-size: 15px; font-weight: 600; text-anchor: middle; }
-  .sub { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
-  .side { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
-  .line { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.8; }
-  .dash { stroke-dasharray: 5 4; stroke: var(--sl-color-accent); }
-  .arrow { fill: var(--sl-color-gray-3); }
+  .diagram {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .diagram-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: var(--ahg-touch);
+    padding: 0.25rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent);
+  }
+
+  .ctrl-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+    font-weight: 700;
+  }
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+  }
+
+  .status-dot.green { background: var(--ahg-right); }
+  .status-dot.red { background: var(--ahg-wrong); }
+
+  .play-btn {
+    font-weight: 600;
+    color: var(--ahg-accent);
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    font-family: var(--sl-font-system);
+  }
+
+  .grid-dot { fill: var(--ahg-line); }
+
+  .node {
+    cursor: pointer;
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .node:hover, .node:focus-visible {
+    transform: translateY(-1px);
+    outline: none;
+  }
+
+  .box {
+    fill: var(--ahg-panel);
+    stroke: var(--ahg-line);
+    stroke-width: 1.5;
+    transition: stroke var(--ahg-motion-fast) ease-out, fill var(--ahg-motion-fast) ease-out;
+  }
+
+  .hot {
+    stroke: var(--ahg-accent);
+    stroke-width: 2;
+  }
+
+  .accent-bar {
+    fill: var(--ahg-line);
+  }
+
+  .accent-bar.active {
+    fill: var(--ahg-accent);
+  }
+
+  .node.selected .box {
+    fill: var(--ahg-accent-soft);
+    stroke: var(--ahg-accent-strong);
+    stroke-width: 2.5;
+  }
+
+  .label {
+    fill: var(--ahg-text);
+    font-size: 14px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+
+  .sub {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .side {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--ahg-line);
+    stroke-width: 1.8;
+    transition: stroke var(--ahg-motion-fast) ease-out;
+  }
+
+  .line.active-path {
+    stroke: var(--ahg-accent);
+    stroke-width: 2.5;
+  }
+
+  .dash {
+    stroke-dasharray: 5 4;
+  }
+
+  .return-path.blocked-active {
+    stroke: var(--ahg-wrong);
+    stroke-width: 2.5;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .line.active-path {
+      stroke-dasharray: 6 4;
+      animation: dashMove 1s linear infinite;
+    }
+    .return-path.blocked-active {
+      animation: dashMove 0.8s linear infinite reverse;
+    }
+  }
+
+  @keyframes dashMove {
+    to { stroke-dashoffset: -20; }
+  }
+
+  .arrow { fill: var(--ahg-line); }
+  .arrow-wrong { fill: var(--ahg-wrong); }
+  .arrow-accent { fill: var(--ahg-accent); }
+
+  .diagram-readout {
+    margin-top: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+  }
+
+  .readout-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem;
+    font-size: var(--ahg-text-small);
+    font-weight: 700;
+    color: var(--ahg-text);
+  }
+
+  .badge-step {
+    padding: 0.1rem 0.45rem;
+    background: var(--ahg-accent-soft);
+    border: 1px solid var(--ahg-accent);
+    border-radius: 999px;
+    color: var(--ahg-accent-strong);
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+  }
+
+  .badge-step.badge-blocked {
+    background: var(--ahg-wrong-soft);
+    border-color: var(--ahg-wrong);
+    color: var(--ahg-wrong);
+  }
+
+  .readout-desc {
+    margin: 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    line-height: 1.45;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
 </style>

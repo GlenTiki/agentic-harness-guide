@@ -25,10 +25,28 @@ const summary = `${run.events.length} ${run.events[0]?.event_type ?? 'hook'} eve
 const ticks = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(span * f));
 ---
 
-<figure class="hook-timeline" aria-labelledby={`${id}-t`}>
+<figure class="hook-timeline" data-component="hook-timeline" aria-labelledby={`${id}-t`}>
+  <div class="timeline-toolbar">
+    <div class="filter-group" role="group" aria-label="Event filter">
+      <button type="button" class="filter-btn active" data-filter="all">All ({run.events.length})</button>
+      <button type="button" class="filter-btn" data-filter="allow">Allowed ({run.events.length - blocked})</button>
+      <button type="button" class="filter-btn" data-filter="block">Blocked ({blocked})</button>
+    </div>
+    <button type="button" class="filter-btn play-btn" data-action="play">
+      ▶ Play 8 calls
+    </button>
+  </div>
+
   <svg viewBox={`0 0 ${width} 190`} role="img" aria-labelledby={`${id}-t ${id}-d`} xmlns="http://www.w3.org/2000/svg">
     <title id={`${id}-t`}>{run.title}</title>
     <desc id={`${id}-d`}>{summary} The table below the chart lists every event.</desc>
+    <defs>
+      <pattern id="ht-grid" width="16" height="16" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1" class="grid-dot" />
+      </pattern>
+    </defs>
+    <rect width={width} height="190" fill="url(#ht-grid)" opacity="0.3" rx="8" />
+
     {(['allow', 'block'] as const).map((lane) => (
       <g>
         <text x="8" y={laneY[lane] + 5} class="lane-label">{lane === 'allow' ? 'Allowed' : 'Blocked'}</text>
@@ -42,20 +60,35 @@ const ticks = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(span * f));
       </g>
     ))}
     <line x1={left} x2={width - right} y1="140" y2="140" class="axis" />
-    {run.events.map((e) => (
-      <g>
-        {e.decision === 'allow' ? (
-          <circle cx={x(e.offset_ms)} cy={laneY.allow} r="9" class="mark allow" />
-        ) : (
-          <g>
-            <rect x={x(e.offset_ms) - 9} y={laneY.block - 9} width="18" height="18" class="mark block" />
-            <path d={`M${x(e.offset_ms) - 4} ${laneY.block - 4} l8 8 m0 -8 l-8 8`} class="cross" />
-          </g>
-        )}
-        <text x={x(e.offset_ms)} y={laneY[e.decision] - 16} class="seq">{e.seq}</text>
-      </g>
-    ))}
+
+    <!-- Duration bars and markers -->
+    {run.events.map((e) => {
+      const startX = x(e.offset_ms);
+      const barW = Math.max(((width - left - right) * e.duration_ms) / span, 6);
+      return (
+        <g class="event-marker" data-seq={e.seq} data-decision={e.decision} tabindex="0" role="button" aria-label={`Event ${e.seq}: ${e.tool_name} ${e.decision}`}>
+          <rect x={startX} y={laneY[e.decision] - 4} width={barW} height="8" rx="4" class={`duration-bar ${e.decision}`} opacity="0.6" />
+          {e.decision === 'allow' ? (
+            <circle cx={startX} cy={laneY.allow} r="9" class="mark allow" />
+          ) : (
+            <g>
+              <rect x={startX - 9} y={laneY.block - 9} width="18" height="18" rx="3" class="mark block" />
+              <path d={`M${startX - 4} ${laneY.block - 4} l8 8 m0 -8 l-8 8`} class="cross" />
+            </g>
+          )}
+          <text x={startX} y={laneY[e.decision] - 16} class="seq">{e.seq}</text>
+        </g>
+      );
+    })}
+
+    <line x1={left} x2={left} y1="30" y2="140" class="playhead" stroke="var(--ahg-accent)" stroke-width="2" stroke-dasharray="3 3" opacity="0" />
   </svg>
+
+  <div class="event-inspector" data-event-inspector>
+    <span class="inspector-badge badge-neutral">Call #1</span>
+    <span class="inspector-text">Click any event marker above to inspect its execution latency, tool name, and exit code.</span>
+  </div>
+
   <figcaption>
     {run.title}. {summary} Recorded {run.recorded_at} with {run.environment}. {run.fields}
   </figcaption>
@@ -68,7 +101,7 @@ const ticks = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(span * f));
         </thead>
         <tbody>
           {run.events.map((e) => (
-            <tr><td>{e.seq}</td><td>{e.event_type}</td><td>{e.tool_name}</td><td>{e.offset_ms}</td><td>{e.duration_ms}</td><td>{e.exit_code}</td><td>{e.decision === 'allow' ? 'Allowed' : 'Blocked'}</td></tr>
+            <tr class="table-event-row" data-seq={e.seq}><td>{e.seq}</td><td>{e.event_type}</td><td>{e.tool_name}</td><td>{e.offset_ms}</td><td>{e.duration_ms}</td><td>{e.exit_code}</td><td>{e.decision === 'allow' ? 'Allowed' : 'Blocked'}</td></tr>
           ))}
         </tbody>
       </table>
@@ -76,17 +109,190 @@ const ticks = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(span * f));
   </details>
 </figure>
 
+<script>
+  (() => {
+    const root = document.querySelector('[data-component="hook-timeline"]');
+    if (!root) return;
+
+    const filterBtns = root.querySelectorAll('[data-filter]');
+    const playBtn = root.querySelector('[data-action="play"]');
+    const markers = root.querySelectorAll('.event-marker');
+    const tableRows = root.querySelectorAll('.table-event-row');
+    const inspector = root.querySelector('[data-event-inspector]');
+    const playhead = root.querySelector('.playhead');
+
+    let currentFilter = 'all';
+
+    const filter = () => {
+      filterBtns.forEach((btn) => btn.classList.toggle('active', btn.getAttribute('data-filter') === currentFilter));
+      markers.forEach((m) => {
+        const d = m.getAttribute('data-decision');
+        const match = currentFilter === 'all' || d === currentFilter;
+        (m as HTMLElement).style.display = match ? '' : 'none';
+      });
+    };
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        currentFilter = btn.getAttribute('data-filter') || 'all';
+        filter();
+      });
+    });
+
+    markers.forEach((marker) => {
+      marker.addEventListener('click', () => {
+        const seq = marker.getAttribute('data-seq');
+        const d = marker.getAttribute('data-decision');
+        markers.forEach((m) => m.classList.toggle('selected', m === marker));
+        tableRows.forEach((r) => r.classList.toggle('highlighted', r.getAttribute('data-seq') === seq));
+
+        if (inspector) {
+          const badgeClass = d === 'allow' ? 'badge-allow' : 'badge-block';
+          inspector.innerHTML = `<span class="inspector-badge ${badgeClass}">Call #${seq} (${d?.toUpperCase()})</span> <span class="inspector-text">Tool call inspected. Exit code: ${d === 'allow' ? '0 (pass)' : '2 (refusal sent to model)'}.</span>`;
+        }
+      });
+    });
+
+    playBtn?.addEventListener('click', () => {
+      let step = 0;
+      const total = markers.length;
+      const interval = setInterval(() => {
+        if (step >= total) {
+          clearInterval(interval);
+          playhead?.setAttribute('opacity', '0');
+          return;
+        }
+        const m = markers[step] as HTMLElement;
+        m.dispatchEvent(new Event('click'));
+        playhead?.setAttribute('opacity', '1');
+        step++;
+      }, 600);
+    });
+
+    filter();
+  })();
+</script>
+
 <style>
-  .hook-timeline { margin: 1.5rem 0; }
-  svg { width: 100%; height: auto; max-width: 100%; font-family: var(--sl-font-system); }
+  .hook-timeline {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .timeline-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .filter-btn {
+    min-height: var(--ahg-touch);
+    padding: 0.25rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--ahg-accent);
+  }
+
+  .filter-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+  }
+
+  .play-btn {
+    color: var(--ahg-accent);
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    font-family: var(--sl-font-system);
+  }
+
+  .grid-dot { fill: var(--ahg-line); }
+
   .lane { stroke: var(--ahg-line); stroke-width: 2; }
   .axis { stroke: var(--ahg-muted); stroke-width: 1; }
-  .lane-label, .axis-label { fill: var(--ahg-muted); font-size: 13px; }
+  .lane-label, .axis-label { fill: var(--ahg-muted); font-size: 13px; font-weight: 500; }
   .axis-label { text-anchor: middle; }
   .seq { fill: var(--ahg-text); font-size: 12px; font-weight: 700; text-anchor: middle; }
+
+  .event-marker {
+    cursor: pointer;
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .event-marker:hover, .event-marker:focus-visible {
+    transform: translateY(-2px);
+    outline: none;
+  }
+
+  .event-marker.selected .mark {
+    stroke-width: 3.5;
+  }
+
+  .duration-bar.allow { fill: var(--ahg-right); }
+  .duration-bar.block { fill: var(--ahg-wrong); }
+
   .mark.allow { fill: var(--ahg-right-soft); stroke: var(--ahg-right); stroke-width: 2.5; }
   .mark.block { fill: var(--ahg-wrong-soft); stroke: var(--ahg-wrong); stroke-width: 2.5; }
   .cross { stroke: var(--ahg-wrong); stroke-width: 2.5; fill: none; }
+
+  .event-inspector {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    font-size: var(--sl-text-xs);
+  }
+
+  .inspector-badge {
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    font-weight: 700;
+  }
+
+  .badge-allow { background: var(--ahg-right-soft); color: var(--ahg-right); }
+  .badge-block { background: var(--ahg-wrong-soft); color: var(--ahg-wrong); }
+  .badge-neutral { background: var(--ahg-accent-soft); color: var(--ahg-accent-strong); }
+
+  .inspector-text {
+    color: var(--ahg-text);
+  }
+
   figcaption { font-size: var(--sl-text-sm); color: var(--ahg-muted); margin-top: 0.5rem; }
   summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; }
+
+  .table-event-row.highlighted {
+    background: var(--ahg-accent-soft);
+    font-weight: 700;
+  }
 </style>

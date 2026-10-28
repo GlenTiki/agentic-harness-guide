@@ -1,0 +1,340 @@
+---
+const workflows = [
+  {
+    num: '01',
+    slug: 'build-a-budget',
+    title: 'Build a budget',
+    pairs: 'Levels 1 & 5',
+    category: 'chat',
+    categoryLabel: 'Chat only',
+    summary: 'Build a budget for a small shop with the assistant, and check the totals.',
+    tryIt: 'About 7 steps',
+  },
+  {
+    num: '02',
+    slug: 'spreadsheet-monday',
+    title: 'Spreadsheet Monday',
+    pairs: 'Level 5',
+    category: 'spreadsheet',
+    categoryLabel: 'Spreadsheet',
+    summary: 'Use the assistant to write formulas you can check, instead of adding in prose.',
+    tryIt: '25 minutes',
+  },
+  {
+    num: '03',
+    slug: 'review-content',
+    title: 'Review content',
+    pairs: 'Level 5',
+    category: 'chat',
+    categoryLabel: 'Chat only',
+    summary: 'Review writing against a brief with a reviewer who sees only the draft.',
+    tryIt: '20 minutes',
+  },
+  {
+    num: '04',
+    slug: 'improve-code',
+    title: 'Improve code',
+    pairs: 'Level 5',
+    category: 'code',
+    categoryLabel: 'Code & tools',
+    summary: 'Refine a piece of code in small, tested passes with an independent review.',
+    tryIt: 'About 14 steps',
+  },
+  {
+    num: '05',
+    slug: 'improve-design',
+    title: 'Improve a design',
+    pairs: 'Level 5',
+    category: 'chat',
+    categoryLabel: 'Chat only',
+    summary: 'Refine a layout or visual design against a written brief and a checklist.',
+    tryIt: 'About 11 steps + 5 people',
+  },
+  {
+    num: '06',
+    slug: 'connect-systems',
+    title: 'Connect systems',
+    pairs: 'Levels 3 & 4',
+    category: 'code',
+    categoryLabel: 'Code & tools',
+    summary: 'Decide what to connect, in what order, with what access.',
+    tryIt: '15 minutes',
+  },
+  {
+    num: '07',
+    slug: 'small-shop-month-end',
+    title: 'Small shop month-end',
+    pairs: 'Level 5',
+    category: 'spreadsheet',
+    categoryLabel: 'Spreadsheet',
+    summary: 'Work through a credible September month-end, from proving sales to the bank to sign-off.',
+    tryIt: '30 minutes',
+  },
+  {
+    num: '08',
+    slug: 'define-a-workflow',
+    title: 'Define a workflow',
+    pairs: 'Level 8',
+    category: 'chat',
+    categoryLabel: 'Chat only',
+    summary: 'Turn a repeated job into a written workflow with steps, checks and stop points.',
+    tryIt: '10 minutes',
+  },
+  {
+    num: '09',
+    slug: 'research-a-decision',
+    title: 'Research a decision',
+    pairs: 'Level 8',
+    category: 'chat',
+    categoryLabel: 'Chat only',
+    summary: 'Research a choice with sources, a comparison table and a stated recommendation.',
+    tryIt: '10 minutes',
+  },
+  {
+    num: '10',
+    slug: 'design-reps',
+    title: 'Design reps',
+    pairs: 'Level 8',
+    category: 'chat',
+    categoryLabel: 'Chat only',
+    summary: 'Practise the six-step method on five more jobs, such as triaging a shared inbox.',
+    tryIt: 'About 3 steps a rep',
+  },
+  {
+    num: '11',
+    slug: 'build-a-kitchen-assistant',
+    title: 'Build a kitchen assistant',
+    pairs: 'Level 8',
+    category: 'code',
+    categoryLabel: 'Code & tools',
+    summary: 'Build four small, tested scripts that catalogue meal ideas, track stock and suggest a dish.',
+    tryIt: 'About 10 steps',
+  },
+];
+---
+
+<div class="workflow-container" data-workflow-container>
+  <div class="workflow-toolbar" role="toolbar" aria-label="Filter workflows by requirement">
+    <span class="filter-label">Filter:</span>
+    <div class="filter-group" role="group">
+      <button type="button" class="filter-btn active" data-filter="all">All (11)</button>
+      <button type="button" class="filter-btn" data-filter="chat">Chat only (6)</button>
+      <button type="button" class="filter-btn" data-filter="spreadsheet">Spreadsheet (2)</button>
+      <button type="button" class="filter-btn" data-filter="code">Code & tools (3)</button>
+    </div>
+  </div>
+
+  <div class="workflow-grid" role="list">
+    {
+      workflows.map((wf) => (
+        <article class="workflow-card" data-category={wf.category} role="listitem">
+          <div class="card-head">
+            <span class="card-num">{wf.num}</span>
+            <div class="card-tags">
+              <span class={`tag-pill tag-${wf.category}`}>{wf.categoryLabel}</span>
+              <span class="tag-pairs">{wf.pairs}</span>
+            </div>
+          </div>
+          <h3 class="card-title">
+            <a href={`./${wf.slug}/`}>{wf.title}</a>
+          </h3>
+          <p class="card-summary">{wf.summary}</p>
+          <div class="card-foot">
+            <span class="try-label">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true" fill="currentColor">
+                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm0 14.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13ZM8.75 4h-1.5v4.5l3.5 2.1.75-1.23-2.75-1.62V4Z" />
+              </svg>
+              {wf.tryIt}
+            </span>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-workflow-container]');
+    if (!root) return;
+
+    const btns = root.querySelectorAll('[data-filter]');
+    const cards = root.querySelectorAll('.workflow-card');
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.getAttribute('data-filter') || 'all';
+
+        btns.forEach((b) => b.classList.toggle('active', b === btn));
+
+        cards.forEach((card) => {
+          const cat = card.getAttribute('data-category');
+          const visible = filter === 'all' || cat === filter;
+          (card as HTMLElement).style.display = visible ? '' : 'none';
+        });
+      });
+    });
+  })();
+</script>
+
+<style>
+  .workflow-container {
+    margin: 1.75rem 0;
+  }
+
+  .workflow-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .filter-label {
+    font-size: var(--ahg-text-small);
+    color: var(--ahg-muted);
+    font-weight: 600;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .filter-btn {
+    min-height: var(--ahg-touch);
+    padding: 0.25rem 0.75rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent);
+  }
+
+  .filter-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+    font-weight: 700;
+  }
+
+  .workflow-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: 1rem;
+  }
+
+  .workflow-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    transition: transform var(--ahg-motion-fast) ease-out, box-shadow var(--ahg-motion-fast) ease-out, border-color var(--ahg-motion-fast) ease-out;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .workflow-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgb(0 0 0 / 0.08);
+      border-color: var(--ahg-accent);
+    }
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-num {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ahg-muted);
+  }
+
+  .card-tags {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .tag-pill {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 999px;
+  }
+
+  .tag-chat {
+    background: var(--ahg-atwork-soft);
+    color: var(--ahg-atwork);
+  }
+
+  .tag-spreadsheet {
+    background: var(--ahg-expert-soft);
+    color: var(--ahg-expert);
+  }
+
+  .tag-code {
+    background: var(--ahg-consistency-soft);
+    color: var(--ahg-consistency);
+  }
+
+  .tag-pairs {
+    font-size: 0.7rem;
+    color: var(--ahg-muted);
+  }
+
+  .card-title {
+    margin: 0.25rem 0 0.5rem;
+    font-size: 1.05rem;
+    line-height: 1.3;
+  }
+
+  .card-title a {
+    color: var(--ahg-text);
+    text-decoration: none;
+  }
+
+  .card-title a:hover {
+    color: var(--ahg-accent);
+    text-decoration: underline;
+  }
+
+  .card-summary {
+    font-size: var(--ahg-text-small);
+    color: var(--ahg-muted);
+    line-height: 1.45;
+    flex-grow: 1;
+    margin: 0 0 0.85rem;
+  }
+
+  .card-foot {
+    display: flex;
+    align-items: center;
+    padding-top: 0.65rem;
+    border-top: 1px dashed var(--ahg-line);
+    font-size: 0.78rem;
+    color: var(--ahg-muted);
+  }
+
+  .try-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+</style>

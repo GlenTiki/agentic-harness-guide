@@ -1,0 +1,337 @@
+---
+import rawResults from '../../examples/wrong-behaviour/results.json';
+
+interface ResultRow {
+  case: string;
+  arm: string;
+  models: string[];
+  claude_code: string[];
+  dates: string[];
+  n: number;
+  pass: number;
+  partial: number;
+  fail: number;
+  mean: number;
+  min: number;
+  max: number;
+  wrong_k: number;
+  wrong_n: number;
+  wilson95: [number, number];
+  stability: string;
+  headline_wrong_k?: number;
+  unresolved_doi_k?: number;
+  rule_of_three_upper?: number;
+}
+
+const rows = rawResults as ResultRow[];
+
+const pct = (num: number) => `${Math.round(num * 100)}%`;
+const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k ?? 0) > 0 ? 'C' : 'A');
+---
+
+<div class="evidence-chart" data-component="evidence-chart">
+  <div class="chart-toolbar">
+    <div class="filter-group" role="group" aria-label="Filter by template">
+      <span class="group-label">Template:</span>
+      <button type="button" class="filter-chip active" data-filter-template="all">All (20)</button>
+      <button type="button" class="filter-chip" data-filter-template="B">Wrong triggered (B)</button>
+      <button type="button" class="filter-chip" data-filter-template="C">Headline wrong (C)</button>
+      <button type="button" class="filter-chip" data-filter-template="A">0 of n triggered (A)</button>
+    </div>
+    <div class="filter-group" role="group" aria-label="Filter by model">
+      <span class="group-label">Model:</span>
+      <button type="button" class="filter-chip active" data-filter-model="all">All</button>
+      <button type="button" class="filter-chip" data-filter-model="claude-sonnet-5-5">Sonnet</button>
+      <button type="button" class="filter-chip" data-filter-model="claude-haiku-5-5">Haiku</button>
+    </div>
+  </div>
+
+  <div class="table-scroll" role="region" tabindex="0" aria-label="Interactive trials results chart">
+    <table class="chart-table">
+      <thead>
+        <tr>
+          <th>Case / Arm</th>
+          <th>Model</th>
+          <th>n</th>
+          <th>Pass / Part / Fail</th>
+          <th>95% Wilson Interval</th>
+          <th>Rate</th>
+          <th>Template</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r, idx) => {
+          const tmpl = templateOf(r);
+          const modelSlug = r.models[0] ?? '';
+          const wMin = Math.round(r.wilson95[0] * 100);
+          const wMax = Math.round(r.wilson95[1] * 100);
+          const pointRate = r.wrong_k > 0 ? Math.round((r.wrong_k / r.wrong_n) * 100) : (r.headline_wrong_k ?? 0) > 0 ? Math.round(((r.headline_wrong_k ?? 0) / r.n) * 100) : 0;
+          return (
+            <tr class="chart-row" data-template={tmpl} data-model={modelSlug} data-row-id={idx}>
+              <td class="cell-case">
+                <strong>{r.case}</strong>
+                <span class="arm-tag">{r.arm}</span>
+              </td>
+              <td class="cell-model">{modelSlug.replace('claude-', '')}</td>
+              <td class="cell-n">{r.n}</td>
+              <td class="cell-score">
+                <div class="score-stacked-bar" title={`Pass: ${r.pass}, Partial: ${r.partial}, Fail: ${r.fail}`}>
+                  <div class="bar-seg seg-pass" style={{ width: `${(r.pass / r.n) * 100}%` }}></div>
+                  <div class="bar-seg seg-part" style={{ width: `${(r.partial / r.n) * 100}%` }}></div>
+                  <div class="bar-seg seg-fail" style={{ width: `${(r.fail / r.n) * 100}%` }}></div>
+                </div>
+                <span class="score-text">{r.pass}/{r.partial}/{r.fail}</span>
+              </td>
+              <td class="cell-whisker">
+                <div class="whisker-track" title={`95% Wilson interval: ${pct(r.wilson95[0])} to ${pct(r.wilson95[1])}`}>
+                  <div class="whisker-span" style={{ left: `${wMin}%`, width: `${Math.max(wMax - wMin, 3)}%` }}></div>
+                  {pointRate > 0 && <div class="whisker-point" style={{ left: `${pointRate}%` }}></div>}
+                  {r.rule_of_three_upper && r.wrong_k === 0 && (
+                    <div class="rule-three-bound" style={{ left: `${Math.round(r.rule_of_three_upper * 100)}%` }} title={`Rule of three bound: ${pct(r.rule_of_three_upper)}`}></div>
+                  )}
+                </div>
+                <span class="whisker-text">{pct(r.wilson95[0])} - {pct(r.wilson95[1])}</span>
+              </td>
+              <td class="cell-rate">
+                {r.wrong_k > 0 ? (
+                  <span class="rate-badge rate-wrong">{r.wrong_k}/{r.wrong_n}</span>
+                ) : (r.headline_wrong_k ?? 0) > 0 ? (
+                  <span class="rate-badge rate-headline">{r.headline_wrong_k}/{r.n}</span>
+                ) : (
+                  <span class="rate-badge rate-clean">0/{r.wrong_n}</span>
+                )}
+              </td>
+              <td class="cell-tmpl">
+                <span class={`tmpl-badge tmpl-${tmpl}`}>{tmpl}</span>
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+  <p class="chart-caption">Interactive visualization of all 20 test arms across 310 trials. Stacked bars show pass/partial/fail distribution. Whiskers show 95% Wilson confidence intervals.</p>
+</div>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-component="evidence-chart"]');
+    if (!root) return;
+
+    let templateFilter = 'all';
+    let modelFilter = 'all';
+
+    const templateBtns = root.querySelectorAll('[data-filter-template]');
+    const modelBtns = root.querySelectorAll('[data-filter-model]');
+    const rows = root.querySelectorAll('.chart-row');
+
+    const update = () => {
+      templateBtns.forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter-template') === templateFilter);
+      });
+      modelBtns.forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter-model') === modelFilter);
+      });
+
+      rows.forEach((row) => {
+        const rowTmpl = row.getAttribute('data-template');
+        const rowModel = row.getAttribute('data-model');
+        const matchTmpl = templateFilter === 'all' || rowTmpl === templateFilter;
+        const matchModel = modelFilter === 'all' || rowModel === modelFilter;
+        (row as HTMLElement).hidden = !(matchTmpl && matchModel);
+      });
+    };
+
+    templateBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        templateFilter = btn.getAttribute('data-filter-template') || 'all';
+        update();
+      });
+    });
+
+    modelBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        modelFilter = btn.getAttribute('data-filter-model') || 'all';
+        update();
+      });
+    });
+
+    update();
+  })();
+</script>
+
+<style>
+  .evidence-chart {
+    margin: 1.5rem 0 2rem;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .chart-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: center;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .group-label {
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+    color: var(--ahg-muted);
+  }
+
+  .filter-chip {
+    min-height: var(--ahg-touch);
+    padding: 0.2rem 0.6rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: 999px;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-text);
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .filter-chip:hover {
+    border-color: var(--ahg-accent);
+  }
+
+  .filter-chip.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+  }
+
+  .chart-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--sl-text-xs);
+    margin: 0;
+  }
+
+  .chart-table th, .chart-table td {
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--ahg-line);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .cell-case strong {
+    display: block;
+    font-size: var(--sl-text-xs);
+  }
+
+  .arm-tag {
+    display: inline-block;
+    padding: 0.05rem 0.35rem;
+    background: var(--ahg-code-bg);
+    border-radius: 4px;
+    font-family: ui-monospace, monospace;
+    font-size: 11px;
+    color: var(--ahg-muted);
+  }
+
+  .score-stacked-bar {
+    display: flex;
+    width: 80px;
+    height: 8px;
+    background: var(--ahg-line);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .bar-seg { height: 100%; }
+  .seg-pass { background: var(--ahg-right); }
+  .seg-part { background: var(--ahg-expert); }
+  .seg-fail { background: var(--ahg-wrong); }
+
+  .score-text {
+    font-size: 10px;
+    color: var(--ahg-muted);
+  }
+
+  .whisker-track {
+    position: relative;
+    width: 100px;
+    height: 12px;
+    background: var(--ahg-code-bg);
+    border-radius: 3px;
+  }
+
+  .whisker-span {
+    position: absolute;
+    top: 3px;
+    height: 6px;
+    background: var(--ahg-accent-soft);
+    border: 1px solid var(--ahg-accent);
+    border-radius: 2px;
+  }
+
+  .whisker-point {
+    position: absolute;
+    top: 1px;
+    width: 4px;
+    height: 10px;
+    background: var(--ahg-wrong);
+    border-radius: 1px;
+    transform: translateX(-50%);
+  }
+
+  .rule-three-bound {
+    position: absolute;
+    top: 1px;
+    width: 2px;
+    height: 10px;
+    background: var(--ahg-muted);
+    border-left: 1px dashed var(--ahg-text);
+  }
+
+  .whisker-text {
+    font-size: 10px;
+    color: var(--ahg-muted);
+  }
+
+  .rate-badge {
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 11px;
+  }
+
+  .rate-wrong { background: var(--ahg-wrong-soft); color: var(--ahg-wrong); }
+  .rate-headline { background: var(--ahg-expert-soft); color: var(--ahg-expert); }
+  .rate-clean { background: var(--ahg-right-soft); color: var(--ahg-right); }
+
+  .tmpl-badge {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 11px;
+  }
+
+  .tmpl-A { background: var(--ahg-right-soft); color: var(--ahg-right); }
+  .tmpl-B { background: var(--ahg-wrong-soft); color: var(--ahg-wrong); }
+  .tmpl-C { background: var(--ahg-accent-soft); color: var(--ahg-accent-strong); }
+
+  .chart-caption {
+    margin: 0.75rem 0 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
+</style>

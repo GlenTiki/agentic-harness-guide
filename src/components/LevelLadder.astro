@@ -7,37 +7,159 @@ const unit = 11;
 const baseline = 124;
 ---
 
-<figure class="level-ladder">
+<figure class="level-ladder" data-component="level-ladder">
   <svg viewBox="0 0 520 130" role="img" aria-labelledby="ll-t ll-d" xmlns="http://www.w3.org/2000/svg">
     <title id="ll-t">The nine levels as a staircase</title>
     <desc id="ll-d">Nine steps rise from left to right, numbered 0 to 8. Level 0 is catching the assistant being wrong. Level 8 is designing a checked workflow.</desc>
-    {levels.map((_, i) => {
+    <defs>
+      <pattern id="ll-grid" width="16" height="16" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1" class="grid-dot" />
+      </pattern>
+    </defs>
+    <rect width="520" height="130" fill="url(#ll-grid)" opacity="0.3" rx="8" />
+
+    {levels.map((level, i) => {
       const height = 30 + unit * i;
       const x = i * (stepWidth + gap);
       return (
-        <g>
-          <rect x={x} y={baseline - height} width={stepWidth} height={height} rx="4" class="step" />
-          <text x={x + stepWidth / 2} y={baseline - height + 18} class="num">{i}</text>
-        </g>
+        <a href={`${base}/journey/${level.slug}/`} class="ladder-link" data-step-index={i} aria-label={`Level ${i}: ${level.title}`}>
+          <g class="step-group">
+            <rect x={x} y={baseline - height} width={stepWidth} height={height} rx="6" class="step" />
+            <rect x={x} y={baseline - height} width={stepWidth} height="4" rx="2" class="step-cap" />
+            <text x={x + stepWidth / 2} y={baseline - height + 18} class="num">{i}</text>
+          </g>
+        </a>
       );
     })}
   </svg>
   <ol class="level-list" start="0">
-    {levels.map((level) => (
-      <li>
+    {levels.map((level, i) => (
+      <li data-list-index={i}>
         <a href={`${base}/journey/${level.slug}/`}><strong>{level.title}.</strong> {level.goal}.</a>
       </li>
     ))}
   </ol>
 </figure>
 
+<script>
+  (() => {
+    const root = document.querySelector('[data-component="level-ladder"]');
+    if (!root) return;
+
+    const links = root.querySelectorAll('.ladder-link');
+    const items = root.querySelectorAll('.level-list li');
+
+    links.forEach((link, idx) => {
+      link.addEventListener('mouseenter', () => {
+        items[idx]?.classList.add('highlighted');
+      });
+      link.addEventListener('mouseleave', () => {
+        items[idx]?.classList.remove('highlighted');
+      });
+      link.addEventListener('focus', () => {
+        items[idx]?.classList.add('highlighted');
+      });
+      link.addEventListener('blur', () => {
+        items[idx]?.classList.remove('highlighted');
+      });
+    });
+
+    items.forEach((item, idx) => {
+      item.addEventListener('mouseenter', () => {
+        links[idx]?.classList.add('highlighted');
+      });
+      item.addEventListener('mouseleave', () => {
+        links[idx]?.classList.remove('highlighted');
+      });
+    });
+  })();
+</script>
+
 <style>
-  .level-ladder { margin: 1.5rem 0; }
-  svg { width: 100%; height: auto; max-width: 100%; font-family: var(--sl-font-system); }
-  .step { fill: var(--sl-color-accent-low); stroke: var(--sl-color-accent); stroke-width: 1.5; }
-  .num { fill: var(--sl-color-text); font-size: 14px; font-weight: 700; text-anchor: middle; }
-  .level-list { margin: 1rem 0 0; padding-left: 1.6rem; }
-  .level-list li { margin: 0.35rem 0; }
-  .level-list a { text-decoration: none; }
-  .level-list a:hover { text-decoration: underline; }
+  .level-ladder {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    font-family: var(--sl-font-system);
+  }
+
+  .grid-dot { fill: var(--ahg-line); }
+
+  .ladder-link {
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .ladder-link:hover,
+  .ladder-link:focus-visible,
+  .ladder-link.highlighted {
+    transform: translateY(-2px);
+    outline: none;
+  }
+
+  .step {
+    fill: var(--ahg-accent-soft);
+    stroke: var(--ahg-accent);
+    stroke-width: 1.5;
+    transition: fill var(--ahg-motion-fast) ease-out, stroke var(--ahg-motion-fast) ease-out;
+  }
+
+  .step-cap {
+    fill: var(--ahg-accent);
+  }
+
+  .ladder-link:hover .step,
+  .ladder-link:focus-visible .step,
+  .ladder-link.highlighted .step {
+    fill: var(--ahg-accent);
+    stroke: var(--ahg-accent-strong);
+  }
+
+  .ladder-link:hover .num,
+  .ladder-link:focus-visible .num,
+  .ladder-link.highlighted .num {
+    fill: var(--ahg-accent-ink);
+  }
+
+  .num {
+    fill: var(--ahg-accent-strong);
+    font-size: 14px;
+    font-weight: 700;
+    text-anchor: middle;
+    transition: fill var(--ahg-motion-fast) ease-out;
+  }
+
+  .level-list {
+    margin: 1.25rem 0 0;
+    padding-left: 1.6rem;
+  }
+
+  .level-list li {
+    margin: 0.35rem 0;
+    transition: transform var(--ahg-motion-fast) ease-out, color var(--ahg-motion-fast) ease-out;
+  }
+
+  .level-list li.highlighted {
+    transform: translateX(4px);
+    color: var(--ahg-accent);
+  }
+
+  .level-list a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .level-list a:hover {
+    text-decoration: underline;
+    color: var(--ahg-accent);
+  }
 </style>

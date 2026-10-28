@@ -4,6 +4,8 @@ description: Walk a single small feature from a plain-English outcome to a merge
 status: mixed
 ---
 
+import EndToEndFlow from '../../../components/EndToEndFlow.astro';
+
 *Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
 
 **Status.** Mixed. Each step below carries its own label, defined on the [method page](../../method/engineer-weak-spots/#three-status-labels). The case-study run order is on the [case study overview](../../case-study/).
@@ -17,6 +19,8 @@ status: mixed
 Sam wants the month-end summary to say how many months it counted, and to stop with a clear message if a month appears twice. Mina reads the result, so the wording must be plain. This is the February slip from the [journey](../../journey/), now as a feature.
 
 ## The flow
+
+<EndToEndFlow />
 
 1. **State the outcome.** Sam tells the lead [agent](../../glossary/#agent) the outcome and the expected behaviour in plain English, and asks for the plan first. Layer: [product manager and tech lead](../../method/product-manager-and-team-lead/). Label: Runs in my setup.
 2. **Load memory.** A hook searches memory notes with the prompt. The best few load: "Mina prefers plain sentences, no tables". Layer: [memory](../memory/). Label: Runs in my setup. Chapter 5 builds the loader.

@@ -1,4 +1,17 @@
-<figure class="diagram">
+<figure class="diagram" data-diagram="delegation-ledger">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Delegation ledger controls">
+    <div class="btn-group" role="group" aria-label="Step selection">
+      <button type="button" class="ctrl-btn active" data-step="0">1. Read ledger</button>
+      <button type="button" class="ctrl-btn" data-step="1">2. Bounded briefs</button>
+      <button type="button" class="ctrl-btn" data-step="2">3. Sub-agents run</button>
+      <button type="button" class="ctrl-btn" data-step="3">4. Return summaries</button>
+      <button type="button" class="ctrl-btn" data-step="4">5. Append ledger</button>
+    </div>
+    <button type="button" class="ctrl-btn refuse-btn" data-action="test-direct">
+      ⚡ Peer chat attempt (blocked)
+    </button>
+  </div>
+
   <svg viewBox="0 0 480 440" role="img" aria-labelledby="dl-t dl-d" xmlns="http://www.w3.org/2000/svg">
     <title id="dl-t">Delegation with a ledger</title>
     <desc id="dl-d">A lead agent reads a durable ledger, writes a bounded brief for each of two sub-agents, and receives short summaries. The lead records outcomes in the ledger. The sub-agents do not talk to each other.</desc>
@@ -6,48 +19,396 @@
       <marker id="dl-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
         <path d="M0 0L10 5L0 10z" class="arrow" />
       </marker>
+      <marker id="dl-a-wrong" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+        <path d="M0 0L10 5L0 10z" class="arrow-wrong" />
+      </marker>
+      <pattern id="dl-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1" class="grid-dot" />
+      </pattern>
     </defs>
-    <rect x="150" y="10" width="180" height="60" rx="8" class="box hot" />
-    <text x="240" y="36" class="label">Lead agent</text>
-    <text x="240" y="56" class="sub">decides and coordinates</text>
 
-    <rect x="20" y="170" width="190" height="64" rx="8" class="box" />
-    <text x="115" y="196" class="label">Sub-agent A</text>
-    <text x="115" y="216" class="sub">own context, own tools</text>
+    <rect width="480" height="440" fill="url(#dl-grid)" opacity="0.4" rx="10" />
 
-    <rect x="270" y="170" width="190" height="64" rx="8" class="box" />
-    <text x="365" y="196" class="label">Sub-agent B</text>
-    <text x="365" y="216" class="sub">own context, own tools</text>
+    <!-- Lead agent -->
+    <g class="node" data-node="lead" tabindex="0" role="button" aria-label="Lead agent node">
+      <rect x="150" y="10" width="180" height="60" rx="8" class="box hot" />
+      <rect x="150" y="10" width="6" height="60" rx="3" class="accent-bar active" />
+      <text x="240" y="36" class="label">Lead agent</text>
+      <text x="240" y="56" class="sub">decides and coordinates</text>
+    </g>
 
-    <rect x="90" y="340" width="300" height="76" rx="8" class="box" />
-    <text x="240" y="366" class="label">Durable ledger</text>
-    <text x="240" y="386" class="sub">intent, decisions, failures, findings</text>
-    <text x="240" y="404" class="sub">a file in the repository, not the chat</text>
+    <!-- Sub-agent A -->
+    <g class="node" data-node="agent-a" tabindex="0" role="button" aria-label="Sub-agent A node">
+      <rect x="20" y="170" width="190" height="64" rx="8" class="box" />
+      <rect x="20" y="170" width="6" height="64" rx="3" class="accent-bar" />
+      <text x="115" y="196" class="label">Sub-agent A</text>
+      <text x="115" y="216" class="sub">own context, own tools</text>
+    </g>
 
-    <path d="M200 70L125 168" class="line" marker-end="url(#dl-a)" />
-    <path d="M280 70L355 168" class="line" marker-end="url(#dl-a)" />
+    <!-- Sub-agent B -->
+    <g class="node" data-node="agent-b" tabindex="0" role="button" aria-label="Sub-agent B node">
+      <rect x="270" y="170" width="190" height="64" rx="8" class="box" />
+      <rect x="270" y="170" width="6" height="64" rx="3" class="accent-bar" />
+      <text x="365" y="196" class="label">Sub-agent B</text>
+      <text x="365" y="216" class="sub">own context, own tools</text>
+    </g>
+
+    <!-- Durable ledger -->
+    <g class="node" data-node="ledger" tabindex="0" role="button" aria-label="Durable ledger node">
+      <rect x="90" y="340" width="300" height="76" rx="8" class="box hot" />
+      <rect x="90" y="340" width="6" height="76" rx="3" class="accent-bar active" />
+      <text x="240" y="366" class="label">Durable ledger</text>
+      <text x="240" y="386" class="sub">intent, decisions, failures, findings</text>
+      <text x="240" y="404" class="sub">a file in the repository, not the chat</text>
+    </g>
+
+    <!-- Forward paths: briefs from lead -->
+    <path d="M200 70L125 168" class="line" data-path="brief-a" marker-end="url(#dl-a)" />
+    <path d="M280 70L355 168" class="line" data-path="brief-b" marker-end="url(#dl-a)" />
     <text x="120" y="112" class="side" text-anchor="end">brief</text>
     <text x="360" y="112" class="side" text-anchor="start">brief</text>
 
-    <path d="M170 234L215 338" class="line dash" marker-end="url(#dl-a)" />
-    <path d="M310 234L265 338" class="line dash" marker-end="url(#dl-a)" />
+    <!-- Summary paths from sub-agents to ledger -->
+    <path d="M170 234L215 338" class="line dash" data-path="summary-a" marker-end="url(#dl-a)" />
+    <path d="M310 234L265 338" class="line dash" data-path="summary-b" marker-end="url(#dl-a)" />
     <text x="150" y="300" class="side" text-anchor="end">summary</text>
     <text x="330" y="300" class="side" text-anchor="start">summary</text>
 
-    <path d="M390 378H452V40H332" class="line" marker-end="url(#dl-a)" />
+    <!-- Lead reads ledger back -->
+    <path d="M390 378H452V40H332" class="line" data-path="readback" marker-end="url(#dl-a)" />
     <text x="446" y="210" class="side" transform="rotate(90 446 210)">lead reads state back</text>
+
+    <!-- Direct peer communication line (normally hidden/refused) -->
+    <path d="M210 202H270" class="line direct-peer" data-path="direct" marker-end="url(#dl-a)" />
+    <text x="240" y="196" class="peer-warning" text-anchor="middle">peer talk blocked</text>
   </svg>
+
+  <div class="diagram-readout" aria-live="polite">
+    <p class="readout-title"><span class="badge-step">Step 1</span> Read ledger</p>
+    <p class="readout-desc">The lead agent reads the durable ledger file to recover previous decisions and requirements before spawning workers.</p>
+  </div>
+
   <figcaption>The lead delegates with bounded briefs and records outcomes in a ledger. Sub-agents return summaries, not transcripts.</figcaption>
 </figure>
 
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="delegation-ledger"]');
+    if (!root) return;
+
+    const steps = [
+      {
+        title: 'Step 1: Lead reads ledger',
+        desc: 'Before dispatching any work, the lead agent reads the durable ledger file from the repository, recovering previous intent, constraints, and failures.',
+        activeNode: 'ledger',
+        activePaths: ['readback'],
+      },
+      {
+        title: 'Step 2: Dispatch bounded briefs',
+        desc: 'The lead writes tight, self-contained briefs with clear success criteria and file boundaries for Sub-agent A and Sub-agent B. The full chat history is never pasted.',
+        activeNode: 'lead',
+        activePaths: ['brief-a', 'brief-b'],
+      },
+      {
+        title: 'Step 3: Isolated sub-agents execute',
+        desc: 'Sub-agents run in isolated worktrees with their own bounded context windows. They cannot mutate shared state concurrently.',
+        activeNode: 'agent-a',
+        activePaths: ['brief-a', 'brief-b'],
+      },
+      {
+        title: 'Step 4: Return compact summaries',
+        desc: 'Each worker delivers a concise summary of findings, diffs, or failures back to the ledger. Transcripts stay discarded.',
+        activeNode: 'ledger',
+        activePaths: ['summary-a', 'summary-b'],
+      },
+      {
+        title: 'Step 5: Append outcomes to ledger',
+        desc: 'The durable ledger is updated with UTC timestamps. State survives context compaction, process restarts, and session boundaries.',
+        activeNode: 'lead',
+        activePaths: ['readback'],
+      },
+    ];
+
+    let current = 0;
+    const titleEl = root.querySelector('.readout-title');
+    const descEl = root.querySelector('.readout-desc');
+    const btns = root.querySelectorAll('[data-step]');
+    const directBtn = root.querySelector('[data-action="test-direct"]');
+    const directPath = root.querySelector('.direct-peer');
+    const directWarning = root.querySelector('.peer-warning');
+
+    const render = (refused = false) => {
+      btns.forEach((btn, idx) => {
+        btn.classList.toggle('active', idx === current && !refused);
+        btn.setAttribute('aria-pressed', idx === current && !refused ? 'true' : 'false');
+      });
+
+      if (refused) {
+        directPath?.classList.add('peer-active');
+        directWarning?.classList.add('peer-active');
+        directPath?.setAttribute('marker-end', 'url(#dl-a-wrong)');
+        if (titleEl && descEl) {
+          titleEl.innerHTML = '<span class="badge-step badge-blocked">Blocked</span> Peer-to-peer delegation refused';
+          descEl.textContent = 'Sub-agents must never talk directly to each other! Direct communication breeds context drift, unlogged decisions, and deadlocks. All coordination routes through the lead and the ledger.';
+        }
+      } else {
+        directPath?.classList.remove('peer-active');
+        directWarning?.classList.remove('peer-active');
+        directPath?.setAttribute('marker-end', 'url(#dl-a)');
+        const s = steps[current];
+        if (titleEl && descEl && s) {
+          titleEl.innerHTML = `<span class="badge-step">Step ${current + 1}</span> ${s.title.replace(/^Step \d+: /, '')}`;
+          descEl.textContent = s.desc;
+        }
+
+        root.querySelectorAll('.line:not(.direct-peer)').forEach((l) => {
+          const pathId = l.getAttribute('data-path');
+          l.classList.toggle('active-path', s.activePaths.includes(pathId));
+        });
+      }
+    };
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        current = Number(btn.getAttribute('data-step') || 0);
+        render(false);
+      });
+    });
+
+    directBtn?.addEventListener('click', () => {
+      render(true);
+      setTimeout(() => render(false), 2400);
+    });
+
+    root.querySelectorAll('.node').forEach((node) => {
+      node.addEventListener('click', () => {
+        const id = node.getAttribute('data-node');
+        if (id === 'lead') current = 1;
+        else if (id === 'agent-a' || id === 'agent-b') current = 2;
+        else if (id === 'ledger') current = 0;
+        render(false);
+      });
+    });
+
+    render(false);
+  })();
+</script>
+
 <style>
-  svg { font-family: var(--sl-font-system); }
-  .box { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
-  .hot { stroke: var(--sl-color-accent); stroke-width: 2; }
-  .label { fill: var(--sl-color-text); font-size: 15px; font-weight: 600; text-anchor: middle; }
-  .sub { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
-  .side { fill: var(--sl-color-gray-2); font-size: 12px; }
-  .line { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.8; }
-  .dash { stroke-dasharray: 5 4; stroke: var(--sl-color-accent); }
-  .arrow { fill: var(--sl-color-gray-3); }
+  .diagram {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .diagram-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--ahg-touch);
+    padding: 0.25rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent);
+  }
+
+  .ctrl-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+    font-weight: 700;
+  }
+
+  .refuse-btn {
+    color: var(--ahg-wrong);
+    border-color: var(--ahg-wrong);
+    font-weight: 600;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    font-family: var(--sl-font-system);
+  }
+
+  .grid-dot { fill: var(--ahg-line); }
+
+  .node {
+    cursor: pointer;
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .node:hover, .node:focus-visible {
+    transform: translateY(-1px);
+    outline: none;
+  }
+
+  .box {
+    fill: var(--ahg-panel);
+    stroke: var(--ahg-line);
+    stroke-width: 1.5;
+    transition: stroke var(--ahg-motion-fast) ease-out, fill var(--ahg-motion-fast) ease-out;
+  }
+
+  .hot {
+    stroke: var(--ahg-accent);
+    stroke-width: 2;
+  }
+
+  .accent-bar { fill: var(--ahg-line); }
+  .accent-bar.active { fill: var(--ahg-accent); }
+
+  .node.selected .box {
+    fill: var(--ahg-accent-soft);
+    stroke: var(--ahg-accent-strong);
+    stroke-width: 2.5;
+  }
+
+  .label {
+    fill: var(--ahg-text);
+    font-size: 14px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+
+  .sub {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .side {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--ahg-line);
+    stroke-width: 1.8;
+    transition: stroke var(--ahg-motion-fast) ease-out;
+  }
+
+  .line.active-path {
+    stroke: var(--ahg-accent);
+    stroke-width: 2.5;
+  }
+
+  .dash { stroke-dasharray: 5 4; }
+
+  .direct-peer {
+    stroke: var(--ahg-line);
+    stroke-dasharray: 4 4;
+    opacity: 0.3;
+  }
+
+  .direct-peer.peer-active {
+    stroke: var(--ahg-wrong);
+    stroke-width: 2.5;
+    opacity: 1;
+  }
+
+  .peer-warning {
+    fill: var(--ahg-wrong);
+    font-size: 10px;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity var(--ahg-motion-fast) ease-out;
+  }
+
+  .peer-warning.peer-active {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .line.active-path {
+      stroke-dasharray: 6 4;
+      animation: ledgerFlow 1s linear infinite;
+    }
+    .direct-peer.peer-active {
+      animation: ledgerFlow 0.8s linear infinite reverse;
+    }
+  }
+
+  @keyframes ledgerFlow {
+    to { stroke-dashoffset: -20; }
+  }
+
+  .arrow { fill: var(--ahg-line); }
+  .arrow-wrong { fill: var(--ahg-wrong); }
+
+  .diagram-readout {
+    margin-top: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+  }
+
+  .readout-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem;
+    font-size: var(--ahg-text-small);
+    font-weight: 700;
+    color: var(--ahg-text);
+  }
+
+  .badge-step {
+    padding: 0.1rem 0.45rem;
+    background: var(--ahg-accent-soft);
+    border: 1px solid var(--ahg-accent);
+    border-radius: 999px;
+    color: var(--ahg-accent-strong);
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+  }
+
+  .badge-step.badge-blocked {
+    background: var(--ahg-wrong-soft);
+    border-color: var(--ahg-wrong);
+    color: var(--ahg-wrong);
+  }
+
+  .readout-desc {
+    margin: 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    line-height: 1.45;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
 </style>

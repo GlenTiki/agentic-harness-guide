@@ -1,0 +1,357 @@
+<figure class="diagram" data-diagram="end-to-end-flow">
+  <div class="diagram-toolbar" role="toolbar" aria-label="End-to-end flow layer controls">
+    <div class="btn-group" role="group" aria-label="Status filter">
+      <button type="button" class="ctrl-btn active" data-flow-filter="all">All 16 layers</button>
+      <button type="button" class="ctrl-btn" data-flow-filter="runs">Runs in my setup (10)</button>
+      <button type="button" class="ctrl-btn" data-flow-filter="built">Built in case study (4)</button>
+      <button type="button" class="ctrl-btn" data-flow-filter="design">Design only (2)</button>
+    </div>
+    <button type="button" class="ctrl-btn test-layer-btn" data-action="test-fault">
+      ⚠ Simulate missing hook (test fault)
+    </button>
+  </div>
+
+  <div class="layers-grid">
+    <div class="flow-step" data-layer-status="runs" data-step-id="1">
+      <span class="step-num">01</span>
+      <div class="step-info">
+        <strong>State the outcome</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="2">
+      <span class="step-num">02</span>
+      <div class="step-info">
+        <strong>Load memory</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="3">
+      <span class="step-num">03</span>
+      <div class="step-info">
+        <strong>Rank notes (hybrid)</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="built" data-step-id="4">
+      <span class="step-num">04</span>
+      <div class="step-info">
+        <strong>Write plain spec</strong>
+        <span class="status-pill pill-built">Built in case study</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="5">
+      <span class="step-num">05</span>
+      <div class="step-info">
+        <strong>Show plan</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="design" data-step-id="6">
+      <span class="step-num">06</span>
+      <div class="step-info">
+        <strong>Write failing test first</strong>
+        <span class="status-pill pill-design">Design only</span>
+      </div>
+    </div>
+    <div class="flow-step fault-target" data-layer-status="built" data-step-id="7">
+      <span class="step-num">07</span>
+      <div class="step-info">
+        <strong>Gate work with hooks</strong>
+        <span class="status-pill pill-built">Built in case study</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="8">
+      <span class="step-num">08</span>
+      <div class="step-info">
+        <strong>Isolated worktree</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="built" data-step-id="9">
+      <span class="step-num">09</span>
+      <div class="step-info">
+        <strong>Check documents</strong>
+        <span class="status-pill pill-built">Built in case study</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="10">
+      <span class="step-num">10</span>
+      <div class="step-info">
+        <strong>Independent review</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="11">
+      <span class="step-num">11</span>
+      <div class="step-info">
+        <strong>Record in audit log</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="12">
+      <span class="step-num">12</span>
+      <div class="step-info">
+        <strong>Preview & validate</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="13">
+      <span class="step-num">13</span>
+      <div class="step-info">
+        <strong>Merge</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="built" data-step-id="14">
+      <span class="step-num">14</span>
+      <div class="step-info">
+        <strong>Retro habit</strong>
+        <span class="status-pill pill-built">Built in case study</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="15">
+      <span class="step-num">15</span>
+      <div class="step-info">
+        <strong>Learn (memory loop)</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+    <div class="flow-step" data-layer-status="runs" data-step-id="16">
+      <span class="step-num">16</span>
+      <div class="step-info">
+        <strong>Background index</strong>
+        <span class="status-pill pill-runs">Runs in my setup</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="diagram-readout" aria-live="polite">
+    <p class="readout-title"><span class="badge-step">Pipeline</span> 16 layers from prompt to merge and memory</p>
+    <p class="readout-desc">Every layer has an honest status label and hands verified data to the next step. Each layer is built to fail loudly when broken.</p>
+  </div>
+
+  <figcaption>The 16 steps of the end-to-end feature lifecycle, colour-coded by honest status.</figcaption>
+</figure>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="end-to-end-flow"]');
+    if (!root) return;
+
+    const filterBtns = root.querySelectorAll('[data-flow-filter]');
+    const steps = root.querySelectorAll('.flow-step');
+    const faultBtn = root.querySelector('[data-action="test-fault"]');
+    const target = root.querySelector('.fault-target');
+    const titleEl = root.querySelector('.readout-title');
+    const descEl = root.querySelector('.readout-desc');
+
+    let currentFilter = 'all';
+
+    const render = (faulted = false) => {
+      filterBtns.forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-flow-filter') === currentFilter && !faulted);
+      });
+
+      steps.forEach((step) => {
+        const st = step.getAttribute('data-layer-status');
+        const match = currentFilter === 'all' || st === currentFilter;
+        (step as HTMLElement).style.display = match ? '' : 'none';
+      });
+
+      if (faulted) {
+        target?.classList.add('fault-active');
+        if (titleEl && descEl) {
+          titleEl.innerHTML = '<span class="badge-step badge-blocked">Loud failure</span> Layer 07 (Hooks) removed';
+          descEl.textContent = 'Simulated fault: if the pre-tool write guard is missing, the stop hook halts the close and reports an unverified write. The harness catches the failure immediately!';
+        }
+      } else {
+        target?.classList.remove('fault-active');
+        if (titleEl && descEl) {
+          titleEl.innerHTML = '<span class="badge-step">Pipeline</span> 16 layers from prompt to merge and memory';
+          descEl.textContent = 'Every layer has an honest status label and hands verified data to the next step. Each layer is built to fail loudly when broken.';
+        }
+      }
+    };
+
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        currentFilter = btn.getAttribute('data-flow-filter') || 'all';
+        render(false);
+      });
+    });
+
+    faultBtn?.addEventListener('click', () => {
+      render(true);
+      setTimeout(() => render(false), 2600);
+    });
+
+    render(false);
+  })();
+</script>
+
+<style>
+  .diagram {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .diagram-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--ahg-touch);
+    padding: 0.25rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent);
+  }
+
+  .ctrl-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+    font-weight: 700;
+  }
+
+  .test-layer-btn {
+    color: var(--ahg-wrong);
+    border-color: var(--ahg-wrong);
+    font-weight: 600;
+  }
+
+  .layers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.5rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    font-size: var(--sl-text-xs);
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .flow-step:hover {
+    transform: translateY(-1px);
+    border-color: var(--ahg-accent);
+  }
+
+  .flow-step.fault-active {
+    background: var(--ahg-wrong-soft);
+    border-color: var(--ahg-wrong);
+    transform: scale(1.02);
+  }
+
+  .step-num {
+    font-family: ui-monospace, monospace;
+    font-weight: 800;
+    color: var(--ahg-accent);
+    font-size: 11px;
+  }
+
+  .step-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .step-info strong {
+    color: var(--ahg-text);
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .status-pill {
+    align-self: flex-start;
+    padding: 0.05rem 0.35rem;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+  }
+
+  .pill-runs { background: var(--ahg-right-soft); color: var(--ahg-right); border: 1px solid var(--ahg-right); }
+  .pill-built { background: var(--ahg-atwork-soft); color: var(--ahg-atwork); border: 1px solid var(--ahg-atwork); }
+  .pill-design { background: var(--ahg-expert-soft); color: var(--ahg-expert); border: 1px solid var(--ahg-expert); }
+
+  .diagram-readout {
+    margin-top: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+  }
+
+  .readout-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem;
+    font-size: var(--ahg-text-small);
+    font-weight: 700;
+    color: var(--ahg-text);
+  }
+
+  .badge-step {
+    padding: 0.1rem 0.45rem;
+    background: var(--ahg-accent-soft);
+    border: 1px solid var(--ahg-accent);
+    border-radius: 999px;
+    color: var(--ahg-accent-strong);
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+  }
+
+  .badge-step.badge-blocked {
+    background: var(--ahg-wrong-soft);
+    border-color: var(--ahg-wrong);
+    color: var(--ahg-wrong);
+  }
+
+  .readout-desc {
+    margin: 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    line-height: 1.45;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
+</style>

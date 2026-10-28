@@ -1,41 +1,307 @@
-<figure class="diagram">
+<figure class="diagram" data-diagram="context-desk">
+  <div class="diagram-toolbar" role="toolbar" aria-label="Context desk controls">
+    <div class="btn-group" role="group" aria-label="Conversation turn selection">
+      <button type="button" class="ctrl-btn active" data-turn="1">Turn 1: Clean desk</button>
+      <button type="button" class="ctrl-btn" data-turn="20">Turn 20: Bills pasted</button>
+      <button type="button" class="ctrl-btn" data-turn="140">Turn 140: Window fills</button>
+      <button type="button" class="ctrl-btn" data-turn="compact">After compaction</button>
+    </div>
+  </div>
+
   <svg viewBox="0 0 480 250" role="img" aria-labelledby="cd-t cd-d" xmlns="http://www.w3.org/2000/svg">
     <title id="cd-t">The context window as a desk</title>
     <desc id="cd-d">A desk holds your messages, the assistant's replies and any pasted text. The assistant can use everything on the desk. Older text that no longer fits sits off the desk, where the assistant cannot see it.</desc>
-    <rect x="20" y="20" width="300" height="190" rx="10" class="desk" />
-    <text x="36" y="44" class="zhead">On the desk: the assistant sees this</text>
-    <rect x="40" y="62" width="120" height="50" rx="6" class="sheet hot" />
-    <text x="100" y="92" class="label">Your message</text>
-    <rect x="180" y="62" width="120" height="50" rx="6" class="sheet" />
-    <text x="240" y="92" class="label">Its reply</text>
-    <rect x="40" y="130" width="260" height="50" rx="6" class="sheet" />
-    <text x="170" y="160" class="label">Pasted bills or article</text>
-    <rect x="350" y="62" width="110" height="50" rx="6" class="sheet gone" />
-    <text x="405" y="92" class="label">Oldest text</text>
-    <rect x="350" y="130" width="110" height="50" rx="6" class="sheet gone" />
-    <text x="405" y="160" class="label">Older still</text>
-    <text x="405" y="44" class="zhead mid">Off the desk</text>
-    <text x="405" y="206" class="sub">not seen</text>
-    <path d="M345 120H325" class="line" marker-end="url(#cd-a)" />
     <defs>
       <marker id="cd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
         <path d="M0 0L10 5L0 10z" class="arrow" />
       </marker>
+      <pattern id="cd-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1" class="grid-dot" />
+      </pattern>
     </defs>
+
+    <rect width="480" height="250" fill="url(#cd-grid)" opacity="0.4" rx="10" />
+
+    <!-- Desk perimeter -->
+    <rect x="20" y="20" width="300" height="194" rx="10" class="desk" />
+    <text x="36" y="44" class="zhead desk-head">On the desk: the assistant sees this</text>
+
+    <!-- Sheets on the desk -->
+    <g class="sheet-group" data-sheet="msg">
+      <rect x="40" y="60" width="120" height="52" rx="6" class="sheet hot" />
+      <rect x="40" y="60" width="5" height="52" rx="2.5" class="sheet-accent" />
+      <text x="100" y="91" class="label">Your message</text>
+    </g>
+
+    <g class="sheet-group" data-sheet="reply">
+      <rect x="180" y="60" width="120" height="52" rx="6" class="sheet" />
+      <rect x="180" y="60" width="5" height="52" rx="2.5" class="sheet-accent" />
+      <text x="240" y="91" class="label">Its reply</text>
+    </g>
+
+    <g class="sheet-group" data-sheet="bills">
+      <rect x="40" y="130" width="260" height="66" rx="6" class="sheet" />
+      <rect x="40" y="130" width="5" height="66" rx="2.5" class="sheet-accent" />
+      <text x="170" y="160" class="label">Pasted bills or article</text>
+      <text x="170" y="180" class="sub" data-sub="bills">40 amounts for 39 months</text>
+    </g>
+
+    <!-- Sheets off the desk -->
+    <g class="sheet-group gone-sheet" data-sheet="oldest">
+      <rect x="350" y="60" width="110" height="52" rx="6" class="sheet gone" />
+      <text x="405" y="91" class="label gone-label">Oldest text</text>
+    </g>
+
+    <g class="sheet-group gone-sheet" data-sheet="older">
+      <rect x="350" y="130" width="110" height="52" rx="6" class="sheet gone" />
+      <text x="405" y="160" class="label gone-label">Older still</text>
+    </g>
+
+    <text x="405" y="44" class="zhead mid">Off the desk</text>
+    <text x="405" y="206" class="sub mid">not seen</text>
+
+    <!-- Indicator arrow -->
+    <path d="M346 120H326" class="line" marker-end="url(#cd-a)" />
   </svg>
+
+  <div class="diagram-readout" aria-live="polite">
+    <p class="readout-title"><span class="badge-step">Turn 1</span> Clean desk</p>
+    <p class="readout-desc">The session starts with your initial prompt and the loaded instruction file. Ample context tokens remain.</p>
+  </div>
+
   <figcaption>When the desk is full, older text falls off. The assistant cannot use what is off the desk.</figcaption>
 </figure>
 
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="context-desk"]');
+    if (!root) return;
+
+    const states = {
+      1: {
+        title: 'Turn 1: Clean desk',
+        desc: 'The session opens with your task and instruction rules on the desk. All prior turns are empty.',
+        billsSub: 'Empty desk, standing rules loaded',
+      },
+      20: {
+        title: 'Turn 20: Bills pasted',
+        desc: 'You paste 39 months of bills. The table sits in full view on the desk where the assistant can inspect every row.',
+        billsSub: '40 amounts for 39 months (in view)',
+      },
+      140: {
+        title: 'Turn 140: Context window fills',
+        desc: 'After 140 turns of tool calls and code editing, older messages fall off the desk into unreadable memory.',
+        billsSub: 'Older turns evicted off desk',
+      },
+      compact: {
+        title: 'After compaction: Ledger saves the rule',
+        desc: 'The harness replaces evicted chat turns with a brief summary. Crucial rules survived only if pinned in a durable ledger file!',
+        billsSub: 'Compacted summary + durable ledger',
+      },
+    };
+
+    let currentTurn = '1';
+    const titleEl = root.querySelector('.readout-title');
+    const descEl = root.querySelector('.readout-desc');
+    const billsSubEl = root.querySelector('[data-sub="bills"]');
+    const btns = root.querySelectorAll('[data-turn]');
+    const goneSheets = root.querySelectorAll('.gone-sheet');
+
+    const render = () => {
+      btns.forEach((btn) => {
+        const t = btn.getAttribute('data-turn');
+        btn.classList.toggle('active', t === currentTurn);
+        btn.setAttribute('aria-pressed', t === currentTurn ? 'true' : 'false');
+      });
+
+      goneSheets.forEach((s) => {
+        if (currentTurn === '1') s.style.opacity = '0.2';
+        else if (currentTurn === '20') s.style.opacity = '0.5';
+        else s.style.opacity = '1';
+      });
+
+      const s = states[currentTurn];
+      if (titleEl && descEl && s) {
+        titleEl.innerHTML = `<span class="badge-step">${s.title.split(':')[0]}</span> ${s.title.split(':')[1] || ''}`;
+        descEl.textContent = s.desc;
+        if (billsSubEl) billsSubEl.textContent = s.billsSub;
+      }
+    };
+
+    btns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        currentTurn = btn.getAttribute('data-turn') || '1';
+        render();
+      });
+    });
+
+    render();
+  })();
+</script>
+
 <style>
-  svg { font-family: var(--sl-font-system); }
-  .desk { fill: none; stroke: var(--sl-color-accent); stroke-width: 1.5; stroke-dasharray: 6 4; }
-  .sheet { fill: var(--sl-color-gray-6); stroke: var(--sl-color-gray-4); stroke-width: 1.5; }
-  .hot { stroke: var(--sl-color-accent); stroke-width: 2; }
-  .gone { stroke-dasharray: 3 3; opacity: 0.7; }
-  .zhead { fill: var(--sl-color-gray-2); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
-  .mid { text-anchor: middle; }
-  .label { fill: var(--sl-color-text); font-size: 14px; font-weight: 600; text-anchor: middle; }
-  .sub { fill: var(--sl-color-gray-2); font-size: 12px; text-anchor: middle; }
-  .line { fill: none; stroke: var(--sl-color-gray-3); stroke-width: 1.8; }
-  .arrow { fill: var(--sl-color-gray-3); }
+  .diagram {
+    margin: 1.75rem 0;
+    padding: 1rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .diagram-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--ahg-line);
+  }
+
+  .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--ahg-touch);
+    padding: 0.25rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent);
+  }
+
+  .ctrl-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+    font-weight: 700;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    font-family: var(--sl-font-system);
+  }
+
+  .grid-dot { fill: var(--ahg-line); }
+
+  .desk {
+    fill: none;
+    stroke: var(--ahg-accent);
+    stroke-width: 1.5;
+    stroke-dasharray: 6 4;
+  }
+
+  .sheet {
+    fill: var(--ahg-panel);
+    stroke: var(--ahg-line);
+    stroke-width: 1.5;
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .hot {
+    stroke: var(--ahg-accent);
+    stroke-width: 2;
+  }
+
+  .sheet-accent {
+    fill: var(--ahg-accent);
+  }
+
+  .gone {
+    stroke: var(--ahg-line);
+    stroke-dasharray: 4 4;
+    fill: var(--ahg-bg);
+  }
+
+  .zhead {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .desk-head { fill: var(--ahg-accent-strong); }
+  .mid { text-anchor: middle; fill: var(--ahg-muted); }
+
+  .label {
+    fill: var(--ahg-text);
+    font-size: 14px;
+    font-weight: 600;
+    text-anchor: middle;
+  }
+
+  .gone-label {
+    fill: var(--ahg-muted);
+  }
+
+  .sub {
+    fill: var(--ahg-muted);
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  .line {
+    fill: none;
+    stroke: var(--ahg-line);
+    stroke-width: 1.8;
+  }
+
+  .arrow { fill: var(--ahg-line); }
+
+  .diagram-readout {
+    margin-top: 0.85rem;
+    padding: 0.75rem 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+  }
+
+  .readout-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem;
+    font-size: var(--ahg-text-small);
+    font-weight: 700;
+    color: var(--ahg-text);
+  }
+
+  .badge-step {
+    padding: 0.1rem 0.45rem;
+    background: var(--ahg-accent-soft);
+    border: 1px solid var(--ahg-accent);
+    border-radius: 999px;
+    color: var(--ahg-accent-strong);
+    font-size: var(--sl-text-xs);
+    font-weight: 700;
+  }
+
+  .readout-desc {
+    margin: 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    line-height: 1.45;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
 </style>
