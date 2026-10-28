@@ -7,46 +7,56 @@ description: The author's case for improving your own tools with an assistant, a
 
 **Status.** This page is the author's view. It is an argument from experience. None of it is measured, and the page says so where it matters.
 
-## You decide what to improve next
+## The 80% calculator
 
-You do the work, so you know where it hurts. You know which step you repeat, which check you skip when you are tired and which report you rebuild every month. Nobody else sees that list.
+Nobody wants an 80% calculator. If a tool calculates correctly four times out of five, you still have to check every single figure by hand. You save no time, and you gain anxiety.
 
-So you are the person who should ask, "what should I improve next?" A manager, a vendor or an assistant can suggest an answer. Only you can say whether the answer is right.
+When people first use an assistant, the speed feels remarkable. Then reality lands. On multi-step work, the assistant produces untidy code, invents parameters, and forgets constraints halfway through a conversation. Many people get burned by those slips and retreat to doing everything by hand.
 
-## Improving your tools improves you
+A harness exists to turn that 80% tool into something you can rely on.
 
-A better tool gives you the same output in less time, or better output in the same time. That is a gain in you, not only in the tool. You are now a person who produces more for each hour.
+## Intelligence versus state management
 
-The time you save is the product. The tool is how you make it. A working week has a fixed number of hours. Every routine step you take out of it gives an hour back to something else.
+Large language models are capable reasoners, but poor state managers. They work through attention. An assistant attends closely to the start of its instructions and to the latest prompt, but it loses focus in the middle.
 
-A small tool built in an afternoon is now a normal option. It does not need to be neat. It can be a script, a spreadsheet formula or one saved prompt. If it breaks or stops being useful, you throw it away and build the next one. The [method](../../method/be-the-product-manager-of-your-own-tooling/) page shows how to do this in small, checked steps.
+When you ask one assistant to reason, remember intermediate figures, sequence steps, and use tools all at once, multi-step tasks drift. The slip is not a lack of intelligence. It is an architectural weakness in managing state across time.
 
-## What you do with the freed time
+## Orchestration as a scaling law
 
-Spend it on the harder part of your job. That is the part where judgement counts: the odd case, the client question, the decision with no clean answer.
+You do not need a harness for a simple question. In fact, wrapping a trivial task in orchestration adds handoff overhead.
 
-In my experience, people who show better results from that harder work get more support from the people they work for. They get more time, more trust and more say in what to build next. I did not measure this. It is what I have seen.
+The value of a harness is proportional to the gap between task complexity and model capability:
 
-## A job is a bundle of tasks
+- Below the model's ceiling, orchestration is overhead.
+- At the ceiling, orchestration is neutral.
+- Above the ceiling, orchestration is essential.
 
-A job is not one task. It is a bundle of them, and the bundle keeps growing. When you automate the routine tasks, the job does not end. The bundle gets lighter at one end and heavier at the other, and you move to harder problems.
+As a job grows past three steps, an unguided assistant collapses under its own context. A harness bridges the state-management gap so that multi-step work finishes reliably.
 
-Worry about automating yourself out of a job is understandable. But in my experience there has always been more worth doing than there are hours to do it. The person who builds the tooling is usually the person who decides what goes into the bundle next.
+## Separate reasoning from structure
 
-## You can teach and compare
+Nobody lets text prediction run bank reconciliations without controls. You wrap the assistant in deterministic structure: state machines, clean data contracts, isolated helpers, and mechanical checks.
 
-Once you have a working way to do a task, you are well placed to teach it to a junior. You know why each step is there, because you built the checks.
+The assistant supplies the reasoning. The harness holds the state, enforces the boundaries, and catches slips before they reach your desk.
 
-You can also compare approaches with colleagues. Two people who each built a tool for the same chore can run both on the same input and see which one gets it right. This often shows that you share more work than you thought. A shared chore is a good candidate for one shared tool.
+## You are the product manager of your tools
 
-## My view, not measured
+You do the work each week, so you know where it hurts. You know which export you re-sort, which filenames you tidy, and which routine report takes three hours on Friday. Nobody else sees that list.
 
-I think this will change how businesses use their people. If capable professionals can build tools without leaving their day-to-day work, I expect more of them to start and steer improvements themselves, and I expect organisations to value that. I also expect the supply of useful problems to stay larger than the supply of people. This is a forecast, not a finding. I have no data for it, and you can disagree.
+The assistant acts as your tech lead. You do not manage its tokens or internal steps. You give it a clear brief, let it build one small slice in an isolated workspace, and inspect the demonstrated result.
+
+If the tool works, you keep it. If it stops being useful, you throw it away and build the next one in an afternoon.
+
+## The time you save is the product
+
+A job is not one task. It is a bundle of tasks, and routine chores fill the week. Automating those chores does not remove your job. It lightens the routine end so you can spend your time where human judgement counts: the odd client case, the ambiguous decision, the problem with no clean formula.
+
+And it gives hours back to family, friends, and the life you care about. A tool that saves an hour is worth most when you spend that hour on what matters to you.
 
 ## What to do next
 
-1. Write down the one step in your week that you most dislike repeating.
-2. Read [How to read this guide](../how-to-read/) and pick a route.
-3. When you are ready to build, use the [demo loop](../../method/be-the-product-manager-of-your-own-tooling/): the assistant builds one small slice, you try it and you decide.
+1. Write down the one routine chore in your week that you most dislike repeating.
+2. Read [How to read this guide](../how-to-read/) and choose your route.
+3. When you are ready to build, use the [demo loop](../../method/be-the-product-manager-of-your-own-tooling/): give the assistant a brief, review the demo, and decide what to keep.
 
 **Next:** [How to read this guide](../how-to-read/)
