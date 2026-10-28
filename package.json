@@ -33,6 +33,9 @@
     "health": "npm run build && node scripts/record-health.mjs",
     "check:feedback": "node scripts/check-feedback.mjs && node --test scripts/feedback-digest.test.mjs",
     "feedback": "node scripts/feedback-digest.mjs",
+    "feedback:server": "node scripts/feedback-server.mjs",
+    "feedback:monitor": "node scripts/monitor-feedback.mjs",
+    "feedback:inbox": "node scripts/monitor-feedback.mjs --once",
     "narrative:facts": "node scripts/narrative-facts.mjs",
     "test:narrative": "node --test scripts/narrative-facts.test.mjs"
   },

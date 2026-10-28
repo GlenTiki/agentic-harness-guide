@@ -17,10 +17,47 @@ const build = LAST_REVIEWED.slice(0, 10);
     </svg>
     <span>Feedback</span>
   </a>
+
+  <dialog id="feedback-modal" class="feedback-dialog" aria-labelledby="feedback-dialog-title">
+    <div class="feedback-dialog-card">
+      <div class="feedback-dialog-header">
+        <h3 id="feedback-dialog-title" class="feedback-dialog-title">Send feedback</h3>
+        <button type="button" class="feedback-close-btn" data-action="close-feedback" aria-label="Close dialog">&times;</button>
+      </div>
+      <form id="feedback-form" class="feedback-form">
+        <p class="feedback-meta">
+          <span class="feedback-meta-page" data-feedback-page></span>
+          <span class="feedback-meta-section" data-feedback-section></span>
+        </p>
+        <blockquote class="feedback-quote-preview" data-feedback-quote hidden></blockquote>
+        
+        <div class="feedback-field">
+          <label for="feedback-category" class="feedback-label">Category</label>
+          <select id="feedback-category" name="category" class="feedback-select">
+            <option value="improvement">Improvement idea</option>
+            <option value="correction">Factual correction</option>
+            <option value="unclear">Unclear or confusing wording</option>
+            <option value="praise">What worked well</option>
+          </select>
+        </div>
+
+        <div class="feedback-field">
+          <label for="feedback-text" class="feedback-label">Your feedback</label>
+          <textarea id="feedback-text" name="feedback" rows="4" placeholder="What worked? What was unclear or needs iteration?" required class="feedback-textarea"></textarea>
+        </div>
+
+        <div class="feedback-dialog-actions">
+          <button type="submit" class="feedback-submit-btn">Send feedback</button>
+          <a class="feedback-github-link" href={href} data-github-fallback target="_blank" rel="noopener">Open GitHub issue</a>
+        </div>
+        <p class="feedback-status" data-feedback-status aria-live="polite"></p>
+      </form>
+    </div>
+  </dialog>
+
   <script is:inline type="module" src={`${BASE}/feedback.js`}></script>
   </>
 )}
-
 
 <style>
   .feedback-button {
@@ -42,7 +79,8 @@ const build = LAST_REVIEWED.slice(0, 10);
     font-weight: 600;
     line-height: 1;
     text-decoration: none;
-    box-shadow: 0 1px 4px rgb(0 0 0 / 0.3);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.25);
+    cursor: pointer;
   }
   .feedback-button:hover {
     background: var(--ahg-accent-strong);
@@ -62,5 +100,163 @@ const build = LAST_REVIEWED.slice(0, 10);
     .feedback-button {
       display: none;
     }
+  }
+
+  /* In-page Modal Dialog */
+  .feedback-dialog {
+    padding: 0;
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    background: var(--ahg-panel);
+    color: var(--ahg-text);
+    max-width: min(90vw, 480px);
+    width: 100%;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+  }
+
+  .feedback-dialog::backdrop {
+    background: rgb(0 0 0 / 0.55);
+    backdrop-filter: blur(2px);
+  }
+
+  .feedback-dialog-card {
+    padding: 1.25rem;
+  }
+
+  .feedback-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .feedback-dialog-title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ahg-text);
+  }
+
+  .feedback-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--ahg-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .feedback-close-btn:hover {
+    color: var(--ahg-text);
+  }
+
+  .feedback-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .feedback-meta {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--ahg-muted);
+    word-break: break-all;
+  }
+
+  .feedback-quote-preview {
+    margin: 0;
+    padding: 0.5rem 0.75rem;
+    background: var(--ahg-bg);
+    border-inline-start: 3px solid var(--ahg-accent);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--ahg-text);
+  }
+
+  .feedback-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .feedback-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--ahg-text);
+  }
+
+  .feedback-select,
+  .feedback-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    background: var(--ahg-bg);
+    color: var(--ahg-text);
+    font-size: 0.9rem;
+    font-family: inherit;
+  }
+
+  .feedback-select:focus,
+  .feedback-textarea:focus {
+    outline: 2px solid var(--ahg-accent);
+    outline-offset: 1px;
+  }
+
+  .feedback-dialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .feedback-submit-btn {
+    min-height: 40px;
+    padding: 0.5rem 1.25rem;
+    background: var(--ahg-accent);
+    color: var(--ahg-accent-ink);
+    border: 1px solid var(--ahg-accent-strong);
+    border-radius: var(--ahg-radius-control);
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .feedback-submit-btn:hover {
+    background: var(--ahg-accent-strong);
+  }
+
+  .feedback-github-link {
+    font-size: 0.85rem;
+    color: var(--ahg-muted);
+    text-decoration: underline;
+  }
+
+  .feedback-github-link:hover {
+    color: var(--ahg-text);
+  }
+
+  .feedback-status {
+    margin: 0;
+    font-size: 0.85rem;
+    min-height: 1.2rem;
+  }
+
+  .feedback-status.success {
+    color: var(--ahg-right);
+    font-weight: 600;
+  }
+
+  .feedback-status.sending {
+    color: var(--ahg-muted);
+  }
+
+  .feedback-status.fallback {
+    color: var(--ahg-wrong);
   }
 </style>
