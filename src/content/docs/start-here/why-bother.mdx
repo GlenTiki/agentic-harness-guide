@@ -58,6 +58,19 @@ Nobody lets raw text generation run payroll or bank reconciliations without cont
 
 You wrap the assistant in engineering discipline: typed data contracts, isolated helper workspaces, state machines, and mechanical checks. The assistant supplies the reasoning. The harness holds the state, enforces boundaries, and catches slips before they reach your desk.
 
+## Comprehension debt is a workflow problem
+
+Code generates faster than understanding does.
+
+When teams adopt assistants without a harness, tests pass, pull requests look tidy, and the gap between what exists in the codebase and what any human understands widens every week. That gap is comprehension debt.
+
+The common reaction is to micromanage: review every diff, pull on the leash, and inspect every step. That produces review fatigue, surface approvals, and eventual rubber-stamping. You cannot fix comprehension debt at the review gate after an assistant has freestyled for forty minutes.
+
+The intervention has to move upstream. Stop reviewing every diff. Move the quality gate to the assistant:
+
+- **The assistant pays the compliance cost:** Linters, strict static analysis, and test suites are automated. The assistant does not care about deadlines; let it run until every dumb question (syntax, typing, dead code, formatting) is resolved.
+- **Save your eyes for intent:** When work lands on your screen, mechanical correctness is already guaranteed. You spend your finite review budget on the only thing an assistant cannot evaluate: whether the architecture is sound and matches real-world human intent.
+
 ## You are the product manager of your work
 
 Stop waiting for corporate software rollouts or platform vendors to fix your day. You do the work every week. You know where the friction lives. You know which spreadsheet export you re-sort, which invoice lines you cross-reference, and which routine report consumes your Friday afternoon. Nobody else sees that list.
