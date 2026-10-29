@@ -152,6 +152,53 @@ details.agent-note > .starlight-aside {
   justify-content: flex-start;
 }
 
+.home-hero .hero-showcase {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.home-hero .landing-flow {
+  margin-top: 0;
+}
+
+.home-hero .slip-drawer-toggle {
+  background: var(--ahg-panel);
+  border: 1px solid var(--ahg-line);
+  border-radius: var(--ahg-radius-card);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.82rem;
+}
+
+.home-hero .slip-drawer-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: var(--ahg-muted);
+  font-weight: 600;
+  user-select: none;
+}
+
+.home-hero .slip-drawer-summary:hover {
+  color: var(--ahg-text);
+}
+
+.home-hero .slip-drawer-summary .summary-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  background: var(--ahg-bg);
+  border: 1px solid var(--ahg-line);
+  color: var(--ahg-muted);
+}
+
+.home-hero .slip-drawer-inner {
+  margin-top: 0.75rem;
+}
+
 .home-hero .slip-compare {
   margin-top: 0;
 }

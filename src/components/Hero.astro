@@ -1,9 +1,21 @@
 ---
 import Default from '@astrojs/starlight/components/Hero.astro';
+import LandingFlow from './LandingFlow.astro';
 import SlipCompare from './SlipCompare.astro';
 ---
 
 <div class="home-hero">
   <Default {...Astro.props}><slot /></Default>
-  <SlipCompare />
+  <div class="hero-showcase">
+    <LandingFlow />
+    <details class="slip-drawer-toggle">
+      <summary class="slip-drawer-summary">
+        <span class="summary-badge">EMPIRICAL DATA</span>
+        <span class="summary-text">Or inspect the recorded €133 duplicate invoice trial</span>
+      </summary>
+      <div class="slip-drawer-inner">
+        <SlipCompare />
+      </div>
+    </details>
+  </div>
 </div>

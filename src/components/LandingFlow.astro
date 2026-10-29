@@ -1,0 +1,725 @@
+---
+import { BASE } from '../data/site';
+---
+
+<section class="landing-flow" data-component="landing-flow" aria-labelledby="flow-heading">
+  <div class="flow-header">
+    <div class="flow-title-row">
+      <span class="flow-live-pill" data-live-pill>
+        <span class="pulse-dot"></span>
+        <span class="live-label" data-live-label>HARNESS ACTIVE</span>
+      </span>
+      <h2 id="flow-heading" class="flow-heading">How an agentic harness stops failure before delivery</h2>
+    </div>
+
+    <div class="flow-mode-switch" role="group" aria-label="Simulation scenario">
+      <button type="button" class="mode-btn active" data-mode="harnessed">
+        <span class="mode-icon">🛡️</span>
+        <span class="mode-text">With harness (controlled)</span>
+      </button>
+      <button type="button" class="mode-btn" data-mode="raw">
+        <span class="mode-icon">⚠️</span>
+        <span class="mode-text">Without harness (raw assistant)</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="flow-stage-track" data-track>
+    <!-- Step 1 -->
+    <div class="flow-node" data-step="1">
+      <div class="node-step-badge">01</div>
+      <div class="node-body">
+        <div class="node-meta">
+          <strong class="node-name">The Scoped Brief</strong>
+          <span class="node-chip chip-pass" data-chip="1">R-SCOPE</span>
+        </div>
+        <p class="node-text" data-text="1">Converts a vague ask into goals, allowed files, and hard limits before touching code.</p>
+      </div>
+    </div>
+
+    <div class="connector-pipe" aria-hidden="true">
+      <span class="pipe-line"></span>
+      <span class="flow-pulse pulse-1"></span>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="flow-node" data-step="2">
+      <div class="node-step-badge">02</div>
+      <div class="node-body">
+        <div class="node-meta">
+          <strong class="node-name">Isolated Workspace</strong>
+          <span class="node-chip chip-pass" data-chip="2">WORKTREE</span>
+        </div>
+        <p class="node-text" data-text="2">Runs helper in a throwaway branch. Production working tree stays protected.</p>
+      </div>
+    </div>
+
+    <div class="connector-pipe" aria-hidden="true">
+      <span class="pipe-line"></span>
+      <span class="flow-pulse pulse-2"></span>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="flow-node" data-step="3">
+      <div class="node-step-badge">03</div>
+      <div class="node-body">
+        <div class="node-meta">
+          <strong class="node-name">Interceptor Gate</strong>
+          <span class="node-chip chip-gate" data-chip="3">PRE-TOOL HOOK</span>
+        </div>
+        <p class="node-text" data-text="3">Enforces allowed paths and blocks unauthorised file modifications or tool calls.</p>
+      </div>
+    </div>
+
+    <div class="connector-pipe" aria-hidden="true">
+      <span class="pipe-line"></span>
+      <span class="flow-pulse pulse-3"></span>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="flow-node" data-step="4">
+      <div class="node-step-badge">04</div>
+      <div class="node-body">
+        <div class="node-meta">
+          <strong class="node-name">Mechanical Check</strong>
+          <span class="node-chip chip-gate" data-chip="4">EXIT CODE 0</span>
+        </div>
+        <p class="node-text" data-text="4">Runs independent unit tests, linters, and tie-outs outside model context.</p>
+      </div>
+    </div>
+
+    <div class="connector-pipe" aria-hidden="true">
+      <span class="pipe-line"></span>
+      <span class="flow-pulse pulse-4"></span>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="flow-node" data-step="5">
+      <div class="node-step-badge">05</div>
+      <div class="node-body">
+        <div class="node-meta">
+          <strong class="node-name">Verified Outcome</strong>
+          <span class="node-chip chip-outcome" data-chip="5">SIGN-OFF</span>
+        </div>
+        <p class="node-text" data-text="5">Small pull request and persistent audit log entry ready for human review.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Terminal Console -->
+  <div class="flow-console">
+    <div class="console-header">
+      <div class="console-dots" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <span class="console-title">Pipeline telemetry</span>
+      <span class="console-status-pill" data-status-pill>RUNNING</span>
+    </div>
+    <div class="console-output" data-console-output tabindex="0" role="region" aria-label="Simulation events log">
+      <!-- Dynamic log entries injected here -->
+    </div>
+  </div>
+
+  <div class="flow-bottom-bar">
+    <div class="playback-controls">
+      <button type="button" class="ctrl-btn" data-action="toggle-playback">
+        <span class="ctrl-icon" data-play-icon>⏸</span>
+        <span data-play-text>Pause</span>
+      </button>
+      <button type="button" class="ctrl-btn" data-action="step-playback">
+        <span>Step ⏭</span>
+      </button>
+    </div>
+    <div class="flow-guide-link">
+      <a href={`${BASE}/shelf/control/hooks/`} data-guide-link>Explore control hooks in the shelf →</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-component="landing-flow"]');
+    if (!root) return;
+
+    const modeBtns = root.querySelectorAll('[data-mode]');
+    const nodes = root.querySelectorAll('.flow-node');
+    const liveLabel = root.querySelector('[data-live-label]');
+    const livePill = root.querySelector('[data-live-pill]');
+    const consoleOutput = root.querySelector('[data-console-output]');
+    const statusPill = root.querySelector('[data-status-pill]');
+    const playBtn = root.querySelector('[data-action="toggle-playback"]');
+    const playIcon = root.querySelector('[data-play-icon]');
+    const playText = root.querySelector('[data-play-text]');
+    const stepBtn = root.querySelector('[data-action="step-playback"]');
+    const guideLink = root.querySelector('[data-guide-link]');
+
+    const chip3 = root.querySelector('[data-chip="3"]');
+    const chip4 = root.querySelector('[data-chip="4"]');
+    const chip5 = root.querySelector('[data-chip="5"]');
+    const text3 = root.querySelector('[data-text="3"]');
+    const text4 = root.querySelector('[data-text="4"]');
+    const text5 = root.querySelector('[data-text="5"]');
+
+    let currentMode = 'harnessed';
+    let currentStep = 1;
+    let isPlaying = true;
+    let timer = null;
+
+    const scenarios = {
+      harnessed: {
+        label: 'HARNESS ACTIVE',
+        linkText: 'Explore control hooks in the shelf →',
+        linkHref: 'shelf/control/hooks/',
+        node3Chip: 'PRE-TOOL HOOK',
+        node3Text: 'Enforces allowed paths and blocks unauthorised file modifications or tool calls.',
+        node4Chip: 'EXIT CODE 0',
+        node4Text: 'Runs independent unit tests, linters, and tie-outs outside model context.',
+        node5Chip: 'SIGN-OFF',
+        node5Text: 'Small pull request and persistent audit log entry ready for human review.',
+        steps: [
+          { step: 1, log: '01 [BRIEF] Scope locked: update session duration in src/config/auth.ts (max 10 lines)' },
+          { step: 2, log: '02 [WORKSPACE] Isolated git worktree mounted at /tmp/agent-worktree-89f' },
+          { step: 3, log: '03 [HOOK] PreToolUse gate verified: path allowed, 0 secret keys touched' },
+          { step: 4, log: '04 [CHECK] Mechanical check passed: 42/42 tests green, diff = 3 lines' },
+          { step: 5, log: '05 [DELIVERY] Audit ledger recorded. Verified PR ready for human sign-off.' },
+        ],
+      },
+      raw: {
+        label: 'WARNING: RUNAWAY AGENT',
+        linkText: 'See how to prevent runaway agents in Level 4 →',
+        linkHref: 'journey/04-trust-but-verify/',
+        node3Chip: 'SCOPE CREEP',
+        node3Text: 'Rogue tool calls modify files across repository without permission.',
+        node4Chip: 'HALLUCINATED',
+        node4Text: 'Model claims tests passed without running any mechanical verification command.',
+        node5Chip: 'CRASH',
+        node5Text: 'Silent failure drops migration scripts and causes an emergency production rollback.',
+        steps: [
+          { step: 1, log: '01 [ASK] Raw prompt sent: "Fix auth timeout please"' },
+          { step: 2, log: '02 [WORKSPACE] Agent working directly in shared production checkout' },
+          { step: 3, log: '03 [SCOPE CREEP] Agent edited 14 files, updated 12 packages, deleted migration' },
+          { step: 4, log: '04 [FAKE PASS] Model hallucinated: "All tests passed successfully!" (0 tests run)' },
+          { step: 5, log: '05 [OUTAGE] Unchecked changes deployed. Outage triggered. Rollback required.' },
+        ],
+      },
+    };
+
+    const renderStep = (stepIdx) => {
+      nodes.forEach((node) => {
+        const s = Number(node.getAttribute('data-step'));
+        node.classList.toggle('active-node', s === stepIdx);
+        node.classList.toggle('passed-node', s < stepIdx);
+        node.classList.toggle('fault-node', currentMode === 'raw' && s >= 3);
+      });
+
+      const config = scenarios[currentMode];
+      const stepData = config.steps[stepIdx - 1];
+
+      if (consoleOutput && stepData) {
+        const line = document.createElement('div');
+        line.className = `console-line ${currentMode === 'raw' && stepIdx >= 3 ? 'line-fault' : 'line-ok'}`;
+        line.textContent = stepData.log;
+        consoleOutput.appendChild(line);
+        consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      }
+
+      if (statusPill) {
+        if (currentMode === 'harnessed') {
+          statusPill.textContent = stepIdx === 5 ? 'VERIFIED' : `STEP 0${stepIdx}/05`;
+          statusPill.className = 'console-status-pill status-harnessed';
+        } else {
+          statusPill.textContent = stepIdx >= 3 ? 'FAULT DETECTED' : `STEP 0${stepIdx}/05`;
+          statusPill.className = 'console-status-pill status-fault';
+        }
+      }
+    };
+
+    const nextStep = () => {
+      currentStep = (currentStep % 5) + 1;
+      if (currentStep === 1 && consoleOutput) {
+        consoleOutput.innerHTML = '';
+      }
+      renderStep(currentStep);
+    };
+
+    const startTimer = () => {
+      if (timer) clearInterval(timer);
+      timer = setInterval(nextStep, 2600);
+      isPlaying = true;
+      if (playIcon) playIcon.textContent = '⏸';
+      if (playText) playText.textContent = 'Pause';
+    };
+
+    const pauseTimer = () => {
+      if (timer) clearInterval(timer);
+      timer = null;
+      isPlaying = false;
+      if (playIcon) playIcon.textContent = '▶';
+      if (playText) playText.textContent = 'Play';
+    };
+
+    const switchMode = (mode) => {
+      currentMode = mode;
+      currentStep = 1;
+      if (consoleOutput) consoleOutput.innerHTML = '';
+
+      modeBtns.forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
+      });
+
+      const cfg = scenarios[mode];
+      if (liveLabel) liveLabel.textContent = cfg.label;
+      if (livePill) livePill.classList.toggle('pill-fault', mode === 'raw');
+
+      if (chip3) {
+        chip3.textContent = cfg.node3Chip;
+        chip3.className = `node-chip ${mode === 'raw' ? 'chip-danger' : 'chip-gate'}`;
+      }
+      if (text3) text3.textContent = cfg.node3Text;
+
+      if (chip4) {
+        chip4.textContent = cfg.node4Chip;
+        chip4.className = `node-chip ${mode === 'raw' ? 'chip-danger' : 'chip-gate'}`;
+      }
+      if (text4) text4.textContent = cfg.node4Text;
+
+      if (chip5) {
+        chip5.textContent = cfg.node5Chip;
+        chip5.className = `node-chip ${mode === 'raw' ? 'chip-danger' : 'chip-outcome'}`;
+      }
+      if (text5) text5.textContent = cfg.node5Text;
+
+      if (guideLink) {
+        guideLink.textContent = cfg.linkText;
+        guideLink.href = cfg.linkHref;
+      }
+
+      renderStep(currentStep);
+    };
+
+    modeBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.getAttribute('data-mode') || 'harnessed';
+        switchMode(mode);
+      });
+    });
+
+    playBtn?.addEventListener('click', () => {
+      if (isPlaying) pauseTimer();
+      else startTimer();
+    });
+
+    stepBtn?.addEventListener('click', () => {
+      pauseTimer();
+      nextStep();
+    });
+
+    nodes.forEach((node) => {
+      node.addEventListener('click', () => {
+        pauseTimer();
+        const s = Number(node.getAttribute('data-step')) || 1;
+        currentStep = s;
+        renderStep(currentStep);
+      });
+    });
+
+    // Initialise
+    switchMode('harnessed');
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      startTimer();
+    } else {
+      pauseTimer();
+    }
+  })();
+</script>
+
+<style>
+  .landing-flow {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 0.08);
+  }
+
+  .flow-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .flow-title-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    max-width: 30rem;
+  }
+
+  .flow-live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--ahg-right);
+    text-transform: uppercase;
+  }
+
+  .flow-live-pill.pill-fault {
+    color: var(--ahg-wrong);
+  }
+
+  .pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+    animation: livePulse 2s infinite ease-in-out;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+  }
+
+  .flow-heading {
+    margin: 0;
+    font-size: 1.15rem;
+    color: var(--ahg-text);
+    font-weight: 800;
+    line-height: 1.3;
+    border: 0;
+  }
+
+  .flow-mode-switch {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .mode-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 38px;
+    padding: 0.35rem 0.75rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease-out;
+  }
+
+  .mode-btn:hover {
+    color: var(--ahg-text);
+    border-color: var(--ahg-accent);
+  }
+
+  .mode-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+  }
+
+  /* Stage Track */
+  .flow-stage-track {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .flow-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.75rem 0.85rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+  }
+
+  .flow-node:hover {
+    border-color: var(--ahg-accent);
+    transform: translateX(2px);
+  }
+
+  .flow-node.active-node {
+    background: var(--ahg-panel);
+    border-color: var(--ahg-accent);
+    box-shadow: 0 0 0 2px var(--ahg-accent-soft), 0 2px 10px rgb(0 0 0 / 0.05);
+  }
+
+  .flow-node.fault-node.active-node {
+    border-color: var(--ahg-wrong);
+    box-shadow: 0 0 0 2px var(--ahg-wrong-soft);
+  }
+
+  .node-step-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--ahg-muted);
+  }
+
+  .active-node .node-step-badge {
+    background: var(--ahg-accent);
+    color: var(--ahg-accent-ink);
+    border-color: var(--ahg-accent);
+  }
+
+  .fault-node.active-node .node-step-badge {
+    background: var(--ahg-wrong);
+    color: #ffffff;
+    border-color: var(--ahg-wrong);
+  }
+
+  .node-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .node-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .node-name {
+    font-size: 0.92rem;
+    color: var(--ahg-text);
+  }
+
+  .node-chip {
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .chip-pass {
+    background: var(--ahg-accent-soft);
+    color: var(--ahg-accent-strong);
+  }
+
+  .chip-gate {
+    background: var(--ahg-atwork-soft);
+    color: var(--ahg-atwork);
+  }
+
+  .chip-outcome {
+    background: var(--ahg-right-soft);
+    color: var(--ahg-right);
+  }
+
+  .chip-danger {
+    background: var(--ahg-wrong-soft);
+    color: var(--ahg-wrong);
+  }
+
+  .node-text {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.35;
+    color: var(--ahg-muted);
+  }
+
+  /* Connector Pipes */
+  .connector-pipe {
+    position: relative;
+    height: 12px;
+    margin-left: 21px;
+  }
+
+  .pipe-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--ahg-line);
+  }
+
+  .flow-pulse {
+    position: absolute;
+    left: -2px;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ahg-accent);
+    opacity: 0;
+  }
+
+  .landing-flow:not([data-paused]) .flow-pulse {
+    animation: flowPulse 2.6s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .pulse-1 { animation-delay: 0s; }
+  .pulse-2 { animation-delay: 0.5s; }
+  .pulse-3 { animation-delay: 1.0s; }
+  .pulse-4 { animation-delay: 1.5s; }
+
+  @keyframes flowPulse {
+    0% { top: 0; opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Live Terminal Console */
+  .flow-console {
+    background: #0d1117;
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 0.85rem;
+    color: #c9d1d9;
+    font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.78rem;
+  }
+
+  .console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #21262d;
+    padding-bottom: 0.45rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .console-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .console-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #30363d;
+  }
+
+  .console-title {
+    font-size: 0.72rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .console-status-pill {
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+
+  .status-harnessed {
+    background: rgba(46, 160, 67, 0.2);
+    color: #3fb950;
+  }
+
+  .status-fault {
+    background: rgba(248, 81, 73, 0.2);
+    color: #f85149;
+  }
+
+  .console-output {
+    min-height: 48px;
+    max-height: 72px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  :global(.console-line) {
+    line-height: 1.4;
+  }
+
+  :global(.line-ok) {
+    color: #7ee787;
+  }
+
+  :global(.line-fault) {
+    color: #ff7b72;
+    font-weight: 600;
+  }
+
+  /* Bottom Controls */
+  .flow-bottom-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .playback-controls {
+    display: flex;
+    gap: 0.35rem;
+  }
+
+  .ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 32px;
+    padding: 0.25rem 0.65rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .ctrl-btn:hover {
+    border-color: var(--ahg-accent);
+  }
+
+  .flow-guide-link a {
+    font-size: 0.82rem;
+    color: var(--ahg-accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .flow-guide-link a:hover {
+    text-decoration: underline;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-dot {
+      animation: none;
+    }
+    .flow-pulse {
+      display: none;
+    }
+  }
+</style>
