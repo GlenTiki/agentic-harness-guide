@@ -23,6 +23,24 @@ This shelf says agent for the assistant and sub-agent for the helper. See the [g
 6. **Bind approval to evidence.** An approval applies to one exact diff, one exact digest. Any edit voids it.
 7. **Keep a human at the irreversible edges.** Pushes, spend, outbound messages and destructive operations need a person. Everything reversible can run unattended.
 
+## Mantras for working with agents
+
+These rules of thumb come from thousands of hours of pairing with agents across production systems:
+
+- **Investing in your tooling invests in your time, and yourself.** Every hour spent building a mechanical check or a test gate pays a daily dividend in returned focus.
+- **Hope is not an engineering strategy: account for probability.** Wrap probabilistic text models in hard deterministic gates.
+- **Think big, act small.** Scopes larger than a single sitting invite comprehension debt. Pull requests over 400 lines are rarely reviewed with care.
+- **Compounding formulas change your life, for worse or better.** A loose prompt habit compounds into exponential technical debt; an automated test suite compounds into exponential calm.
+- **Target the destination, watch the path.** Keep the architectural outcome fixed, but inspect every step of the trajectory so the agent does not wander into an architectural dead end.
+- **Code is cheap: ship it, refine it, let the agent do its thing.** Do not agonise over drafting boilerplate. Direct the intent, let the agent draft, and hold the output to strict standards.
+- **Capture your thought processes and refine them.** When a session goes sideways, document the failure mode in a memory file. Post-mortems compound across future runs; code rots.
+- **Holistic design beats reactive design when reactive design is compensating for fundamental flaws.** If code requires complex monkey-patching or endless retries, the design has a missing seam. Fix the underlying abstraction.
+- **Comprehension debt is a workflow problem, not a code review problem.** You cannot fix comprehension debt at the final pull request gate after an agent has freestyled for forty minutes. Move the quality gate upstream into the harness.
+- **Stop reviewing every diff: let the quality gate make the agent fix its own mess.** The agent pays the compliance cost because it does not care about deadlines. Save human attention for intent and architecture.
+- **Never coerce absent to empty.** Missing data is signal. Coercing a missing value to a blank string hides absence and corrupts downstream telemetry.
+- **Stop, collaborate and listen: observe, draft, sign-off.** The agent observes context and drafts solutions; the human retains ownership of intent and external commitments.
+- **Silence is not acceptance.** An agent failing to object does not mean the design is sound. Require explicit independent peer confirmation.
+
 ## When meeting a principle gets expensive
 
 A principle can be met in a way that makes you stop meeting it. Here is a Constructed case, invented for teaching. It is not a recorded run.

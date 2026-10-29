@@ -15,15 +15,19 @@ const clean = (text, limit) => {
 const build = (fields) => {
   const query = [`template=${FEEDBACK_TEMPLATE}`];
   for (const name of PREFILLED_FIELDS) if (fields[name]) query.push(`${name}=${encodeURIComponent(fields[name])}`);
+  if (fields.kind) query.push(`kind=${encodeURIComponent(fields.kind)}`);
+  if (fields.comment) query.push(`comment=${encodeURIComponent(fields.comment)}`);
   return `https://github.com/${FEEDBACK_REPO}/issues/new?${query.join('&')}`;
 };
 
-export const buildFeedbackUrl = ({ page, section = '', quote = '', device = '' }) => {
+export const buildFeedbackUrl = ({ page, section = '', quote = '', device = '', comment = '', kind = '' }) => {
   const fields = {
     page: clean(page, LIMITS.page),
     section: clean(section, LIMITS.section),
     device: clean(device, LIMITS.device),
     quote: clean(quote, MAX_QUOTE_LENGTH),
+    comment: clean(comment, 600),
+    kind: clean(kind, 50),
   };
   let url = build(fields);
   while (url.length > MAX_URL_LENGTH && fields.quote) {

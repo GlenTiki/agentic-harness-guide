@@ -113,7 +113,7 @@ const server = http.createServer((req, res) => {
   sendJson(res, 404, { error: 'Not found' });
 });
 
-server.listen(PORT, '127.0.0.1', () => {
-  process.stdout.write(`Feedback receiver listening at http://127.0.0.1:${PORT}\n`);
+server.listen(PORT, '0.0.0.0', () => {
+  process.stdout.write(`Feedback receiver listening at http://0.0.0.0:${PORT} (local IP http://192.168.1.25:${PORT})\n`);
   process.stdout.write(`Writing incoming feedback to ${INBOX_FILE}\n`);
 });

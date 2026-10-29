@@ -127,6 +127,7 @@ const setupModal = () => {
     try {
       const endpoints = [
         'http://127.0.0.1:4328/api/feedback',
+        'http://192.168.1.25:4328/api/feedback',
         '/api/feedback'
       ];
       let sent = false;
@@ -157,15 +158,24 @@ const setupModal = () => {
       }
     } catch {}
 
-    // Fallback: save locally and offer GitHub
+    // Fallback: save locally and offer prefilled GitHub issue
     try {
       const stored = JSON.parse(localStorage.getItem('ahg_feedback') || '[]');
       stored.push(payload);
       localStorage.setItem('ahg_feedback', JSON.stringify(stored));
     } catch {}
 
+    const issueUrl = buildFeedbackUrl({
+      page: payload.page,
+      section: payload.section,
+      quote: payload.quote,
+      comment: payload.feedback,
+      kind: payload.category === 'bug' ? 'Wrong' : (payload.category === 'question' ? 'Confusing' : 'Idea'),
+      device: payload.device,
+    });
+
     if (statusEl) {
-      statusEl.innerHTML = 'Saved locally. Backend offline. <a href="' + (fallbackLink?.href || '#') + '" target="_blank" rel="noopener">Submit on GitHub</a>';
+      statusEl.innerHTML = `<span>Saved! Send directly as a GitHub issue:</span><br/><a href="${issueUrl}" target="_blank" rel="noopener" style="display:inline-block; margin-top:8px; padding:8px 14px; background:#4f46e5; color:#ffffff; border-radius:6px; font-weight:600; text-decoration:none;">Post Issue to GitHub &rarr;</a>`;
       statusEl.className = 'feedback-status fallback';
     }
   });
