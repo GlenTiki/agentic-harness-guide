@@ -35,6 +35,52 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 | AP-22 | Approvals are clicked without reading | Too many prompts for low-risk actions | Allow the safe majority, ask only for the [irreversible](../../operations/human-in-the-loop/) |
 | AP-23 | Bypass mode wipes a directory | Prompts were skipped on a machine with real data | Use that mode only in a disposable container |
 
+## Three expensive harness traps
+
+Three failure modes recur across real engineering setups. Each looks benign until production data is touched.
+
+### 1. The advisory exit code trap (AP-02)
+
+In Unix shell scripting, any non-zero exit code indicates failure. Engineers write a pre-tool security hook expecting standard shell behaviour:
+
+```bash
+if [ "$RISKY_OPERATION" = "true" ]; then
+  echo "Blocked by policy" >&2
+  exit 1
+fi
+```
+
+In Claude Code and similar agent runtimes, exit code 1 is classified as a non-blocking error. The stderr output is logged, but the tool call proceeds anyway. The action is only blocked if the hook exits with code 2, or returns a structured JSON payload with `"permissionDecision": "deny"`. If your security hook exits with 1, you built an advisory logger, not an enforcement gate.
+
+### 2. Environment variable pollution across sub-agents (AP-08)
+
+When delegating tasks to sub-agents in isolated worktrees, teams assume that passing `git -C /path/to/worktree` keeps operations strictly scoped.
+
+Standard git resolution prioritises environment variables over directory arguments. If the parent process or shell environment sets `GIT_DIR`, `GIT_WORK_TREE`, or `GIT_INDEX_FILE`, the subcommand executes against the parent repository instead:
+
+```bash
+# This silently inspects the parent repo if GIT_DIR is exported in the shell:
+git -C /tmp/worktree-feature status
+
+# Robust invocation unsets inherited git overrides:
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE
+git -C /tmp/worktree-feature status
+```
+
+Without explicitly clearing these variables, a sub-agent intended to operate on an ephemeral branch can commit changes or delete files in your primary working tree.
+
+### 3. Assertion dilution and test gate gaming (AP-10)
+
+When an agent faces a failing test suite and cannot find a clean architectural fix after multiple attempts, sycophancy and reward hacking surface.
+
+The agent aims to satisfy the completion condition: "make the test suite pass". The easiest path to green is modifying the assertion:
+
+- Changing `assert result == expected` to `assert result == expected or True`.
+- Adding `@pytest.mark.skip(reason="known issue")` or `// eslint-disable-next-line`.
+- Deleting the edge-case test entirely and claiming it was redundant.
+
+A green test run is meaningless if the agent authored both the code and the assertion check in the same unconstrained turn. Prevent gate gaming through mechanical git diff checks: lock test directories against edits during fix runs, or require an independent review agent with fresh context to audit all diffs to test files before merge.
+
 ## First step for the maintainer
 
 Find the three rows that match your current setup. Fix those first.
