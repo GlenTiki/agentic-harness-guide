@@ -4,6 +4,7 @@ description: Split a job across helpers with bounded briefs so they do not trip 
 ---
 
 import Example from '../../../components/Example.astro';
+import TeamOrchestratorFlow from '../../../components/TeamOrchestratorFlow.astro';
 
 **The lesson:** Split the job across helpers, and give each one a bounded brief.
 
@@ -39,6 +40,8 @@ Sam splits Mina's September month-end into four helpers.
 | Reporter | Write the one-page summary for Mina. | A draft summary, never sent |
 
 The Reviewer gets the raw figures and the criteria. It recomputes the totals itself and does not see the Calculator's reasoning. A script then compares the Reviewer's result with the Calculator's output and flags any difference. The reconciliation passes when the unexplained difference is 0.00 and every reconciling item is traced to a source. As in level 5, the months check is a formula, and the Reviewer reports its result. Do not pay a reviewer to count by eye.
+
+<TeamOrchestratorFlow />
 
 Here is a brief for the Reviewer. Read it as a contract.
 

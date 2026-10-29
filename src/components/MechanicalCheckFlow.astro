@@ -1,0 +1,489 @@
+---
+import { BASE } from '../data/site';
+---
+
+<figure class="diagram" data-diagram="mechanical-check-flow" aria-labelledby="mcf-heading">
+  <div class="mcf-header">
+    <div class="mcf-title-group">
+      <span class="mcf-badge">INTERACTIVE COMPARISON</span>
+      <h3 id="mcf-heading" class="mcf-heading">Model self-review versus a mechanical check</h3>
+    </div>
+
+    <div class="mcf-toggles" role="group" aria-label="Verification path toggle">
+      <button type="button" class="mcf-btn active" data-path="mechanical">
+        <span>⚙️ Mechanical check (harness)</span>
+      </button>
+      <button type="button" class="mcf-btn" data-path="self-review">
+        <span>💬 Model self-review (sycophancy)</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mcf-stages">
+    <!-- Stage 1 -->
+    <div class="mcf-stage" data-mcf-stage="1">
+      <div class="mcf-badge-num">1</div>
+      <div class="mcf-body">
+        <strong class="mcf-name">Candidate output</strong>
+        <p class="mcf-text" data-mcf-text="1">Assistant totals 40 amounts for 39 months, silently including a repeated row.</p>
+        <div class="mcf-data-pill" data-mcf-pill="1">OUTPUT: €7,414 (includes duplicate)</div>
+      </div>
+    </div>
+
+    <div class="mcf-arrow" aria-hidden="true">
+      <span class="mcf-line"></span>
+      <span class="mcf-dot dot-1"></span>
+    </div>
+
+    <!-- Stage 2 -->
+    <div class="mcf-stage" data-mcf-stage="2">
+      <div class="mcf-badge-num">2</div>
+      <div class="mcf-body">
+        <strong class="mcf-name" data-mcf-name="2">Mechanical formula gate</strong>
+        <p class="mcf-text" data-mcf-text="2">Spreadsheet formula checks rows outside model context: <code>IF(A2=A1, "DUPLICATE", "OK")</code></p>
+        <div class="mcf-data-pill pill-warn" data-mcf-pill="2">GATE: FAIL (exit code 1)</div>
+      </div>
+    </div>
+
+    <div class="mcf-arrow" aria-hidden="true">
+      <span class="mcf-line"></span>
+      <span class="mcf-dot dot-2"></span>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="mcf-stage" data-mcf-stage="3">
+      <div class="mcf-badge-num">3</div>
+      <div class="mcf-body">
+        <strong class="mcf-name" data-mcf-name="3">Halt and alert</strong>
+        <p class="mcf-text" data-mcf-text="3">Mechanical check stops delivery before money moves. Assistant reports the exact duplicate row.</p>
+        <div class="mcf-data-pill pill-success" data-mcf-pill="3">RESULT: €133 OVERPAYMENT PREVENTED</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mcf-console">
+    <div class="mcf-console-header">
+      <span class="mcf-console-title">Telemetry stream</span>
+      <span class="mcf-status" data-mcf-status>MECHANICAL GATE ACTIVE</span>
+    </div>
+    <div class="mcf-console-log" data-mcf-log tabindex="0" role="region" aria-label="Verification telemetry log"></div>
+  </div>
+
+  <figcaption class="mcf-caption">
+    Interactive simulation: compare how a formula catches a slip that an assistant's self-review confirms as correct.
+  </figcaption>
+</figure>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="mechanical-check-flow"]');
+    if (!root) return;
+
+    const btns = root.querySelectorAll('[data-path]');
+    const stages = root.querySelectorAll('.mcf-stage');
+    const logBox = root.querySelector('[data-mcf-log]');
+    const statusBox = root.querySelector('[data-mcf-status]');
+
+    const name2 = root.querySelector('[data-mcf-name="2"]');
+    const text2 = root.querySelector('[data-mcf-text="2"]');
+    const pill2 = root.querySelector('[data-mcf-pill="2"]');
+
+    const name3 = root.querySelector('[data-mcf-name="3"]');
+    const text3 = root.querySelector('[data-mcf-text="3"]');
+    const pill3 = root.querySelector('[data-mcf-pill="3"]');
+
+    let currentPath = 'mechanical';
+    let currentStep = 1;
+    let timer = null;
+
+    const scenarios = {
+      mechanical: {
+        status: 'MECHANICAL GATE ACTIVE',
+        name2: 'Mechanical formula gate',
+        text2: 'Formula checks rows outside model context: IF(A2=A1, "DUPLICATE", "OK")',
+        pill2: 'GATE: FAIL (exit code 1)',
+        pill2Class: 'pill-warn',
+        name3: 'Halt and alert',
+        text3: 'Mechanical check stops delivery before money moves. Assistant reports the exact duplicate row.',
+        pill3: 'RESULT: €133 OVERPAYMENT PREVENTED',
+        pill3Class: 'pill-success',
+        logs: [
+          '01 [PRODUCE] Assistant emitted total €7,414 for 39 months (40 rows supplied)',
+          '02 [EXTRACT] Data passed to deterministic script (no language model in loop)',
+          '03 [EVAL] Row 21 matches Row 20 (€133). Duplicate detected. Exit code 1.',
+          '04 [ACTION] Payout blocked. Total corrected to €7,281 across 39 distinct months.',
+        ],
+      },
+      'self-review': {
+        status: 'SYCOPHANCY RISK DETECTED',
+        name2: 'Prompting the same assistant again',
+        text2: 'User asks: "Are you sure this total is right?" Model defends its prior output.',
+        pill2: 'REPLY: "Yes, I double-checked and verified all 40 months"',
+        pill2Class: 'pill-danger',
+        name3: 'Unchecked delivery',
+        text3: 'Model rubber-stamps its own slip. The wrong figure lands in accounts payable.',
+        pill3: 'OUTCOME: €133 PAID TWICE IN SILENT ERROR',
+        pill3Class: 'pill-danger',
+        logs: [
+          '01 [PRODUCE] Assistant emitted total €7,414 for 39 months',
+          '02 [QUERY] User asks: "Are you sure? Please check carefully."',
+          '03 [SYCOPHANCY] Model replies: "Yes, I have carefully reviewed every single line."',
+          '04 [FAILURE] Unchecked invoice batch signed off. €133 overpaid to supplier.',
+        ],
+      },
+    };
+
+    const render = (s) => {
+      stages.forEach((st) => {
+        const idx = Number(st.getAttribute('data-mcf-stage'));
+        st.classList.toggle('active', idx === s);
+        st.classList.toggle('passed', idx < s);
+      });
+
+      if (logBox && scenarios[currentPath]) {
+        const item = scenarios[currentPath].logs[s - 1];
+        if (item) {
+          const row = document.createElement('div');
+          row.className = `mcf-log-line ${currentPath === 'self-review' && s >= 2 ? 'line-alert' : 'line-good'}`;
+          row.textContent = item;
+          logBox.appendChild(row);
+          logBox.scrollTop = logBox.scrollHeight;
+        }
+      }
+    };
+
+    const next = () => {
+      currentStep = (currentStep % 4) + 1;
+      if (currentStep === 1 && logBox) logBox.innerHTML = '';
+      render(currentStep);
+    };
+
+    const setPath = (p) => {
+      currentPath = p;
+      currentStep = 1;
+      if (logBox) logBox.innerHTML = '';
+
+      btns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-path') === p));
+
+      const cfg = scenarios[p];
+      if (statusBox) statusBox.textContent = cfg.status;
+      if (name2) name2.textContent = cfg.name2;
+      if (text2) text2.textContent = cfg.text2;
+      if (pill2) {
+        pill2.textContent = cfg.pill2;
+        pill2.className = `mcf-data-pill ${cfg.pill2Class}`;
+      }
+
+      if (name3) name3.textContent = cfg.name3;
+      if (text3) text3.textContent = cfg.text3;
+      if (pill3) {
+        pill3.textContent = cfg.pill3;
+        pill3.className = `mcf-data-pill ${cfg.pill3Class}`;
+      }
+
+      render(currentStep);
+
+      if (timer) clearInterval(timer);
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        timer = setInterval(next, 2500);
+      }
+    };
+
+    btns.forEach((b) => {
+      b.addEventListener('click', () => setPath(b.getAttribute('data-path') || 'mechanical'));
+    });
+
+    stages.forEach((st) => {
+      st.addEventListener('click', () => {
+        if (timer) clearInterval(timer);
+        currentStep = Number(st.getAttribute('data-mcf-stage')) || 1;
+        render(currentStep);
+      });
+    });
+
+    setPath('mechanical');
+  })();
+</script>
+
+<style>
+  .diagram[data-diagram="mechanical-check-flow"] {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .mcf-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .mcf-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mcf-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--ahg-atwork);
+    text-transform: uppercase;
+  }
+
+  .mcf-heading {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--ahg-text);
+    font-weight: 700;
+    line-height: 1.35;
+    border: 0;
+  }
+
+  .mcf-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .mcf-btn {
+    min-height: var(--ahg-touch);
+    padding: 0.35rem 0.75rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--ahg-motion-fast) ease-out;
+  }
+
+  .mcf-btn:hover {
+    color: var(--ahg-text);
+    border-color: var(--ahg-accent);
+  }
+
+  .mcf-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+  }
+
+  .mcf-stages {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .mcf-stage {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0.85rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+  }
+
+  .mcf-stage:hover {
+    border-color: var(--ahg-accent);
+    transform: translateX(2px);
+  }
+
+  .mcf-stage.active {
+    background: var(--ahg-panel);
+    border-color: var(--ahg-accent);
+    box-shadow: 0 0 0 2px var(--ahg-accent-soft);
+  }
+
+  .mcf-badge-num {
+    flex-shrink: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--ahg-muted);
+  }
+
+  .active .mcf-badge-num {
+    background: var(--ahg-accent);
+    color: var(--ahg-accent-ink);
+    border-color: var(--ahg-accent);
+  }
+
+  .mcf-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .mcf-name {
+    font-size: 0.9rem;
+    color: var(--ahg-text);
+  }
+
+  .mcf-text {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--ahg-muted);
+    line-height: 1.35;
+  }
+
+  .mcf-text code {
+    background: var(--ahg-code-bg);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+  }
+
+  .mcf-data-pill {
+    align-self: flex-start;
+    margin-top: 0.15rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    background: var(--ahg-code-bg);
+    color: var(--ahg-text);
+  }
+
+  .pill-warn {
+    background: var(--ahg-expert-soft);
+    color: var(--ahg-expert);
+  }
+
+  .pill-success {
+    background: var(--ahg-right-soft);
+    color: var(--ahg-right);
+  }
+
+  .pill-danger {
+    background: var(--ahg-wrong-soft);
+    color: var(--ahg-wrong);
+  }
+
+  /* Arrows */
+  .mcf-arrow {
+    position: relative;
+    height: 12px;
+    margin-left: 20px;
+  }
+
+  .mcf-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--ahg-line);
+  }
+
+  .mcf-dot {
+    position: absolute;
+    left: -2px;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ahg-accent);
+    opacity: 0;
+    animation: mcfPulse 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dot-1 { animation-delay: 0s; }
+  .dot-2 { animation-delay: 0.8s; }
+
+  @keyframes mcfPulse {
+    0% { top: 0; opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Console */
+  .mcf-console {
+    background: #0d1117;
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 0.75rem;
+    color: #c9d1d9;
+    font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.76rem;
+  }
+
+  .mcf-console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #21262d;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .mcf-console-title {
+    font-size: 0.7rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .mcf-status {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #3fb950;
+  }
+
+  .mcf-console-log {
+    min-height: 44px;
+    max-height: 68px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  :global(.mcf-log-line) {
+    line-height: 1.4;
+  }
+
+  :global(.line-good) {
+    color: #7ee787;
+  }
+
+  :global(.line-alert) {
+    color: #ff7b72;
+    font-weight: 600;
+  }
+
+  .mcf-caption {
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    margin-top: 0.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mcf-dot {
+      animation: none;
+      display: none;
+    }
+  }
+</style>

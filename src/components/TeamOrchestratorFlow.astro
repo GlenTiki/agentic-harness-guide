@@ -1,0 +1,547 @@
+---
+import { BASE } from '../data/site';
+---
+
+<figure class="diagram" data-diagram="team-orchestrator-flow" aria-labelledby="tof-heading">
+  <div class="tof-header">
+    <div class="tof-title-group">
+      <span class="tof-badge">INTERACTIVE ARCHITECTURE</span>
+      <h3 id="tof-heading" class="tof-heading">Multi-agent delegation and isolated worktrees</h3>
+    </div>
+
+    <div class="tof-toggles" role="group" aria-label="Team topology mode">
+      <button type="button" class="tof-btn active" data-topo="team">
+        <span>👥 Multi-agent team (worktree isolated)</span>
+      </button>
+      <button type="button" class="tof-btn" data-topo="mono">
+        <span>👤 Monolithic single chat (context decay)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Multi-agent Tree Track -->
+  <div class="tof-team-view" data-tof-view="team">
+    <div class="tof-lead-card">
+      <div class="lead-badge">ORCHESTRATOR</div>
+      <strong class="lead-title">Lead Assistant</strong>
+      <p class="lead-desc">Holds high-level goals. Dispatches bounded briefs and never executes dirty tool work directly.</p>
+    </div>
+
+    <div class="tof-fan-connectors" aria-hidden="true">
+      <svg viewBox="0 0 400 36" class="fan-svg" preserveAspectRatio="none">
+        <path d="M200 0 L60 36" class="fan-path" />
+        <path d="M200 0 L200 36" class="fan-path" />
+        <path d="M200 0 L340 36" class="fan-path" />
+      </svg>
+    </div>
+
+    <div class="tof-helpers-grid">
+      <div class="helper-card" data-helper="1">
+        <div class="helper-head">
+          <span class="helper-role">READER</span>
+          <span class="helper-chip">WORKTREE A</span>
+        </div>
+        <strong class="helper-name">Read & cleanse</strong>
+        <p class="helper-text">Parses raw exports. Reconciles 39 distinct rows with fresh context.</p>
+      </div>
+
+      <div class="helper-card" data-helper="2">
+        <div class="helper-head">
+          <span class="helper-role">CALCULATOR</span>
+          <span class="helper-chip">WORKTREE B</span>
+        </div>
+        <strong class="helper-name">Aggregate totals</strong>
+        <p class="helper-text">Computes monthly sums and shares. Independent execution.</p>
+      </div>
+
+      <div class="helper-card" data-helper="3">
+        <div class="helper-head">
+          <span class="helper-role">REVIEWER</span>
+          <span class="helper-chip">WORKTREE C</span>
+        </div>
+        <strong class="helper-name">Blind check</strong>
+        <p class="helper-text">Recomputes without seeing the Calculator's reasoning. Emits PASS/FAIL.</p>
+      </div>
+    </div>
+
+    <div class="tof-converge-connectors" aria-hidden="true">
+      <svg viewBox="0 0 400 36" class="fan-svg" preserveAspectRatio="none">
+        <path d="M60 0 L200 36" class="fan-path" />
+        <path d="M200 0 L200 36" class="fan-path" />
+        <path d="M340 0 L200 36" class="fan-path" />
+      </svg>
+    </div>
+
+    <div class="tof-ledger-card">
+      <div class="ledger-badge">SYNTHESIS</div>
+      <strong class="ledger-title">Context Ledger</strong>
+      <p class="ledger-desc">Sub-agents return bounded JSON summaries. Main context remains clean and uncluttered.</p>
+    </div>
+  </div>
+
+  <!-- Monolithic View -->
+  <div class="tof-mono-view" data-tof-view="mono" hidden>
+    <div class="mono-card">
+      <div class="mono-badge">MONOLITHIC CHAT</div>
+      <strong class="mono-title">Single assistant does all four roles</strong>
+      <p class="mono-desc">As the thread grows past 30 tool calls, attention decays. The assistant marks its own homework, drops constraints, and invents numbers.</p>
+      <div class="mono-meter">
+        <div class="meter-label">Context load & degradation</div>
+        <div class="meter-bar">
+          <div class="meter-fill"></div>
+        </div>
+        <div class="meter-alert">ATTENTION ROT: Step 8 dropped duplicate checks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Console Log -->
+  <div class="tof-console">
+    <div class="tof-console-head">
+      <span class="tof-console-title">Telemetry stream</span>
+      <span class="tof-status" data-tof-status>MULTI-AGENT LEDGER GREEN</span>
+    </div>
+    <div class="tof-console-log" data-tof-log tabindex="0" role="region" aria-label="Orchestration telemetry log"></div>
+  </div>
+
+  <figcaption class="tof-caption">
+    Interactive simulation: compare how isolated worktree helpers protect context versus a single thread degrading under its own weight.
+  </figcaption>
+</figure>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="team-orchestrator-flow"]');
+    if (!root) return;
+
+    const btns = root.querySelectorAll('[data-topo]');
+    const teamView = root.querySelector('[data-tof-view="team"]');
+    const monoView = root.querySelector('[data-tof-view="mono"]');
+    const helperCards = root.querySelectorAll('.helper-card');
+    const logBox = root.querySelector('[data-tof-log]');
+    const statusBox = root.querySelector('[data-tof-status]');
+
+    let currentTopo = 'team';
+    let step = 1;
+    let timer = null;
+
+    const scenarios = {
+      team: {
+        status: 'MULTI-AGENT LEDGER GREEN',
+        logs: [
+          '01 [ORCHESTRATOR] Lead receives task. Splits into 3 bounded briefs.',
+          '02 [DISPATCH] Helpers launched in parallel: Worktrees A, B, and C mounted.',
+          '03 [READER] Worktree A: 39 rows verified and formatted (context: 4% used).',
+          '04 [CALCULATOR] Worktree B: Total computed at €7,281 across 39 months.',
+          '05 [REVIEWER] Worktree C: Blind check agrees with source. Reconciliation exit code 0.',
+          '06 [LEDGER] Context ledger updated. Clean PR ready for human sign-off.',
+        ],
+      },
+      mono: {
+        status: 'CONTEXT ROT ALERT',
+        logs: [
+          '01 [TURN 1] Assistant reads 40 rows. Thread context at 15%.',
+          '02 [TURN 4] Assistant begins calculations. Thread context at 45%.',
+          '03 [TURN 7] Context reaches 78%: attention decay begins.',
+          '04 [HALLUCINATION] Model forgets instruction file constraints.',
+          '05 [SLIP] Model totals all 40 amounts (€7,414) and misses duplicate.',
+          '06 [SYCOPHANCY] When questioned, model insists output is 100% correct.',
+        ],
+      },
+    };
+
+    const render = (s) => {
+      helperCards.forEach((card, idx) => {
+        card.classList.toggle('active', s >= 2 && s <= 5 && (s - 2 === idx || s === 5));
+      });
+
+      if (logBox && scenarios[currentTopo]) {
+        const item = scenarios[currentTopo].logs[s - 1];
+        if (item) {
+          const row = document.createElement('div');
+          row.className = `tof-log-line ${currentTopo === 'mono' && s >= 3 ? 'line-alert' : 'line-good'}`;
+          row.textContent = item;
+          logBox.appendChild(row);
+          logBox.scrollTop = logBox.scrollHeight;
+        }
+      }
+    };
+
+    const next = () => {
+      step = (step % 6) + 1;
+      if (step === 1 && logBox) logBox.innerHTML = '';
+      render(step);
+    };
+
+    const setTopo = (topo) => {
+      currentTopo = topo;
+      step = 1;
+      if (logBox) logBox.innerHTML = '';
+
+      btns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-topo') === topo));
+
+      if (topo === 'mono') {
+        if (teamView) teamView.hidden = true;
+        if (monoView) monoView.hidden = false;
+      } else {
+        if (teamView) teamView.hidden = false;
+        if (monoView) monoView.hidden = true;
+      }
+
+      if (statusBox) statusBox.textContent = scenarios[topo].status;
+
+      render(step);
+
+      if (timer) clearInterval(timer);
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        timer = setInterval(next, 2500);
+      }
+    };
+
+    btns.forEach((b) => {
+      b.addEventListener('click', () => setTopo(b.getAttribute('data-topo') || 'team'));
+    });
+
+    setTopo('team');
+  })();
+</script>
+
+<style>
+  .diagram[data-diagram="team-orchestrator-flow"] {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .tof-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tof-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tof-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--ahg-consistency);
+    text-transform: uppercase;
+  }
+
+  .tof-heading {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--ahg-text);
+    font-weight: 700;
+    line-height: 1.35;
+    border: 0;
+  }
+
+  .tof-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .tof-btn {
+    min-height: var(--ahg-touch);
+    padding: 0.35rem 0.75rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--ahg-motion-fast) ease-out;
+  }
+
+  .tof-btn:hover {
+    color: var(--ahg-text);
+    border-color: var(--ahg-accent);
+  }
+
+  .tof-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+  }
+
+  /* Team View */
+  .tof-team-view {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tof-lead-card,
+  .tof-ledger-card {
+    padding: 0.75rem 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    text-align: center;
+  }
+
+  .lead-badge,
+  .ledger-badge {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    background: var(--ahg-accent-soft);
+    color: var(--ahg-accent-strong);
+    margin-bottom: 0.25rem;
+  }
+
+  .lead-title,
+  .ledger-title {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--ahg-text);
+  }
+
+  .lead-desc,
+  .ledger-desc {
+    margin: 0.2rem 0 0;
+    font-size: 0.8rem;
+    color: var(--ahg-muted);
+    line-height: 1.35;
+  }
+
+  /* Connectors */
+  .tof-fan-connectors,
+  .tof-converge-connectors {
+    height: 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .fan-svg {
+    width: 100%;
+    max-width: 440px;
+    height: 100%;
+  }
+
+  .fan-path {
+    stroke: var(--ahg-line);
+    stroke-width: 2;
+    fill: none;
+    stroke-dasharray: 4 2;
+    animation: dashMove 1.5s linear infinite;
+  }
+
+  @keyframes dashMove {
+    to { stroke-dashoffset: -12; }
+  }
+
+  /* Helpers Grid */
+  .tof-helpers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .helper-card {
+    padding: 0.75rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    transition: all 0.2s ease-out;
+  }
+
+  .helper-card.active {
+    background: var(--ahg-panel);
+    border-color: var(--ahg-accent);
+    box-shadow: 0 0 0 2px var(--ahg-accent-soft);
+    transform: translateY(-2px);
+  }
+
+  .helper-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+  }
+
+  .helper-role {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--ahg-atwork);
+  }
+
+  .helper-chip {
+    padding: 0.05rem 0.35rem;
+    border-radius: 3px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    color: var(--ahg-muted);
+  }
+
+  .helper-name {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--ahg-text);
+  }
+
+  .helper-text {
+    margin: 0.2rem 0 0;
+    font-size: 0.75rem;
+    color: var(--ahg-muted);
+    line-height: 1.35;
+  }
+
+  /* Monolithic View */
+  .tof-mono-view {
+    margin-bottom: 1rem;
+  }
+
+  .mono-card {
+    padding: 1.25rem;
+    background: var(--ahg-wrong-soft);
+    border: 1px solid var(--ahg-wrong);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .mono-badge {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    background: var(--ahg-wrong);
+    color: #ffffff;
+    margin-bottom: 0.35rem;
+  }
+
+  .mono-title {
+    display: block;
+    font-size: 1rem;
+    color: var(--ahg-text);
+  }
+
+  .mono-desc {
+    margin: 0.35rem 0 0.85rem;
+    font-size: 0.82rem;
+    color: var(--ahg-muted);
+    line-height: 1.4;
+  }
+
+  .mono-meter {
+    background: var(--ahg-panel);
+    padding: 0.75rem;
+    border-radius: var(--ahg-radius-card);
+    border: 1px solid var(--ahg-line);
+  }
+
+  .meter-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--ahg-text);
+    margin-bottom: 0.35rem;
+  }
+
+  .meter-bar {
+    height: 8px;
+    background: var(--ahg-bg);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 0.35rem;
+  }
+
+  .meter-fill {
+    height: 100%;
+    width: 85%;
+    background: var(--ahg-wrong);
+    border-radius: 999px;
+  }
+
+  .meter-alert {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--ahg-wrong);
+  }
+
+  /* Console */
+  .tof-console {
+    background: #0d1117;
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 0.75rem;
+    color: #c9d1d9;
+    font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.76rem;
+  }
+
+  .tof-console-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #21262d;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .tof-console-title {
+    font-size: 0.7rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tof-status {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #3fb950;
+  }
+
+  .tof-console-log {
+    min-height: 44px;
+    max-height: 68px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  :global(.tof-log-line) {
+    line-height: 1.4;
+  }
+
+  :global(.line-good) {
+    color: #7ee787;
+  }
+
+  :global(.line-alert) {
+    color: #ff7b72;
+    font-weight: 600;
+  }
+
+  .tof-caption {
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    margin-top: 0.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fan-path {
+      animation: none;
+    }
+  }
+</style>

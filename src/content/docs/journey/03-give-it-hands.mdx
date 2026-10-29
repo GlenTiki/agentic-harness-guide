@@ -4,6 +4,7 @@ description: Connect the assistant to your systems, read-only first, so you stop
 ---
 
 import Example from '../../../components/Example.astro';
+import ToolLoopFlow from '../../../components/ToolLoopFlow.astro';
 
 **The lesson:** Let the assistant read your systems before it may change anything.
 
@@ -30,6 +31,8 @@ Three ideas make this safe and useful:
 - **The order of trust.** Connect a new system in [four steps](../../glossary/#read-draft-write-with-confirmation-write-alone): read, draft, write with confirmation, write alone. Stay on each step until it has earned the next one.
 
 Mina's shop shows the order. Mina gave her written OK for exactly two things: the monthly bank export and the shared sheet of supplier invoices. Sam gives the assistant [read-only](../../glossary/#read-only) access to both. The assistant reads the rows itself, so a row cannot be pasted twice by accident. It can still add February twice in its own sums, so level 5 checks that.
+
+<ToolLoopFlow />
 
 <Example
   label="Constructed"

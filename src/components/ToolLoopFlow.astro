@@ -1,0 +1,669 @@
+---
+import { BASE } from '../data/site';
+---
+
+<figure class="diagram" data-diagram="tool-loop-flow" aria-labelledby="tlf-heading">
+  <div class="tlf-header">
+    <div class="tlf-title-group">
+      <span class="tlf-badge">INTERACTIVE FLOW</span>
+      <h3 id="tlf-heading" class="tlf-heading">The tool execution loop: how an assistant uses hands</h3>
+    </div>
+
+    <div class="tlf-mode-toggles" role="group" aria-label="Tool action simulation">
+      <button type="button" class="tlf-btn active" data-action-mode="read">
+        <span>📖 Read action (allowed)</span>
+      </button>
+      <button type="button" class="tlf-btn" data-action-mode="write">
+        <span>✏️ Write action (blocked)</span>
+      </button>
+      <button type="button" class="tlf-btn" data-action-mode="ladder">
+        <span>📶 4 steps of trust</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="tlf-visual-track">
+    <!-- Node 1 -->
+    <div class="tlf-node" data-node="1">
+      <div class="tlf-step-num">1</div>
+      <div class="tlf-node-body">
+        <strong class="tlf-node-title">User ask</strong>
+        <span class="tlf-pill pill-input">PROMPT</span>
+        <p class="tlf-node-sub">"Summarise September candle sales from the bank export."</p>
+      </div>
+    </div>
+
+    <div class="tlf-connector" aria-hidden="true">
+      <span class="connector-line"></span>
+      <span class="connector-particle particle-1"></span>
+    </div>
+
+    <!-- Node 2 -->
+    <div class="tlf-node" data-node="2">
+      <div class="tlf-step-num">2</div>
+      <div class="tlf-node-body">
+        <strong class="tlf-node-title">Assistant reasoning</strong>
+        <span class="tlf-pill pill-model">TOOL CALL</span>
+        <p class="tlf-node-sub" data-node-sub="2">Decides it needs external data and emits structured call: <code>read_file("september.csv")</code></p>
+      </div>
+    </div>
+
+    <div class="tlf-connector" aria-hidden="true">
+      <span class="connector-line"></span>
+      <span class="connector-particle particle-2"></span>
+    </div>
+
+    <!-- Node 3 -->
+    <div class="tlf-node" data-node="3">
+      <div class="tlf-step-num">3</div>
+      <div class="tlf-node-body">
+        <strong class="tlf-node-title">Permission gate</strong>
+        <span class="tlf-pill pill-gate" data-gate-pill>CHECK</span>
+        <p class="tlf-node-sub" data-node-sub="3">Harness checks allowlist. Read-only tool on approved file passes automatically.</p>
+      </div>
+    </div>
+
+    <div class="tlf-connector" aria-hidden="true">
+      <span class="connector-line"></span>
+      <span class="connector-particle particle-3"></span>
+    </div>
+
+    <!-- Node 4 -->
+    <div class="tlf-node" data-node="4">
+      <div class="tlf-step-num">4</div>
+      <div class="tlf-node-body">
+        <strong class="tlf-node-title">Connector / Environment</strong>
+        <span class="tlf-pill pill-exec" data-exec-pill>EXECUTE</span>
+        <p class="tlf-node-sub" data-node-sub="4">Operating system executes command. Returns 39 rows of tabular CSV data.</p>
+      </div>
+    </div>
+
+    <div class="tlf-connector" aria-hidden="true">
+      <span class="connector-line"></span>
+      <span class="connector-particle particle-4"></span>
+    </div>
+
+    <!-- Node 5 -->
+    <div class="tlf-node" data-node="5">
+      <div class="tlf-step-num">5</div>
+      <div class="tlf-node-body">
+        <strong class="tlf-node-title">Reply to user</strong>
+        <span class="tlf-pill pill-return" data-return-pill>COMPLETE</span>
+        <p class="tlf-node-sub" data-node-sub="5">Data feeds back into model context. Assistant produces verified September draft.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trust Ladder Drawer (viewed in ladder mode) -->
+  <div class="tlf-ladder-drawer" data-ladder-drawer hidden>
+    <div class="ladder-header">
+      <strong>The order of trust: four steps to granting access safely</strong>
+    </div>
+    <div class="ladder-grid">
+      <div class="ladder-tier tier-active">
+        <div class="tier-badge">Step 1</div>
+        <strong class="tier-name">Read</strong>
+        <p class="tier-desc">Assistant reads files, exports and records. Cannot edit anything.</p>
+      </div>
+      <div class="ladder-tier">
+        <div class="tier-badge">Step 2</div>
+        <strong class="tier-name">Draft</strong>
+        <p class="tier-desc">Assistant writes into a designated drafts folder. Never sends or publishes.</p>
+      </div>
+      <div class="ladder-tier">
+        <div class="tier-badge">Step 3</div>
+        <strong class="tier-name">Write with confirmation</strong>
+        <p class="tier-desc">Assistant prepares the action and halts at a human checkpoint for sign-off.</p>
+      </div>
+      <div class="ladder-tier">
+        <div class="tier-badge">Step 4</div>
+        <strong class="tier-name">Write alone</strong>
+        <p class="tier-desc">Only for reversible actions inside a strict sandbox with instant rollback.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Console Readout -->
+  <div class="tlf-console">
+    <div class="tlf-console-head">
+      <span class="tlf-console-title">Telemetry log</span>
+      <span class="tlf-status" data-tlf-status>STATUS: ACTIVE</span>
+    </div>
+    <div class="tlf-console-body" data-tlf-log tabindex="0" role="region" aria-label="Tool execution logs"></div>
+  </div>
+
+  <figcaption class="tlf-caption">
+    Interactive simulation: switch between read mode, write mode, and the four steps of trust to see how the harness intercepts tools before execution.
+  </figcaption>
+</figure>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-diagram="tool-loop-flow"]');
+    if (!root) return;
+
+    const btns = root.querySelectorAll('[data-action-mode]');
+    const nodes = root.querySelectorAll('.tlf-node');
+    const ladderDrawer = root.querySelector('[data-ladder-drawer]');
+    const track = root.querySelector('.tlf-visual-track');
+    const logBox = root.querySelector('[data-tlf-log]');
+    const statusBox = root.querySelector('[data-tlf-status]');
+
+    const sub2 = root.querySelector('[data-node-sub="2"]');
+    const sub3 = root.querySelector('[data-node-sub="3"]');
+    const sub4 = root.querySelector('[data-node-sub="4"]');
+    const sub5 = root.querySelector('[data-node-sub="5"]');
+
+    const gatePill = root.querySelector('[data-gate-pill]');
+    const execPill = root.querySelector('[data-exec-pill]');
+    const returnPill = root.querySelector('[data-return-pill]');
+
+    let currentMode = 'read';
+    let step = 1;
+    let timer = null;
+
+    const data = {
+      read: {
+        status: 'STATUS: PASS (READ ALLOWED)',
+        gatePill: 'PASS',
+        gateClass: 'pill-pass',
+        execPill: 'READ ONLY',
+        execClass: 'pill-exec',
+        returnPill: 'DELIVERED',
+        returnClass: 'pill-return',
+        sub2: 'Decides it needs external data and emits structured call: read_file("september.csv")',
+        sub3: 'Harness checks allowlist. Read-only tool on approved file passes automatically.',
+        sub4: 'Operating system executes read. Returns 39 rows of tabular CSV data.',
+        sub5: 'Data feeds back into model context. Assistant produces verified September draft.',
+        logs: [
+          '01 [PROMPT] User asks: "Summarise September candle sales"',
+          '02 [TOOL CALL] Assistant emits: read_file(path="september.csv")',
+          '03 [SECURITY] Permission gate checked: read operation on allowed path -> ALLOW',
+          '04 [EXEC] Connector returned 39 rows (1,248 bytes)',
+          '05 [CONTEXT] Data integrated into assistant reply. Draft saved in drafts folder.',
+        ],
+      },
+      write: {
+        status: 'STATUS: BLOCKED (WRITE REFUSED)',
+        gatePill: 'BLOCKED',
+        gateClass: 'pill-danger',
+        execPill: 'HALTED',
+        execClass: 'pill-danger',
+        returnPill: 'PAUSED',
+        returnClass: 'pill-warn',
+        sub2: 'Assistant attempts to emit write action: delete_file("old_records.csv")',
+        sub3: 'Harness blocks write action! Write permission not granted in current session.',
+        sub4: 'Tool call halted. No disk change occurred. Execution aborted safely.',
+        sub5: 'Assistant is notified of policy block and asks user for human permission.',
+        logs: [
+          '01 [PROMPT] Assistant attempts to clean up directory',
+          '02 [TOOL CALL] Assistant emits: delete_file(path="old_records.csv")',
+          '03 [SECURITY] Permission gate checked: write/delete action not permitted -> REFUSED',
+          '04 [HALT] Command execution stopped at boundary (0 bytes modified)',
+          '05 [SAFETY] Assistant informs user: "I cannot delete files without your explicit approval."',
+        ],
+      },
+    };
+
+    const render = (s) => {
+      nodes.forEach((n) => {
+        const idx = Number(n.getAttribute('data-node'));
+        n.classList.toggle('active', idx === s);
+        n.classList.toggle('passed', idx < s);
+        n.classList.toggle('blocked', currentMode === 'write' && idx >= 3);
+      });
+
+      if (currentMode !== 'ladder' && logBox && data[currentMode]) {
+        const item = data[currentMode].logs[s - 1];
+        if (item) {
+          const row = document.createElement('div');
+          row.className = `tlf-log-line ${currentMode === 'write' && s >= 3 ? 'line-alert' : 'line-good'}`;
+          row.textContent = item;
+          logBox.appendChild(row);
+          logBox.scrollTop = logBox.scrollHeight;
+        }
+      }
+    };
+
+    const next = () => {
+      step = (step % 5) + 1;
+      if (step === 1 && logBox) logBox.innerHTML = '';
+      render(step);
+    };
+
+    const setMode = (mode) => {
+      currentMode = mode;
+      step = 1;
+      if (logBox) logBox.innerHTML = '';
+
+      btns.forEach((b) => b.classList.toggle('active', b.getAttribute('data-action-mode') === mode));
+
+      if (mode === 'ladder') {
+        if (ladderDrawer) ladderDrawer.hidden = false;
+        if (track) track.hidden = true;
+        if (statusBox) statusBox.textContent = 'STATUS: REVIEWING 4 STEPS OF TRUST';
+        if (timer) clearInterval(timer);
+        return;
+      }
+
+      if (ladderDrawer) ladderDrawer.hidden = true;
+      if (track) track.hidden = false;
+
+      const cfg = data[mode];
+      if (statusBox) statusBox.textContent = cfg.status;
+      if (sub2) sub2.textContent = cfg.sub2;
+      if (sub3) sub3.textContent = cfg.sub3;
+      if (sub4) sub4.textContent = cfg.sub4;
+      if (sub5) sub5.textContent = cfg.sub5;
+
+      if (gatePill) {
+        gatePill.textContent = cfg.gatePill;
+        gatePill.className = `tlf-pill ${cfg.gateClass}`;
+      }
+      if (execPill) {
+        execPill.textContent = cfg.execPill;
+        execPill.className = `tlf-pill ${cfg.execClass}`;
+      }
+      if (returnPill) {
+        returnPill.textContent = cfg.returnPill;
+        returnPill.className = `tlf-pill ${cfg.returnClass}`;
+      }
+
+      render(step);
+
+      if (timer) clearInterval(timer);
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        timer = setInterval(next, 2500);
+      }
+    };
+
+    btns.forEach((b) => {
+      b.addEventListener('click', () => {
+        setMode(b.getAttribute('data-action-mode') || 'read');
+      });
+    });
+
+    nodes.forEach((n) => {
+      n.addEventListener('click', () => {
+        if (timer) clearInterval(timer);
+        step = Number(n.getAttribute('data-node')) || 1;
+        render(step);
+      });
+    });
+
+    setMode('read');
+  })();
+</script>
+
+<style>
+  .diagram[data-diagram="tool-loop-flow"] {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .tlf-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .tlf-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .tlf-badge {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--ahg-atwork);
+    text-transform: uppercase;
+  }
+
+  .tlf-heading {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--ahg-text);
+    font-weight: 700;
+    line-height: 1.35;
+    border: 0;
+  }
+
+  .tlf-mode-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .tlf-btn {
+    min-height: var(--ahg-touch);
+    padding: 0.35rem 0.75rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--ahg-motion-fast) ease-out;
+  }
+
+  .tlf-btn:hover {
+    color: var(--ahg-text);
+    border-color: var(--ahg-accent);
+  }
+
+  .tlf-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+  }
+
+  /* Visual Track */
+  .tlf-visual-track {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .tlf-node {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0.85rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+  }
+
+  .tlf-node:hover {
+    border-color: var(--ahg-accent);
+    transform: translateX(2px);
+  }
+
+  .tlf-node.active {
+    background: var(--ahg-panel);
+    border-color: var(--ahg-accent);
+    box-shadow: 0 0 0 2px var(--ahg-accent-soft);
+  }
+
+  .tlf-node.blocked.active {
+    border-color: var(--ahg-wrong);
+    box-shadow: 0 0 0 2px var(--ahg-wrong-soft);
+  }
+
+  .tlf-step-num {
+    flex-shrink: 0;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--ahg-muted);
+  }
+
+  .active .tlf-step-num {
+    background: var(--ahg-accent);
+    color: var(--ahg-accent-ink);
+    border-color: var(--ahg-accent);
+  }
+
+  .blocked.active .tlf-step-num {
+    background: var(--ahg-wrong);
+    color: #ffffff;
+    border-color: var(--ahg-wrong);
+  }
+
+  .tlf-node-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .tlf-node-title {
+    font-size: 0.9rem;
+    color: var(--ahg-text);
+  }
+
+  .tlf-pill {
+    align-self: flex-start;
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+
+  .pill-input {
+    background: var(--ahg-accent-soft);
+    color: var(--ahg-accent-strong);
+  }
+
+  .pill-model {
+    background: var(--ahg-expert-soft);
+    color: var(--ahg-expert);
+  }
+
+  .pill-pass {
+    background: var(--ahg-right-soft);
+    color: var(--ahg-right);
+  }
+
+  .pill-gate {
+    background: var(--ahg-atwork-soft);
+    color: var(--ahg-atwork);
+  }
+
+  .pill-exec {
+    background: var(--ahg-consistency-soft);
+    color: var(--ahg-consistency);
+  }
+
+  .pill-return {
+    background: var(--ahg-right-soft);
+    color: var(--ahg-right);
+  }
+
+  .pill-danger {
+    background: var(--ahg-wrong-soft);
+    color: var(--ahg-wrong);
+  }
+
+  .pill-warn {
+    background: var(--ahg-expert-soft);
+    color: var(--ahg-expert);
+  }
+
+  .tlf-node-sub {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--ahg-muted);
+    line-height: 1.35;
+  }
+
+  .tlf-node-sub code {
+    background: var(--ahg-code-bg);
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.75rem;
+  }
+
+  /* Connectors */
+  .tlf-connector {
+    position: relative;
+    height: 12px;
+    margin-left: 20px;
+  }
+
+  .connector-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--ahg-line);
+  }
+
+  .connector-particle {
+    position: absolute;
+    left: -2px;
+    top: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ahg-accent);
+    opacity: 0;
+    animation: tlfPulse 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .particle-1 { animation-delay: 0s; }
+  .particle-2 { animation-delay: 0.5s; }
+  .particle-3 { animation-delay: 1.0s; }
+  .particle-4 { animation-delay: 1.5s; }
+
+  @keyframes tlfPulse {
+    0% { top: 0; opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { top: 100%; opacity: 0; }
+  }
+
+  /* Ladder Drawer */
+  .tlf-ladder-drawer {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .ladder-header {
+    margin-bottom: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--ahg-text);
+  }
+
+  .ladder-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .ladder-tier {
+    padding: 0.75rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .tier-active {
+    border-color: var(--ahg-atwork);
+    box-shadow: 0 0 0 1px var(--ahg-atwork);
+  }
+
+  .tier-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: var(--ahg-muted);
+    text-transform: uppercase;
+  }
+
+  .tier-name {
+    display: block;
+    font-size: 0.88rem;
+    color: var(--ahg-text);
+    margin: 0.2rem 0;
+  }
+
+  .tier-desc {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--ahg-muted);
+    line-height: 1.35;
+  }
+
+  /* Console */
+  .tlf-console {
+    background: #0d1117;
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+    padding: 0.75rem 0.85rem;
+    margin-bottom: 0.75rem;
+    color: #c9d1d9;
+    font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.76rem;
+  }
+
+  .tlf-console-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #21262d;
+    padding-bottom: 0.4rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .tlf-console-title {
+    font-size: 0.7rem;
+    color: #8b949e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tlf-status {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #3fb950;
+  }
+
+  .tlf-console-body {
+    min-height: 44px;
+    max-height: 68px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  :global(.tlf-log-line) {
+    line-height: 1.4;
+  }
+
+  :global(.line-good) {
+    color: #7ee787;
+  }
+
+  :global(.line-alert) {
+    color: #ff7b72;
+    font-weight: 600;
+  }
+
+  .tlf-caption {
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    margin-top: 0.5rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .connector-particle {
+      animation: none;
+      display: none;
+    }
+  }
+</style>
