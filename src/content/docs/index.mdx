@@ -3,11 +3,11 @@ title: The Agentic Harness Guide
 description: A plain-English guide to getting reliable, checkable work from AI assistants, from your first chat to systems of several assistants.
 template: splash
 hero:
-  title: Turn your AI assistant into a dependable colleague
-  tagline: Stop babysitting 80% calculators. Learn to wrap language models in mechanical checks, safety gates, and isolated workspaces so you can trust the work.
+  title: Stop doing the work. Start shaping the tool that does it.
+  tagline: Treat your AI assistant as an autonomous tech lead. Direct intent, verify output with mechanical gates, and build disposable micro-tools that compound every week.
   actions:
-    - text: Test your assistant now
-      link: ./journey/00-hello-robot/#five-minute-win
+    - text: The Product Manager Method
+      link: ./method/be-the-product-manager-of-your-own-tooling/
       icon: right-arrow
     - text: Why bother with this
       link: ./start-here/why-bother/
@@ -17,16 +17,16 @@ hero:
 import { Card, CardGrid } from '@astrojs/starlight/components';
 import LevelLadder from '../../components/LevelLadder.astro';
 
-Language models predict tokens; they do not manage state. Left unguided in a chat window, multi-step work collapses into confident hallucinations, dropped constraints, and silent corruption.
+Treating an AI assistant as a faster keyboard for chat pair-programming is a category error. If you babysit every token, you suffer review fatigue and end up rubber-stamping code you do not understand.
 
-An agentic harness is the deterministic engineering layer around the model: isolated workspaces, capability gates, interceptor hooks, and mechanical checks that turn probabilistic chat tools into dependable production engines. When the same slip comes back, use the [weak-spot loop](./method/engineer-weak-spots/#the-loop): notice it, name it, engineer a fix, prove the fix can fail, keep it.
+The compounding breakthrough happens when you step out of the editor and become the **Product Manager of your own day**. The assistant acts as your autonomous Tech Lead: it drafts micro-tools in isolated workspaces, proves them with mechanical test gates, and locks them into your toolbelt. When a friction point repeats, use the [weak-spot loop](./method/engineer-weak-spots/#the-loop): notice it, name it, engineer a fix, prove the fix can fail, keep it.
 
 <CardGrid>
-  <Card title="Raw Prompting (Amateur Gambling)" icon="warning">
-    Single context window decay, model self-checking (sycophancy), unconstrained filesystem access, and hope as an engineering strategy.
+  <Card title="The Prompting Hamster Wheel" icon="warning">
+    Flat effort every week. Pasting unstructured text into chat boxes, arguing over hallucinated numbers, and repeating identical manual drudgery forever.
   </Card>
-  <Card title="The Deterministic Harness (Professional Odds)" icon="approve-check">
-    Git worktree isolation, step-by-step state machines, mechanical formula gates, and independent multi-model peer review.
+  <Card title="The Compounding Toolmaker" icon="approve-check">
+    Exponential leverage. Directing high-level intent, letting the assistant build tested micro-tools in an afternoon, and saving hours every single week.
   </Card>
 </CardGrid>
 

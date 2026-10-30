@@ -131,8 +131,16 @@ details.agent-note > .starlight-aside {
 
 .home-hero {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1.5rem;
-  align-items: center;
+  align-items: start;
+  width: 100%;
+  max-width: 100%;
+}
+
+.home-hero > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .home-hero .hero {
@@ -173,12 +181,19 @@ details.agent-note > .starlight-aside {
 
 .home-hero .slip-drawer-summary {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
   color: var(--ahg-muted);
   font-weight: 600;
   user-select: none;
+  min-width: 0;
+}
+
+.home-hero .slip-drawer-summary .summary-text {
+  min-width: 0;
+  word-break: break-word;
 }
 
 .home-hero .slip-drawer-summary:hover {
@@ -205,7 +220,7 @@ details.agent-note > .starlight-aside {
 
 @media (min-width: 56rem) {
   .home-hero {
-    grid-template-columns: 1.1fr 1fr;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
     gap: 2.5rem;
   }
 }
