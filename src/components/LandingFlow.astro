@@ -62,7 +62,7 @@ import { BASE } from '../data/site';
 
   <!-- Narrative Context Card -->
   <div class="narrative-card">
-    <div class="narrative-role-chip" data-narrative-role>ROLE: PRODUCT MANAGER (OBSERVING FAILURE)</div>
+    <div class="narrative-role-chip" data-narrative-role>ROLE: PRODUCT MANAGER (NOTICE FRICTION)</div>
     <p class="narrative-body" data-narrative-text>
       Sam notices the failure: the assistant sounded sure, but silently added duplicate Row 19. Instead of auditing receipts by hand every Monday, Sam treats friction as a specification.
     </p>
@@ -131,7 +131,7 @@ import { BASE } from '../data/site';
             title: 'Incident: €120 Overpayment',
             badge: 'SILENT SLIP',
             badgeClass: 'badge-warn',
-            role: 'ROLE: PRODUCT MANAGER (OBSERVING FAILURE)',
+            role: 'ROLE: PRODUCT MANAGER (NOTICE FRICTION)',
             narrative: 'Sam notices the failure: the assistant sounded sure, but silently added duplicate Row 19. Instead of auditing receipts by hand every Monday, Sam treats friction as a specification.',
             code: [
               '# INCIDENT: Monday Invoice Overpayment',
@@ -154,7 +154,7 @@ import { BASE } from '../data/site';
             title: 'User Brief: Outcome Spec',
             badge: 'SPECIFICATION',
             badgeClass: 'badge-ok',
-            role: 'ROLE: PRODUCT MANAGER → TECH LEAD',
+            role: 'ROLE: PRODUCT MANAGER (SPECIFY OUTCOME)',
             narrative: 'Sam does not write Python or regular expressions. Sam tells the assistant: "Clean up currency symbols, calculate distinct totals, and halt with exit code 1 if any row duplicates." The assistant takes ownership of the technical plan.',
             code: [
               '# User Brief to Assistant (Tech Lead):',
@@ -172,7 +172,7 @@ import { BASE } from '../data/site';
             title: 'Worktree: Test Gate',
             badge: 'GATE PASS: 0',
             badgeClass: 'badge-ok',
-            role: 'ROLE: TECH LEAD (ASSISTANT)',
+            role: 'ROLE: TECH LEAD (ISOLATED WORKTREE)',
             narrative: 'The assistant works in an isolated git worktree. It writes a 12-line parser, proves it fails on the duplicate delivery line (the red run), and verifies all checks pass before asking Sam for sign-off.',
             code: [
               '# Assistant Output (Tested in isolated branch):',
@@ -191,8 +191,8 @@ import { BASE } from '../data/site';
             title: 'Next Monday: Autonomous Run',
             badge: 'ZERO RE-PROMPT',
             badgeClass: 'badge-ok',
-            role: 'THE MAGIC: SIMULATE NEXT WEEK',
-            narrative: 'Sam keeps the tool. Next Monday, 52 fresh invoices arrive. Sam does not open a chat window. The retained micro-tool parses them instantly, catches a supplier duplicate, and outputs the clean tie-out in two hundredths of a second.',
+            role: 'ROLE: COMPOUNDING ASSET (RETAINED CLI)',
+            narrative: 'Sam keeps the tool. Next Monday, 52 fresh invoices arrive. Sam does not open a chat window. The retained micro-tool parses them in 0.02s, catches a supplier duplicate, and outputs the clean tie-out with zero prompt fatigue.',
             code: [
               '# Next Monday: 52 fresh receipts loaded automatically',
               '$ ./tools/clean_invoices.py --input receipts_nov.csv',

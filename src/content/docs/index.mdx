@@ -4,12 +4,14 @@ description: A plain-English guide to getting reliable, checkable work from AI a
 template: splash
 hero:
   title: Stop doing the work. Start shaping the tool that does it.
-  tagline: Treat your AI assistant as an autonomous tech lead. Direct intent, verify output with mechanical gates, and build disposable micro-tools that compound every week.
+  tagline: A battle-tested engineering guide to getting reliable, checkable work from AI assistants. No prompt magic, no SaaS frameworks. Just mechanical test gates, isolated git worktrees, and disposable micro-tools that compound.
   actions:
     - text: The Product Manager Method
       link: ./method/be-the-product-manager-of-your-own-tooling/
       icon: right-arrow
-    - text: Why bother with this
+    - text: The Engineer Route
+      link: ./start-here/engineer-route/
+    - text: Why Bother (The 80% Trap)
       link: ./start-here/why-bother/
       variant: minimal
 ---
@@ -17,16 +19,28 @@ hero:
 import { Card, CardGrid } from '@astrojs/starlight/components';
 import LevelLadder from '../../components/LevelLadder.astro';
 
-Treating an AI assistant as a faster keyboard for chat pair-programming is a category error. If you babysit every token, you suffer review fatigue and end up rubber-stamping code you do not understand.
+## From the trenches: why this guide exists
 
-The compounding breakthrough happens when you step out of the editor and become the **Product Manager of your own day**. The assistant acts as your autonomous Tech Lead: it drafts micro-tools in isolated workspaces, proves them with mechanical test gates, and locks them into your toolbelt. When a friction point repeats, use the [weak-spot loop](./method/engineer-weak-spots/#the-loop): notice it, name it, engineer a fix, prove the fix can fail, keep it.
+I wrote this guide out of frustration with AI demo hype and the messy reality of production engineering.
+
+I am Glen Keane. Over the past decade, I have worked across high-throughput distributed systems and performance tooling (former Node.js core collaborator, co-maintainer of `autocannon` with Matteo Collina, nearForm, and Wayflyer). Today, I work forward-deployed at Brightbeam, building enterprise AI systems and claims automation for clients like AXA and Zurich.
+
+When engineers use AI coding assistants for serious work, they hit the same wall: the **80% calculator trap**. An adding machine that calculates correctly 4 times out of 5 does not automate your work; it doubles your anxiety. If you have to babysit every token in an editor, you suffer review fatigue and end up rubber-stamping code you do not understand. That is how comprehension debt explodes.
+
+The solution is not "prompt engineering", larger context windows, or another proprietary SaaS framework. The solution is boring, disciplined software engineering:
+
+1. **Be the Product Manager of your own tools**: You define high-level intent, constraints, and acceptance criteria. You never micromanage internal model generation.
+2. **Mechanical test gates**: Untrusted assistant code runs in isolated git worktrees. If it fails a deterministic test gate or linter (exit code 0), it never touches your branch.
+3. **Disposable micro-tools**: When a routine friction point repeats, have the assistant build a focused tool. *If a tool works, you keep it. If it breaks or stops serving you, you either refine it, or these days, it is getting cheap to throw it away and build the next one in an afternoon.*
+
+This guide teaches the mindset, architecture, and daily mechanics of building with autonomously self-improving tooling. No corporate fluff, no paywall, 100% open source.
 
 <CardGrid>
-  <Card title="The Prompting Hamster Wheel" icon="warning">
-    Flat effort every week. Pasting unstructured text into chat boxes, arguing over hallucinated numbers, and repeating identical manual drudgery forever.
+  <Card title="The Chat Hamster Wheel" icon="warning">
+    Pasting raw text into chat windows, arguing with sycophantic models over wrong sums, reviewing messy diffs by hand, and repeating identical manual drudgery every Monday.
   </Card>
-  <Card title="The Compounding Toolmaker" icon="approve-check">
-    Exponential leverage. Directing high-level intent, letting the assistant build tested micro-tools in an afternoon, and saving hours every single week.
+  <Card title="The Compounding Harness" icon="approve-check">
+    Directing clear intent, running test gates in isolated git worktrees, verifying with zero-exit-code proof, and retaining tested CLI micro-tools that run in hundredths of a second.
   </Card>
 </CardGrid>
 
