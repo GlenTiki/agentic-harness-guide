@@ -49,10 +49,10 @@ import { BASE } from '../data/site';
         <span></span><span></span><span></span>
       </div>
       <div class="window-title-group">
-        <span class="window-icon" data-window-icon>📋</span>
-        <span class="window-title" data-window-title>Monday Ingest (Messy statements)</span>
+        <span class="window-icon" data-window-icon>⚠️</span>
+        <span class="window-title" data-window-title>Incident: €120 Overpayment</span>
       </div>
-      <span class="window-badge badge-ok" data-window-badge>WEEK 1: RAW INGEST</span>
+      <span class="window-badge badge-warn" data-window-badge>SILENT SLIP</span>
     </div>
 
     <div class="window-viewport" data-window-viewport>
@@ -62,9 +62,9 @@ import { BASE } from '../data/site';
 
   <!-- Narrative Context Card -->
   <div class="narrative-card">
-    <div class="narrative-role-chip" data-narrative-role>ROLE: PRODUCT MANAGER</div>
+    <div class="narrative-role-chip" data-narrative-role>ROLE: PRODUCT MANAGER (OBSERVING FAILURE)</div>
     <p class="narrative-body" data-narrative-text>
-      Sam notices 40 receipts from Mina's candle shop with mixed formats (EUR, euro) and a repeated delivery line. Instead of retyping rows every Monday, Sam treats friction as a specification.
+      Sam notices the failure: the assistant sounded sure, but silently added duplicate Row 19. Instead of auditing receipts by hand every Monday, Sam treats friction as a specification.
     </p>
   </div>
 
@@ -127,21 +127,26 @@ import { BASE } from '../data/site';
         tabs: ['Notice', 'Steer', 'Prove', 'Compound'],
         steps: [
           {
-            icon: '📋',
-            title: 'Raw Ingest: 40 Receipts',
-            badge: 'RAW INGEST',
-            badgeClass: 'badge-ok',
-            role: 'ROLE: PRODUCT MANAGER',
-            narrative: 'Sam notices 40 receipts from Mina\'s candle shop with mixed formats (EUR, €, euro) and a repeated delivery charge. Instead of manually retyping rows into Excel every week, Sam treats this friction as a specification.',
+            icon: '⚠️',
+            title: 'Incident: €120 Overpayment',
+            badge: 'SILENT SLIP',
+            badgeClass: 'badge-warn',
+            role: 'ROLE: PRODUCT MANAGER (OBSERVING FAILURE)',
+            narrative: 'Sam notices the failure: the assistant sounded sure, but silently added duplicate Row 19. Instead of auditing receipts by hand every Monday, Sam treats friction as a specification.',
             code: [
-              '# Raw Monday Ingest (Messy statements):',
-              '1. Candles EUR 120.00',
-              '2. Glass jars €85.00',
-              '3. Wicks 40 euro',
-              '4. Delivery EUR 120.00  [⚠️ duplicate line?]',
-              '5. Wax supplies EUR 210.00',
+              '# INCIDENT: Monday Invoice Overpayment',
+              'INPUT: 40 raw receipts pasted into chat',
+              '  ...',
+              '  Row 04: Delivery EUR 120.00',
+              '  Row 19: Delivery EUR 120.00 (Duplicate)',
               '',
-              'Current state: Manual courier copying rows into Excel'
+              'ASSISTANT OUTPUT:',
+              '  "Clean summary! Net total: €695.00"',
+              '',
+              'THE FAILURE:',
+              '  ❌ Model silently summed duplicate Row 19.',
+              '  ❌ Sam sent payout and overpaid by €120.',
+              '  ❌ Auditing by hand wastes 45 min weekly.'
             ].join('\n')
           },
           {
