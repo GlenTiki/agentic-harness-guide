@@ -2,22 +2,9 @@
 import { BASE } from '../data/site';
 ---
 
-<section class="landing-flow" data-component="landing-flow" aria-labelledby="flow-heading">
-  <!-- Top Navigation & Header -->
-  <div class="flow-header">
-    <div class="flow-title-row">
-      <span class="flow-live-pill" data-live-pill>
-        <span class="pulse-dot"></span>
-        <span class="live-label" data-live-label>COMPOUNDING FLYWHEEL ACTIVE</span>
-      </span>
-      <h2 id="flow-heading" class="flow-heading" data-flow-heading>
-        How to be the Product Manager of your own tooling
-      </h2>
-      <p class="flow-lead" data-flow-lead>
-        Direct intent, let the assistant build and test the tool, and keep the capability forever.
-      </p>
-    </div>
-
+<section class="landing-flow" data-component="landing-flow" data-base={BASE} aria-labelledby="flow-heading">
+  <!-- Top Navigation Bar: Modes & Status -->
+  <div class="flow-top-bar">
     <div class="flow-mode-switch" role="group" aria-label="Tooling philosophy scenario">
       <button type="button" class="mode-btn active" data-mode="flywheel">
         <span class="mode-icon">⚡</span>
@@ -28,116 +15,60 @@ import { BASE } from '../data/site';
         <span class="mode-text">The Prompting Hamster Wheel</span>
       </button>
     </div>
-  </div>
 
-  <!-- Interactive Stage (Two Panes on Desktop, Stacked on Mobile) -->
-  <div class="flow-stage-grid">
-    <!-- Left Pane: The Working Paper / Live Data Desk -->
-    <div class="flow-pane desk-pane">
-      <div class="pane-header">
-        <div class="pane-title-group">
-          <span class="pane-icon" data-desk-icon>📋</span>
-          <span class="pane-title" data-desk-title>Working Paper: Monday Invoices</span>
-        </div>
-        <span class="desk-badge badge-ok" data-desk-badge>WEEK 1: RAW INGEST</span>
-      </div>
-
-      <div class="desk-viewport" data-desk-viewport>
-        <div class="desk-content" data-desk-content>
-          <pre class="desk-pre"><code class="desk-code" data-desk-code>Loading simulation...</code></pre>
-        </div>
-      </div>
-
-      <div class="desk-telemetry">
-        <div class="telemetry-item">
-          <span class="telem-label">Output status:</span>
-          <span class="telem-val val-warn" data-telem-status>UNVERIFIED RAW DATA</span>
-        </div>
-        <div class="telemetry-item">
-          <span class="telem-label">Runtime:</span>
-          <span class="telem-val" data-telem-time>Manual courier (12 min)</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Pane: The Product Manager Flywheel / Steering Console -->
-    <div class="flow-pane console-pane">
-      <div class="pane-header">
-        <div class="pane-title-group">
-          <span class="pane-icon">🎯</span>
-          <span class="pane-title">The Product Manager Flywheel</span>
-        </div>
-        <span class="console-step-pill" data-step-pill>STEP 1 OF 4</span>
-      </div>
-
-      <div class="flywheel-steps" role="tablist" aria-label="Flywheel sequence steps">
-        <button type="button" class="step-card active" data-step-target="1" role="tab" aria-selected="true">
-          <div class="step-card-num">01</div>
-          <div class="step-card-body">
-            <strong class="step-card-title" data-step-title="1">Notice Friction</strong>
-            <p class="step-card-desc" data-step-desc="1">Messy supplier amounts with mixed currency labels and duplicate rows.</p>
-          </div>
-        </button>
-
-        <button type="button" class="step-card" data-step-target="2" role="tab" aria-selected="false">
-          <div class="step-card-num">02</div>
-          <div class="step-card-body">
-            <strong class="step-card-title" data-step-title="2">Steer with Intent</strong>
-            <p class="step-card-desc" data-step-desc="2">Tell the assistant what to build. Skip the code; specify the outcome.</p>
-          </div>
-        </button>
-
-        <button type="button" class="step-card" data-step-target="3" role="tab" aria-selected="false">
-          <div class="step-card-num">03</div>
-          <div class="step-card-body">
-            <strong class="step-card-title" data-step-title="3">Assistant Proves Fix</strong>
-            <p class="step-card-desc" data-step-desc="3">Tech lead writes a 12-line helper in a worktree and runs a red test.</p>
-          </div>
-        </button>
-
-        <button type="button" class="step-card" data-step-target="4" role="tab" aria-selected="false">
-          <div class="step-card-num">04</div>
-          <div class="step-card-body">
-            <strong class="step-card-title" data-step-title="4">Keep and Compound</strong>
-            <p class="step-card-desc" data-step-desc="4">Save to toolbelt. Next Monday runs in 0.02s with zero prompt overhead.</p>
-          </div>
-        </button>
-      </div>
-
-      <div class="console-narrative-card">
-        <div class="narrative-role-chip" data-narrative-role>ROLE: PRODUCT MANAGER</div>
-        <p class="narrative-body" data-narrative-text>
-          Sam notices 40 receipts from Mina's candle shop with mixed formats (EUR, euro) and a repeated delivery line.
-        </p>
-      </div>
+    <div class="flow-live-pill" data-live-pill>
+      <span class="pulse-dot"></span>
+      <span class="live-label" data-live-label>FLYWHEEL ACTIVE</span>
     </div>
   </div>
 
-  <!-- Bottom Rack: The Persistent Toolbelt & Compounding Dividend -->
-  <div class="toolbelt-rack">
-    <div class="toolbelt-header">
-      <div class="toolbelt-title-group">
-        <span class="toolbelt-label">YOUR DURABLE TOOLBELT</span>
-        <span class="toolbelt-sub">Capabilities built once, verified with tests, retained forever</span>
+  <!-- Stepper Navigation: 4 Steps in a Horizontal Row -->
+  <div class="flow-stepper" role="tablist" aria-label="Flywheel sequence steps">
+    <button type="button" class="step-tab active" data-step-target="1" role="tab" aria-selected="true">
+      <span class="tab-num">01</span>
+      <span class="tab-label" data-tab-label="1">Notice Friction</span>
+    </button>
+    <button type="button" class="step-tab" data-step-target="2" role="tab" aria-selected="false">
+      <span class="tab-num">02</span>
+      <span class="tab-label" data-tab-label="2">Steer Intent</span>
+    </button>
+    <button type="button" class="step-tab" data-step-target="3" role="tab" aria-selected="false">
+      <span class="tab-num">03</span>
+      <span class="tab-label" data-tab-label="3">Prove the Fix</span>
+    </button>
+    <button type="button" class="step-tab" data-step-target="4" role="tab" aria-selected="false">
+      <span class="tab-num">04</span>
+      <span class="tab-label" data-tab-label="4">Keep & Compound</span>
+    </button>
+  </div>
+
+  <!-- Interactive Terminal / Workbench Stage -->
+  <div class="stage-window">
+    <div class="window-header">
+      <div class="window-dots" aria-hidden="true">
+        <span></span><span></span><span></span>
       </div>
-      <div class="toolbelt-metrics">
-        <span class="metric-pill">
-          <span class="metric-num" data-metric-saved>2.5 hrs</span>
-          <span class="metric-txt">saved weekly</span>
-        </span>
-        <span class="metric-pill">
-          <span class="metric-num" data-metric-retained>3 tools</span>
-          <span class="metric-txt">in toolbelt</span>
-        </span>
+      <div class="window-title-group">
+        <span class="window-icon" data-window-icon>📋</span>
+        <span class="window-title" data-window-title>Monday Ingest (Messy statements)</span>
       </div>
+      <span class="window-badge badge-ok" data-window-badge>WEEK 1: RAW INGEST</span>
     </div>
 
-    <div class="toolbelt-items" data-toolbelt-items>
-      <!-- Populated by JavaScript with fixed 4-slot geometry -->
+    <div class="window-viewport" data-window-viewport>
+      <pre class="window-pre"><code class="window-code" data-window-code>Loading simulation...</code></pre>
     </div>
   </div>
 
-  <!-- Playback and Deep Dive Controls -->
+  <!-- Narrative Context Card -->
+  <div class="narrative-card">
+    <div class="narrative-role-chip" data-narrative-role>ROLE: PRODUCT MANAGER</div>
+    <p class="narrative-body" data-narrative-text>
+      Sam notices 40 receipts from Mina's candle shop with mixed formats (EUR, euro) and a repeated delivery line. Instead of retyping rows every Monday, Sam treats friction as a specification.
+    </p>
+  </div>
+
+  <!-- Bottom Playback Controls Bar -->
   <div class="flow-bottom-bar">
     <div class="playback-controls">
       <button type="button" class="ctrl-btn" data-action="toggle-playback">
@@ -165,24 +96,17 @@ import { BASE } from '../data/site';
     const root = document.querySelector('[data-component="landing-flow"]');
     if (!root) return;
 
+    const base = root.getAttribute('data-base') || '';
     const modeBtns = root.querySelectorAll('[data-mode]');
-    const stepCards = root.querySelectorAll('[data-step-target]');
+    const stepTabs = root.querySelectorAll('[data-step-target]');
     const liveLabel = root.querySelector('[data-live-label]');
     const livePill = root.querySelector('[data-live-pill]');
-    const flowHeading = root.querySelector('[data-flow-heading]');
-    const flowLead = root.querySelector('[data-flow-lead]');
-    const deskIcon = root.querySelector('[data-desk-icon]');
-    const deskTitle = root.querySelector('[data-desk-title]');
-    const deskBadge = root.querySelector('[data-desk-badge]');
-    const deskCode = root.querySelector('[data-desk-code]');
-    const telemStatus = root.querySelector('[data-telem-status]');
-    const telemTime = root.querySelector('[data-telem-time]');
-    const stepPill = root.querySelector('[data-step-pill]');
+    const windowIcon = root.querySelector('[data-window-icon]');
+    const windowTitle = root.querySelector('[data-window-title]');
+    const windowBadge = root.querySelector('[data-window-badge]');
+    const windowCode = root.querySelector('[data-window-code]');
     const narrativeRole = root.querySelector('[data-narrative-role]');
     const narrativeText = root.querySelector('[data-narrative-text]');
-    const metricSaved = root.querySelector('[data-metric-saved]');
-    const metricRetained = root.querySelector('[data-metric-retained]');
-    const toolbeltItems = root.querySelector('[data-toolbelt-items]');
     const playBtn = root.querySelector('[data-action="toggle-playback"]');
     const playIcon = root.querySelector('[data-play-icon]');
     const playText = root.querySelector('[data-play-text]');
@@ -197,26 +121,18 @@ import { BASE } from '../data/site';
 
     const scenarios = {
       flywheel: {
-        pillLabel: 'COMPOUNDING FLYWHEEL ACTIVE',
-        heading: 'How to be the Product Manager of your own tooling',
-        lead: 'Direct intent, let the assistant build and test the tool, and keep the capability forever.',
+        pillLabel: 'FLYWHEEL ACTIVE',
         linkText: 'Read the Product Manager method →',
         linkHref: 'method/be-the-product-manager-of-your-own-tooling/',
-        savedMetric: '2.5 hrs',
-        retainedMetric: '3 tools',
+        tabs: ['Notice Friction', 'Steer Intent', 'Prove the Fix', 'Keep & Compound'],
         steps: [
           {
-            step: 1,
-            title: 'Notice Friction',
-            desc: 'Messy supplier amounts with mixed currency labels and duplicate rows.',
-            deskIcon: '📋',
-            deskTitle: 'Week 1: Messy Invoices (Unstructured)',
-            deskBadge: 'WEEK 1: RAW INGEST',
-            telemStatus: 'UNVERIFIED RAW DATA',
-            telemStatusClass: 'val-warn',
-            telemTime: 'Friction point noticed',
-            narrativeRole: 'ROLE: PRODUCT MANAGER',
-            narrativeText: 'Sam notices 40 receipts from Mina\'s candle shop with mixed formats (EUR, euro) and a repeated delivery charge. Instead of manually retyping rows into Excel every week, Sam treats this friction as a specification.',
+            icon: '📋',
+            title: 'Monday Ingest: 40 Unstructured Receipts',
+            badge: 'WEEK 1: RAW INGEST',
+            badgeClass: 'badge-ok',
+            role: 'ROLE: PRODUCT MANAGER',
+            narrative: 'Sam notices 40 receipts from Mina\'s candle shop with mixed formats (EUR, €, euro) and a repeated delivery charge. Instead of manually retyping rows into Excel every week, Sam treats this friction as a specification.',
             code: [
               '# Raw Monday Ingest (Messy statements):',
               '1. Candles EUR 120.00',
@@ -225,27 +141,16 @@ import { BASE } from '../data/site';
               '4. Delivery EUR 120.00  [⚠️ duplicate line?]',
               '5. Wax supplies EUR 210.00',
               '',
-              'Current state: Manual copy-paste Courier'
-            ].join('\n'),
-            toolbeltState: [
-              { name: 'currency_cleaner.py', status: 'pending', detail: 'Designing in step 2...' },
-              { name: 'duplicate_guard.sh', status: 'pending', detail: 'Queueing check...' },
-              { name: 'month_end_summary.md', status: 'active', detail: 'Plain English brief' },
-              { name: 'vat_tie_out.py', status: 'pending', detail: 'Scheduled for later' }
-            ]
+              'Current state: Manual courier copying rows into Excel'
+            ].join('\n')
           },
           {
-            step: 2,
-            title: 'Steer with Intent',
-            desc: 'Tell the assistant what to build. Skip the code; specify the outcome.',
-            deskIcon: '💬',
-            deskTitle: 'High-Level Brief (Product Intent)',
-            deskBadge: 'PM SPECIFICATION',
-            telemStatus: 'INTENT CLARIFIED',
-            telemStatusClass: 'val-ok',
-            telemTime: 'Steering time: 45 sec',
-            narrativeRole: 'ROLE: PRODUCT MANAGER → TECH LEAD',
-            narrativeText: 'Sam does not write Python or regular expressions. Sam tells the assistant: "Clean up currency symbols, calculate distinct totals, and halt with exit code 1 if any row duplicates." The assistant takes ownership of the technical plan.',
+            icon: '💬',
+            title: 'Product Brief: Outcomes, Not Code',
+            badge: 'PM SPECIFICATION',
+            badgeClass: 'badge-ok',
+            role: 'ROLE: PRODUCT MANAGER → TECH LEAD',
+            narrative: 'Sam does not write Python or regular expressions. Sam tells the assistant: "Clean up currency symbols, calculate distinct totals, and halt with exit code 1 if any row duplicates." The assistant takes ownership of the technical plan.',
             code: [
               '# User Brief to Assistant (Tech Lead):',
               'Goal: Parse monthly shop invoices without manual cleanup.',
@@ -255,26 +160,15 @@ import { BASE } from '../data/site';
               '  3. Mina reads the summary: no technical jargon.',
               'Check:',
               '  Write an isolated unit test and prove it catches the duplicate.'
-            ].join('\n'),
-            toolbeltState: [
-              { name: 'currency_cleaner.py', status: 'building', detail: 'Assistant drafting in worktree' },
-              { name: 'duplicate_guard.sh', status: 'building', detail: 'Writing failing red test' },
-              { name: 'month_end_summary.md', status: 'active', detail: 'Plain English brief' },
-              { name: 'vat_tie_out.py', status: 'pending', detail: 'Scheduled for later' }
-            ]
+            ].join('\n')
           },
           {
-            step: 3,
-            title: 'Assistant Proves Fix',
-            desc: 'Tech lead writes a 12-line helper in a worktree and runs a red test.',
-            deskIcon: '⚙️',
-            deskTitle: 'Isolated Worktree: Test Gate & Execution',
-            deskBadge: 'TEST GATE PASS: EXIT 0',
-            telemStatus: 'MECHANICALLY VERIFIED',
-            telemStatusClass: 'val-ok',
-            telemTime: 'Assistant build: 18 sec',
-            narrativeRole: 'ROLE: TECH LEAD (ASSISTANT)',
-            narrativeText: 'The assistant works in an isolated git worktree. It writes a 12-line parser, proves it fails on the duplicate delivery line (the red run), and verifies all checks pass before asking Sam for sign-off.',
+            icon: '⚙️',
+            title: 'Isolated Worktree: Mechanical Test Gate',
+            badge: 'TEST GATE PASS: EXIT 0',
+            badgeClass: 'badge-ok',
+            role: 'ROLE: TECH LEAD (ASSISTANT)',
+            narrative: 'The assistant works in an isolated git worktree. It writes a 12-line parser, proves it fails on the duplicate delivery line (the red run), and verifies all checks pass before asking Sam for sign-off.',
             code: [
               '# Assistant Output (Tested in isolated branch):',
               '$ python3 test_invoice_cleaner.py',
@@ -282,32 +176,18 @@ import { BASE } from '../data/site';
               '  [TEST 2] Duplicate line detection -> PASS (caught Row 4)',
               '',
               'CLEAN INVOICE REPORT:',
-              '  1. Candles: €120.00',
-              '  2. Glass jars: €85.00',
-              '  3. Wicks: €40.00',
-              '  4. Wax supplies: €210.00',
+              '  1. Candles: €120.00 | 2. Glass jars: €85.00 | 3. Wicks: €40.00',
               '  [!] STOP: Row 4 ("Delivery EUR 120.00") flagged as duplicate.',
               '  Distinct Net Total: €455.00 | Proof exit code: 0'
-            ].join('\n'),
-            toolbeltState: [
-              { name: 'currency_cleaner.py', status: 'active', detail: 'Verified by test suite' },
-              { name: 'duplicate_guard.sh', status: 'active', detail: 'Caught duplicate row' },
-              { name: 'month_end_summary.md', status: 'active', detail: 'Ready for toolbelt' },
-              { name: 'vat_tie_out.py', status: 'pending', detail: 'Scheduled for later' }
-            ]
+            ].join('\n')
           },
           {
-            step: 4,
-            title: 'Keep and Compound',
-            desc: 'Save to toolbelt. Next Monday runs in 0.02s with zero prompt overhead.',
-            deskIcon: '⚡',
-            deskTitle: 'Week 2: Autonomous Execution (Next Monday)',
-            deskBadge: 'ZERO RE-PROMPTING',
-            telemStatus: 'COMPOUNDING DIVIDEND',
-            telemStatusClass: 'val-highlight',
-            telemTime: 'Runtime: 0.02s (saved 45 min)',
-            narrativeRole: 'THE MAGIC: SIMULATE NEXT WEEK',
-            narrativeText: 'Sam keeps the tool. Next Monday, 52 fresh invoices arrive. Sam does not open a chat window. The retained micro-tool parses them instantly, catches a supplier duplicate, and outputs the clean tie-out in two hundredths of a second.',
+            icon: '⚡',
+            title: 'Week 2: Autonomous Execution (Next Monday)',
+            badge: 'ZERO RE-PROMPTING',
+            badgeClass: 'badge-ok',
+            role: 'THE MAGIC: SIMULATE NEXT WEEK',
+            narrative: 'Sam keeps the tool. Next Monday, 52 fresh invoices arrive. Sam does not open a chat window. The retained micro-tool parses them instantly, catches a supplier duplicate, and outputs the clean tie-out in two hundredths of a second.',
             code: [
               '# Next Monday: 52 fresh receipts loaded automatically',
               '$ ./tools/clean_invoices.py --input receipts_nov.csv',
@@ -317,38 +197,24 @@ import { BASE } from '../data/site';
               '⚠️ ANOMALY DETECTED: Row 19 repeats Row 4 ("Wicks €40.00")',
               '✓ Net total reconciled: €1,840.00',
               '',
-              'Compounding dividend: Zero prompt fatigue. 45 minutes saved.'
-            ].join('\n'),
-            toolbeltState: [
-              { name: 'currency_cleaner.py', status: 'active', detail: 'Running in production' },
-              { name: 'duplicate_guard.sh', status: 'active', detail: 'Running in production' },
-              { name: 'month_end_summary.md', status: 'active', detail: 'Reused automatically' },
-              { name: 'vat_tie_out.py', status: 'building', detail: 'Next week project' }
-            ]
+              'Compounding dividend: Zero prompt fatigue. 45 minutes saved weekly.'
+            ].join('\n')
           }
         ]
       },
       hamster: {
-        pillLabel: 'WARNING: PROMPTING HAMSTER WHEEL',
-        heading: 'The flat-effort trap: babysitting an 80% calculator forever',
-        lead: 'Pasting prompts feels fast on day one. On day thirty, you are still fixing the same mistakes.',
-        linkText: 'See why prompt engineering alone fails in Why Bother →',
+        pillLabel: 'HAMSTER WHEEL',
+        linkText: 'See why prompt engineering alone fails →',
         linkHref: 'start-here/why-bother/',
-        savedMetric: '0 hrs',
-        retainedMetric: '0 tools',
+        tabs: ['Vague Ask', 'Confident Slip', 'Babysitting Tax', 'Groundhog Day'],
         steps: [
           {
-            step: 1,
-            title: 'Vague Raw Prompt',
-            desc: 'Pasting unstructured text into a chat box with no constraints or tests.',
-            deskIcon: '💬',
-            deskTitle: 'Raw Chat Box (No Harness)',
-            deskBadge: 'AMATEUR GAMBLING',
-            telemStatus: 'UNCHECKED PROMPT',
-            telemStatusClass: 'val-warn',
-            telemTime: 'Prompting: 5 min',
-            narrativeRole: 'ROLE: THE MANUAL COURIER',
-            narrativeText: 'Sam pastes 40 invoice lines directly into ChatGPT or Claude with the prompt: "Total these bills please and split 3 ways." There are no schemas, no mechanical checks, and no sandboxes.',
+            icon: '💬',
+            title: 'Raw Chat Box (No Harness)',
+            badge: 'AMATEUR GAMBLING',
+            badgeClass: 'badge-warn',
+            role: 'ROLE: THE MANUAL COURIER',
+            narrative: 'Sam pastes 40 invoice lines directly into ChatGPT with the prompt: "Total these bills please and split 3 ways." There are no schemas, no mechanical checks, and no sandboxes.',
             code: [
               'User prompt:',
               '"Total these bills please and split 3 ways for my shop"',
@@ -357,85 +223,49 @@ import { BASE } from '../data/site';
               'Candles EUR 120, Glass jars €85, Wicks 40 euro, Delivery EUR 120...',
               '',
               'Risk: Model has no external tools or tie-out checks.'
-            ].join('\n'),
-            toolbeltState: [
-              { name: 'no_tools_saved.txt', status: 'failed', detail: 'Ephemeral chat session' },
-              { name: 'untracked_history', status: 'failed', detail: 'Lost in context decay' },
-              { name: 'manual_retype.xlsx', status: 'failed', detail: 'Zero capabilities built' },
-              { name: 'weekly_drag.log', status: 'failed', detail: 'Repeating chores forever' }
-            ]
+            ].join('\n')
           },
           {
-            step: 2,
-            title: 'Confident Hallucination',
-            desc: 'The model replies with cheerful tone, missing lines and wrong arithmetic.',
-            deskIcon: '⚠️',
-            deskTitle: 'Model Reply (Confident & Wrong)',
-            deskBadge: 'SILENT DRIFT',
-            telemStatus: 'WRONG HEADLINE TOTAL',
-            telemStatusClass: 'val-danger',
-            telemTime: 'Generation: 8 sec',
-            narrativeRole: 'SYCOPHANCY IN ACTION',
-            narrativeText: 'The assistant sounds entirely confident. It missed "Wicks 40 euro" because of the unusual format, and silently summed the duplicate delivery row. Without a mechanical check, Sam would overpay suppliers.',
+            icon: '⚠️',
+            title: 'Model Reply (Confident & Wrong)',
+            badge: 'SILENT DRIFT',
+            badgeClass: 'badge-warn',
+            role: 'SYCOPHANCY IN ACTION',
+            narrative: 'The assistant sounds entirely confident. It missed "Wicks 40 euro" because of the unusual format, and silently summed the duplicate delivery row. Without a mechanical check, Sam would overpay suppliers.',
             code: [
               'Assistant Reply:',
               '"Here is your clean summary! Everything looks great!',
-              'Total expenses: €325.00',
-              'Each share: €108.33',
-              'Let me know if you need anything else!"',
+              'Total expenses: €325.00 | Each share: €108.33"',
               '',
               'REALITY CHECK:',
               '  - Completely dropped "Wicks 40 euro" line',
               '  - Included duplicate "Delivery EUR 120" line without warning',
               '  - Arithmetic was wrong by €130.00'
-            ].join('\n'),
-            toolbeltState: [
-              { name: 'no_tools_saved.txt', status: 'failed', detail: 'Ephemeral chat session' },
-              { name: 'untracked_history', status: 'failed', detail: 'Lost in context decay' },
-              { name: 'manual_retype.xlsx', status: 'failed', detail: 'Zero capabilities built' },
-              { name: 'weekly_drag.log', status: 'failed', detail: 'Repeating chores forever' }
-            ]
+            ].join('\n')
           },
           {
-            step: 3,
-            title: 'The Babysitting Tax',
-            desc: 'Arguing with the model in a 40-minute prompt engineering dispute.',
-            deskIcon: '😫',
-            deskTitle: 'Chat Disagreement & Review Fatigue',
-            deskBadge: 'FATIGUE TAX',
-            telemStatus: 'COGNITIVE EXHAUSTION',
-            telemStatusClass: 'val-danger',
-            telemTime: 'Manual fixing: 35 min',
-            narrativeRole: 'ROLE: OVERWORKED HUMAN LINTER',
-            narrativeText: 'Sam spots the error and starts arguing: "Wait, you missed the wicks!" The assistant apologises profusely, adjusts one line, but drops another rule. Sam ends up checking every row with a calculator anyway.',
+            icon: '😫',
+            title: 'Chat Disagreement & Review Fatigue',
+            badge: 'FATIGUE TAX',
+            badgeClass: 'badge-warn',
+            role: 'ROLE: OVERWORKED HUMAN LINTER',
+            narrative: 'Sam spots the error and starts arguing: "Wait, you missed the wicks!" The assistant apologises profusely, adjusts one line, but drops another rule. Sam ends up checking every row with a calculator anyway.',
             code: [
               'User: "Wait, you missed the wicks! And delivery was paid twice!"',
               'Assistant: "My apologies! You are completely right! Let me recalculate..."',
               'Assistant: "The revised total is €485.00..." (Now missed Glass jars)',
               '',
               'Result: Sam opens Excel and recalculates by hand.',
-              'Comprehension debt: High.',
-              'Trust: Destroyed.'
-            ].join('\n'),
-            toolbeltState: [
-              { name: 'no_tools_saved.txt', status: 'failed', detail: 'Ephemeral chat session' },
-              { name: 'untracked_history', status: 'failed', detail: 'Lost in context decay' },
-              { name: 'manual_retype.xlsx', status: 'failed', detail: 'Zero capabilities built' },
-              { name: 'weekly_drag.log', status: 'failed', detail: 'Repeating chores forever' }
-            ]
+              'Comprehension debt: High. Trust: Destroyed.'
+            ].join('\n')
           },
           {
-            step: 4,
-            title: 'Groundhog Day',
-            desc: 'Next Monday arrives with zero retained tools and the exact same drudgery.',
-            deskIcon: '🔁',
-            deskTitle: 'Next Monday: Zero Compounding',
-            deskBadge: 'ZERO RETENTION',
-            telemStatus: 'FLAT EFFORT FOREVER',
-            telemStatusClass: 'val-danger',
-            telemTime: 'Weekly drag: 45 min every week',
-            narrativeRole: 'THE 80% CALCULATOR TRAP',
-            narrativeText: 'Next Monday brings 50 new receipts. Because Sam treated the assistant as a faster chat keyboard rather than an autonomous toolbuilder, zero tooling was retained. Sam faces the exact same manual chore again.',
+            icon: '🔁',
+            title: 'Next Monday (Zero Compounding)',
+            badge: 'ZERO RETENTION',
+            badgeClass: 'badge-warn',
+            role: 'THE 80% CALCULATOR TRAP',
+            narrative: 'Next Monday brings 50 new receipts. Because Sam treated the assistant as a faster chat keyboard rather than an autonomous toolbuilder, zero tooling was retained. Sam faces the exact same manual chore again.',
             code: [
               '# Next Monday arrives...',
               'Retained micro-tools: 0',
@@ -444,35 +274,11 @@ import { BASE } from '../data/site';
               '',
               'Process: Open new chat box, paste new prompt, pray for luck.',
               'Compounding dividend: 0%. The hamster wheel keeps spinning.'
-            ].join('\n'),
-            toolbeltState: [
-              { name: 'no_tools_saved.txt', status: 'failed', detail: 'Zero capabilities built' },
-              { name: 'untracked_history', status: 'failed', detail: 'Repeating chores forever' },
-              { name: 'manual_retype.xlsx', status: 'failed', detail: 'Zero capabilities built' },
-              { name: 'weekly_drag.log', status: 'failed', detail: 'Repeating chores forever' }
-            ]
+            ].join('\n')
           }
         ]
       }
     };
-
-    function renderToolbelt(items) {
-      if (!toolbeltItems) return;
-      toolbeltItems.innerHTML = items.map((item) => {
-        const isAct = item.status === 'active';
-        const isBld = item.status === 'building';
-        const isFail = item.status === 'failed';
-        const cls = isAct ? 'chip-active' : (isBld ? 'chip-building' : (isFail ? 'chip-failed' : 'chip-pending'));
-        const icon = isAct ? '✓' : (isBld ? '⚙' : (isFail ? '✗' : '+'));
-        return `
-          <div class="tool-chip ${cls}">
-            <span class="chip-status">${icon}</span>
-            <span class="chip-name">${item.name}</span>
-            <span class="chip-detail">${item.detail}</span>
-          </div>
-        `;
-      }).join('');
-    }
 
     function renderStep(stepIndex) {
       const scenario = scenarios[currentMode];
@@ -481,55 +287,41 @@ import { BASE } from '../data/site';
 
       currentStep = stepIndex;
 
-      // Update Header Text
+      // Update Header Text & Pill
       if (liveLabel) liveLabel.textContent = scenario.pillLabel;
       if (livePill) {
         livePill.classList.toggle('pill-fault', currentMode === 'hamster');
       }
-      if (flowHeading) flowHeading.textContent = scenario.heading;
-      if (flowLead) flowLead.textContent = scenario.lead;
       if (guideLink) {
         guideLink.textContent = scenario.linkText;
-        guideLink.setAttribute('href', `${BASE}/${scenario.linkHref}`);
+        guideLink.setAttribute('href', `${base}/${scenario.linkHref}`);
       }
-      if (metricSaved) metricSaved.textContent = scenario.savedMetric;
-      if (metricRetained) metricRetained.textContent = scenario.retainedMetric;
 
-      // Update Left Pane (Desk)
-      if (deskIcon) deskIcon.textContent = data.deskIcon;
-      if (deskTitle) deskTitle.textContent = data.deskTitle;
-      if (deskBadge) {
-        deskBadge.textContent = data.deskBadge;
-        deskBadge.className = `desk-badge ${currentMode === 'hamster' ? 'badge-warn' : 'badge-ok'}`;
+      // Update Window Header & Code
+      if (windowIcon) windowIcon.textContent = data.icon;
+      if (windowTitle) windowTitle.textContent = data.title;
+      if (windowBadge) {
+        windowBadge.textContent = data.badge;
+        windowBadge.className = `window-badge ${data.badgeClass}`;
       }
-      if (deskCode) deskCode.textContent = data.code;
-      if (telemStatus) {
-        telemStatus.textContent = data.telemStatus;
-        telemStatus.className = `telem-val ${data.telemStatusClass || ''}`;
-      }
-      if (telemTime) telemTime.textContent = data.telemTime;
+      if (windowCode) windowCode.textContent = data.code;
 
-      // Update Right Pane (Flywheel)
-      if (stepPill) stepPill.textContent = `STEP ${data.step} OF 4`;
-      if (narrativeRole) narrativeRole.textContent = data.narrativeRole;
-      if (narrativeText) narrativeText.textContent = data.narrativeText;
+      // Update Narrative Card
+      if (narrativeRole) narrativeRole.textContent = data.role;
+      if (narrativeText) narrativeText.textContent = data.narrative;
 
-      // Update Step Card Highlights
-      stepCards.forEach((card, idx) => {
+      // Update Stepper Tabs
+      stepTabs.forEach((tab, idx) => {
         const s = idx + 1;
         const isActive = s === currentStep;
-        card.classList.toggle('active', isActive);
-        card.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
 
-        const curStepData = scenario.steps[idx];
-        const titleEl = card.querySelector('[data-step-title]');
-        const descEl = card.querySelector('[data-step-desc]');
-        if (titleEl && curStepData) titleEl.textContent = curStepData.title;
-        if (descEl && curStepData) descEl.textContent = curStepData.desc;
+        const labelEl = tab.querySelector('[data-tab-label]');
+        if (labelEl && scenario.tabs[idx]) {
+          labelEl.textContent = scenario.tabs[idx];
+        }
       });
-
-      // Update Toolbelt
-      renderToolbelt(data.toolbeltState);
     }
 
     function switchMode(mode) {
@@ -570,10 +362,10 @@ import { BASE } from '../data/site';
       });
     });
 
-    stepCards.forEach((card) => {
-      card.addEventListener('click', () => {
+    stepTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
         pauseTimer();
-        const s = Number(card.getAttribute('data-step-target')) || 1;
+        const s = Number(tab.getAttribute('data-step-target')) || 1;
         renderStep(s);
       });
     });
@@ -605,7 +397,7 @@ import { BASE } from '../data/site';
 
 <style>
   .landing-flow {
-    margin-top: 1.5rem;
+    margin-top: 0;
     padding: 1.15rem;
     background: var(--ahg-panel);
     border: 1px solid var(--ahg-line);
@@ -617,101 +409,40 @@ import { BASE } from '../data/site';
     overflow: hidden;
   }
 
-  /* Header Section: Deterministic fixed height */
-  .flow-header {
+  /* Top Bar */
+  .flow-top-bar {
     display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.85rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.85rem;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+    padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--ahg-line);
     box-sizing: border-box;
     width: 100%;
   }
 
-  .flow-title-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    max-width: 38rem;
-    flex: 1 1 20rem;
-    min-width: 0;
-    box-sizing: border-box;
-  }
-
-  .flow-live-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    color: var(--ahg-right);
-    text-transform: uppercase;
-    height: 18px;
-    line-height: 18px;
-  }
-
-  .flow-live-pill.pill-fault {
-    color: var(--ahg-wrong);
-  }
-
-  .pulse-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: currentColor;
-    box-shadow: 0 0 8px currentColor;
-    animation: livePulse 2s infinite ease-in-out;
-  }
-
-  @keyframes livePulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.35; transform: scale(0.85); }
-  }
-
-  .flow-heading {
-    margin: 0;
-    font-size: 1.25rem;
-    color: var(--ahg-text);
-    font-weight: 800;
-    line-height: 1.3;
-    border: 0;
-  }
-
-  .flow-lead {
-    margin: 0;
-    font-size: 0.88rem;
-    color: var(--ahg-muted);
-    line-height: 1.4;
-  }
-
   .flow-mode-switch {
     display: flex;
-    flex-wrap: wrap;
     gap: 0.4rem;
-    max-width: 100%;
+    flex-wrap: wrap;
   }
 
   .mode-btn {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    min-height: 38px;
-    padding: 0.35rem 0.65rem;
+    gap: 0.4rem;
+    height: 34px;
+    padding: 0.25rem 0.65rem;
     background: var(--ahg-bg);
     border: 1px solid var(--ahg-line);
     border-radius: var(--ahg-radius-control);
     color: var(--ahg-muted);
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     font-weight: 700;
     cursor: pointer;
     box-sizing: border-box;
-    white-space: normal;
-    text-align: left;
-    max-width: 100%;
+    white-space: nowrap;
     transition: all 0.15s ease-out;
   }
 
@@ -727,76 +458,165 @@ import { BASE } from '../data/site';
     box-shadow: inset 0 0 0 1px var(--ahg-accent);
   }
 
-  /* Two-Pane Stage Grid: Strict deterministic height */
-  .flow-stage-grid {
+  .flow-live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--ahg-right);
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+
+  .flow-live-pill.pill-fault {
+    color: var(--ahg-wrong);
+  }
+
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    box-shadow: 0 0 8px currentColor;
+    animation: livePulse 2s infinite ease-in-out;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.85); }
+  }
+
+  /* Stepper Navigation: 4 Horizontal Tabs */
+  .flow-stepper {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    box-sizing: border-box;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
     width: 100%;
+    box-sizing: border-box;
   }
 
-  @media (min-width: 860px) {
-    .flow-stage-grid {
-      grid-template-columns: 1.1fr 0.9fr;
-    }
+  .step-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 38px;
+    padding: 0.25rem 0.5rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-width: 0;
+    transition: all 0.15s ease-out;
   }
 
-  .flow-pane {
+  .step-tab:hover {
+    border-color: var(--ahg-accent);
+  }
+
+  .step-tab.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    box-shadow: 0 0 0 1px var(--ahg-accent);
+  }
+
+  .tab-num {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--ahg-muted);
+    flex-shrink: 0;
+  }
+
+  .step-tab.active .tab-num {
+    color: var(--ahg-accent-strong);
+  }
+
+  .tab-label {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--ahg-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+
+  .step-tab.active .tab-label {
+    color: var(--ahg-accent-strong);
+  }
+
+  /* Stage Window: Clean Terminal / Code Viewport */
+  .stage-window {
     display: flex;
     flex-direction: column;
     background: var(--ahg-bg);
     border: 1px solid var(--ahg-line);
     border-radius: var(--ahg-radius-card);
-    padding: 0.85rem;
-    height: 400px;
-    min-height: 400px;
-    max-height: 400px;
+    height: 250px;
+    min-height: 250px;
+    max-height: 250px;
+    margin-bottom: 0.85rem;
     box-sizing: border-box;
     overflow: hidden;
-    min-width: 0;
+    width: 100%;
   }
 
-  .pane-header {
+  .window-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
-    height: 32px;
-    min-height: 32px;
-    max-height: 32px;
-    margin-bottom: 0.6rem;
-    padding-bottom: 0.5rem;
+    height: 34px;
+    min-height: 34px;
+    padding: 0 0.75rem;
+    background: var(--ahg-panel);
     border-bottom: 1px solid var(--ahg-line);
     box-sizing: border-box;
     flex-shrink: 0;
   }
 
-  .pane-title-group {
+  .window-dots {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+
+  .window-dots span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--ahg-line);
+  }
+
+  .window-title-group {
     display: flex;
     align-items: center;
     gap: 0.4rem;
     overflow: hidden;
+    min-width: 0;
   }
 
-  .pane-icon {
-    font-size: 1rem;
+  .window-icon {
+    font-size: 0.95rem;
     flex-shrink: 0;
   }
 
-  .pane-title {
-    font-size: 0.82rem;
-    font-weight: 800;
+  .window-title {
+    font-size: 0.78rem;
+    font-weight: 700;
     color: var(--ahg-text);
-    letter-spacing: 0.01em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .desk-badge, .console-step-pill {
-    font-size: 0.68rem;
+  .window-badge {
+    font-size: 0.66rem;
     font-weight: 800;
     padding: 0.15rem 0.45rem;
     border-radius: var(--ahg-radius-control);
@@ -818,193 +638,45 @@ import { BASE } from '../data/site';
     border: 1px solid var(--ahg-wrong);
   }
 
-  .console-step-pill {
-    background: var(--ahg-panel);
-    border: 1px solid var(--ahg-line);
-    color: var(--ahg-muted);
-  }
-
-  /* Desk Viewport: Fixed height with internal scrollbar if code overflows */
-  .desk-viewport {
-    height: 288px;
-    min-height: 288px;
-    max-height: 288px;
-    background: var(--ahg-panel);
-    border: 1px solid var(--ahg-line);
-    border-radius: var(--ahg-radius-control);
+  .window-viewport {
+    flex: 1;
     padding: 0.75rem;
     overflow-y: auto;
     overflow-x: auto;
-    box-sizing: border-box;
-    flex-shrink: 0;
+    background: var(--ahg-panel);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     line-height: 1.45;
+    box-sizing: border-box;
   }
 
-  .desk-pre {
+  .window-pre {
     margin: 0;
     white-space: pre-wrap;
     word-break: break-word;
   }
 
-  .desk-code {
+  .window-code {
     color: var(--ahg-text);
   }
 
-  .desk-telemetry {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-    height: 32px;
-    min-height: 32px;
-    max-height: 32px;
-    margin-top: 0.6rem;
-    padding-top: 0.5rem;
-    border-top: 1px dashed var(--ahg-line);
-    font-size: 0.74rem;
-    box-sizing: border-box;
-    flex-shrink: 0;
-  }
-
-  .telemetry-item {
-    display: flex;
-    gap: 0.35rem;
-    align-items: center;
-    white-space: nowrap;
-  }
-
-  .telem-label {
-    color: var(--ahg-muted);
-  }
-
-  .telem-val {
-    font-weight: 700;
-    color: var(--ahg-text);
-  }
-
-  .val-ok {
-    color: var(--ahg-right);
-  }
-
-  .val-warn {
-    color: var(--ahg-wrong);
-  }
-
-  .val-danger {
-    color: var(--ahg-wrong);
-    font-weight: 800;
-  }
-
-  .val-highlight {
-    color: var(--ahg-accent-strong);
-    font-weight: 800;
-  }
-
-  /* Flywheel Steps (Right Pane): Fixed height for all 4 cards */
-  .flywheel-steps {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    height: 230px;
-    min-height: 230px;
-    max-height: 230px;
-    box-sizing: border-box;
-    flex-shrink: 0;
-    margin-bottom: 0.6rem;
-  }
-
-  .step-card {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    height: 53px;
-    min-height: 53px;
-    max-height: 53px;
-    padding: 0.35rem 0.65rem;
-    background: var(--ahg-panel);
+  /* Narrative Card */
+  .narrative-card {
+    background: var(--ahg-bg);
     border: 1px solid var(--ahg-line);
     border-radius: var(--ahg-radius-control);
-    cursor: pointer;
-    text-align: left;
+    padding: 0.65rem 0.85rem;
+    height: 72px;
+    min-height: 72px;
+    max-height: 72px;
+    margin-bottom: 0.85rem;
     box-sizing: border-box;
-    overflow: hidden;
-    min-width: 0;
-    transition: all 0.15s ease-out;
-  }
-
-  .step-card:hover {
-    border-color: var(--ahg-accent);
-  }
-
-  .step-card.active {
-    background: var(--ahg-accent-soft);
-    border-color: var(--ahg-accent);
-    box-shadow: 0 0 0 1px var(--ahg-accent);
-  }
-
-  .step-card-num {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: var(--ahg-muted);
-    flex-shrink: 0;
-  }
-
-  .step-card.active .step-card-num {
-    color: var(--ahg-accent-strong);
-  }
-
-  .step-card-body {
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
-    overflow: hidden;
-    min-width: 0;
-    flex: 1 1 0%;
-  }
-
-  .step-card-title {
-    font-size: 0.8rem;
-    color: var(--ahg-text);
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-  }
-
-  .step-card.active .step-card-title {
-    color: var(--ahg-accent-strong);
-  }
-
-  .step-card-desc {
-    margin: 0;
-    font-size: 0.72rem;
-    color: var(--ahg-muted);
-    line-height: 1.3;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 0;
-  }
-
-  /* Narrative Explanation Card: Fixed height */
-  .console-narrative-card {
-    background: var(--ahg-panel);
-    border: 1px solid var(--ahg-line);
-    border-radius: var(--ahg-radius-control);
-    padding: 0.6rem 0.75rem;
-    height: 90px;
-    min-height: 90px;
-    max-height: 90px;
-    box-sizing: border-box;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
+    justify-content: center;
     gap: 0.2rem;
     overflow-y: auto;
+    width: 100%;
   }
 
   .narrative-role-chip {
@@ -1017,209 +689,9 @@ import { BASE } from '../data/site';
 
   .narrative-body {
     margin: 0;
-    font-size: 0.76rem;
+    font-size: 0.78rem;
     color: var(--ahg-text);
     line-height: 1.4;
-  }
-
-  /* Persistent Toolbelt Rack: Deterministic grid height */
-  .toolbelt-rack {
-    background: var(--ahg-bg);
-    border: 1px solid var(--ahg-line);
-    border-radius: var(--ahg-radius-card);
-    padding: 0.75rem 0.85rem;
-    margin-bottom: 1rem;
-    height: 116px;
-    min-height: 116px;
-    max-height: 116px;
-    box-sizing: border-box;
-    flex-shrink: 0;
-    overflow: hidden;
-    width: 100%;
-  }
-
-  .toolbelt-header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 0.5rem;
-    height: 26px;
-    min-height: 26px;
-    max-height: 26px;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.35rem;
-    border-bottom: 1px solid var(--ahg-line);
-    box-sizing: border-box;
-    flex-shrink: 0;
-  }
-
-  .toolbelt-title-group {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    overflow: hidden;
-  }
-
-  .toolbelt-label {
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    color: var(--ahg-text);
-    white-space: nowrap;
-  }
-
-  .toolbelt-sub {
-    font-size: 0.72rem;
-    color: var(--ahg-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .toolbelt-metrics {
-    display: flex;
-    gap: 0.4rem;
-    flex-shrink: 0;
-  }
-
-  .metric-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    padding: 0.1rem 0.45rem;
-    background: var(--ahg-panel);
-    border: 1px solid var(--ahg-line);
-    border-radius: var(--ahg-radius-control);
-    height: 20px;
-    box-sizing: border-box;
-  }
-
-  .metric-num {
-    font-size: 0.74rem;
-    font-weight: 800;
-    color: var(--ahg-right);
-  }
-
-  .metric-txt {
-    font-size: 0.66rem;
-    color: var(--ahg-muted);
-    font-weight: 600;
-  }
-
-  .toolbelt-items {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.5rem;
-    height: 56px;
-    min-height: 56px;
-    max-height: 56px;
-    box-sizing: border-box;
-    flex-shrink: 0;
-    width: 100%;
-  }
-
-  @media (max-width: 768px) {
-    .flow-mode-switch {
-      display: grid;
-      grid-template-columns: 1fr;
-      width: 100%;
-    }
-    .mode-btn {
-      width: 100%;
-    }
-    .flow-pane {
-      height: 380px;
-      min-height: 380px;
-      max-height: 380px;
-    }
-    .desk-viewport {
-      height: 268px;
-      min-height: 268px;
-      max-height: 268px;
-    }
-    .toolbelt-rack {
-      height: 168px;
-      min-height: 168px;
-      max-height: 168px;
-    }
-    .toolbelt-items {
-      grid-template-columns: repeat(2, 1fr);
-      height: 108px;
-      min-height: 108px;
-      max-height: 108px;
-    }
-  }
-
-  :global(.tool-chip) {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.1rem;
-    padding: 0.35rem 0.55rem;
-    background: var(--ahg-panel);
-    border: 1px solid var(--ahg-line);
-    border-radius: var(--ahg-radius-control);
-    height: 52px;
-    min-height: 52px;
-    max-height: 52px;
-    box-sizing: border-box;
-    overflow: hidden;
-    min-width: 0;
-    transition: all 0.2s ease-out;
-  }
-
-  :global(.tool-chip.chip-active) {
-    border-color: var(--ahg-right);
-    background: var(--ahg-right-soft);
-  }
-
-  :global(.tool-chip.chip-building) {
-    border-color: var(--ahg-accent);
-    background: var(--ahg-accent-soft);
-    animation: livePulse 1.5s infinite;
-  }
-
-  :global(.tool-chip.chip-failed) {
-    border-color: var(--ahg-wrong);
-    background: var(--ahg-wrong-soft);
-  }
-
-  :global(.tool-chip.chip-pending) {
-    opacity: 0.6;
-    border-style: dashed;
-  }
-
-  :global(.chip-status) {
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: var(--ahg-text);
-  }
-
-  :global(.chip-active .chip-status) {
-    color: var(--ahg-right);
-  }
-
-  :global(.chip-failed .chip-status) {
-    color: var(--ahg-wrong);
-  }
-
-  :global(.chip-name) {
-    font-size: 0.72rem;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-weight: 700;
-    color: var(--ahg-text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  :global(.chip-detail) {
-    font-size: 0.66rem;
-    color: var(--ahg-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
 
   /* Bottom Controls Bar */
@@ -1233,7 +705,6 @@ import { BASE } from '../data/site';
     min-height: 36px;
     max-height: 36px;
     box-sizing: border-box;
-    flex-shrink: 0;
     width: 100%;
   }
 
@@ -1246,7 +717,6 @@ import { BASE } from '../data/site';
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    min-height: 32px;
     height: 32px;
     padding: 0.25rem 0.6rem;
     background: var(--ahg-bg);
@@ -1277,8 +747,18 @@ import { BASE } from '../data/site';
     text-decoration: underline;
   }
 
+  @media (max-width: 640px) {
+    .flow-stepper {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .flow-top-bar {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .pulse-dot, :global(.tool-chip.chip-building) {
+    .pulse-dot {
       animation: none;
     }
   }
