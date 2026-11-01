@@ -22,13 +22,11 @@ import SlipCompare from '../../components/SlipCompare.astro';
 
 ## From the trenches: why this guide exists
 
-I wrote this guide out of frustration with AI demo hype and the messy reality of day-to-day work.
+I am Glen Keane, an AI Engineer formerly at Nearform, Wayflyer, and Brightbeam. I have spent my career making technical decisions from pre-seed all the way to unicorn valuation, and most recently my work has involved shipping AI systems in high-regulation environments.
 
-I am Glen Keane. Over the past decade, I have worked across high-throughput distributed systems and performance tooling (former Node.js core collaborator, co-maintainer of `autocannon` with Matteo Collina, nearForm, and Wayflyer). Today, I work forward-deployed at Brightbeam, building enterprise AI systems and claims automation for clients like AXA and Zurich.
+I wrote this guide out of frustration with the momentum of AI development past the demo, into production. When people use AI assistants for serious tasks, they hit the same wall: the **80% calculator trap**. An adding machine that calculates correctly 4 times out of 5 does not automate your work; it doubles your anxiety. If you have to babysit every word or line of output, you suffer review fatigue and end up rubber-stamping results you do not understand. That is how comprehension debt explodes.
 
-When people use AI assistants for serious tasks, they hit the same wall: the **80% calculator trap**. An adding machine that calculates correctly 4 times out of 5 does not automate your work; it doubles your anxiety. If you have to babysit every word or line of output, you suffer review fatigue and end up rubber-stamping results you do not understand. That is how comprehension debt explodes.
-
-The solution is not "prompt engineering", larger context windows, or proprietary SaaS lock-in. The solution is sound engineering discipline made accessible to everyone:
+A lot of this can be automated with the right approach and toolbox. This guide, the Harness AI guide, teaches how. The solution is not "prompt engineering", larger context windows, or proprietary SaaS lock-in. The solution is sound engineering discipline made accessible to everyone:
 
 1. **Be the Product Manager of your own tools**: You define high-level intent, constraints, and acceptance criteria. You never micromanage raw output.
 2. **Mechanical verification gates**: Never trust unverified claims. Use simple spreadsheet checks, validation scripts, or test runners that halt on error before sign-off. (For software engineers, we cover isolated worktrees and automated hooks).
