@@ -28,7 +28,7 @@ export default defineConfig({
       },
     }),
     starlight({
-      title: 'The Agentic Harness Guide',
+      title: 'Harness',
       description: 'A plain-English guide to getting reliable, checkable work from AI assistants, from your first chat to systems of several assistants.',
       customCss: ['./src/styles/tokens.css', './src/styles/custom.css'],
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/GlenTiki/agentic-harness-guide' }],
