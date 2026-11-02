@@ -162,7 +162,7 @@ A rule is a request, not a lock ([level 4](../04-trust-but-verify/) says why), a
 
 ### Optional, for work: turn your standard into rules
 
-If you work to a written standard, the file is where it becomes an asset. Here is a month-end example. The thresholds are starting points. Set your own with your reviewer.
+If you work to a written standard, put it in the file as rules. Here is a month-end example. The thresholds are starting points. Set your own with your reviewer.
 
 ```text
 # Month-end: standing rules (example)
@@ -248,7 +248,7 @@ The close procedure is a set of standing rules with a named owner, a review date
 :::caution[Expert corner]
 Every line in an instruction file costs context on every run, and a long file dilutes the lines that matter. Treat it like a configuration file: review it when behaviour changes.
 
-Rules in a file are advisory ([level 4](../04-trust-but-verify/) explains why). A rule that must hold, such as "never send a message", belongs in a control that runs outside the assistant, whether or not the model agrees.
+Rules in a file are advisory ([level 4](../04-trust-but-verify/) explains why). A rule that must hold, such as "never send a message", belongs in a control that runs outside the assistant and holds whether or not the model agrees.
 
 Memory is a second source of instructions. A wrong or planted entry misleads every later chat, so it needs the same review as code. When a memory is wrong, edit it in place. Do not append a correction below it, or both versions reach the desk.
 :::
