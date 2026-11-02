@@ -12,11 +12,11 @@ import Example from '../../../components/Example.astro';
 
 ## The weak spot it removes
 
-**The [agent](../../glossary/#agent) can fail to follow a rule.** An [instruction file](../../glossary/#instruction-file) is advice, and nothing forces the agent to follow it. This is a principle: the guide's runs did not test how often an agent skips a rule. A [hook](../../glossary/#hook) is a script the harness runs at a fixed point. The agent cannot decide to skip it for the tool calls the hook matches. A hook can still be misconfigured, and by default a hook that fails with an exit code other than 2 lets the action go ahead. See [level 4](../../journey/04-trust-but-verify/) and the [hooks shelf page](../../shelf/control/hooks/).
+**The [agent](../../glossary/#agent) can fail to follow a rule.** An [instruction file](../../glossary/#instruction-file) is advice, and nothing forces the agent to follow it. This is a principle: the guide's runs did not test how often an agent skips a rule. A [hook](../../glossary/#hook) is a script the [harness](../../glossary/#harness) runs at a fixed point. The agent cannot decide to skip it for the tool calls the hook matches. A hook can still be misconfigured, and by default a hook that fails with an exit code other than 2 lets the action go ahead. See [level 4](../../journey/04-trust-but-verify/) and the [hooks shelf page](../../shelf/control/hooks/).
 
 ## How it works
 
-A hook has three parts: an event, a script and a reply. The event is a point in the agent loop, such as "before a tool call" or "when the agent stops". The script reads a JSON description of that event on its input. The reply is an exit code, and sometimes JSON.
+A hook has three parts: an event, a script and a reply. The event is a point in the agent loop, such as "before a tool call" or "when the agent stops". The script reads a JSON description of that event on its input. The reply is an [exit code](../../glossary/#exit-code), and sometimes JSON.
 
 ### The exit-code contract
 
@@ -137,7 +137,7 @@ My fix is one adapter that sorts hooks into two kinds. An *advisory* hook that e
 
 ## What subagents inherit
 
-- Hooks from settings files, managed policy and plugins run for tool calls made by subagents. The hook input says which subagent made the call.
+- Hooks from settings files, managed policy and plugins run for tool calls made by [subagents](../../glossary/#sub-agent). The hook input says which subagent made the call.
 - Subagent start and stop are events too. The matcher is the agent type name.
 - A custom subagent can carry its own hooks in its definition. They run only while that subagent is active.
 - Custom subagents load the project instruction files. The built-in Explore and Plan agents do not. A custom subagent can opt out with the `omitClaudeMd` field in its definition.

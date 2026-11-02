@@ -52,7 +52,7 @@ These are anecdotes from my setup. I have no command or log to show for them.
 | Weak spot | Fix |
 | --- | --- |
 | A hook crashed and nobody saw it. | Log the crash. Show one line at the next prompt. |
-| Context compaction lost the session state. | Save objective state before compaction. Replay it after. |
+| Context [compaction](../../glossary/#compaction) lost the session state. | Save objective state before compaction. Replay it after. |
 | Every stop started a re-index and swap ran out. | Gate the hook, lock the indexer, run heavy jobs through an admission wrapper at low priority. |
 
 ## End-to-end flow

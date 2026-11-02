@@ -8,7 +8,7 @@ import Example from '../../../components/Example.astro';
 
 *Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
 
-**Status.** Runs in my setup: BM25 keyword search, dense embedding search, rank fusion and a small recency boost. Built and measured in the case study ([chapter 6](../../case-study/ch06-rerank/) and [chapter 12](../../case-study/ch12-local-models/)) and not in my setup: a cross-encoder re-ranker. My setup has no re-ranker of any kind.
+**Status.** Runs in my setup: [BM25](../../glossary/#bm25) keyword search, dense embedding search, rank fusion and a small recency boost. Built and measured in the case study ([chapter 6](../../case-study/ch06-rerank/) and [chapter 12](../../case-study/ch12-local-models/)) and not in my setup: a cross-encoder re-ranker. My setup has no re-ranker of any kind.
 
 ## The weak spot it removes
 
@@ -34,7 +34,7 @@ Two searches run on the notes and each returns a ranked list.
 1. A BM25 keyword search, top 50.
 2. A dense search by cosine similarity on embeddings, top 50.
 
-Then reciprocal rank fusion (RRF) merges the lists. A note scores `1 / (k + rank)` in each list, and the two scores are added. I use k = 60 and give both lists equal weight.
+Then [reciprocal rank fusion](../../glossary/#reciprocal-rank-fusion) (RRF) merges the lists. A note scores `1 / (k + rank)` in each list, and the two scores are added. I use k = 60 and give both lists equal weight.
 
 <Example
   label="Computed"
