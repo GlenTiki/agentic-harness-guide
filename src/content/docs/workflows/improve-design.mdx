@@ -13,7 +13,7 @@ Mina says her shop's signup page "looks cheap". Sam types: "Make our signup page
 
 ## The idea
 
-**Taste is not a goal. A named goal, a named audience and a list of limits turn "looks cheap" into something you can check.**
+**Taste is not a goal. A named goal, a named audience and a list of constraints turn "looks cheap" into something you can check.**
 
 This workflow uses [the prompt refiner](../../appendix/prompt-refiner/) for the ask (or [refiner lite](../../appendix/prompt-refiner/#refiner-lite) by hand), then adds three habits that design needs more than code does:
 
@@ -32,10 +32,10 @@ You need any chat assistant and, for the last step, five people and a phone. The
 Paste this into any chat assistant, with your own page described in words:
 
 ```text
-Act as my prompt refiner: improve my request, do not do it. My request: "Make our signup page look more professional." Ask at most three questions, each with a default. Then give me a prompt that asks for two design directions with no code, lists my limits, and says what done means, including a test with five real people. Mark anything you do not know as [NEEDED].
+Act as my prompt refiner: improve my request, do not do it. My request: "Make our signup page look more professional." Ask at most three questions, each with a default. Then give me a prompt that asks for two design directions with no code, lists my constraints, and says what done means, including a test with five real people. Mark anything you do not know as [NEEDED].
 ```
 
-### The limits
+### The constraints
 
 The refiner asks what "professional" means, what the brand is, and where the page lives. Only the business knows. Sam answers:
 
@@ -55,7 +55,7 @@ Sam has no image, so Sam describes the page: three fields with labels that vanis
 
 <Example
   label="Constructed"
-  task="Sam asks for two design directions, with no code, against the stated goals and limits."
+  task="Sam asks for two design directions, with no code, against the stated goals and constraints."
   env="Written to illustrate. Not a recorded run. Your tool will answer differently."
 >
 
@@ -64,7 +64,7 @@ Sam has no image, so Sam describes the page: three fields with labels that vanis
 ```text
 Goal: Make our signup page look more professional.
 Audience: people who buy candles online, on their phones, seeing the shop for the first time. Professional means calm, clear and trustworthy.
-Limits: brand teal and neutrals only. One typeface. Meet WCAG AA contrast. Keep the three form fields exactly as they are. File path and colour values: [NEEDED].
+Constraints: brand teal and neutrals only. One typeface. Meet WCAG AA contrast. Keep the three form fields exactly as they are. File path and colour values: [NEEDED].
 Current page: three fields with labels that vanish when you type, a bright orange "Submit" button, a heading "Sign up now!!", and small grey text under the button. The teal appears only in the logo.
 Task: Give me two design directions, with no code. Say what done means, including a test with five real people.
 ```
@@ -91,7 +91,7 @@ Both options use only the brand colour, and each unknown is marked [NEEDED]. The
 
 <Fragment slot="shows">
 
-It shows the shape of a reply that keeps within limits; it does not show that a real assistant stays within them.
+It shows the shape of a reply that keeps within its constraints; it does not show that a real assistant stays within them.
 
 </Fragment>
 
@@ -153,7 +153,7 @@ It shows how to turn a claimed ratio into a number you computed; it does not tes
 
 ### Test with five people
 
-A page can meet every limit and still confuse a real visitor. Write the protocol before the first person arrives:
+A page can meet every constraint and still confuse a real visitor. Write the protocol before the first person arrives:
 
 - **The task.** "Create an account."
 - **Success.** The person reaches the confirmation screen without help.
@@ -203,7 +203,7 @@ Accessibility is wider than contrast. WCAG 2.2 at level AA also covers focus vis
 :::note[Agent note]
 **Topic: improving a design.**
 
-When asked to improve a design, you need the audience, the goal and the limits. If any is missing, ask for it within the question budget.
+When asked to improve a design, you need the audience, the goal and the constraints. If any is missing, ask for it within the question budget.
 
 Offer options and wait for a choice only when the user asked for options. Do not write code until the user has chosen.
 
@@ -218,7 +218,7 @@ Check: every contrast ratio states how it was calculated, and the reply says whe
 
 ## Mistakes people make
 
-**Asking for taste.** "More professional" produces the assistant's default idea of professional. Fix: name the audience, the goal and three limits before you ask.
+**Asking for taste.** "More professional" produces the assistant's default idea of professional. Fix: name the audience, the goal and three constraints before you ask.
 
 **Taking the first option.** One answer feels finished and hides the choice. Fix: always ask for two, and write down why you chose one.
 
@@ -230,7 +230,7 @@ Check: every contrast ratio states how it was calculated, and the reply says whe
 
 You can now:
 
-- Turn "make it look better" into a goal, an audience and a list of limits.
+- Turn "make it look better" into a goal, an audience and a list of constraints.
 - Ask for options and choose between them for a stated reason.
 - Compute a contrast figure instead of trusting it.
 - Run a five-person test and read repeated trouble spots.
