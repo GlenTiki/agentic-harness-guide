@@ -276,7 +276,7 @@ The wording was tightened from "say so in your first line" and "change as little
 
 - **A tone or persona.** "Act as an expert prompt engineer" adds words and no checkable behaviour.
 - **A list of prompt techniques.** A list of named tricks tempts the assistant to apply all of them.
-- **Examples inside the skill.** A worked example anchors every output to its shape and length (see the [expert corner](../../journey/01-say-it-properly/) in level 1). Put examples in `evals/`, where they test the skill and do not steer it.
+- **Examples inside the skill.** A worked example anchors every output to its shape and length. Pass 3 of [level 1](../../journey/01-say-it-properly/) uses that on purpose, so the assistant copies the layout. Put examples in `evals/`, where they test the skill and do not steer it.
 - **Tool-specific fields.** Claude Code accepts more metadata fields. This skill needs none, and fewer fields move between tools.
 - **A scoring rubric.** A number out of ten looks exact and is not. The self-review asks yes or no questions.
 - **Domain advice.** The skill does not know your field. See the next section.
@@ -334,7 +334,7 @@ You can now:
 
 **Self-test**
 
-1. The skill has a rule against inventing facts (line 14) and a self-review item about it (line 42). Why keep both when removing one made no visible difference?
+1. The skill has a rule against inventing facts (line 14) and a self-review item about it (line 42). Why keep both, when no recorded run removed either one?
 2. You remove line 16 and the replies to good asks start asking questions. Is that proof that the line works for every tool?
 3. You want the skill to push every design ask towards user testing. Which line do you change, and how do you check the change?
 
