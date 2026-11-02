@@ -205,7 +205,7 @@ OK  exit=0 expect=allow :: git commit -m 'push -f docs'
 OK  exit=0 expect=allow :: echo hello
 OK  exit=2 expect=block (malformed input: empty stdin)
 OK  exit=2 expect=block (malformed input: not json)
-[... omitted: 4 more malformed inputs ...]
+[... omitted: 4 more malformed inputs, a missing-script row, the known-bypass section and a self-check line ...]
 32 command rows, 6 malformed rows, 0 BAD
 ```
 
@@ -308,7 +308,7 @@ The hook sees one thing: a Bash call whose command text, once split into words, 
 python3 -I examples/hook-sample/test_matrix.py
 ```
 
-Read the section that starts with `--- known bypasses`. The output above it is the 38-row table from the earlier example.
+Read the section that starts with `--- known bypasses`. The rows above it are the ones from the earlier example.
 
 </Fragment>
 
