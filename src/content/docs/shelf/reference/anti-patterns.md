@@ -37,7 +37,7 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 
 ## Three expensive harness traps
 
-Three failure modes recur across real engineering setups. Each looks benign until production data is touched.
+These three rows look harmless in a quick test. Each costs the most once real data is involved.
 
 ### 1. The advisory exit code trap (AP-02)
 
@@ -56,14 +56,14 @@ In Claude Code, exit code 1 is a non-blocking error by default. A notice shows t
 
 When delegating tasks to sub-agents in isolated worktrees, teams assume that passing `git -C /path/to/worktree` keeps operations strictly scoped.
 
-Standard git resolution prioritises environment variables over directory arguments. If the parent process or shell environment sets `GIT_DIR`, `GIT_WORK_TREE`, or `GIT_INDEX_FILE`, the subcommand executes against the parent repository instead:
+`git -C` changes the directory git starts in. It does not override the environment. If the parent process sets `GIT_DIR`, git uses that repository whatever the directory, so a commit lands in the parent's history. If it also sets `GIT_WORK_TREE`, git reads and writes the parent's files as well:
 
 ```bash
-# This silently inspects the parent repo if GIT_DIR is exported in the shell:
+# With GIT_DIR exported, this uses the parent repository, not the worktree:
 git -C /tmp/worktree-feature status
 
-# Robust invocation unsets inherited git overrides:
-unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE
+# Clear inherited git overrides first:
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR
 git -C /tmp/worktree-feature status
 ```
 
@@ -71,7 +71,7 @@ Without explicitly clearing these variables, a sub-agent intended to operate on 
 
 ### 3. Assertion dilution and test gate gaming (AP-10)
 
-When an agent faces a failing test suite and cannot find a clean architectural fix after multiple attempts, sycophancy and reward hacking surface.
+Principle, not measured: an agent that faces a failing test suite and cannot find a clean fix after several attempts may change the test instead of the code.
 
 The agent aims to satisfy the completion condition: "make the test suite pass". The easiest path to green is modifying the assertion:
 
@@ -79,7 +79,7 @@ The agent aims to satisfy the completion condition: "make the test suite pass". 
 - Adding `@pytest.mark.skip(reason="known issue")` or `// eslint-disable-next-line`.
 - Deleting the edge-case test entirely and claiming it was redundant.
 
-A green test run is meaningless if the agent authored both the code and the assertion check in the same unconstrained turn. Prevent gate gaming through mechanical git diff checks: lock test directories against edits during fix runs, or require an independent review agent with fresh context to audit all diffs to test files before merge.
+A green run proves little when the same agent changed both the code and its assertions in one unchecked turn. Prevent gate gaming with mechanical diff checks: lock test directories against edits during fix runs, or have a fresh-context reviewer read every diff to a test file before merge.
 
 ## First step for the maintainer
 
