@@ -28,7 +28,7 @@ A hook has three parts: an event, a script and a reply. The event is a point in 
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "If your hook is meant to enforce a policy, use exit 2." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
-Claude Code can also fail closed for you. Set `"onFailure": "block"` on a command hook. Then a script that cannot start, times out, prints JSON it cannot parse or exits with a code other than 0 or 2 has the same effect as exit 2 on that event. The field needs Claude Code 2.1.295 or later. It has no effect on stop hooks.
+Claude Code can also fail closed for you. Set `"onFailure": "block"` on a command hook. Then a failed hook has the same effect as exit 2 on that event. A failure is a script that cannot start, a timeout, JSON that does not parse, or an exit code other than 0 or 2. The field needs Claude Code 2.1.295 or later. It has no effect on stop hooks.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "To block the action instead, set "onFailure": "block" on a command or http hook." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
