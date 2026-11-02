@@ -69,6 +69,7 @@ const setupModal = () => {
   const categorySelect = dialog.querySelector('#feedback-category');
   const fallbackLink = dialog.querySelector('[data-github-fallback]');
   const closeBtn = dialog.querySelector('[data-action="close-feedback"]');
+  let context = {};
 
   const openModal = (e) => {
     if (e) e.preventDefault();
@@ -77,6 +78,7 @@ const setupModal = () => {
     const scheme = document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     const pageWithHash = location.pathname + (heading?.id && heading.matches('h2, h3, h4') ? `#${heading.id}` : '');
     const currentSection = heading?.textContent?.trim() ?? '';
+    context = { page: pageWithHash, section: currentSection, quote, device: `${innerWidth}x${innerHeight}, ${scheme}` };
 
     if (pageSpan) pageSpan.textContent = location.pathname;
     if (sectionSpan) sectionSpan.textContent = currentSection ? ` • ${currentSection}` : '';
@@ -90,12 +92,7 @@ const setupModal = () => {
     }
 
     if (fallbackLink) {
-      fallbackLink.href = buildFeedbackUrl({
-        page: pageWithHash,
-        section: currentSection,
-        quote,
-        device: `${innerWidth}x${innerHeight}, ${scheme}`,
-      });
+      fallbackLink.href = buildFeedbackUrl(context);
     }
 
     if (statusEl) {
@@ -129,16 +126,10 @@ const setupModal = () => {
     const comment = textarea?.value?.trim() ?? '';
     if (!comment) return;
 
-    const heading = nearestHeading();
-    const quote = selectedText();
-    const scheme = document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     const payload = {
-      page: location.pathname + (heading?.id && heading.matches('h2, h3, h4') ? `#${heading.id}` : ''),
-      section: heading?.textContent?.trim() ?? '',
-      quote,
+      ...context,
       category: categorySelect?.value ?? 'improvement',
       feedback: comment,
-      device: `${innerWidth}x${innerHeight}, ${scheme}`,
       timestamp: new Date().toISOString(),
     };
 
