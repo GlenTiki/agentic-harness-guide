@@ -98,7 +98,7 @@ Split the labelled outputs into two sets before you start. The development set i
 A regression suite answers one question: did this change make anything worse? It needs four things fixed before the change.
 
 1. **Cases.** A set of inputs with known good outcomes, drawn from real input, kept in the repository.
-2. **A criterion.** The pass rule written before the run. For example, every case passes at least 9 times in 10 runs, and no case that passed before now fails in more than 2.
+2. **A criterion.** The pass rule written before the run. For example, every case passes at least 9 times in 10 runs, and the record lists every case that now passes fewer runs than its stored baseline, even when it still clears 9.
 3. **A pinned model.** The model version recorded in the suite, so a score moving means the prompt moved it. Re-baseline on purpose when you change the model.
 4. **The old numbers.** Store the previous run so you can compare the two sets of counts, not recall them.
 
@@ -107,7 +107,8 @@ suite: invoice-routing
 model: <the exact model id you pin>
 runs_per_case: 10
 cases: cases/*.json
-pass: every case at least 9 of 10; no case worse than its stored baseline by more than 2
+pass: every case at least 9 of 10
+report: every case below its stored baseline
 ```
 
 That block is an illustration of the fields to keep, not a file format any tool reads.
