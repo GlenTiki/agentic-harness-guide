@@ -19,7 +19,7 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 | AP-06 | A constraint vanishes mid-session | It lived only in the conversation and compaction summarised it away | Write it to the [ledger](../../context/context-management/) |
 | AP-07 | A sub-agent redoes finished work | The brief was vague or missing | Build the brief from the ledger with scope, known facts and answer format |
 | AP-08 | Parallel agents overwrite each other | They share one working directory | Give each writer a [worktree](../../delegation/worktree-isolation/) |
-| AP-09 | An isolated agent lacks recent work | The worktree branched from the default branch, not the current one | Merge first, or state the base and verify it |
+| AP-09 | An isolated agent lacks recent work | The worktree branched from the default branch, not the current one | Merge first, set `worktree.baseRef` to `head` (Claude Code behaviour), or state the base and verify it |
 | AP-10 | The suite is green but a bug shipped | The agent weakened or deleted the failing assertion | Review test diffs, and add a [gate](../../quality/test-first-and-gates/) on skips and suppressions |
 | AP-11 | A commit lands that CI rejects | Local and CI run different commands | Use one `check` command in both places |
 | AP-12 | A reviewer approved but the merged code differs | Approval was not bound to a digest | [Record the diff hash](../../quality/independent-review/) and re-review after any edit |
@@ -86,5 +86,7 @@ A green run proves little when the same agent changed both the code and its asse
 Find the three rows that match your current setup. Fix those first.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead, except for hooks whose failure blocks the action". Claude Code on that date: 2.1.316. The docs page states no version of its own. The same page gives a feature floor for `onFailure`: "Requires Claude Code v2.1.295 or later."</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/worktrees. Quoted line: "Subagent worktrees use the same base branch as `--worktree`, so they branch from your repository's default branch unless `worktree.baseRef` is set to `"head"`." Claude Code on that date: 2.1.316.</p>
 
 **Next:** [Workflows](../../../workflows/)
