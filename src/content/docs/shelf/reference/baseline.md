@@ -28,7 +28,7 @@ description: The minimum viable harness as one checklist.
 ### Enforcement
 
 - [ ] **BL-09** A post-tool hook formats or lints edited files. [Hooks](../../control/hooks/)
-- [ ] **BL-10** A pre-tool hook blocks the one action you fear most, using exit code 2 or a deny decision (Claude Code behaviour). It covers the paths the hook sees; see [Hooks](../../control/hooks/).
+- [ ] **BL-10** A pre-tool hook blocks the one action you fear most, using exit code 2 or a deny decision, with `onFailure` set to `block` so a broken script also blocks (Claude Code behaviour). It covers the paths the hook sees; see [Hooks](../../control/hooks/).
 - [ ] **BL-11** A stop hook runs the test suite.
 - [ ] **BL-12** An audit log is written by a hook. [Observability](../../operations/observability/)
 
@@ -60,6 +60,6 @@ Each unchecked box corresponds to a row in [Anti-patterns](../anti-patterns/), w
 
 The maintainer checks what the repository already has. The maintainer does the first unchecked item under Boundaries, then Enforcement, then Quality.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "To block the action instead, set `"onFailure": "block"` on a `command` or `http` hook. Requires Claude Code v2.1.295 or later." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 **Next:** [Anti-patterns](../anti-patterns/)

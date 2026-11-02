@@ -12,7 +12,7 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 | ID | Symptom | Cause | Fix |
 | --- | --- | --- | --- |
 | AP-01 | The agent breaks a rule you wrote | The rule is advice in an instruction file: the agent reads it as context, and nothing enforces it | Move it into a [hook](../../control/hooks/) or [permission rule](../../control/permissions-and-sandboxing/), which the harness applies on the calls it covers |
-| AP-02 | A hook exists but the bad action still happens | Claude Code behaviour: the script exits 1, which is a non-blocking error | Exit 2 to block, or return a deny decision |
+| AP-02 | A hook exists but the bad action still happens | Claude Code behaviour: the script exits 1, or fails to start, which is a non-blocking error by default | Exit 2 to block, or exit 0 with a deny decision. Set `onFailure` to `block` so a crash also blocks |
 | AP-03 | Adherence drops as the instruction file grows | Every line competes for attention on every turn | Cut to commands and non-obvious rules, and scope the rest to paths |
 | AP-04 | Two instruction layers give conflicting orders | Layers are concatenated, and nothing defines which of two conflicting rules the agent follows | Review the layers together and remove the conflict |
 | AP-05 | The agent repeats a corrected mistake | The correction was never stored, or was appended below the wrong claim | [Refine the memory entry](../../context/memory/) where it stands |
@@ -50,7 +50,7 @@ if [ "$RISKY_OPERATION" = "true" ]; then
 fi
 ```
 
-In Claude Code and similar agent runtimes, exit code 1 is classified as a non-blocking error. The stderr output is logged, but the tool call proceeds anyway. The action is only blocked if the hook exits with code 2, or returns a structured JSON payload with `"permissionDecision": "deny"`. If your security hook exits with 1, you built an advisory logger, not an enforcement gate.
+In Claude Code, exit code 1 is a non-blocking error by default. A notice shows the first line of stderr, and the tool call goes ahead. A pre-tool hook blocks the call when it exits with code 2, or when it exits 0 and prints JSON with `"permissionDecision": "deny"`. From v2.1.295 you can also set `"onFailure": "block"` on the hook. Then a crash, a timeout, a script that does not start or any exit code other than 0 and 2 blocks the call too. Without one of these, a security hook that exits 1 only logs.
 
 ### 2. Environment variable pollution across sub-agents (AP-08)
 
@@ -85,6 +85,6 @@ A green test run is meaningless if the agent authored both the code and the asse
 
 Find the three rows that match your current setup. Fix those first.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead, except for hooks whose failure blocks the action". Claude Code on that date: 2.1.316. The docs page states no version of its own. The same page gives a feature floor for `onFailure`: "Requires Claude Code v2.1.295 or later."</p>
 
 **Next:** [Workflows](../../../workflows/)
