@@ -34,7 +34,7 @@ Approval prompts do not scale. *Principle, not measured:* a person who is asked 
 
 **3. Turn on the sandbox.** Claude Code behaviour: the sandbox covers shell commands only. It uses the macOS Seatbelt framework, or `bubblewrap` and `socat` on Linux and WSL2, and it is off by default. Writes are limited to the working directory and a temporary directory. Network access goes through a proxy that checks each host against an allowed-domains list, and that list starts empty. Enable it with the `/sandbox` command or the `sandbox.enabled` setting, and add domains one at a time with `sandbox.network.allowedDomains`.
 
-**4. Know what the sandbox does not cover.** File tools, web tools, MCP servers and hooks run outside the sandbox. They follow permission rules instead. A sandbox denial on reads does not stop the file-read tool, so deny the same paths in both places.
+**4. Know what the sandbox does not cover.** The built-in file and web tools run outside the sandbox and follow permission rules instead. Hooks and local MCP servers also run outside it, with your full access. A sandbox read denial does not stop the file-read tool. The reverse does hold: Claude Code merges `Read` and `Edit` deny rules into the sandbox configuration, so write a secret's deny as a `Read` rule and it covers both.
 
 **5. Do not use "skip all prompts" modes on a machine you care about.** Run those modes only inside a disposable container or virtual machine with no credentials. You can also disable them in settings so a shared repository cannot turn them on.
 
@@ -81,7 +81,7 @@ echo hi                 no match    no match      harmless
 
 <Fragment slot="notice">
 
-The text rule catches one spelling in five. The parsed check catches all five, then misses the script and the `cat` of a file that a `Read(./.env)` rule denies for the file tool. No check that reads command text can see what `clean.py` does inside.
+The text rule catches one spelling in five. The parsed check catches all five, then misses the script and `cat .env`, which only a rule about the file itself can catch. No check that reads command text can see what `clean.py` does inside.
 
 </Fragment>
 
@@ -99,7 +99,7 @@ Constructed. Three sample risks and the layer that fits each. The reasoning foll
 
 | Risk | Rule | Hook | Sandbox |
 | --- | --- | --- | --- |
-| The agent reads `.env` | Deny `Read(./.env)` for the file tool | A hook cannot see file reads that the shell does by other means | Deny reads of the same path for shell commands |
+| The agent reads `.env` | Deny `Read(./.env)`. It covers the file tool and shell file commands Claude Code recognises, such as `cat` | A hook cannot see file reads that the shell does by other means | With the sandbox on, the same rule also stops a script that opens the file |
 | The agent force-pushes | An `ask` rule for the common spelling | A hook that parses the command, with its [known bypasses](../hooks/#what-this-hook-does-not-cover) | None: the push uses an allowed network route. Limit credentials instead |
 | A script the agent runs sends data out | None: the command text looks harmless | Weak: it sees the script name only | Primary: an empty network allow list |
 
