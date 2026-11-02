@@ -11,10 +11,10 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 
 | ID | Symptom | Cause | Fix |
 | --- | --- | --- | --- |
-| AP-01 | The agent breaks a rule you wrote | The rule is advice in an instruction file, which is loaded as context and lost after compaction | Move it into a [hook](../../control/hooks/) or [permission rule](../../control/permissions-and-sandboxing/), which the harness applies on the calls it covers |
+| AP-01 | The agent breaks a rule you wrote | The rule is advice in an instruction file: the agent reads it as context, and nothing enforces it | Move it into a [hook](../../control/hooks/) or [permission rule](../../control/permissions-and-sandboxing/), which the harness applies on the calls it covers |
 | AP-02 | A hook exists but the bad action still happens | Claude Code behaviour: the script exits 1, which is a non-blocking error | Exit 2 to block, or return a deny decision |
 | AP-03 | Adherence drops as the instruction file grows | Every line competes for attention on every turn | Cut to commands and non-obvious rules, and scope the rest to paths |
-| AP-04 | Two instruction layers give conflicting orders | Layers are concatenated, later text usually weighs more, and the outcome of a conflict is not defined | Review the layers together and remove the conflict |
+| AP-04 | Two instruction layers give conflicting orders | Layers are concatenated, and nothing defines which of two conflicting rules the agent follows | Review the layers together and remove the conflict |
 | AP-05 | The agent repeats a corrected mistake | The correction was never stored, or was appended below the wrong claim | [Refine the memory entry](../../context/memory/) where it stands |
 | AP-06 | A constraint vanishes mid-session | It lived only in the conversation and compaction summarised it away | Write it to the [ledger](../../context/context-management/) |
 | AP-07 | A sub-agent redoes finished work | The brief was vague or missing | Build the brief from the ledger with scope, known facts and answer format |
