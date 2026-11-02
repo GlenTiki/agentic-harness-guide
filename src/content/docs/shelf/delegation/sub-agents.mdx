@@ -9,7 +9,7 @@ import DelegationLedger from '../../../../components/DelegationLedger.astro';
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
-**Recommendation:** delegate research, search and any work that would flood the main conversation, when a delegation tool exists and the user has allowed it. A sub-agent never delegates: it returns findings to its caller. A lead agent delegates one layer only, and never delegates a decision that needs a human checkpoint. Give each sub-agent a bounded brief and ask for a short, structured summary. Keep the lead agent responsible for decisions. Prefer one level of delegation.
+**Recommendation:** delegate research, search and any work that would flood the main conversation, when a delegation tool exists and the user has allowed it. Do not let a sub-agent delegate: have it return findings to its caller. Claude Code allows nesting by default, so item 5 shows how to turn it off. A lead agent delegates one layer only, and never delegates a decision that needs a human checkpoint. Give each sub-agent a bounded brief and ask for a short, structured summary. Keep the lead agent responsible for decisions. Prefer one level of delegation.
 
 ## Why it matters
 
