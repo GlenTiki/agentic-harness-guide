@@ -404,7 +404,7 @@ It shows the status of a pipeline in `sh`. It does not show how any harness read
 
 ### A one-shot stop reminder
 
-A stop hook that blocks every time never lets the agent finish. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
+A stop hook that blocks every time keeps sending the agent back to work. Claude Code ends the turn after eight blocks in a row, but the count starts again each time the agent calls a tool, so the loop can run on. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
 
 <Example
   label="Computed"
