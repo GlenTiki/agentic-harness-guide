@@ -38,7 +38,7 @@ Exit 2 does not have the same meaning on every event. The same docs page lists e
 | --- | --- |
 | Before a tool call | Blocks the call. |
 | When the user submits a prompt | Blocks the prompt. |
-| When the agent tries to stop | Stops it from stopping. |
+| When the agent tries to stop | Stops it from stopping. After eight blocks in a row with no tool call between them, Claude Code ends the turn anyway. |
 | When a helper tries to stop | Stops it from stopping. |
 | After a tool call | Cannot block, because the tool already ran. The message is shown to the agent. |
 | When a helper starts | Only shows the message to the user. |
@@ -47,7 +47,9 @@ So "exit 2 sends my reason to the agent" is true for some events and not for oth
 
 ## Why exit 1 is a trap
 
-A new author writes a hook that exits 1 to mean "stop". Without `onFailure`, exit 1 does not block. The action goes ahead and the hook looks like it works. **A hook that cannot block looks like a hook that blocks.** The fix is a test matrix that feeds the hook a bad call and checks that the result is a block. [Chapter 2](../../case-study/ch02-hooks/) builds that matrix with 19 cases: allow, deny and malformed input.
+A new author writes a hook that exits 1 to mean "stop". Without `onFailure`, exit 1 does not block. The action goes ahead. The transcript shows a hook error notice that carries the first line of the hook's stderr, such as its own "blocked" message, so the hook looks like it works. **A hook that cannot block looks like a hook that blocks.** The fix is a test matrix that feeds the hook a bad call and checks that the result is a block. [Chapter 2](../../case-study/ch02-hooks/) builds that matrix with 19 cases: allow, deny and malformed input.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error. The notice carries the first line of your stderr". The same page says the notice appears in the transcript on events such as PreToolUse, and that Claude Code "overrides the next block and ends the turn" after eight stop-hook continuations in a row. Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 The kit's dispatcher blocks a forbidden command with the reason on stderr and exit code 2; [chapter 2](../../case-study/ch02-hooks/) shows that run. A gate should also fail closed on input it cannot read:
 
