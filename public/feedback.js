@@ -1,4 +1,4 @@
-import { buildFeedbackUrl, MAX_QUOTE_LENGTH } from './feedback-url.mjs';
+import { buildFeedbackUrl, LOCAL_HOSTNAME, MAX_QUOTE_LENGTH } from './feedback-url.mjs';
 
 const HEADINGS = '.sl-markdown-content h1, .sl-markdown-content h2, .sl-markdown-content h3, .sl-markdown-content h4';
 let held = '';
@@ -22,12 +22,11 @@ const nearestHeading = () => {
 };
 
 const ISSUE_KIND = { improvement: 'Idea', correction: 'Wrong', unclear: 'Confusing', praise: 'Worked well' };
-const LOCAL_HOST = /^(?:localhost|127(?:\.\d{1,3}){3}|\[::1\]|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}|[\w-]+\.local)$/;
 const LOOPBACK_HOST = /^(?:localhost$|127\.|\[::1\]$)/;
 
 const localReceiver = () => {
   const { hostname } = location;
-  if (!LOCAL_HOST.test(hostname)) return null;
+  if (!LOCAL_HOSTNAME.test(hostname)) return null;
   return `http://${LOOPBACK_HOST.test(hostname) ? '127.0.0.1' : hostname}:4328/api/feedback`;
 };
 
