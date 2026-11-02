@@ -437,7 +437,7 @@ ok
 
 <Fragment slot="notice">
 
-Each session is blocked once, and the second session starts fresh. Unreadable input blocks, as in the sample above. The page does not claim the docs field `stop_hook_active`, which was not checked.
+Each session is blocked once, and the second session starts fresh. Unreadable input blocks, as in the sample above. The script does not read the `stop_hook_active` input field, which the docs say is true when Claude Code is already continuing because of a stop hook.
 
 </Fragment>
 
@@ -493,7 +493,7 @@ Session `s1` fails twice, passes on its third stop, and then fails again with a 
 
 <Fragment slot="shows">
 
-It shows the gate logic with the shell commands `true` and `false` in place of a real suite. The regression tests also exercise timeouts and state errors. It does not show a real harness, a production suite, or how a person sees the escalation file. The docs say exit code 2 on `Stop` continues the conversation. Whether stdout or standard error reaches the person at exit 0 was not checked, so read the file rather than the terminal.
+It shows the gate logic with the shell commands `true` and `false` in place of a real suite. The regression tests also exercise timeouts and state errors. It does not show a real harness, a production suite, or how a person sees the escalation file. The docs say exit code 2 on `Stop` continues the conversation. The docs say that at exit 0 the agent never sees standard error, and stdout from a stop hook goes to the debug log, not the transcript. Read the file rather than the terminal.
 
 </Fragment>
 
@@ -553,7 +553,7 @@ It shows git's behaviour with an inherited variable. It does not show how your h
 
 ### Several hooks and latency
 
-The docs say: "When an event fires, its matching hooks run in parallel." So the wait for an event is about the slowest hook, not the sum. The part of the page read on 2026-10-26 did not state how conflicting decisions combine, such as one hook denying and another allowing. Not verified. Test it with two hooks that disagree before you rely on an order. The same page gives command hooks a default timeout of 600 seconds, so set a shorter one on each. This guide measured no harness-level latency and no parallel-hook latency. The only timings are the standalone script runs in the chart above.
+The docs say: "When an event fires, its matching hooks run in parallel." So the wait for an event is about the slowest hook, not the sum. For pre-tool hooks the docs state the order: "When multiple PreToolUse hooks return different decisions, precedence is `deny` > `defer` > `ask` > `allow`." For other events, test two hooks that disagree before you rely on an order. The same page gives command hooks a default timeout of 600 seconds, so set a shorter one on each. This guide measured no harness-level latency and no parallel-hook latency. The only timings are the standalone script runs in the chart above.
 
 ## Failure modes it reduces
 
