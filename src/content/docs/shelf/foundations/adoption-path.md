@@ -16,7 +16,7 @@ description: A staged checklist for building a harness, ordered by effort and no
 ## Stage 1: bound the blast radius
 
 - [ ] Run the agent in a repository with a clean working tree and a remote.
-- [ ] Set a deny list for secrets files and a short allow list for routine commands (an allow rule only skips the prompt; other calls still ask unless you use `dontAsk` mode). See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
+- [ ] Set a deny list for secrets files and a short allow list for routine commands (an allow rule only skips the prompt; in Claude Code's default mode a call that matches no rule still asks, and `dontAsk` mode denies it instead). See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
 - [ ] Turn on the sandbox for shell commands if your harness has one.
 
 Exit check: you tried to read your secrets file and the read was refused, and you tried to reach a host you did not list and the call failed.
@@ -65,5 +65,7 @@ Skipping to stage 5 gives you parallel agents with no tests, no review and no lo
 ## First step for the maintainer
 
 Do stage 1 today. It takes minutes and it is the stage that limits damage from every later mistake.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "`dontAsk` | Auto-denies every call that would otherwise prompt". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 **Next:** [AGENTS.md vs CLAUDE.md files](../../context/instruction-files/)
