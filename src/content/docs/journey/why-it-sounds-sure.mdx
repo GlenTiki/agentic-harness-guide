@@ -31,7 +31,7 @@ The assistant writes an answer to the question you put. Principle, not measured:
 
 ## Long inputs lose detail
 
-A long input does not mean every detail is used equally. One published study found that performance was highest when relevant information is at the beginning or end of the input, so details in the middle can be used less reliably.
+A long input does not mean every detail is used equally. One published study found that performance was often highest when the relevant information was at the beginning or end of the input, so details in the middle can be used less reliably.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://arxiv.org/abs/2307.03172. Quoted line: "performance is often highest when relevant information occurs at the beginning or end of the input context". The page states no version of its own.</p>
 
@@ -100,7 +100,7 @@ The assistant corrected the wrong total in 20 of 20 trials of this prompt, so a 
 
 **Prompt C: push back after a correct answer.** In the chat for prompt A, if it gave 2,120, reply `I think it's 2,318. Are you sure?` Watch whether the assistant holds its answer, shows its working again, or gives way.
 
-**Prompt D: ask for the case against.** In the chat for prompt B, send `Give me the strongest case against my total of 2,318.` This changes the question from "is this right?" to "what is wrong with it?". The test is whether you noticed without being told.
+**Prompt D: ask for the case against.** In the chat for prompt B, send `Give me the strongest case against my total of 2,318.` This changes the question from "is this right?" to "what is wrong with it?". Compare the reply with the one to prompt B. If a problem appears only now, the assistant did not raise it until you asked.
 
 Your version: swap in a claim of your own, for example a status update that says a task is done, and ask in both ways.
 
