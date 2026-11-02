@@ -77,7 +77,7 @@ exit=2
 
 <Fragment slot="notice">
 
-The reason names the parse error and the exit code is 2. A hook that exited 0 here would let the call through. The kit's `--bad` copy exits 1 for a denied call, and the matrix reports `expected exit 2, got 0`.
+The reason names the parse error and the exit code is 2. A hook that exited 0 here would let the call through. The kit's `--bad` copy has hooks that exit 1 for a denied call. The dispatcher treats exit 1 as a non-blocking error and exits 0, so the matrix reports `expected exit 2, got 0`.
 
 </Fragment>
 
