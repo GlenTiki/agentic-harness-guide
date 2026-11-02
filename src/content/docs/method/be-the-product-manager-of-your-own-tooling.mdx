@@ -33,11 +33,11 @@ You can change direction during a cycle. Ask the assistant to [keep the current 
 
 ## Choose when work lands
 
-The example waits for you to try each slice. Alternatively, authorise a named repository and a named change scope to merge before use review. Name the review branch too. Authorised commits and pushes to that branch prepare the candidate for CI. Merging follows the required checks. Deployment needs separate authority, including deployment triggered by a push.
+The example below waits for you to try each slice before it lands. The other mode is merge before use review: the assistant merges first, and you try the result afterwards. Allow it only for a repository and a kind of change that you name. Name the branch it works on too. The assistant may commit and push to that branch so that the automated checks (CI) run. It merges only after the required checks pass. Deploying needs your separate permission, even when a push would start a deployment.
 
-Before merging, a competing provider must accept the plan and exact candidate. Require a separate competing-provider clean-code review and any security review. Local checks and executed CI must pass for that exact revision. Missing review or unexecuted CI blocks merging. Technical acceptance is not user acceptance. Later negative feedback directs a correction.
+Before the merge, an assistant from a different provider (another company's model) must accept the plan and the exact version to merge. Require a second review from a different provider for code quality, and a security review where the change needs one. The local checks and a CI run that actually executed must pass on that exact version. A missing review, or CI that never ran, blocks the merge. These reviews show that the code is sound. They do not show that you are happy with it. If you dislike the result when you try it, your feedback directs the next correction.
 
-Neither mode authorises egress, spending or messages, lifts holds, or extends to client repositories. Your stop still applies.
+Neither mode lets the assistant send data out, spend money or send messages. Neither mode lifts a hold you have set or covers a client's repositories. Your stop still applies.
 
 ## A review you can return to cold
 
