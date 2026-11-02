@@ -12,7 +12,7 @@ import Example from '../../../components/Example.astro';
 
 ## The weak spot it removes
 
-**The [agent](../../glossary/#agent) can fail to follow a rule.** An [instruction file](../../glossary/#instruction-file) is advice, and nothing forces the agent to follow it. This is a principle: the guide's runs did not test how often an agent skips a rule. A [hook](../../glossary/#hook) is a script the harness runs at a fixed point. The agent cannot decide to skip it for the tool calls the hook matches. A hook can still be misconfigured, and a hook that fails with an exit code other than 2 lets the action go ahead. See [level 4](../../journey/04-trust-but-verify/) and the [hooks shelf page](../../shelf/control/hooks/).
+**The [agent](../../glossary/#agent) can fail to follow a rule.** An [instruction file](../../glossary/#instruction-file) is advice, and nothing forces the agent to follow it. This is a principle: the guide's runs did not test how often an agent skips a rule. A [hook](../../glossary/#hook) is a script the harness runs at a fixed point. The agent cannot decide to skip it for the tool calls the hook matches. A hook can still be misconfigured, and by default a hook that fails with an exit code other than 2 lets the action go ahead. See [level 4](../../journey/04-trust-but-verify/) and the [hooks shelf page](../../shelf/control/hooks/).
 
 ## How it works
 
@@ -24,9 +24,13 @@ A hook has three parts: an event, a script and a reply. The event is a point in 
 | --- | --- |
 | 0 | Success. Any JSON reply applies. |
 | 2 | A blocking error. On events that can block, the harness stops the action. |
-| Any other non-zero | A non-blocking error. The action goes ahead. |
+| Any other non-zero | A non-blocking error. The action goes ahead, unless the hook sets `onFailure` to `"block"`. |
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "If your hook is meant to enforce a policy, use exit 2." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "If your hook is meant to enforce a policy, use exit 2." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+
+Claude Code can also fail closed for you. Set `"onFailure": "block"` on a command hook. Then a script that cannot start, times out, prints JSON it cannot parse or exits with a code other than 0 or 2 has the same effect as exit 2 on that event. The field needs Claude Code 2.1.295 or later. It has no effect on stop hooks.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "To block the action instead, set "onFailure": "block" on a command or http hook." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 Exit 2 does not have the same meaning on every event. The same docs page lists each event.
 
@@ -43,7 +47,7 @@ So "exit 2 sends my reason to the agent" is true for some events and not for oth
 
 ## Why exit 1 is a trap
 
-A new author writes a hook that exits 1 to mean "stop". Exit 1 does not block. The action goes ahead and the hook looks like it works. **A hook that cannot block looks like a hook that blocks.** The fix is a test matrix that feeds the hook a bad call and checks that the result is a block. [Chapter 2](../../case-study/ch02-hooks/) builds that matrix with 19 cases: allow, deny and malformed input.
+A new author writes a hook that exits 1 to mean "stop". Without `onFailure`, exit 1 does not block. The action goes ahead and the hook looks like it works. **A hook that cannot block looks like a hook that blocks.** The fix is a test matrix that feeds the hook a bad call and checks that the result is a block. [Chapter 2](../../case-study/ch02-hooks/) builds that matrix with 19 cases: allow, deny and malformed input.
 
 The kit's dispatcher blocks a forbidden command with the reason on stderr and exit code 2; [chapter 2](../../case-study/ch02-hooks/) shows that run. A gate should also fail closed on input it cannot read:
 
