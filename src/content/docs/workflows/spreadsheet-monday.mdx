@@ -274,13 +274,13 @@ Asking for the formula also gives you something to read. You can see that the ra
 The check cell turns the rule into a signal. A person skimming a sheet will not notice a wrong total, but will notice a red FALSE.
 
 :::note[At work]
-Keep the check cell, the source figures and the reviewer's initials on the sheet. That is a working paper: it shows where each number came from and who checked it. A total typed over a formula, or a range that stops one row short, are the usual ways a sheet goes wrong.
+Keep the check cell, the source figures and the reviewer's initials on the sheet. That is a working paper: it shows where each number came from and who checked it. A total typed over a formula and a range that stops one row short are two common ways a sheet goes wrong.
 :::
 
 ## Expert corner
 
 :::caution[Expert corner]
-The distinct-count formula treats "Feb" and "Feb " (with a trailing space) as different months, and "Feb" and "feb" as the same one. Clean the column first. Floating-point sums can leave tiny differences, so compare money with a tolerance, as in the check cell.
+The distinct-count formula treats "Feb" and "Feb " (with a trailing space) as different months, and "Feb" and "feb" as the same one. Clean the column first. Floating-point sums can leave tiny differences, so round money to the cent before you compare it, as the check cell does.
 
 An assistant can write a formula that looks right and points at the wrong range. Test every formula on a case with a known answer before you trust it on real data.
 
