@@ -105,7 +105,7 @@ The board says where each value came from and when. It does not show the values 
 
 <Example
   label="Computed"
-  task="You run the freshness check on the same log, first at the fixed time and then at the real time (about a day later)."
+  task="You run the freshness check on the same log, first at the fixed time and then at the real time (16 hours later, when I ran it)."
   evidence="the commands shown, run from the kit root"
   env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
 >
@@ -132,7 +132,7 @@ RED: The newest event in the log is older than 3600 s.
 
 <Fragment slot="notice">
 
-At the fixed time it prints `freshness: GREEN`. At the real time it prints `RED` and exits with code 1, because the example events are old now. The age in seconds grows every second, so your number is larger than 57895.
+At the fixed time it prints `freshness: GREEN`. At the real time it prints `RED` and exits with code 1, because the example events are old now. When you run it, the ages are larger than 57895 and the other two signals are past their one-day limit too, so you see four `RED` lines.
 
 </Fragment>
 
