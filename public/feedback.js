@@ -21,6 +21,28 @@ const nearestHeading = () => {
   return above.at(-1) ?? document.querySelector('h1');
 };
 
+const LOCAL_HOST = /^(?:localhost|127(?:\.\d{1,3}){3}|\[::1\]|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}|[\w-]+\.local)$/;
+const LOOPBACK_HOST = /^(?:localhost$|127\.|\[::1\]$)/;
+
+const localReceiver = () => {
+  const { hostname } = location;
+  if (!LOCAL_HOST.test(hostname)) return null;
+  return `http://${LOOPBACK_HOST.test(hostname) ? '127.0.0.1' : hostname}:4328/api/feedback`;
+};
+
+const sendToLocalReceiver = async (endpoint, payload) => {
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+};
+
 const upgrade = (link) => {
   const heading = nearestHeading();
   const scheme = document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -119,33 +141,13 @@ const setupModal = () => {
       timestamp: new Date().toISOString(),
     };
 
-    if (statusEl) {
-      statusEl.textContent = 'Sending feedback to receiver...';
-      statusEl.className = 'feedback-status sending';
-    }
-
-    try {
-      const endpoints = [
-        'http://127.0.0.1:4328/api/feedback',
-        'http://192.168.1.25:4328/api/feedback',
-        '/api/feedback'
-      ];
-      let sent = false;
-      for (const endpoint of endpoints) {
-        try {
-          const res = await fetch(endpoint, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          if (res.ok) {
-            sent = true;
-            break;
-          }
-        } catch {}
+    const receiver = localReceiver();
+    if (receiver) {
+      if (statusEl) {
+        statusEl.textContent = 'Sending feedback to receiver...';
+        statusEl.className = 'feedback-status sending';
       }
-
-      if (sent) {
+      if (await sendToLocalReceiver(receiver, payload)) {
         if (statusEl) {
           statusEl.textContent = 'Received! Stored in backend queue for review and iteration.';
           statusEl.className = 'feedback-status success';
@@ -156,14 +158,7 @@ const setupModal = () => {
         }, 1600);
         return;
       }
-    } catch {}
-
-    // Fallback: save locally and offer prefilled GitHub issue
-    try {
-      const stored = JSON.parse(localStorage.getItem('ahg_feedback') || '[]');
-      stored.push(payload);
-      localStorage.setItem('ahg_feedback', JSON.stringify(stored));
-    } catch {}
+    }
 
     const issueUrl = buildFeedbackUrl({
       page: payload.page,
@@ -175,7 +170,7 @@ const setupModal = () => {
     });
 
     if (statusEl) {
-      statusEl.innerHTML = `<span>Saved! Send directly as a GitHub issue:</span><br/><a href="${issueUrl}" target="_blank" rel="noopener" style="display:inline-block; margin-top:8px; padding:8px 14px; background:#4f46e5; color:#ffffff; border-radius:6px; font-weight:600; text-decoration:none;">Post Issue to GitHub &rarr;</a>`;
+      statusEl.innerHTML = `<span>Not sent yet. Post it as a public GitHub issue:</span><br/><a href="${issueUrl}" target="_blank" rel="noopener" style="display:inline-block; margin-top:8px; padding:8px 14px; background:#4f46e5; color:#ffffff; border-radius:6px; font-weight:600; text-decoration:none;">Post Issue to GitHub &rarr;</a>`;
       statusEl.className = 'feedback-status fallback';
     }
   });
