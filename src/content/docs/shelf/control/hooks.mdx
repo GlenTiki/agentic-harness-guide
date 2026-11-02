@@ -39,7 +39,7 @@ An instruction file is advice, and nothing guarantees the model follows it. That
 }
 ```
 
-**3. Choose blocking or advising deliberately.** Claude Code behaviour: for command hooks, exit code 0 means success. Exit code 2 blocks the action on events that can block, and feeds standard error back to the model as the reason. Any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not block anything. In Claude Code v2.1.295 or later, you can set `"onFailure": "block"` on a command handler. A hook that cannot start, times out or exits with a code other than 0 or 2 then blocks the action. The setting has no effect on stop hooks. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
+**3. Choose blocking or advising deliberately.** Claude Code behaviour: for command hooks, exit code 0 means success. Exit code 2 blocks the action on events that can block, and feeds standard error back to the model as the reason. By default, any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not block anything. In Claude Code v2.1.295 or later, you can set `"onFailure": "block"` on a command handler. A hook that cannot start, times out, prints invalid JSON or exits with a code other than 0 or 2 then blocks the action. The setting has no effect on stop hooks. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
 
 **4. Parse the command. Do not match text.** A hook that looks for the string `push --force` misses `git push origin main -f`, because the flag comes later. The sample below splits the command into words with `shlex` and looks at the flags. It reads the tool call as JSON on standard input. It is a teaching sample, not a security boundary.
 
@@ -501,7 +501,7 @@ It shows the gate logic with the shell commands `true` and `false` in place of a
 
 ### Three outcomes, and which exit code means "deliberate"
 
-A pre-action check has three outcomes. A hard deny stops the call. A soft deny stops the call and tells the model why, so it can choose another route. A pass lets the call run. Your tool decides which exit code or output means which. In Claude Code, exit code 2 blocks and sends standard error back, and any other non-zero code does not block (see item 3 above). Check your own tool's docs before you rely on a code, because another harness may treat 1 as the deliberate denial.
+A pre-action check has three outcomes. A hard deny stops the call. A soft deny stops the call and tells the model why, so it can choose another route. A pass lets the call run. Your tool decides which exit code or output means which. In Claude Code, exit code 2 blocks and sends standard error back, and by default any other non-zero code does not block (item 3 covers the `onFailure` setting that changes this). Check your own tool's docs before you rely on a code, because another harness may treat 1 as the deliberate denial.
 
 ### Every blocking check needs a bypass route
 
