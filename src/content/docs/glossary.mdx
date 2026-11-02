@@ -25,9 +25,9 @@ Tying one figure to the document it came from, such as a total to a bank stateme
 
 ### Allowlist
 
-A list of what is permitted without asking. In Claude Code's default mode a call that matches no rule asks you, and `dontAsk` mode refuses it. An allow rule only skips the prompt.
+A list of what is permitted without asking. In Claude Code's default mode (labelled Manual in the app) a call that matches no rule asks you, and `dontAsk` mode refuses it. An allow rule only skips the prompt.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt" (the `dontAsk` row). Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt" (the `dontAsk` row) and "Labeled Manual in the CLI" (the `default` row). Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 ### Approval fatigue
 
@@ -419,7 +419,9 @@ A list of numbers that stands for the meaning of a text. Texts with similar mean
 
 ### Exit code
 
-The number a program returns when it ends. In a hook, 0 means success and 2 means block on events that can block. Any other non-zero number is a non-blocking error, so the action goes ahead.
+The number a program returns when it ends. In a Claude Code hook, 0 means success and 2 blocks the action on events that can block. Any other code is a non-blocking error by default, so the action goes ahead.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead, except for hooks whose failure blocks the action". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 ### Frontmatter
 
