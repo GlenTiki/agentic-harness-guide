@@ -19,13 +19,15 @@ A sub-agent runs in its own context window. The noise of reading fifty files sta
 
 ## What to enable
 
-**1. Write the brief like a handover note.** A good brief has five parts: the goal, the files or directories in scope, what is already known or ruled out, constraints, and the exact form of the answer.
+**1. Write the brief like a handover note.** Use the five parts from level 6: the goal, the scope, the return format, the prohibited actions and a stop rule. Add what is already known or ruled out, so the sub-agent does not repeat your work.
 
 ```markdown
 Goal: find every caller of `load_config()` and say which pass a path argument.
 Scope: `src/` only. Ignore `tests/`.
 Already known: `cli.py` calls it with no argument.
 Return: a table of file, line and whether a path is passed. Under 40 lines.
+Do not: edit any file.
+Stop: when every file in scope is read. List any file you could not read.
 ```
 
 **2. Bound the output.** Ask for a summary with a size limit and for evidence as file and line references. Ask long-running agents to append findings to a file as they go, so a truncated reply loses nothing.
