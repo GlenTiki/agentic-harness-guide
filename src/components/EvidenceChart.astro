@@ -65,7 +65,7 @@ const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k 
           const modelSlug = r.models[0] ?? '';
           const wMin = Math.round(r.wilson95[0] * 100);
           const wMax = Math.round(r.wilson95[1] * 100);
-          const pointRate = r.wrong_k > 0 ? Math.round((r.wrong_k / r.wrong_n) * 100) : (r.headline_wrong_k ?? 0) > 0 ? Math.round(((r.headline_wrong_k ?? 0) / r.n) * 100) : 0;
+          const pointRate = r.wrong_k > 0 ? Math.round((r.wrong_k / r.wrong_n) * 100) : 0;
           return (
             <tr class="chart-row" data-template={tmpl} data-model={modelSlug} data-row-id={idx}>
               <td class="cell-case">
