@@ -285,7 +285,7 @@ You can now:
 
 1. 0.9^5 = 0.59, about six in ten. Find the weakest step by counting on known cases, then add a check there.
 2. The read line shows `months=9`, so look at the calculate brief and its inputs, not the export. The log has narrowed the search.
-3. Write the intent record before the send, and send with a key the provider uses to drop repeats. If none exists, a crash can send twice, so keep the send behind a human checkpoint.
+3. Before the send, record that the send is about to happen, so a restart can check that record ("did I already send this?"). Send with a key the provider uses to drop repeats. If none exists, a crash can send twice, so keep the send behind a human checkpoint.
 
 </details>
 
