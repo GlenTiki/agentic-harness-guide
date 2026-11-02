@@ -16,6 +16,9 @@ if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
+const FIELD_LIMITS = { page: 300, section: 150, quote: 500, category: 50, feedback: 5000, device: 120, userAgent: 300 };
+const boundedText = (value, field) => (typeof value === 'string' ? value.trim().slice(0, FIELD_LIMITS[field]) : '');
+
 const isLocalHost = (host) => LOCAL_HOSTNAME.test((host ?? '').replace(/:\d+$/, ''));
 const isLocalOrigin = (origin) => isLocalHost(origin?.match(/^http:\/\/([^/]+)$/)?.[1]);
 
@@ -87,25 +90,26 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const payload = JSON.parse(body || '{}');
-        const comment = (payload.feedback || payload.comment || '').trim();
-        if (!comment && !payload.quote) {
+        const comment = boundedText(payload.feedback || payload.comment, 'feedback');
+        const quote = boundedText(payload.quote, 'quote');
+        if (!comment && !quote) {
           return sendJson(res, 400, { error: 'Feedback comment or quote is required.' }, corsHeaders(req));
         }
 
         const entry = {
           id: `fb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
           timestamp: new Date().toISOString(),
-          page: payload.page || 'unknown',
-          section: payload.section || '',
-          quote: payload.quote || '',
-          category: payload.category || 'general',
+          page: boundedText(payload.page, 'page') || 'unknown',
+          section: boundedText(payload.section, 'section'),
+          quote,
+          category: boundedText(payload.category, 'category') || 'general',
           feedback: comment,
-          device: payload.device || '',
-          userAgent: req.headers['user-agent'] || '',
+          device: boundedText(payload.device, 'device'),
+          userAgent: boundedText(req.headers['user-agent'], 'userAgent'),
         };
 
         fs.appendFileSync(INBOX_FILE, `${JSON.stringify(entry)}\n`, 'utf8');
-        process.stdout.write(`[FEEDBACK INBOX] Received feedback #${entry.id} for ${entry.page} (${entry.category}): "${comment.slice(0, 80)}"\n`);
+        process.stdout.write(`[FEEDBACK INBOX] Received feedback #${entry.id} for ${JSON.stringify(entry.page)} (${JSON.stringify(entry.category)}): ${JSON.stringify(comment.slice(0, 80))}\n`);
 
         return sendJson(
           res,
