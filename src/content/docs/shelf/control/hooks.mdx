@@ -557,7 +557,7 @@ The docs say: "When an event fires, its matching hooks run in parallel." So the 
 
 ## Failure modes it reduces
 
-- The agent runs a destructive command because the instruction file said not to, and the rule was lost after compaction.
+- The agent runs a destructive command that the instruction file forbids, because an instruction file is advice. A rule given only in chat can also be gone after compaction.
 - Unformatted or unlinted code reaches review.
 - The agent stops with failing tests and reports success.
 - A hook script exits 1 and the team believes it blocks a rule.
