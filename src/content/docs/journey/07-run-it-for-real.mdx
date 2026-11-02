@@ -74,7 +74,9 @@ A check on the weak step, and a retry, win runs back. The [evals](../../glossary
 <details class="go-deeper">
 <summary>Go deeper, for people who write code: what a check on the weak step buys</summary>
 
-A check catches 90% of a step's errors. If the retry always works, a step right with chance p becomes p + (1 - p) x 0.90. If the retry works half the time, it becomes p + (1 - p) x 0.45. Case C checks the weak step only. Case D checks every step. The numbers are made up. The same sums work in a spreadsheet. The code uses `python3 -I`. `-I` makes Python ignore environment variables and the current folder when it imports modules. It does not stop Python reading files, and it does not make results identical on every machine.
+A check catches 90% of a step's errors. If the retry always works, a step right with chance p becomes p + (1 - p) x 0.90. If the retry works half the time, it becomes p + (1 - p) x 0.45. Case C checks the weak step only. Case D checks every step. The numbers are made up. The same sums work in a spreadsheet. The code uses `python3 -I` (isolated mode). It ignores every `PYTHON*` environment variable and leaves the script's folder and your own installed packages off the import path. It does not stop Python reading files, and it does not make results identical on every machine.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://docs.python.org/3/using/cmdline.html. Quoted line: "All PYTHON* environment variables are ignored, too." The page documents Python 3.15.2.</p>
 
 <Example
   label="Computed"
