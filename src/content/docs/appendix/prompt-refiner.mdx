@@ -113,7 +113,7 @@ You never need to edit the prompt. Paste it, send a rough request and read the r
 ChatGPT, Claude, Gemini and Microsoft Copilot are all chat apps where you can paste the grey box. To save it so you do not paste it each time, look in settings for custom instructions or projects. In Claude, a project can hold project instructions that apply to every chat in that project.
 :::
 
-<p class="verified">Docs page fetched on 2026-10-24: https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects. Quoted line: "Claude will use these instructions for all the chats within the project." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects. Quoted line: "Claude will use these instructions for all the chats within the project." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 The other apps' feature names were not checked, so the text above stays generic for them.
 
@@ -139,9 +139,9 @@ Save the text as an instruction file or a reusable skill. Look for "instructions
 
 For Claude Code, put the folder in one of two places. A personal skill goes in `~/.claude/skills/prompt-refiner/SKILL.md`. A project skill goes in `.claude/skills/prompt-refiner/SKILL.md`. The assistant reads the description to decide when to load the skill. The name also appears as a command in the `/` menu.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/skills. Quoted line: "Personal | `~/.claude/skills/<skill-name>/SKILL.md`" and "Project | `.claude/skills/<skill-name>/SKILL.md`". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/skills. Quoted line: "Personal | `~/.claude/skills/<skill-name>/SKILL.md`" and "Project | `.claude/skills/<skill-name>/SKILL.md`". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
-<p class="verified">Docs page fetched on 2026-10-24: https://agentskills.io/specification. Quoted line: "A skill is a directory containing, at minimum, a `SKILL.md` file". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://agentskills.io/specification. Quoted line: "A skill is a directory containing, at minimum, a `SKILL.md` file". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 **Keep it consistent.** Run the same seven evals each time you change the full skill, on each tool you use. Write down the tool, the model, the date and the result.
 
@@ -153,9 +153,9 @@ A skill is a folder with one required file. The file has a block of metadata at 
 
 This skill uses only `name` and `description`. Claude Code and the open specification both accept them, so the file moves between tools without edits. The open specification gives `name` up to 64 characters and `description` up to 1,024. Claude Code truncates the combined listing text at 1,536 characters.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/skills. Quoted line: "the combined `description` and `when_to_use` text is truncated at 1,536 characters in the skill listing to reduce context usage." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/skills. Quoted line: "the combined `description` and `when_to_use` text is truncated at 1,536 characters in the skill listing to reduce context usage." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
-<p class="verified">Docs page fetched on 2026-10-24: https://agentskills.io/specification. Quoted lines: "Max 64 characters." for `name` and "Max 1024 characters." for `description`. Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://agentskills.io/specification. Quoted lines: "Max 64 characters." for `name` and "Max 1024 characters." for `description`. Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 ### The seven evals
 
