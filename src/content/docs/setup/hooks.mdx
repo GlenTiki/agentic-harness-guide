@@ -140,9 +140,9 @@ My fix is one adapter that sorts hooks into two kinds. An *advisory* hook that e
 - Hooks from settings files, managed policy and plugins run for tool calls made by subagents. The hook input says which subagent made the call.
 - Subagent start and stop are events too. The matcher is the agent type name.
 - A custom subagent can carry its own hooks in its definition. They run only while that subagent is active.
-- Custom subagents load the project instruction files. The built-in Explore and Plan agents do not. A custom subagent can opt out with a setting.
+- Custom subagents load the project instruction files. The built-in Explore and Plan agents do not. A custom subagent can opt out with the `omitClaudeMd` field in its definition.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/sub-agents. Quoted line: "Hooks from settings files, managed policy settings, and plugins all apply inside subagents". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/sub-agents. Quoted line: "Hooks from settings files, managed policy settings, and plugins all apply inside subagents". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 **What my own launcher does not inherit.** My setup has a command that starts a helper from a role file. That helper gets the role file and an optional skill. It gets no hooks and no project instructions. If you use such a launcher, put the shared rules into the brief yourself. [Chapter 7](../../case-study/ch07-orchestrator/) builds a check for this.
 
