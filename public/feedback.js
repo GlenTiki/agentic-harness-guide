@@ -21,6 +21,7 @@ const nearestHeading = () => {
   return above.at(-1) ?? document.querySelector('h1');
 };
 
+const ISSUE_KIND = { improvement: 'Idea', correction: 'Wrong', unclear: 'Confusing', praise: 'Worked well' };
 const LOCAL_HOST = /^(?:localhost|127(?:\.\d{1,3}){3}|\[::1\]|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}|[\w-]+\.local)$/;
 const LOOPBACK_HOST = /^(?:localhost$|127\.|\[::1\]$)/;
 
@@ -165,7 +166,7 @@ const setupModal = () => {
       section: payload.section,
       quote: payload.quote,
       comment: payload.feedback,
-      kind: payload.category === 'bug' ? 'Wrong' : (payload.category === 'question' ? 'Confusing' : 'Idea'),
+      kind: ISSUE_KIND[payload.category] ?? 'Idea',
       device: payload.device,
     });
 
