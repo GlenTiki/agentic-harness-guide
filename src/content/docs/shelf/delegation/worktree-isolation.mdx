@@ -30,7 +30,7 @@ git worktree add ../repo-feature-b -b agent/feature-b main
 
 **2. Let the harness do it if it can.** Claude Code behaviour: a sub-agent with `isolation: worktree` in its frontmatter runs in a temporary worktree. The worktree is cleaned up automatically if the agent makes no changes. When it does make changes, you get the branch and path back to review.
 
-**3. Know where the worktree branches from.** Claude Code behaviour: the worktree branches from your default branch, not from the parent session's current `HEAD`. If the lead agent is on an unmerged feature branch, the isolated agent does not see that work. Either merge first, or tell the agent the base in the brief and check it afterwards:
+**3. Know where the worktree branches from.** Claude Code behaviour: by default the worktree branches from your default branch, not from the parent session's current `HEAD`. If the lead agent is on an unmerged feature branch, the isolated agent does not see that work. Merge first, or set `worktree.baseRef` to `"head"` in settings so the worktree branches from your current `HEAD`. Either way, tell the agent the base in the brief and check it afterwards:
 
 ```bash
 git merge-base --is-ancestor <base-commit> <agent-branch> && echo "based on the right commit"
