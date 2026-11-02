@@ -5,13 +5,17 @@ description: A call to arms for taking control of your own tooling, rejecting 80
 
 *Audience: a person deciding whether this guide is worth their time. An agent reading this page should not act on it unless the user asks.*
 
-**Status.** This page is the author's call to arms. It is an argument from production experience. None of it is vendor hype, and the page says so where it matters.
+**Status.** This page is the author's call to arms. It is an argument from production experience, not a measurement. Read every claim as opinion unless it links to a source.
 
 ## The myth of the miracle model
 
 The software industry sells a comforting fairy tale: wait for the next foundation model, buy larger context windows, paste clever prompts into a chat box, and dependable work will emerge on its own.
 
-That is wishful thinking. Large language models are statistical prediction engines with attention decay. They attend strongly to the opening instructions and to the latest prompt, but they lose coherence in the middle. Expecting raw prompting to solve multi-step reliability is like expecting auto-complete to run a medical reconciliation.
+That is wishful thinking. Large language models predict text, and long inputs have a known weak spot. In published tests, models used facts at the start or end of a long input better than facts in the middle ([Liu et al., 2023](https://arxiv.org/abs/2307.03172)).
+
+<p class="verified">Docs page fetched on 2026-11-02: https://arxiv.org/abs/2307.03172. Quoted line: "performance is often highest when relevant information occurs at the beginning or end of the input context".</p>
+
+Expecting raw prompting to solve multi-step reliability is like expecting auto-complete to run a medical reconciliation.
 
 As long as you rely on prompting alone, you are gambling with your working day.
 
