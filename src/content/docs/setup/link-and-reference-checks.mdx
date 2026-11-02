@@ -30,9 +30,9 @@ Two good tools exist and each leaves a gap.
 - **markdownlint rule MD051** checks that a link fragment matches a heading in the same document. It does not check relative file paths. It does not check fragments in other files.
 - **lychee** checks local relative links and, with its fragment option, anchors. It is a strong choice for a docs site. It does not judge whether the target supports the claim. It may also miss anchors that JavaScript creates.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://github.com/DavidAnson/markdownlint/blob/main/doc/md051.md. The page describes a check that a link fragment matches a heading fragment in the document. The page states no tool version.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://github.com/DavidAnson/markdownlint/blob/main/doc/md051.md. The page describes a check that a link fragment matches a heading fragment in the document. The page states no tool version.</p>
 
-<p class="verified">Docs page fetched on 2026-10-24: https://github.com/lycheeverse/lychee. The page describes checking local files and relative links, and checking fragments only when the body is fetched. The page states no tool version.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://github.com/lycheeverse/lychee. The page describes checking local files and relative links, and checking fragments only when the body is fetched. Quoted line: "Anchors that only appear after JavaScript execution may be missed, since lychee does not run a browser engine." The page states no tool version.</p>
 
 Use those tools if they fit. The case study builds a small resolver from scratch so you can see each rule and break it on purpose. It is a teaching build, not a replacement for lychee.
 
