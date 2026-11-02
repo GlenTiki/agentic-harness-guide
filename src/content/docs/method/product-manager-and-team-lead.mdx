@@ -264,7 +264,9 @@ In plain terms: rules you set up outside the assistant also apply to its helpers
 - **Project instructions apply, with exceptions.** Custom helpers load the project instruction files. The built-in read-only Explore and Plan helpers skip them. A custom helper can opt out with a setting.
 - **Helpers can start helpers.** By default a helper can start its own helpers, up to three layers below the main thread. An environment variable turns this off.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/sub-agents. Quoted line: "Tool events such as PreToolUse and PostToolUse fire for the subagent's tool calls the same way they do in the main conversation". Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/sub-agents. Quoted line: "Tool events such as PreToolUse and PostToolUse fire for the subagent's tool calls the same way they do in the main conversation". Quoted line: "Explore and Plan start without your CLAUDE.md files and the git status snapshot to keep research fast and inexpensive. Other built-in and custom subagents load both, unless you set omitClaudeMd in a custom subagent's definition". Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Quoted line: "Set 1 to turn nesting off." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "the input carries the agent_id and agent_type common input fields that identify the subagent". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 My own rule is stricter than the tool allows. In my setup a helper returns its findings and the lead starts the next helper. I keep one layer on purpose, because a flat layout is easier to read in a log. That is a choice, not a limit of the tool.
 
