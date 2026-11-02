@@ -1,5 +1,7 @@
 ---
+import { getCollection } from 'astro:content';
 import { BASE } from '../data/site';
+import trialResults from '../../examples/wrong-behaviour/results.json';
 
 const { data } = Astro.props.entry || { data: {} };
 const hero = data?.hero || {};
@@ -7,6 +9,10 @@ const title = hero.title || 'Harness the power of your AI companions.';
 const tagline =
   hero.tagline ||
   'A practical guide to getting dependable work from AI assistants. Sound engineering discipline for everyday builders, with deep technical reference shelves for software engineers.';
+const recordedTrials = trialResults.reduce((sum, arm) => sum + arm.n, 0);
+const shelfAndWorkflowPages = (await getCollection('docs')).filter(
+  (entry) => entry.id.startsWith('shelf/') || entry.id.startsWith('workflows/'),
+).length;
 ---
 
 <header class="harness-hero" aria-label="Introduction">
@@ -92,11 +98,11 @@ const tagline =
   <div class="hero-proof-bar" role="list" aria-label="Key handbook metrics">
     <div class="proof-chip" role="listitem">
       <span class="proof-dot"></span>
-      <span class="proof-label"><strong>310</strong> Recorded Trials</span>
+      <span class="proof-label"><strong>{recordedTrials}</strong> Recorded Trials</span>
     </div>
     <div class="proof-chip" role="listitem">
       <span class="proof-dot"></span>
-      <span class="proof-label"><strong>109</strong> Shelf & Workflow Chapters</span>
+      <span class="proof-label"><strong>{shelfAndWorkflowPages}</strong> Shelf & Workflow Pages</span>
     </div>
     <div class="proof-chip" role="listitem">
       <span class="proof-dot"></span>
