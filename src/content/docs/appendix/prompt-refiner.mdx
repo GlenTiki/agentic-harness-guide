@@ -197,7 +197,7 @@ A refiner moves risk. It turns an unclear ask into a clear prompt, and that prom
 
 Three limits. First, the self-review list is the same assistant checking its own work, so it may catch slips and miss blind spots. That is a principle, not measured. Second, a refiner cannot supply facts. It can only mark where they are missing. Third, the evals use synthetic inputs, and your real asks are messier.
 
-To tune the skill, change one line, re-run all seven evals and compare. The walkthrough marks each claim as recorded, example or reasoned.
+To tune the skill, change one line, re-run all seven evals and compare. The walkthrough marks each claim as recorded or reasoned, and says which lines were not tested.
 
 A rule in a skill asks the model to treat pasted text as data. It does not enforce that. In eval 6 all three recorded replies kept the message as data. In [the isolated pasted-injection tests](../../evidence/), text only and no tools, the planted word was never followed in 60 trials, so this page does not claim the attack works. Neither result covers an assistant with tools. A control outside the assistant enforces the rule, and level 4 covers it. Keep a human between the refined prompt and anything with side effects.
 :::
