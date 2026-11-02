@@ -39,7 +39,7 @@ An instruction file is advice, and nothing guarantees the model follows it. That
 }
 ```
 
-**3. Choose blocking or advising deliberately.** Claude Code behaviour: for command hooks, exit code 0 means success. Exit code 2 blocks the action on events that can block, and feeds standard error back to the model as the reason. Any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not block anything. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
+**3. Choose blocking or advising deliberately.** Claude Code behaviour: for command hooks, exit code 0 means success. Exit code 2 blocks the action on events that can block, and feeds standard error back to the model as the reason. Any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not block anything. In Claude Code v2.1.295 or later, you can set `"onFailure": "block"` on a command handler. A hook that cannot start, times out or exits with a code other than 0 or 2 then blocks the action. The setting has no effect on stop hooks. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
 
 **4. Parse the command. Do not match text.** A hook that looks for the string `push --force` misses `git push origin main -f`, because the flag comes later. The sample below splits the command into words with `shlex` and looks at the flags. It reads the tool call as JSON on standard input. It is a teaching sample, not a security boundary.
 
@@ -118,7 +118,7 @@ The same file is at `examples/hook-sample/block_force_push.py`. A test file next
 
 Quote the expanded path, as the example does. A shell splits an unquoted path that contains a space into several words. Run through `sh -c` in a scratch folder with a space in its name, the quoted command ran the script, and the unquoted one exited 2 because Python could not open the split path. On that hook, exit 2 blocks the call. Name the interpreter (`python3` or `bash`) in the command, so the script needs no executable permission. If you run a script directly instead, run `chmod +x` on it first.
 
-**A broken hook can block every Bash call, or do nothing.** A missing Python script exits with code 2, which blocks. A missing shell script exits with code 127, which is a non-blocking error, so the hook silently does nothing.
+**A broken hook can block every Bash call, or do nothing.** A missing Python script exits with code 2, which blocks. A missing shell script exits with code 127, which is a non-blocking error. The call goes ahead, and the only sign is a hook error notice in the transcript. With `"onFailure": "block"` (item 3), the missing script blocks the call instead.
 
 <Example
   label="Computed"
@@ -561,7 +561,7 @@ The docs say: "When an event fires, its matching hooks run in parallel." So the 
 - Unformatted or unlinted code reaches review.
 - The agent stops with failing tests and reports success.
 - A hook script exits 1 and the team believes it blocks a rule.
-- A hook path that no longer resolves blocks every Bash call, or silently does nothing, depending on the script type.
+- A hook path that no longer resolves blocks every Bash call, or lets every call through, depending on the script type.
 - A text-matching hook misses the same command written in another order.
 
 ## First step for the maintainer
