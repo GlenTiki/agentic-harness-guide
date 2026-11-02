@@ -203,7 +203,7 @@ This chapter is control design. Segregation of duties means the preparer does no
 :::caution[Expert corner]
 A method surfaces decisions. It does not make them for you. Over-decomposition adds hand-offs, and each hand-off multiplies the failure chance as in level 7. Add structure only where a check or an access boundary justifies it.
 
-A human approval at every intermediate step breeds approval fatigue ([level 4](../04-trust-but-verify/) explains it). Keep the approval before each consequential action, such as a payment, and place any other checkpoint on irreversibility and exceptions, and show a small, checkable summary. In an engineering team, this is release design: tests, review, staged rollout and rollback.
+A human approval at every intermediate step breeds approval fatigue ([level 4](../04-trust-but-verify/) explains it). Keep the approval before each consequential action, such as a payment. Place any other checkpoint on irreversible steps and exceptions, and show a small, checkable summary. In an engineering team, this is release design: tests, review, staged rollout and rollback.
 :::
 
 ## Agent note
@@ -222,11 +222,11 @@ Check: a reader can name the owner, the check and the failure behaviour of every
 
 ## Mistakes people make
 
-**Starting with tools.** Fix: start at step 1. A job with no checkable done can be decorated, not designed.
+**Starting with tools.** Tools are the visible part, so they get picked first. Fix: start at step 1. A job with no checkable done can be decorated, not designed.
 
-**Treating every step the same.** Fix: mark each step, and spend checks on the weak and the irreversible.
+**Treating every step the same.** Most steps look routine from outside. Fix: mark each step, and spend checks on the weak and the irreversible.
 
-**Designing only the happy path.** Fix: answer step 6 for every step.
+**Designing only the happy path.** The path you picture is the one that works. Fix: answer step 6 for every step.
 
 ## Checkpoint
 
