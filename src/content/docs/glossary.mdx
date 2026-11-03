@@ -25,9 +25,11 @@ Tying one figure to the document it came from, such as a total to a bank stateme
 
 ### Allowlist
 
-A list of what is permitted without asking. In Claude Code's default mode (labelled Manual in the app) a call that matches no rule asks you, and `dontAsk` mode refuses it. An allow rule only skips the prompt.
+A list of what is permitted without asking. An allow rule only skips the prompt. In Claude Code, a call that matches no rule asks you in Manual mode, goes to a classifier model in auto mode and is refused in `dontAsk` mode. From v2.1.283, auto mode is the starting mode for terminal and VS Code sessions.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt" (the `dontAsk` row) and "Labeled Manual in the CLI" (the `default` row). Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-03: https://code.claude.com/docs/en/permission-modes. Quoted line: "With Claude Code v2.1.283 or later, auto mode is the built-in starting permission mode for interactive terminal and VS Code sessions." Claude Code on that date: 2.1.316.</p>
 
 ### Approval fatigue
 
