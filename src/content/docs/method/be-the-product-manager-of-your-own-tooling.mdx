@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 
 ## Two roles
 
-Treating an assistant as a faster keyboard for pair programming is a category error. If you micromanage every token, you suffer review fatigue and end up rubber-stamping code you do not understand.
+You can treat an assistant as a faster keyboard and review every line it types. In my experience that tires you out, and you start to approve code you do not understand. I have not measured this.
 
 In this loop the assistant is the tech lead. You are the product manager of your own tools.
 
@@ -33,15 +33,15 @@ You can change direction during a cycle. Ask the assistant to [keep the current 
 
 ## Choose when work lands
 
-The example waits for you to try each slice. Alternatively, authorise a named repository and a named change scope to merge before use review. Name the review branch too. Authorised commits and pushes to that branch prepare the candidate for CI. Merging follows the required checks. Deployment needs separate authority, including deployment triggered by a push.
+The example below waits for you to try each slice before it lands. The other mode is merge before use review: the assistant merges first, and you try the result afterwards. Allow it only for a repository and a kind of change that you name. Name the branch it works on too. The assistant may commit and push to that branch so that the automated checks (CI) run. It merges only after the required checks pass. Deploying needs your separate permission, even when a push would start a deployment.
 
-Before merging, a competing provider must accept the plan and exact candidate. Require a separate competing-provider clean-code review and any security review. Local checks and executed CI must pass for that exact revision. Missing review or unexecuted CI blocks merging. Technical acceptance is not user acceptance. Later negative feedback directs a correction.
+Before the merge, an assistant from a different provider (another company's model) must accept the plan and the exact version to merge. Require a second review from a different provider for code quality, and a security review where the change needs one. The local checks and a CI run that actually executed must pass on that exact version. A missing review, or CI that never ran, blocks the merge. These reviews show that the code is sound. They do not show that you are happy with it. If you dislike the result when you try it, your feedback directs the next correction.
 
-Neither mode authorises egress, spending or messages, lifts holds, or extends to client repositories. Your stop still applies.
+Neither mode lets the assistant send data out, spend money or send messages. Neither mode lifts a hold you have set or covers a client's repositories. Your stop still applies.
 
 ## A review you can return to cold
 
-Run the demo on the exact version first. Show the benefit, reason and actual before and after output. Give one action, what good looks like, and what each answer unblocks. Put revision identifiers and evidence links last. If the demo cannot run or its output cannot be shared safely, mark the review blocked. Never invent an actual result.
+Ask the assistant to lay out each review so that you can pick it up later with no memory of the work. The assistant runs the demo on the exact version first. It shows the benefit, the reason and the actual output before and after. It gives you one action, what good looks like and what each answer unblocks. It puts version identifiers and evidence links last. If the demo cannot run, or its output cannot be shared safely, it marks the review as blocked. It never invents a result.
 
 ## Two cycles
 

@@ -141,7 +141,9 @@ Each rule can fail. It does not show that the rules find every unclear sentence.
 
 ## What is not tested
 
-The linter cannot check the licensed Simplified Technical English dictionary. It cannot check word sense or meaning. The passive-voice rule is a heuristic, and the test `test_known_false_positive_is_documented` records a sentence it flags wrongly. Vale is optional and the kit does not install it: `vale --config vale/.vale.ini example/notes-add.md`. The Vale rules mirror three of the rules (vague words, sentence length and passive voice) and do not compute the readability grade. I did not run Vale for this page. On 2026-10-24 I ran Vale 3.22.0 on the sample spec and on the failing fixture. The sample spec had 0 findings. The failing fixture had 5 errors and 5 warnings.
+The linter cannot check your words against the official Simplified Technical English dictionary. Open checkers, this one included, do not contain that dictionary. It is part of the ASD-STE100 standard, which ASD gives free to anyone who fills in its request form. The linter cannot check word sense or meaning. The passive-voice rule is a heuristic, and the test `test_known_false_positive_is_documented` records a sentence it flags wrongly. Vale is optional and the kit does not install it: `vale --config vale/.vale.ini example/notes-add.md`. The Vale rules mirror three of the rules (vague words, sentence length and passive voice) and do not compute the readability grade. I did not run Vale for this page. On 2026-10-24 I ran Vale 3.22.0 on the sample spec and on the failing fixture. The sample spec had 0 findings. The failing fixture had 5 errors and 5 warnings.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://www.asd-ste100.org/STE_faq.html. Quoted line: "The standard is available to everyone free of charge." The downloads page, https://www.asd-ste100.org/STE_downloads.html, says: "Request a free official copy of the current issue of the ASD-STE100 standard." It names Issue 9, January 2025.</p>
 
 **Read the matching page:** [Plain text and simple English](../../setup/plain-text-and-simple-english/)
 

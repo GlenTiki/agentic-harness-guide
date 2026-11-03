@@ -1,6 +1,6 @@
 ---
 title: Local models where they suffice
-description: Add optional local embedding and re-ranking through Ollama or sentence-transformers, a background indexing pattern and notes on models larger than memory.
+description: Add optional local embedding through Ollama, a dense and hybrid retrieval score, a background indexing pattern and notes on models larger than memory.
 status: built
 sidebar:
   label: "Chapter 12: Local models"
@@ -196,7 +196,7 @@ These numbers come from a run of the optional steps on 2026-10-25. The stored ou
   label="Computed"
   task="From the root of a clone of the guide repository (not the kit), you read the stored score line of each dense and hybrid run on the 44 memories and 34 queries."
   evidence="examples/retrieval-eval/outputs/dense.txt dense-prefixes.txt hybrid.txt hybrid-prefixes.txt"
-  env="Apple silicon laptop, macOS 26.5, Python 3.13.1 (3.14.5 for the cross-encoder), 2026-10-25"
+  env="Apple silicon laptop, macOS 26.5, Python 3.13.1, Ollama 0.34.2, 2026-10-25"
 >
 
 <Fragment slot="input">
