@@ -1,6 +1,6 @@
 ---
 title: Harness the power of your AI companions
-description: Sound engineering discipline for citizen developers, with deep technical shelves for engineers. Reliable, checkable work from AI companions.
+description: Reliable, checkable work from AI assistants, with sound engineering habits for everyday builders and deep technical shelves for engineers.
 template: splash
 hero:
   title: Harness the power of your AI companions.
@@ -20,26 +20,26 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 import LevelLadder from '../../components/LevelLadder.astro';
 import SlipCompare from '../../components/SlipCompare.astro';
 
-## From the trenches: why this guide exists
+## Why this guide exists
 
 I am Glen Keane. I build production software and distributed systems (formerly Wayflyer and Nearform), and currently ship automated insurance systems and AI tooling at Brightbeam.
 
-Most AI advice stops at the demo. In production, things fall apart. When you rely on AI assistants for serious work, you hit the **80% calculator trap**: an adding machine that calculates correctly 4 times out of 5 does not automate your work; it doubles your anxiety. If you have to babysit every word or line of output, you suffer review fatigue and end up rubber-stamping results you do not understand. That is how comprehension debt explodes.
+Most AI advice stops at the demo. In production, things fall apart. When you rely on AI assistants for serious work, you hit the **80% calculator trap**: an adding machine that calculates correctly 4 times out of 5 does not automate your work; it doubles your anxiety. If you have to babysit every word or line of output, you suffer review fatigue and end up rubber-stamping results you do not understand. That is how [comprehension debt](./start-here/why-bother/#comprehension-debt-is-a-workflow-problem) grows: the gap between what exists and what anyone understands.
 
-Getting reliable output is not about secret prompt incantations or expensive SaaS tools. It comes from disciplined habits: specifying intent like a Product Manager, catching mistakes with automatic test gates, and building disposable micro-tools that solve one friction point at a time. This guide, the Harness AI guide, teaches how.
+Getting reliable output is not about secret prompt incantations or expensive SaaS tools. It comes from disciplined habits: specifying intent like a Product Manager, catching mistakes with automatic test gates, and building disposable micro-tools that solve one friction point at a time. This guide teaches how.
 
 <CardGrid>
   <Card title="The Chat Hamster Wheel" icon="warning">
-    Pasting raw text into chat windows, arguing with sycophantic models over wrong sums, reviewing messy text by hand, and repeating identical manual drudgery every Monday.
+    Pasting raw text into chat windows, arguing over wrong sums, reviewing messy text by hand, and repeating the same manual work every Monday.
   </Card>
   <Card title="The Compounding Harness" icon="approve-check">
-    Directing clear intent, verifying with automatic checks, and retaining tested personal micro-tools that run in hundredths of a second.
+    Directing clear intent, verifying with automatic checks, and keeping small personal tools that have tests.
   </Card>
 </CardGrid>
 
-## The empirical evidence: the €133 duplicate invoice
+## What the tests showed: a €133 bill counted twice
 
-When raw chat models total 40 invoice lines, they sound confident, quote exact sums, and praise the neat input. Yet across 20 repeated trials, unguided models consistently miscalculate or include duplicate charges without warning.
+I gave an assistant 40 monthly bill amounts for 39 months and asked it to split the total three ways. In 20 of 20 isolated runs, the reply noticed that the count was one too many. In 20 of 20, it still led with a total that counts €133 twice. A reader who stops at the first line pays the wrong share.
 
 <SlipCompare />
 
