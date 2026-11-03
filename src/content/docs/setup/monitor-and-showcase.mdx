@@ -6,9 +6,9 @@ status: mixed
 
 *Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
 
-**Status.** Runs in my setup: a monitor that records my activity state and machine load, a log of hook events, a hook-crash notice and a showcase of self-contained preview pages. Built in the case study: an append-only event log, a build-time status board with an Unknown state, and a freshness check ([chapter 10](../../case-study/ch10-monitor/)). My monitor records and reinforces. It does not adapt its own thresholds.
+**Status.** Runs in my setup: a monitor that records my activity state and machine load, a log of hook events, a hook-crash notice and a showcase of self-contained preview pages. Built in the case study: an append-only event log, a build-time status board with an Unknown state, and a freshness check ([chapter 10](../../case-study/ch10-monitor/)). My monitor records. It does not adapt its own thresholds.
 
-## The weak spot it removes
+## The weak spot it targets
 
 **Nobody sees the system think.** An [agent](../../glossary/#agent) does work and you see only the final message. A hook can crash and nothing says so. A status page can show a green light that is three days old.
 
@@ -52,7 +52,7 @@ These are anecdotes from my setup. I have no command or log to show for them.
 | Weak spot | Fix |
 | --- | --- |
 | A hook crashed and nobody saw it. | Log the crash. Show one line at the next prompt. |
-| Context compaction lost the session state. | Save objective state before compaction. Replay it after. |
+| Context [compaction](../../glossary/#compaction) lost the session state. | Save objective state before compaction. Replay it after. |
 | Every stop started a re-index and swap ran out. | Gate the hook, lock the indexer, run heavy jobs through an admission wrapper at low priority. |
 
 ## End-to-end flow

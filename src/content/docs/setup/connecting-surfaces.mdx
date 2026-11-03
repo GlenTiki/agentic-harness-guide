@@ -8,7 +8,7 @@ status: mixed
 
 **Status.** Runs in my setup: one set of hook scripts behind thin adapters for several tools, tool servers over [MCP](../../glossary/#connector-mcp), a dashboard that talks to [agents](../../glossary/#agent) over ACP, and a way to send a reply to a named session. Parity across all tools is partly a prototype. Built in the case study: a plain-text inbox and outbox, an instruction-file layout and a check that the files agree ([chapter 11](../../case-study/ch11-surfaces/)). MCP, ACP and A2A appear here as options with checked wording, and the case study does not implement them.
 
-## The weak spot it removes
+## The weak spot it targets
 
 **Tools cannot see each other.** You use a terminal agent, an editor, a browser chat and another vendor's agent. Each starts blank and each has its own rules file. Rules drift between them.
 
@@ -21,7 +21,9 @@ The cheapest link between tools is a plain file that all of them read.
 - **Codex CLI** reads AGENTS.md files from the project root down to the working directory and joins them, up to 32 KiB by default.
 - **Gemini CLI** reads GEMINI.md by default. A setting named `context.fileName` accepts a list of names, so it can read AGENTS.md. Its docs also say that from 18 June 2026 another product replaced it for some users. Check the current status before you rely on it.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/memory. Quoted line: "Claude Code can read AGENTS.md as your project instructions". The reading needs Claude Code 2.1.277 or later, per the page. Claude Code on that date: 2.1.310.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/memory. Quoted line: "Claude Code can read AGENTS.md as your project instructions". The reading needs Claude Code 2.1.277 or later, per the page. Claude Code on that date: 2.1.316.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://learn.chatgpt.com/docs/agent-configuration/agents-md (the Codex AGENTS.md page; the old developers.openai.com address redirects there). Quoted line: "Codex concatenates files from the root down, joining them with blank lines." The page gives project_doc_max_bytes as 32 KiB by default. Codex CLI on that date: 0.166.0.</p>
 
 <p class="verified">Docs page fetched on 2026-10-24: https://geminicli.com/docs/cli/gemini-md/. The page lists the file name setting and states the replacement notice. The docs page states no version of its own.</p>
 
@@ -31,9 +33,13 @@ The cheapest link between tools is a plain file that all of them read.
 | --- | --- | --- |
 | MCP | An agent and its tools and data | The 2026-07-28 revision defines two transports, stdio and Streamable HTTP, over JSON-RPC. That revision dropped the old connection handshake, so older guides may describe an earlier revision. |
 | ACP | An editor and a coding agent | A protocol modelled on the language server protocol. Local agents run as editor subprocesses and talk JSON-RPC over stdio. Remote support was marked a work in progress. The page names no creator. |
-| A2A | One agent and another | An open project under the Linux Foundation, contributed by Google, using JSON-RPC 2.0 over HTTP(S), with streaming. |
+| A2A | One agent and another | An open project under the Linux Foundation, first developed by Google. It reuses HTTP, JSON-RPC 2.0 and Server-Sent Events, and defines JSON-RPC, gRPC and HTTP/REST bindings, with streaming. |
 
-<p class="verified">Docs page fetched on 2026-10-24: https://modelcontextprotocol.io/specification/latest/basic/transports. The page states the transports named above. The page is the latest revision as of that date.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://modelcontextprotocol.io/specification/latest/basic/transports. The page states the transports named above, and its backward-compatibility note says earlier revisions used an initialize handshake. The page is the 2026-07-28 revision, the latest as of that date.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://agentclientprotocol.com/overview/introduction. Quoted line: "Local agents run as sub-processes of the code editor, communicating via JSON-RPC over stdio." The page also says "Full support for remote agents is a work in progress." The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://a2a-protocol.org/latest/specification/. Quoted line: "specific protocol bindings (JSON-RPC, gRPC, HTTP/REST)". The overview at https://a2a-protocol.org/latest/ says A2A "was originally developed by Google and donated to the Linux Foundation." The docs page states no version of its own.</p>
 
 You do not need any of them to start. A shared file and a clear convention come first.
 
