@@ -52,9 +52,9 @@ When people first try an assistant, the initial speed feels intoxicating. Then r
 
 They are right to reject erratic output. But walking away surrenders your time to routine drudgery. A harness exists to turn that erratic 80% tool into a dependable, repeatable result.
 
-## Orchestration as a scaling law
+## Orchestration pays above a ceiling
 
-Orchestration is not about adding complexity for its own sake. It is a scaling law for reliability:
+Orchestration is not about adding complexity for its own sake. Whether it pays depends on how hard the task is for the assistant:
 
 - Below the assistant's complexity ceiling, orchestration is overhead.
 - At the ceiling, orchestration is neutral.
@@ -78,7 +78,7 @@ When teams adopt assistants without a harness, tests pass, pull requests look ti
 
 The common reaction is to micromanage: review every diff, pull on the leash, and inspect every step. That produces review fatigue, surface approvals, and eventual rubber-stamping. You cannot fix comprehension debt at the review gate after an assistant has freestyled for forty minutes.
 
-The intervention has to move upstream. Stop reviewing every diff. Move the quality gate to the assistant:
+The intervention has to move upstream. Stop reviewing every diff for mechanical issues, and sample only as [the sampling rule](../../journey/professional-guardrails/#checking-and-sampling) allows. Move the quality gate to the assistant:
 
 - **The assistant pays the compliance cost:** Linters, strict static analysis, and test suites are automated. The assistant does not care about deadlines; let it run until every dumb question (syntax, typing, dead code, formatting) is resolved.
 - **Save your eyes for intent:** When work lands on your screen, the mechanical checks have already passed. You spend your finite review budget on what no check can confirm for you: whether the architecture is sound and matches real-world human intent.
