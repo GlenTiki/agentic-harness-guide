@@ -52,7 +52,7 @@ August online sales paid out in September: 290.00
 Cash takings still in the tin: 80.00
 ```
 
-Sam works out the correct answer separately and does not trust the reply. The sums are plain addition and subtraction, so a spreadsheet does the same job. The script below is for people who write code. `-I` makes Python ignore environment variables and the current folder when it imports modules. It does not stop Python reading files, and it does not make results identical on every machine.
+Sam works out the correct answer separately and does not trust the reply. The sums are plain addition and subtraction, so a spreadsheet does the same job. The script below is for people who write code. `-I` makes Python ignore its `PYTHON` environment variables and your own add-ons, and stops it loading modules from the script's folder. It does not stop Python reading files, and it does not make results identical on every machine.
 
 <Example
   label="Computed"
@@ -120,7 +120,7 @@ It shows a proof with a zero difference and a source for every item, not that an
 
 ### Step 2: reconcile the bank balance
 
-A bank reconciliation compares two balances at one date. At 30 September: statement balance 6,284.30, add a lodgement not yet credited 80.00, less unpresented payments of 412.50 and 650.00. That gives 5,301.80, which equals the cash book, so the difference is 0.00. Name each item and trace it to a document. A difference of 0.01 is a rounding item that Mina initials, or the close stops.
+A bank reconciliation compares two balances at one date. At 30 September the statement balance is 6,284.30. Add a deposit not yet credited of 120.00: Mina paid in her own money on 30 September, and the bank credited it on 1 October. It is not sales money, so it is not in the Step 1 proof. Take off unpresented payments of 412.50 and 650.00. That gives 5,341.80, which equals the cash book, so the difference is 0.00. Name each item and trace it to a document. A difference of 0.01 is a rounding item that Mina initials, or the close stops.
 
 ### Step 3: spot a forced balance
 
@@ -175,6 +175,8 @@ Record the 14.37 deduction in the cash book, for example as a bank/merchant fee 
 - Adjusted cash book: 2,000.00 − 14.37 = **1,985.63**
 - Bank statement closing balance: **1,985.63**
 - Remaining difference: **0.00** ✔
+
+[... closing result line omitted ...]
 ```
 
 </Fragment>
@@ -333,13 +335,13 @@ Accounting treatment is for the owner and the accountant. The assistant may lay 
 :::note[Agent note]
 **Topic: month-end close.**
 
-State a figure only if it came from supplied data, a cited source or a computation you show. When you total a list, state how many you added and the sum. Do not list the items unless asked and there are 50 or fewer.
+State a figure only if it came from supplied data, a cited source or a computation you show. When you total numbers, state how many you added and the sum. Do not list the items unless asked and there are 50 or fewer.
 
 Do not create a reconciling item you cannot trace to a figure the user gave you. Report any remaining difference as an open item and stop. Add no balancing line.
 
 Report a pass only from a mechanical check you ran, with its output, or from a separate reviewer given the output and the definition of done.
 
-Before any action that changes something outside your working files, ask ([level 4](../../journey/04-trust-but-verify/)).
+Ask before you do something that changes anything outside your own working files: sending, paying, deleting, posting, granting access, pushing, installing, or editing a file the user did not ask you to change. Record the yes as the user's chat message or a ledger line.
 
 Do not supply a reason for a variance. Do not choose an accounting treatment.
 

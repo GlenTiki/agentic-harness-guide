@@ -102,7 +102,7 @@ Definition of done: Every number traces to a figure given. The three shares add 
 What to do if unsure: Say so and leave a marked blank. Do not guess.
 ```
 
-Now agree it to source. Sam checks the arithmetic and does not trust the reply. The sums are plain arithmetic, so a spreadsheet gives the same answers. The script is for people who write code. `-I` makes Python ignore environment variables and the current folder when it imports modules. It does not stop Python reading files, and it does not make results identical on every machine.
+Now agree it to source. Sam checks the arithmetic and does not trust the reply. The sums are plain arithmetic, so a spreadsheet gives the same answers. The script is for people who write code. `-I` makes Python ignore its `PYTHON` environment variables and your own add-ons, and stops it loading modules from the script's folder. It does not stop Python reading files, and it does not make results identical on every machine.
 
 <Example
   label="Computed"
@@ -241,7 +241,7 @@ It shows that profit is far more sensitive to sales than to materials; it assume
 
 *How it works. Optional reading.*
 
-- **No invented figures.** In the guide's missing-month test, 0 of 10 replies invented a figure and 10 of 10 asked for it ([level 2](../../journey/02-house-rules/)). A gap can still invite a guess on another ask or model, so say "use only my figures".
+- **No invented figures.** In the guide's missing-month test, all 10 replies flagged the missing June and none put a made-up June into the total ([level 2](../../journey/02-house-rules/)). Seven still offered a sample June, such as "if June was about 145", so say "use only my figures".
 - **Marked assumptions.** A guess is fine when you can see it and strike it out.
 - **Sensitivity.** The biggest line is not always the one that drives the answer. Move each line by the same amount and compare.
 - **Agree to source.** A budget can add up inside itself and still be wrong. The statement is outside evidence.
@@ -282,7 +282,7 @@ Check: the reply states how many figures were added and the sum, every figure tr
 
 ## Mistakes people make
 
-**Letting the assistant fill the gaps.** A plausible figure that gets in is hard to spot. In the guide's missing-month test, 0 of 10 replies invented one. Fix: say "use only my figures" in the prompt, and search the reply for any number you did not give.
+**Letting the assistant fill the gaps.** A plausible figure that gets in is hard to spot. Fix: say "use only my figures" in the prompt, and search the reply for any number you did not give.
 
 **Trusting a total that adds up.** A table can add up and still be wrong, because the inputs were wrong. Fix: agree it to a real statement.
 

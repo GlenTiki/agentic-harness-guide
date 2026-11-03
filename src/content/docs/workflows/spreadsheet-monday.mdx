@@ -35,9 +35,9 @@ You need any chat assistant and a spreadsheet. This takes about 25 minutes. Need
 Excel and Google Sheets both take the formulas below. Paste a formula into a cell and compare the result with the figure on this page. If your result differs, check the formula syntax in your spreadsheet's help.
 :::
 
-<p class="verified">Docs page fetched on 2026-10-24: https://support.microsoft.com/en-us/excel/functions/sumproduct-function. Quoted line: "The SUMPRODUCT function returns the sum of the products of corresponding ranges or arrays." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://support.microsoft.com/en-us/excel/functions/sumproduct-function. Quoted line: "The SUMPRODUCT function returns the sum of the products of corresponding ranges or arrays." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
-<p class="verified">Docs page fetched on 2026-10-24: https://support.google.com/docs/answer/3094294. Quoted line: "The SUMPRODUCT function calculates the sum of the products of corresponding entries in 2 equally sized arrays or ranges." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://support.google.com/docs/answer/3094294. Quoted line: "The SUMPRODUCT function calculates the sum of the products of corresponding entries in 2 equally sized arrays or ranges." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 I ran every formula on this page in LibreOffice 26.8.0.3 on 2026-10-25. The results below are what it gave. COUNTIF ignores case, so Feb and feb count as one month, and it treats `*` and `?` as wildcards.
 
@@ -197,7 +197,7 @@ It shows a check cell that compares two independent records; it does not show th
 
 </Example>
 
-Next, the budget in column B, the actual in column C, the variance in D and the percentage in E. Materials is row 3 and other costs is row 8. Fill the variance and percentage formulas down every budget line, rows 3 to 8, so row 8 has its own. A positive variance on a cost is adverse. A positive variance on sales is favourable. The flag is true only when a line is more than 50.00 and more than 5% from budget. The percentage is a fraction, so 5% is 0.05.
+Next, on a new sheet, put the line names in column A, the budget in column B, the actual in column C, the variance in D and the percentage in E. Sales is row 2, materials is row 3 and other costs is row 8. Fill the variance and percentage formulas down every cost line, rows 3 to 8, so row 8 has its own. A positive variance on a cost is adverse. A positive variance on sales is favourable. The flag is true only when a line is more than 50.00 and more than 5% from budget. The percentage is a fraction, so 5% is 0.05.
 
 <Example
   label="Computed"
@@ -274,13 +274,13 @@ Asking for the formula also gives you something to read. You can see that the ra
 The check cell turns the rule into a signal. A person skimming a sheet will not notice a wrong total, but will notice a red FALSE.
 
 :::note[At work]
-Keep the check cell, the source figures and the reviewer's initials on the sheet. That is a working paper: it shows where each number came from and who checked it. A total typed over a formula, or a range that stops one row short, are the usual ways a sheet goes wrong.
+Keep the check cell, the source figures and the reviewer's initials on the sheet. That is a working paper: it shows where each number came from and who checked it. A total typed over a formula and a range that stops one row short are two common ways a sheet goes wrong.
 :::
 
 ## Expert corner
 
 :::caution[Expert corner]
-The distinct-count formula treats "Feb" and "Feb " (with a trailing space) as different months, and "Feb" and "feb" as the same one. Clean the column first. Floating-point sums can leave tiny differences, so compare money with a tolerance, as in the check cell.
+The distinct-count formula treats "Feb" and "Feb " (with a trailing space) as different months, and "Feb" and "feb" as the same one. Clean the column first. Floating-point sums can leave tiny differences, so round money to the cent before you compare it, as the check cell does.
 
 An assistant can write a formula that looks right and points at the wrong range. Test every formula on a case with a known answer before you trust it on real data.
 
