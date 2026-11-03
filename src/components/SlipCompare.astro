@@ -8,7 +8,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
   <div class="slip-header-row">
     <div class="slip-title-group">
       <span class="slip-kicker">REAL-WORLD SLIP</span>
-      <h3 id="slip-heading" class="slip-heading">The €133 duplicate invoice: sounding certain while getting the numbers wrong</h3>
+      <h3 id="slip-heading" class="slip-heading">The €133 duplicate invoice: a correct warning under a wrong headline</h3>
     </div>
     <div class="view-toggles" role="group" aria-label="Comparison mode">
       <button type="button" class="view-btn active" data-view="headline">1. Chat reply</button>
@@ -40,7 +40,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
   <div class="slip-drawer" data-drawer="formula" hidden>
     <div class="drawer-header">
       <span class="drawer-title">Spreadsheet check formula:</span>
-      <code>B2 = IF(A2=A1, "same as above", "")</code>
+      <code>C2 = IF(B2=B1, "same as above", "")</code>
     </div>
     <div class="table-scroll" role="region" tabindex="0" aria-label="Amounts sample table">
       <table class="slip-table">
@@ -73,7 +73,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
     </div>
   </div>
 
-  <p class="slip-reason">One amount was pasted twice. The reply noticed 40 amounts for 39 months, praised the clean data in polite prose, then added all 40 into the payout.</p>
+  <p class="slip-reason">One amount was pasted twice. The reply noticed 40 amounts for 39 months and said so, but its headline payout still added all 40.</p>
   <p class="slip-caption">Observed: in 20 of 20 recorded runs the headline total included the repeat and every reply flagged the mismatch. claude-sonnet-5-5, Claude Code 2.1.310, 2026-10-25. <a href={`${blob}/runs/2026-10-25/raw/C01-bills-total-long-unlabelled-t01.txt`}>Raw reply</a>, <a href={`${BASE}/evidence/`}>all counts</a>.</p>
 </section>
 
@@ -111,7 +111,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
 
     injectBtn?.addEventListener('click', () => {
       if (testStatus) {
-        testStatus.textContent = 'FAIL (exit 1): Second duplicate detected! Row 32 matches Row 31 (€217). Mechanical check halts close before sign-off.';
+        testStatus.textContent = 'Simulated FAIL (exit 1): Second duplicate detected! Row 32 matches Row 31 (€217). Mechanical check halts close before sign-off.';
         testStatus.classList.add('status-failed');
       }
       if (dupRow) dupRow.classList.add('flash');
