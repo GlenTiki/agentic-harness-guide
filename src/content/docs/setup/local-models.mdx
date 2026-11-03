@@ -8,7 +8,7 @@ status: mixed
 
 **Status.** Runs in my setup: local models served by Ollama for narration, summaries and a stop-time drift check, a tool server that asks a local model, and a free-memory check. Built in the case study as optional parts: local embedding and a background indexing job ([chapter 12](../../case-study/ch12-local-models/)). Layer streaming for models larger than memory is not in my setup, and this page gives no speed numbers.
 
-## The weak spot it removes
+## The weak spot it targets
 
 **Everything costs [tokens](../../glossary/#token).** Sending every small job to a large hosted model costs money and sends your data out. A local model keeps the data on the machine and costs no per-token fee. A local model also competes for memory with everything else you run.
 

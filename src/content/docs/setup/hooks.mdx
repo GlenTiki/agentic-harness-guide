@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 
 **Status.** Runs in my setup. The exit-code tests are rebuilt from scratch in [case-study chapter 2](../../case-study/ch02-hooks/), and you can run them from the downloadable kit.
 
-## The weak spot it removes
+## The weak spot it targets
 
 **The [agent](../../glossary/#agent) can fail to follow a rule.** An [instruction file](../../glossary/#instruction-file) is advice, and nothing forces the agent to follow it. This is a principle: the guide's runs did not test how often an agent skips a rule. A [hook](../../glossary/#hook) is a script the [harness](../../glossary/#harness) runs at a fixed point. The agent cannot decide to skip it for the tool calls the hook matches. A hook can still be misconfigured, and by default a hook that fails with an exit code other than 2 lets the action go ahead. See [level 4](../../journey/04-trust-but-verify/) and the [hooks shelf page](../../shelf/control/hooks/).
 

@@ -10,7 +10,7 @@ import Example from '../../../components/Example.astro';
 
 **Status.** Runs in my setup: [BM25](../../glossary/#bm25) keyword search, dense embedding search, rank fusion and a small recency boost. Built and measured in the case study ([chapter 6](../../case-study/ch06-rerank/) and [chapter 12](../../case-study/ch12-local-models/)) and not in my setup: a cross-encoder re-ranker. My setup has no re-ranker of any kind.
 
-## The weak spot it removes
+## The weak spot it targets
 
 **Keyword search misses the point.** A search for "stop duplicates" can miss a note titled "count each month once". The words differ and the meaning is the same. Better ranking finds the right note. The aim is to load fewer [tokens](../../glossary/#token) and the right ones.
 
