@@ -9,12 +9,12 @@ import Example from '../../../components/Example.astro';
 
 ## Scene
 
-*Last time: you learned that a model writes likely text, that it varies, and that it only sees what is on its desk. You also checked a total yourself in a spreadsheet. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing. The next exercise uses a new, shorter list with the months labelled.*
+*Last time: you learned that a model writes likely text, that it varies, and that it only sees what is in its context window. You also checked a total yourself in a spreadsheet. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing. The next exercise uses a new, shorter list with the months labelled.*
 
 Suppose Sam types "Make my CV better" and gets back a CV that is longer, shinier and lists a skill Sam does not have. (This is an invented case, not a recorded run.) Sam did not say who would read it, which job it was for or what "better" meant. The assistant guessed. It is a good guesser. It is still guessing.
 
 :::note[Weak spot]
-Level 0 left you able to see that a sure-sounding answer can be wrong, but nothing yet makes a wrong answer less likely. **A vague ask gets a confident answer to a question you did not mean.** The fix at this level is a clear ask with constraints and a check step. A script can also lint a plain-English spec, as the [simple English page](../../setup/plain-text-and-simple-english/) shows. This level is step 3 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-3-engineer-a-fix), Engineer a fix.
+Level 0 left you able to see that a sure-sounding answer can be wrong, but nothing yet makes a wrong answer less likely. **A vague ask gets a confident answer to a question you did not mean.** The fix at this level is a clear ask with constraints and a check step. A script can also check that a written ask uses plain English, as the [simple English page](../../setup/plain-text-and-simple-english/) shows. This level is step 3 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-3-engineer-a-fix), Engineer a fix.
 :::
 
 ## The idea
@@ -63,9 +63,9 @@ For a quick question, one line is fine. Use the full shape when the result matte
 
 ## Try it
 
-You need any chat assistant. This takes about 35 minutes in all. The four passes take about 10. You refine one ask in four passes. Use Sam's bills ask, or swap in a task of your own.
-
 <p class="audience">Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</p>
+
+You need any chat assistant. This takes about 35 minutes in all. The four passes take about 10. You refine one ask in four passes. Use Sam's bills ask, or swap in a task of your own.
 
 **Phone OK** for passes 1 to 4 and steps 5 and 6. Step 7 needs a laptop with a spreadsheet, and you can skip it.
 
@@ -159,7 +159,7 @@ Reply with February once. The assistant should now give the 12-month result: tot
 
 **Step 5: save the ask.** Save it as `bills-ask-v1` in a notes app or a Word document. Put a blank where the expected count goes ("If the count is not [the count you expect]"), so you can reuse it.
 
-**Step 6: run it in three new chats.** Send the assembled ask in each one, then do the same with the starting ask. Write down how many chats did what the constraints said: stop at 13 months and ask. "Better" here means "did what the constraints said", not "gave a total", because a loose ask can give a clean total by guessing. In the recorded runs (20 trials each, 2026-10-25) the starting ask gave 2,120.00 every time. The full ask asked every time. You decide what a repeated month means. The assistant does not. Level 5 builds this into a proper tiny test.
+**Step 6: run it in three new chats.** Send the assembled ask in each one, then do the same with the starting ask. Write down how many chats did what the constraints said: count 13 entries, stop and ask. "Better" here means "did what the constraints said", not "gave a total", because a loose ask can give a clean total by guessing. You decide what a repeated month means. The assistant does not. Level 5 builds this into a proper tiny test.
 
 **Step 7: check the sums in a spreadsheet. Optional, needs a spreadsheet such as Sheets or Excel.** Put the months in cells A2 to A13 and the amounts in B2 to B13. In the lines below, the part before the colon names the cell. Type only the formula that starts with `=`.
 
@@ -207,7 +207,7 @@ Ask for a fixed reply shape, put the check in it as a required field, and reject
 </details>
 
 :::note[At work]
-A close checklist works like a good ask. It has a goal, a [tolerance](../../glossary/#tolerance) (how far a figure may differ before someone investigates), a template to fill in and a tick-box. Someone other than the preparer signs it off.
+A close checklist works like a good ask. It has a goal, a [tolerance](../../glossary/#tolerance) (the difference allowed when two balances are compared, here 0.00), a template to fill in and a tick-box. Someone other than the preparer signs it off, or the [fallback reviewer](../professional-guardrails/#fallback-reviewer) if you work alone.
 :::
 
 ## Expert corner

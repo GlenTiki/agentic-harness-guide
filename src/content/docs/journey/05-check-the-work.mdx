@@ -52,8 +52,7 @@ An assistant that writes "all checks passed" has marked its own homework. Move t
 - **A [mechanical check](../../glossary/#mechanical-check).** A formula, a script or a spreadsheet function that counts months and adds figures. It does the same thing every time and has no opinions.
 - **A separate reviewer.** A second assistant run, with a different brief, that sees the finished output and the definition of done, and not the author's reasoning.
 
-Use a formula for anything countable. Use a reviewer for judgement calls, such as "is this email polite?". A formula outranks a model reviewer. A reviewer assistant is a filter, not a control.
-Step 5 below tests one reviewer. Measure it for your own work, because no reviewer is a proof (see [independent review (for engineers)](../../shelf/quality/independent-review/)).
+Use a formula for anything countable. Use a reviewer for judgement calls, such as "is this email polite?". A formula outranks a model reviewer. A reviewer assistant is a filter, not a control. Step 5 below tests one reviewer. Measure it for your own work, because no reviewer is a proof (see [independent review (for engineers)](../../shelf/quality/independent-review/)).
 
 <MechanicalCheckFlow />
 
@@ -73,7 +72,7 @@ Figures per month for last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Ju
 
 The correct answer is 12 months, a total of 2,120.00 and shares of 706.67, 706.67 and 706.66.
 
-2. Check it with formulas in a spreadsheet. Put the months in A2 to A13 and the figures in B2 to B13. In B14 type `=SUM(B2:B13)`. It gives 2,120. Then try these. The long one counts each month once. The full set is on [spreadsheet Monday](../../workflows/spreadsheet-monday/).
+2. Check it with formulas in a spreadsheet. Put the months in A2 to A13 and the figures in B2 to B13. In B14 type `=SUM(B2:B13)`. It gives 2,120. Then try these. The SUMPRODUCT line counts each month once. The full set is on [spreadsheet Monday](../../workflows/spreadsheet-monday/).
 
 ```text
 =COUNTA(A2:A13)                                  gives 12
@@ -168,7 +167,7 @@ All 10 fresh reviews and all 10 simulated same-context reviews (the author's rea
 
 </Example>
 
-6. Make it a habit. After each job, open a second chat and paste the work and the checklist. If your tool runs helpers, add this rule to your instruction file from level 2: "Before reporting, send the output and the definition of done to a reviewer in a new chat. Report its FAIL lines."
+6. Make it a habit. After each job, open a second chat and paste the work and the checklist. If your tool can start a second assistant on its own, add this rule to your instruction file from level 2: "Before reporting, send the output and the definition of done to a reviewer in a new chat. Report its FAIL lines."
 
 Your version: swap in a task of your own, such as shift cover or a status update.
 

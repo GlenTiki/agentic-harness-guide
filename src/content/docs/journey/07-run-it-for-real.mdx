@@ -69,12 +69,14 @@ The multiplication is the result under an independence assumption. If the steps 
 
 </Example>
 
-A check on the weak step, and a retry, win runs back. The [evals](../../glossary/#eval) from level 5 are the tool for real numbers: count per step, so you know which one is weak. Thirty clean runs in a row mean the failure rate is probably below about 1 in 10 (the rule of three: 3 divided by 30). A few good runs prove little.
+A check on the weak step, and a retry, win runs back. The [evals](../../glossary/#eval) from level 5 are the tool for real numbers: count per step, so you know which one is weak. A run of clean results bounds the failure rate only loosely: see [checking and sampling](../professional-guardrails/#checking-and-sampling) for the numbers. A few good runs prove little.
 
 <details class="go-deeper">
 <summary>Go deeper, for people who write code: what a check on the weak step buys</summary>
 
-A check catches 90% of a step's errors. If the retry always works, a step right with chance p becomes p + (1 - p) x 0.90. If the retry works half the time, it becomes p + (1 - p) x 0.45. Case C checks the weak step only. Case D checks every step. The numbers are made up. The same sums work in a spreadsheet. The code uses `python3 -I`. `-I` makes Python ignore environment variables and the current folder when it imports modules. It does not stop Python reading files, and it does not make results identical on every machine.
+A check catches 90% of a step's errors. If the retry always works, a step right with chance p becomes p + (1 - p) x 0.90. If the retry works half the time, it becomes p + (1 - p) x 0.45. Case C checks the weak step only. Case D checks every step. The numbers are made up. The same sums work in a spreadsheet. The code uses `python3 -I` (isolated mode). It ignores every `PYTHON*` environment variable and leaves the script's folder and your own installed packages off the import path. It does not stop Python reading files, and it does not make results identical on every machine.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://docs.python.org/3/using/cmdline.html. Quoted line: "All PYTHON* environment variables are ignored, too." The page documents Python 3.15.2.</p>
 
 <Example
   label="Computed"
@@ -283,12 +285,12 @@ You can now:
 
 1. 0.9^5 = 0.59, about six in ten. Find the weakest step by counting on known cases, then add a check there.
 2. The read line shows `months=9`, so look at the calculate brief and its inputs, not the export. The log has narrowed the search.
-3. Write the intent record before the send, and send with a key the provider uses to drop repeats. If none exists, a crash can send twice, so keep the send behind a human checkpoint.
+3. Before the send, record that the send is about to happen, so a restart can check that record ("did I already send this?"). Send with a key the provider uses to drop repeats. If none exists, a crash can send twice, so keep the send behind a human checkpoint.
 
 </details>
 
 ## Bridge
 
-You can now run a known job safely. A new job still raises one question: where do the helpers and checks go? Level 8 gives you a method.
+You can now run a known job safely, but a new job still leaves you to decide where the helpers and checks go, so level 8 gives you a method.
 
 **Next:** [Level 8: Design anything](../08-design-anything/)
