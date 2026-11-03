@@ -425,6 +425,10 @@ The number a program returns when it ends. In a Claude Code hook, 0 means succes
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead, except for hooks whose failure blocks the action". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
+### Fixture
+
+A small, fixed sample file that a test reads, such as a three-line recipe, so the test gives the same result on every run. Make fixtures up. Do not copy real customer data into them.
+
 ### Frontmatter
 
 The block of settings at the top of a file, between two `---` lines. In a skill file it holds the name and the description.
@@ -441,9 +445,17 @@ A script that checks text or code against a list of rules. A clean run means the
 
 A program that exposes tools and data to an assistant over the Model Context Protocol. Pin its version and review its tool descriptions, because the assistant reads them as text. A [connector](#connector-mcp) is the plain name for one.
 
+### Merge before use review
+
+An arrangement you authorise for one named repository and change scope: the agent's work merges after independent review and passing checks, and you try it afterwards. Your later feedback directs a correction. It never covers deployment, spending or messages. The [product manager page](../method/be-the-product-manager-of-your-own-tooling/#choose-when-work-lands) sets the rules.
+
 ### Reciprocal rank fusion
 
 A way to merge two ranked lists. Each item scores one divided by a constant plus its rank in each list, and the scores are added.
+
+### Re-ranking
+
+A second pass that re-orders the top results of a fast search with a slower, more precise model, so the best passages come first. A [cross-encoder](#cross-encoder) is a common re-ranker. See the [relevance page](../setup/relevance-and-reranking/).
 
 ### Simplified Technical English
 

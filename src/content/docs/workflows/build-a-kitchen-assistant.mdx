@@ -17,7 +17,7 @@ Sam cooks on Sundays. The recipes live in three notebooks, a phone note and Priy
 
 **A throwaway tool you build in an afternoon can make a hobby richer, if each part is small enough to check.** Cooking is a safe place to practise, because a wrong answer costs a dinner, not a payment.
 
-The kitchen assistant has four parts. Each part is one command in one short script. Each has a test and a fixture, and each refuses loudly when it is unsure:
+The kitchen assistant has four parts. Each part is one command in one short script. Each has a test and a [fixture](../../glossary/#fixture) (a small sample file the test reads), and each refuses loudly when it is unsure:
 
 1. **Catalogue.** Turn a dictated recipe into an entry with ingredients and quantities. Reject an entry that has a line it cannot parse.
 2. **Stock.** Apply plain text commands such as "used 2 eggs" to a file. Stock never goes below zero silently.
