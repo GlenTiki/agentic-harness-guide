@@ -472,7 +472,7 @@ The how-to-read page offers these goals and routes. Keep it in step with this ta
 | Goal | Route |
 | --- | --- |
 | I have never used an AI assistant | The journey, levels 0 to 8 in order |
-| I use one and get mixed results | The consistency fast track (a baseline and eight steps) |
+| I use one and get mixed results | The consistency fast track (eight steps starting from a baseline) |
 | I use one daily and repeat myself | Start at level 2 |
 | I work in finance or another regulated field | The professional route |
 | I want to connect tools safely | Levels 3 and 4, then the connect-systems workflow |
