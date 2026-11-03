@@ -142,6 +142,6 @@ Two rules keep batches safe. Approve a batch only for items in the unattended gr
 
 Copy both lists above into your instruction file. Then add an `ask` rule for `git push` so the harness prompts for the first approval item. Add a deny rule or a blocking hook for force-pushes to shared branches and for writes to the settings and hook files. The sample hook blocks all force-pushes. A policy that distinguishes shared branches needs a separate check of the branch.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.316. The docs page states no version of its own. The permission modes page, fetched on the same date, says the same ask rules "fall back to a permission prompt" in auto mode.</p>
 
 **Next:** [Change control for the harness](../change-control/)

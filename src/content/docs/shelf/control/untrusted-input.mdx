@@ -22,7 +22,7 @@ import TrustBoundary from '../../../../components/TrustBoundary.astro';
 
 **1. Name the authoritative channels.** Typically these are your direct chat in the active session and a message from one of your own verified addresses, sent one-to-one. Write this list in your instruction file.
 
-**2. Name what is not authoritative.** State it plainly. The block below is a sample for your instruction file. It uses chat only; choose your own channels. The last line is the data rule, word for word.
+**2. Name what is not authoritative.** State it plainly. The block below is a sample for your instruction file. It uses chat only; choose your own channels. The last line extends the data rule from level 4: it fences the quote and redacts anything that looks like a secret.
 
 ```markdown
 ## Instruction sources
@@ -123,8 +123,8 @@ For each route you cannot close, decide whether to block it, limit it to an allo
 
 ## First step for the maintainer
 
-Paste the instruction-source block above into your instruction file, with your own channels. Then deny reads of your credentials files, so that a successful injection finds nothing to steal.
+Paste the instruction-source block above into your instruction file, with your own channels. Then deny reads of your credentials files, so that a successful injection has less to steal. Secrets in environment variables and in files you did not list are still in reach.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/mcp. Quoted line: "Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.310. The docs page states no version of its own. The attribution note rests on the post at simonwillison.net/2025/Jun/16/the-lethal-trifecta/, which was not re-fetched on 2026-10-24: Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/mcp. Quoted line: "Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.316. The docs page states no version of its own. The attribution note rests on the post at simonwillison.net/2025/Jun/16/the-lethal-trifecta/, fetched on the same date. Its title is "The lethal trifecta for AI agents: private data, untrusted content, and external communication".</p>
 
 **Next:** [Claude Code sub-agents](../../delegation/sub-agents/)
