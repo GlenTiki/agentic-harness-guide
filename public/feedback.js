@@ -76,6 +76,7 @@ const setupModal = () => {
     if (e) e.preventDefault();
     const heading = nearestHeading();
     const quote = selectedText();
+    held = '';
     const scheme = document.documentElement.dataset.theme ?? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     const pageWithHash = location.pathname + (heading?.id && heading.matches('h2, h3, h4') ? `#${heading.id}` : '');
     const currentSection = heading?.textContent?.trim() ?? '';
@@ -192,7 +193,7 @@ for (const link of document.querySelectorAll('a[data-feedback]')) {
   link.addEventListener('focus', () => upgrade(link));
   link.addEventListener('click', () => {
     upgrade(link);
-    held = '';
+    if (!link.matches('.feedback-button')) held = '';
   });
 }
 

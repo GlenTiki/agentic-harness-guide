@@ -42,8 +42,22 @@ try {
   if (!(await demo.innerText()).includes('Example: duplicate detected')) failures.push('weak-spot diagram implies an executed test');
   await page.locator('.feedback-button').focus();
   assert.equal(await page.locator('.feedback-button').evaluate((el) => el === document.activeElement), true);
+  const selectedQuote = await page.evaluate(() => {
+    const paragraph = document.querySelector('.sl-markdown-content p');
+    const range = document.createRange();
+    range.selectNodeContents(paragraph);
+    const selection = getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    const quote = selection.toString().trim();
+    document.querySelector('.feedback-button').dispatchEvent(new PointerEvent('pointerdown'));
+    selection.removeAllRanges();
+    return quote;
+  });
   await page.locator('.feedback-button').click();
   assert.equal(await page.locator('#feedback-modal').evaluate((el) => el.open), true);
+  assert.equal(await page.locator('[data-feedback-quote]').isVisible(), true);
+  assert.ok((await page.locator('[data-feedback-quote]').innerText()).includes(selectedQuote.slice(0, 160)));
   await page.getByRole('button', { name: 'Close dialog' }).click();
   assert.equal(await page.locator('#feedback-modal').evaluate((el) => el.open), false);
   await page.goto(`http://127.0.0.1:${server.address().port}${base}/journey/06-hire-a-team/`);
