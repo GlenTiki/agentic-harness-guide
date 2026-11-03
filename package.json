@@ -19,7 +19,7 @@
     "check:llms": "node scripts/check-llms.mjs",
     "check:mako": "node scripts/check-mako-standards.mjs",
     "check:slop": "node scripts/audit-slop.mjs",
-    "check": "npm run build && npm run check:links && npm run check:skill-coverage && npm run check:todos && npm run check:examples && npm run check:claims && npm run check:evidence && npm run check:llms && npm run check:contrast && npm run check:seo && npm run check:og && npm run check:layout && npm run check:orphans && npm run check:showcase && npm run check:health && npm run check:downloads && npm run check:feedback && npm run check:next && npm run check:mako && npm run check:slop",
+    "check": "npm run build && npm run check:links && npm run check:skill-coverage && npm run check:todos && npm run check:examples && npm run check:claims && npm run check:evidence && npm run check:llms && npm run check:contrast && npm run check:seo && npm run check:og && npm run check:layout && npm run check:entry && npm run check:orphans && npm run check:showcase && npm run check:health && npm run check:downloads && npm run check:feedback && npm run check:next && npm run check:mako && npm run check:slop",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:seo": "node scripts/check-seo.mjs",
     "check:og": "node scripts/check-og.mjs",
@@ -33,13 +33,14 @@
     "check:showcase": "node scripts/check-showcase.mjs",
     "check:health": "node scripts/check-health.mjs && node scripts/check-health-selftest.mjs",
     "health": "npm run build && node scripts/record-health.mjs",
-    "check:feedback": "node scripts/check-feedback.mjs && node --test scripts/feedback-digest.test.mjs",
+    "check:feedback": "node scripts/check-feedback.mjs && node --test scripts/feedback-digest.test.mjs && node --test scripts/feedback-server.test.mjs",
     "feedback": "node scripts/feedback-digest.mjs",
     "feedback:server": "node scripts/feedback-server.mjs",
     "feedback:monitor": "node scripts/monitor-feedback.mjs",
     "feedback:inbox": "node scripts/monitor-feedback.mjs --once",
     "narrative:facts": "node scripts/narrative-facts.mjs",
-    "test:narrative": "node --test scripts/narrative-facts.test.mjs"
+    "test:narrative": "node --test scripts/narrative-facts.test.mjs",
+    "check:entry": "node scripts/check-entry-flows.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.5",

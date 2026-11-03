@@ -36,7 +36,7 @@ I keep them in two places so that they do not mix. Behaviour feedback sits besid
 1. When I submit a prompt, a hook searches the notes with the prompt text.
 2. The search is keyword-based ([BM25](../../glossary/#bm25), see the next page). It loads no model, so it is fast.
 3. The best few matches are added to the prompt as hints. The total is capped at a few thousand characters.
-4. Before the agent sends a brief to a helper, or edits a file, a second hook searches memory with that outgoing text. This catches a rule that the brief would break.
+4. A PreToolUse hook searches memory with the outgoing brief or edit. It returns matching notes as additionalContext, which Claude receives alongside the tool result. This can inform later reasoning; it does not stop or revise the pending call.
 5. Every N prompts, a hook re-injects a short file of costly measured facts, so long sessions do not forget them.
 
 Each hint is a nudge, not an order. The agent weighs it.

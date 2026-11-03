@@ -1,9 +1,32 @@
 ---
 title: The consistency fast track
 description: A route of eight steps, from a baseline to a three-case test, for people who want repeatable results from a chat assistant.
+next:
+  link: /agentic-harness-guide/journey/05-check-the-work/#a-tiny-eval-table
+  label: "Level 5: Check the work"
 ---
 
 This route is for you if you already use an assistant and the results vary. Consistent means the same structure, figures and quality, not the same words. Use your own task throughout. Where a step needs numbers, the shared-bills example supplies them.
+
+## Try it on one update
+
+Start here if you want something useful before the full comparison. Paste your own non-sensitive notes into this ask, or use the invented notes below.
+
+```text
+Draft a weekly project update using only these notes:
+- Import pilot passed 12 sample rows. Full import has not run.
+- Friday release depends on security review. That review is still open.
+- CSV export bug reproduced. Owner not assigned.
+
+Use three headings: Verified progress, Plans, Blockers/open items.
+Keep it under 120 words. Preserve conditions and unknowns.
+Do not invent owners, completion or release commitments. Draft only; send nothing.
+List the source note for each claim so I can check it.
+```
+
+Check the reply against the notes yourself. Reject “import completed”, “Friday release confirmed”, “security approved” or an invented bug owner. The pilot passed on 12 rows; that is the verified progress. The release is conditional. The review and unassigned bug remain open.
+
+That gives you a reusable ask and concrete reasons to reject a plausible answer. It does not establish reliability. When the task recurs, use the full comparison below: three cases, three replies each, before and after a change. Eighteen replies in total.
 
 ## Why results drift
 
@@ -19,7 +42,7 @@ Four things change between a Monday answer and a Friday answer. Each step below 
 "Better" has to mean something you can count. Write four to six ticks that a stranger could apply to a reply. For a weekly status update, they could be:
 
 1. 120 words or fewer.
-2. Three headings: done, next, risks.
+2. Three headings: Verified progress, Plans, Blockers/open items.
 3. No figure that is not in the notes.
 4. An unknown owner is marked "owner unknown".
 5. Every risk names the note it came from.
@@ -31,7 +54,7 @@ Four things change between a Monday answer and a Friday answer. Each step below 
 The steps use your own tasks, so they cannot be timed. Do them in order.
 
 0. **Baseline.** Pick three cases: a normal one, an awkward one and one with a trap. For the status update, they are tidy notes, messy notes and notes with a missing owner. Run your usual ask three times on each, in new chats. Score each reply against your checklist and write the tally, for example "case 2, run 1: 3 of 5 ticks". This is your before.
-1. **See the problem.** Do the [test in level 0](../../journey/00-hello-robot/#five-minute-win). Notice that a confident total can be wrong, and that a reply can flag its doubt and still lead with the wrong total.
+1. **Name the failure.** Use a miss from your baseline: an invented owner, an unconditional release date or a wrong total. The [test in level 0](../../journey/00-hello-robot/#five-minute-win) is another example if you need one.
 2. **Write the ask properly.** Do passes 1 to 4 in [level 1, Try it](../../journey/01-say-it-properly/#try-it): goal, constraints with a check line, and an example. Use a task of your own. The check line is part of the constraints. Here are two versions:
 
 ```text
@@ -43,7 +66,7 @@ Writing version: Check: List each risk and the note it came from. State the word
 
 ```text
 Goal: [the task: a weekly status update for my manager]
-Constraints: [the limits: 120 words or fewer; three headings (done, next, risks); mark an unknown owner as "owner unknown"]
+Constraints: [the limits: 120 words or fewer; three headings (Verified progress, Plans, Blockers/open items); mark an unknown owner as "owner unknown"]
 Check: List each risk and the note it came from. State the word count. List anything you assumed.
 Material: [paste this week's notes]
 ```

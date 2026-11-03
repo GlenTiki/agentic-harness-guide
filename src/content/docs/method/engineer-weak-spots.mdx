@@ -1,16 +1,17 @@
 ---
 title: Engineer your weak spots away
 description: A loop that turns each repeated mistake into a fix you can test. Notice it, name it, engineer a fix, prove the fix can fail, keep it.
+next:
+  link: /agentic-harness-guide/method/product-manager-and-team-lead/
+  label: "You are the product manager"
 ---
 
 import Example from '../../../components/Example.astro';
 import WeakSpotLoop from '../../../components/WeakSpotLoop.astro';
 
-*Audience: a person who wants a method, not a tool. An agent reading this page should not run any command here unless the user asks.*
+Choose one mistake that keeps coming back. Add a check that catches it, test the check with that mistake, then make it part of your normal work. A fix you must remember is a new weak spot.
 
-Most setup choices in this guide answer a mistake that happened more than once. The eight below are the clearest. I made these choices in my own personal setup, which I call Mako. This page states the method once. The levels, the setup pages and the case study all point back here. The loop is a principle, not a measured result. The guide's runs test the slips the loop removes. They do not test the loop.
-
-**A weak spot is a mistake that can happen again.** You do not fix it by trying harder. You change the system so that the mistake is caught, or cannot happen.
+This is the repair part of the method. The [build cycle](../be-the-product-manager-of-your-own-tooling/#one-cycle) delivers a small improvement you can try. The [feedback template](../the-feedback-loop/#the-four-parts) tells the assistant what to preserve and change after you try it.
 
 ## The short version
 
@@ -22,6 +23,16 @@ Say you keep a shared list of monthly bills. One month, a bill goes in twice and
 4. **Keep it (step 5).** Keep the line in the list itself, so it checks every month without you remembering.
 
 That is the whole method. The rest of this page adds a diagram, the same example in full and the engineer detail. You can stop here and use it.
+
+## The scientific method in practice
+
+**Hope is not an engineering principle.** The loop needs a testable explanation between noticing a mistake and keeping a fix. Suppose a bill appears twice. “The duplicate rule was unclear” is a hypothesis. Predict what a clearer rule should change before you run it.
+
+Compare the original and revised asks on the same cases, with the model and other settings held fixed. Include duplicates, ordinary bills and legitimate equal amounts. Decide beforehand whether success means mentioning the problem or stopping the wrong total. Those are different outcomes, as the [bill experiment](../../evidence/#c01-bills-total) shows.
+
+Repeat the trials and save fresh cases for the final evaluation. If the clearer rule fails, inspect where the mistake starts. Perhaps the import lost the month labels before the assistant saw them. Fixing the wording cannot restore missing data. Change the explanation when the evidence asks you to.
+
+Then test the whole path. A duplicate check can pass while a month is missing; both checks can pass on the wrong household's records. Follow the data from the original request to the final share. The [month-end workflow](../../workflows/small-shop-month-end/) shows why a reconciled bank balance can still leave the profit wrong.
 
 ## The loop
 
@@ -43,7 +54,7 @@ Prefer a [mechanical check](../../glossary/#mechanical-check) or a [hook](../../
 
 <h3 id="loop-4-prove-the-fix-can-fail">4. Prove the fix can fail</h3>
 
-Feed the fix the mistake on purpose. If it stays green, the fix measures nothing. This is a [red run](../../glossary/#red-run).
+Feed the fix the mistake on purpose. If it stays green, it has not caught the failure you meant to prevent. This is a [red run](../../glossary/#red-run).
 
 <h3 id="loop-5-keep-it">5. Keep it</h3>
 
@@ -103,7 +114,18 @@ A repeated month is enough to make the total wrong. It does not show that any as
 4. **Prove the fix can fail.** Paste the 13-figure list. The cell must say REPEAT. Paste the 12-figure list. The cell must say OK. If the first case says OK, the formula is wrong.
 5. **Keep it.** Add one line to the instruction file: "Count each month once, say how many months you counted, and run the REPEAT check before you give a total."
 
-The proof step is what makes the fix trustworthy. [Level 5](../../journey/05-check-the-work/) teaches the checking skill in full.
+The red and green runs show that the check distinguishes these two cases. Fresh cases test how far that result holds. [Level 5](../../journey/05-check-the-work/) teaches the checking skill in full.
+
+<details>
+<summary>Where this method comes from</summary>
+
+*Audience: a person who wants a method, not a tool. An agent reading this page should not run any command here unless the user asks.*
+
+Most setup choices in this guide answer a mistake that happened more than once. The eight below are the clearest. I made these choices in my own personal setup, which I call Mako. This page states the method once. The levels, the setup pages and the case study all point back here. The loop is a principle, not a measured result. The guide's runs test the slips the loop removes. They do not test the loop.
+
+**A weak spot is a mistake that can happen again.** You do not fix it by trying harder. You change the system so that the mistake is caught, or cannot happen.
+
+</details>
 
 ## For engineers: eight weak spots from my own setup
 
@@ -118,7 +140,7 @@ These eight fixes come from my own setup. I list them without file names or numb
 | Parallel helpers that write files collided in one checkout. | Block any helper call that looks like a write unless it is isolated or read-only. | [Orchestrator and subagents](../../setup/orchestrator-and-subagents/) |
 | Line-number citations rotted when a document grew. | Warn after an edit, block new line-number citations at commit, block drift at commit and at stop. | [Link and reference checks](../../setup/link-and-reference-checks/) |
 | Hypothesis: a rule that lives only in recall memory is skipped in busy sessions. | Promote repeat offenders into the always-loaded instructions. Add a hook for the checkable ones. | [Memory](../../setup/memory/) |
-| A directive to a helper broke a standing rule. Recall searched only the user's prompt. | Search memory with the outgoing brief as well. | [Memory](../../setup/memory/) |
+| A directive to a helper broke a standing rule. Recall searched only the user's prompt. | Search memory with the outgoing brief as well. Additional context is advisory and informs the next step; it cannot stop this hand-off. If the hand-off must wait, deny it with the matches as the reason. | [Memory](../../setup/memory/) |
 | Long sessions forgot costly measured facts. | Re-inject a short maintained fact file every N prompts. | [Memory](../../setup/memory/) |
 | Every stop started a re-index and the machine ran out of memory. | Gate the hook by capability, lock the indexer, run heavy work through an admission wrapper. | [Local models](../../setup/local-models/) |
 

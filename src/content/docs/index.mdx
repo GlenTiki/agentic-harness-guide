@@ -1,17 +1,17 @@
 ---
-title: Harness the power of your AI companions
+title: Get dependable, checkable work from AI assistants
 description: Reliable, checkable work from AI assistants, with sound engineering habits for everyday builders and deep technical shelves for engineers.
 template: splash
 hero:
-  title: Harness the power of your AI companions.
-  tagline: A practical guide to getting dependable work from AI assistants. Sound engineering discipline for everyday builders, with deep technical reference shelves for software engineers.
+  title: Get dependable, checkable work from AI assistants.
+  tagline: Write a useful update, build a small personal tool, or run a longer agent workflow. Set the outcome, check what matters, and get your time back.
   actions:
-    - text: The Product Manager Method
-      link: ./method/be-the-product-manager-of-your-own-tooling/
+    - text: Start with your own task
+      link: ./start-here/how-to-read/
       icon: right-arrow
     - text: For Engineers (Deep Dive)
       link: ./start-here/engineer-route/
-    - text: Why Bother (The 80% Trap)
+    - text: Why bother
       link: ./start-here/why-bother/
       variant: minimal
 ---
@@ -20,37 +20,56 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 import LevelLadder from '../../components/LevelLadder.astro';
 import SlipCompare from '../../components/SlipCompare.astro';
 
-## Why this guide exists
+## Start with work you already do
 
-I am Glen Keane. I build production software and distributed systems (formerly Wayflyer and Nearform), and currently ship automated insurance systems and AI tooling at Brightbeam.
-
-Most AI advice stops at the demo. In production, things fall apart. When you rely on AI assistants for serious work, you hit the **80% calculator trap**: an adding machine that calculates correctly 4 times out of 5 does not automate your work; it doubles your anxiety. If you have to babysit every word or line of output, you suffer review fatigue and end up rubber-stamping results you do not understand. That is how [comprehension debt](./start-here/why-bother/#comprehension-debt-is-a-workflow-problem) grows: the gap between what exists and what anyone understands.
-
-Getting reliable output is not about secret prompt incantations or expensive SaaS tools. It comes from disciplined habits: specifying intent like a Product Manager, catching mistakes with automatic test gates, and building disposable micro-tools that solve one friction point at a time. This guide teaches how.
+The time you save is the product. Pick a job you recognise and leave with something you can use in your next conversation.
 
 <CardGrid>
-  <Card title="The Chat Hamster Wheel" icon="warning">
-    Pasting raw text into chat windows, arguing over wrong sums, reviewing messy text by hand, and repeating the same manual work every Monday.
+  <Card title="Write a useful update" icon="document">
+    Turn messy notes into a short update without turning a hoped-for release into a promise. [Start with an ask and a checklist](./start-here/consistency-fast-track/#try-it-on-one-update).
   </Card>
-  <Card title="The Compounding Harness" icon="approve-check">
-    Directing clear intent, verifying with automatic checks, and keeping small personal tools that have tests.
+  <Card title="Build a small personal tool" icon="rocket">
+    Give the assistant one recurring chore, a small first slice and an example you can check. [Write your first tool brief](./method/be-the-product-manager-of-your-own-tooling/#start-with-one-small-tool).
+  </Card>
+  <Card title="Run longer agent work" icon="setting">
+    Start with a failure you can reproduce, then put checks where a bad result would travel next. [Design your first failing case](./start-here/engineer-route/#start-with-a-failing-case).
   </Card>
 </CardGrid>
 
+### A plausible update can still promise too much
+
+Constructed example, written to illustrate the check. This is not a recorded assistant reply.
+
+**Your notes:** “The pilot passed 12 sample rows. Full import not run. Friday release depends on security review, which is still open.”
+
+**A draft worth rejecting:** “Import complete. We are releasing on Friday.”
+
+The sentences are tidy. They have also promoted a small pilot into a completed import and a conditional target into a commitment. A useful check compares each claim with the notes. The corrected update keeps the pilot scope, the unrun import and the open review visible. [Try this with your own notes](./start-here/consistency-fast-track/#try-it-on-one-update).
+
+## Why this guide exists
+
+**Hope is not an engineering principle.** A convincing answer is a reason to investigate, not a reason to stop checking. If every result needs a full manual audit, the assistant has moved the work rather than removed it.
+
+The habit I want to teach is the scientific method applied to everyday work: state what you expect, test it, inspect the evidence, and revise. Give your favourite explanation a fair chance to fail. “It worked once” is a promising start. It is also a very tempting place to stop. Ask me how I know.
+
+Take a holistic view of the job. The brief, source data, tools, checks and human decisions all affect the result. A correct calculation on the wrong records still gives you the wrong answer. The [case for a harness](./start-here/why-bother/#hope-is-not-an-engineering-principle) starts with that whole workflow.
+
 ## What the tests showed: a €133 bill counted twice
 
-I gave an assistant 40 monthly bill amounts for 39 months and asked it to split the total three ways. In 20 of 20 isolated runs, the reply noticed that the count was one too many. In 20 of 20, it still led with a total that counts €133 twice. A reader who stops at the first line pays the wrong share.
+<details>
+<summary>Read the recorded bill experiment and compare the totals</summary>
+
+I gave an assistant 40 monthly bill amounts for 39 months and asked it to split the total three ways. In 20 of 20 isolated runs, the reply noticed that the count was one too many. In all 20, the first stated total included all 40 amounts. Some replies put the warning before that total. The warning and the wrong total can coexist.
+
+Across the wider evaluation, 14 of 20 model-and-prompt setups did not produce the failure each test targeted. The [evidence page](./evidence/) gives every count and the limits of those tests.
 
 <SlipCompare />
 
+</details>
+
 ## Start here
 
-1. **Read why.** [Why bother with this](./start-here/why-bother/) is the author's case for improving your own tools. It takes a few minutes.
-2. **Test your assistant.** [Level 0](./journey/00-hello-robot/#five-minute-win) shows how to catch a wrong total with a spreadsheet check.
-3. **Pick your route.** [Choose a route](./start-here/how-to-read/) by how you use an assistant: at work, in a chat window, or as an engineer.
-4. **Keep one prompt.** [Refiner lite](./appendix/prompt-refiner/#refiner-lite) tightens a vague ask. Paste it into any chat assistant.
-
-[Engineers: start with the engineer route.](./start-here/engineer-route/)
+Choose [a task route](./start-here/how-to-read/) above, or read [Why bother](./start-here/why-bother/) for the argument behind the guide. You can learn the method as you use it; you do not need to finish the reference shelf first.
 
 ## The nine levels
 

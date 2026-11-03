@@ -68,6 +68,8 @@ const setupModal = () => {
   const categorySelect = dialog.querySelector('#feedback-category');
   const fallbackLink = dialog.querySelector('[data-github-fallback]');
   const closeBtn = dialog.querySelector('[data-action="close-feedback"]');
+  const submitBtn = form?.querySelector('[type="submit"]');
+  if (submitBtn && !localReceiver()) submitBtn.textContent = 'Prepare GitHub issue';
   let context = {};
 
   const openModal = (e) => {
@@ -161,7 +163,7 @@ const setupModal = () => {
     });
 
     if (statusEl) {
-      statusEl.innerHTML = `<span>Not sent yet. Post it as a public GitHub issue:</span><br/><a href="${issueUrl}" target="_blank" rel="noopener" style="display:inline-block; margin-top:8px; padding:8px 14px; background:#4f46e5; color:#ffffff; border-radius:6px; font-weight:600; text-decoration:none;">Post Issue to GitHub &rarr;</a>`;
+      statusEl.innerHTML = `<span>Not sent yet. Review the public issue draft on GitHub before posting. The link carries at most 600 characters of your feedback; copy longer text from this box.</span><br/><a href="${issueUrl}" target="_blank" rel="noopener" style="display:inline-block; margin-top:8px; padding:8px 14px; background:#4f46e5; color:#ffffff; border-radius:6px; font-weight:600; text-decoration:none;">Review draft on GitHub &rarr;</a>`;
       statusEl.className = 'feedback-status fallback';
     }
   });

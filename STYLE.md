@@ -8,7 +8,7 @@ The site teaches one skill: how to get dependable, checkable work from an AI ass
 
 1. The core prose is generic. Teach the idea first. Name a tool category before a product.
 2. Use categories first: chat assistant, spreadsheet, notes app, team chat, calendar, email, design tool, ticket tracker, automation tool, code editor, terminal agent. After the category, give well-known examples so the reader can place it, for example "a spreadsheet such as Sheets or Excel".
-3. Never name a private person, employer, client, product codename or local file path. The cast in section 5 is the only set of people. The one exception is "Mako", the author's own personal setup, which the setup, method and case-study pages may name as that setup and nothing else.
+3. Never name a private person, employer, client, product codename or local file path. The cast in section 5 is the only set of people. One author bio may name Glen and his own employers, never clients. Keep that bio in one place. The other exception is "Mako", the author's own personal setup, which the setup, method and case-study pages may name as that setup and nothing else.
 4. Never invent statistics, quotes, benchmarks or study results. If a number matters, work it out on the page so the reader can check it, or leave it out. Label an illustrative number as illustrative.
 5. A tool-specific fact (a setting name, a file name a product reads, a price, a limit) needs one of two treatments. Either verify it against the official documentation and add a verification line (section 9), or remove it and stay generic.
 6. Real products may be named in a `Which app?` aside (section 4) and nowhere else in the core prose. The aside may name ChatGPT, Claude, Gemini, Microsoft Copilot, Excel and Google Sheets, and the feature that does the job (for example standing instructions or projects). Open the vendor's help page in the session, confirm the feature name, and add the section 9 verification line with the real date. If you cannot verify a feature name, the aside names only the products and says "look in settings for custom instructions or projects".
@@ -22,7 +22,7 @@ The site teaches one skill: how to get dependable, checkable work from an AI ass
 4. British English: organise, behaviour, colour, programme (for a plan of work, use "plan"), whilst is banned (use "while"), judgement, licence (noun).
 5. No em dashes and no en dashes used as dashes. Use a full stop, a comma, a colon or brackets. A hyphen in a compound word is fine.
 6. Never hard-wrap prose. One paragraph is one line in the file. The renderer wraps. Code blocks and tables keep their own shape.
-7. Humour: dry and light. At most one joke per Scene, and jokes live in Scenes only. A joke must make a point. It never mocks the reader. It never relies on a meme, a trend or a name that will age. It never sits in a sentence that states a point about money, access or errors. If a joke needs explaining, cut it. Clarity beats a joke every time.
+7. Humour: dry and light. Glen's voice may include brief self-deprecation, self-referential humour and occasional nerd-culture references in narrative prose. Keep references understandable without knowing the source. A joke must make a point and never mock the reader. Keep jokes out of procedural steps, agent instructions and factual claims about money, access or errors. Do not invent personal experiences to support a joke. Clarity beats a joke every time.
 8. Be concrete. Show the actual prompt and the actual output in a code block. Do not describe them. Show every reply, log or output as an Example (section 3, reader pattern 8). Never imply a tool always replies this way.
 9. Address the reader as "you". The assistant is always "the assistant". Do not call it "AI", "the bot", "the model" (unless the text is about the model itself), or give it a name.
 10. Do not use these: "delve", "leverage", "unlock", "game-changer", "supercharge", "synergy", "in today's world", "it is important to note". Do not write a closing paragraph that repeats the page.
@@ -467,18 +467,15 @@ Run npm with `nice -n 10`. Make atomic commits that each build. Never push. Neve
 
 ## 13. Reader routes (for the how-to-read page)
 
-The how-to-read page offers these goals and routes. Keep it in step with this table.
+The how-to-read page offers three task routes. Keep it in step with this table.
 
 | Goal | Route |
 | --- | --- |
-| I have never used an AI assistant | The journey, levels 0 to 8 in order |
-| I use one and get mixed results | The consistency fast track (eight steps starting from a baseline) |
-| I use one daily and repeat myself | Start at level 2 |
-| I work in finance or another regulated field | The professional route |
-| I want to connect tools safely | Levels 3 and 4, then the connect-systems workflow |
-| I am an engineer or team lead | The engineer route |
-| I want a short test of my assistant | Level 0, test your assistant |
-| I am an AI agent | A footer line, not a table row: `/agent-rules.txt`, then `/llms.txt` |
+| Write or check an everyday chat answer | Consistency fast track: try one status update |
+| Build a tool for a recurring chore | Be the product manager of your own tooling: start with one small tool |
+| Improve a longer agent workflow | Engineer route: start with a failing case |
+
+The full journey, professional route and safe tool connections remain supporting links. Agents get a folded note with `/agent-rules.txt` and `/llms.txt`.
 
 ## 14. Canonical vocabulary
 

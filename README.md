@@ -15,11 +15,11 @@ The build needs Node 22.23.4 or later, the minimum for Astro 7.
 
 ## Check
 
-`npm run check` builds the site and then runs every `check:*` gate in `package.json`. The `check:claims` gate runs three example tests with `python3`. The `check:layout` gate drives Google Chrome; set `CHROME_PATH` if Chrome is not at `/Applications/Google Chrome.app`. The deploy workflow does not run these gates, so run them before you push.
+`npm run check` builds the site and then runs every `check:*` gate in `package.json`. The `check:claims` gate runs three example tests with `python3`. The `check:layout` gate drives Google Chrome; set `CHROME_PATH` if Chrome is not at `/Applications/Google Chrome.app`. Pull requests and deployment builds run these gates too. Run them locally before you push.
 
 ## Deploy
 
-Pushing to `main` runs `.github/workflows/deploy.yml`, which builds the site and publishes it to GitHub Pages. In the repository settings, set Pages to use "GitHub Actions" as the source. The site is served from `https://glentiki.dev/agentic-harness-guide/`.
+Pushing to `main` runs `.github/workflows/deploy.yml`, which checks the site and publishes it to GitHub Pages. In the repository settings, set Pages to use "GitHub Actions" as the source. The site is served from `https://glentiki.dev/agentic-harness-guide/`.
 
 ## Licence
 

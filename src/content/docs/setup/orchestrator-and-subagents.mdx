@@ -30,7 +30,7 @@ Simple edits, short reads and one-line answers stay in the main thread.
 
 1. **A counter.** A hook counts consecutive main-thread tool calls. At the fifth and tenth call it adds a nudge to delegate.
 2. **A write guard.** A before-tool hook denies a helper call that looks like it writes files. It allows the call only if the call is isolated in its own [worktree](../../glossary/#worktree), is read-only, or targets a path where isolation is impossible. The guard exists because parallel writers in one checkout collided.
-3. **A brief check.** A hook searches memory with the outgoing brief, so a helper is not told to break a standing rule.
+3. **A brief reminder.** A PreToolUse hook searches memory with the outgoing brief. Its additionalContext arrives alongside the tool result, so the reminder can inform later reasoning but cannot prevent that hand-off.
 4. **A context ledger.** Before context [compaction](../../glossary/#compaction), a hook saves objective state: branch, short commit, count of changed files, intent and recent actions. After compaction, a session-start hook prints the newest entry. It cannot know what the agent was thinking. It records facts only.
 
 ### What helpers get

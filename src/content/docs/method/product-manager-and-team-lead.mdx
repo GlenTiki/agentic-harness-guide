@@ -1,13 +1,12 @@
 ---
 title: You are the product manager
 description: Describe the outcome in plain English, let the lead agent coordinate helpers and personas, and step in with more context as the work runs.
+next:
+  link: /agentic-harness-guide/method/the-feedback-loop/
+  label: "Praise first, then fix"
 ---
 
 import Example from '../../../components/Example.astro';
-
-*Audience: a person who directs agent work. An agent reading this page should not run any command here unless the user asks.*
-
-**Status.** Runs in my setup: the lead-agent pattern, the delegation counters and the plain-English briefs. Design only: personas that keep their own memory (see [personas](../../setup/personas/)). The benefits listed under "Hypotheses" are not measured.
 
 Some people give an [agent](../../glossary/#agent) a task list. My working practice is a different split. You say what you want and how you will know it works. The agent works out the steps. The lead shows results and brings you decisions that need your judgement. You add context when the work drifts. I think this saves rework, but I have not measured it.
 
@@ -17,8 +16,8 @@ Some people give an [agent](../../glossary/#agent) a task list. My working pract
 | --- | --- | --- |
 | Product manager | You | The outcome, the expected behaviour in plain English, the yes or no on anything outside the working files |
 | Tech lead | The lead agent | The plan, the split into tasks, the briefs for helpers, the checks, the report back to you |
-| Helpers | [Sub-agents](../../glossary/#sub-agent) | One bounded task each, then a short report |
-| Expert viewpoints | Simulated personas | One review lens each, such as security or the reader of the final page |
+
+Helpers and specialist review viewpoints are optional ways for the lead to organise work. You do not need to assemble a team before asking for one useful result.
 
 My working hypothesis, not a measured result, is that the lead agent is faster at the typing and worse at knowing what you meant. Your job is to close that gap with words, not with code.
 
@@ -288,5 +287,14 @@ If a test fails, change the practice. That is the [weak-spot loop](../engineer-w
 - [Orchestrator and subagents](../../setup/orchestrator-and-subagents/) shows the flow.
 - [Case study chapter 7](../../case-study/ch07-orchestrator/) builds the brief templates and a check that every helper brief carries the shared rules.
 - [Personas](../../setup/personas/) says honestly what is built and what is design.
+
+<details>
+<summary>What exists in my setup</summary>
+
+*Audience: a person who directs agent work. An agent reading this page should not run any command here unless the user asks.*
+
+**Status.** Runs in my setup: the lead-agent pattern, the delegation counters and the plain-English briefs. Design only: personas that keep their own memory (see [personas](../../setup/personas/)). The benefits listed under "Hypotheses" are not measured.
+
+</details>
 
 **Next:** [Praise first, then fix](../the-feedback-loop/)

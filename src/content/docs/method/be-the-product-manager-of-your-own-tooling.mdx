@@ -1,13 +1,31 @@
 ---
 title: Product manager of your own tools
 description: A demo loop where the assistant builds one small slice, shows it, recommends the next step, and you decide.
+next:
+  link: /agentic-harness-guide/start-here/what-the-time-is-for/
+  label: "What the time is for"
 ---
 
 import Example from '../../../components/Example.astro';
 
-*Audience: a person who builds small tools with an assistant. An agent reading this page should not run any command here unless the user asks.*
+Choose one chore you keep repeating. Ask the assistant for a small tool, try the result, and steer the next change. You are the product manager of your own tools; that describes your role in this conversation, not a job title you need.
 
-**Status.** The loop is how I work. The two transcripts and the log fixture are invented for teaching. The script is Computed: you can run it. How well the loop works for you is not measured.
+## Start with one small tool
+
+You can begin in ordinary chat. Tell the assistant what tools you can use before it chooses an implementation. For example:
+
+```text
+I want a reusable Sunday shopping list. I do not write code.
+Ask what device and apps I use, then recommend one small version I can try.
+I have 6 eggs, 500 g rice, 3 tomatoes and an unknown amount of milk.
+My chosen meals need 8 eggs, 300 g rice, 5 tomatoes and 400 ml milk.
+Show what I need to buy. Never order or pay, and don't change stock just because you made a list.
+The first result must say 2 eggs, 2 tomatoes, no rice, and milk unknown.
+If I enter 100 ml milk, it should say I need 300 ml more.
+Show me the result before adding saved recipes or other features.
+```
+
+This is an invented brief you can adapt. No tool has run here. Unknown milk is a question, not zero stock. Making the list twice must leave the pantry unchanged. Those checks make a small first version concrete before you discuss storage or recipe suggestions.
 
 ## Two roles
 
@@ -19,7 +37,7 @@ The tech lead coordinates helpers, checks their work, runs the demo and recommen
 
 ## One cycle
 
-Each cycle has five steps. Repeat them until you say stop.
+Use this cycle to build and try one small improvement. When a mistake repeats, use the [weak-spot loop](../engineer-weak-spots/) to repair it. After you try the result, use the [four-part feedback template](../the-feedback-loop/#the-four-parts).
 
 1. **Build.** The assistant builds one small slice, the smallest piece you can try.
 2. **Tell.** The assistant says what it built in plain words, in a few lines.
@@ -30,14 +48,6 @@ Each cycle has five steps. Repeat them until you say stop.
 The assistant leads and tells you what to do next. You decide. A menu of equal options pushes the work back on you, so the assistant picks one and gives its reason.
 
 You can change direction during a cycle. Ask the assistant to [keep the current task and unanswered questions visible](../product-manager-and-team-lead/#you-may-ramble) while you agree what happens next.
-
-## Choose when work lands
-
-The example below waits for you to try each slice before it lands. The other mode is merge before use review: the assistant merges first, and you try the result afterwards. Allow it only for a repository and a kind of change that you name. Name the branch it works on too. The assistant may commit and push to that branch so that the automated checks (CI) run. It merges only after the required checks pass. Deploying needs your separate permission, even when a push would start a deployment.
-
-Before the merge, an assistant from a different provider (another company's model) must accept the plan and the exact version to merge. Require a second review from a different provider for code quality, and a security review where the change needs one. The local checks and a CI run that actually executed must pass on that exact version. A missing review, or CI that never ran, blocks the merge. These reviews show that the code is sound. They do not show that you are happy with it. If you dislike the result when you try it, your feedback directs the next correction.
-
-Neither mode lets the assistant send data out, spend money or send messages. Neither mode lifts a hold you have set or covers a client's repositories. Your stop still applies.
 
 ## A review you can return to cold
 
@@ -100,6 +110,9 @@ It shows the shape of the loop, with a rejection and a steer. It does not show h
 
 I want one ranked list of what needs my attention: a design goal here, not a built queue. Each item explains its position, recommends an action and says what the answer unblocks. You review results and product choices, not helpers. Unanswered decisions block dependent work; other authorised work can continue.
 
+<details>
+<summary>For engineers: rank repeated work from an actions log</summary>
+
 ## The assistant tells you what to do next
 
 Recommending the next improvement needs evidence. One source is a log of what you did. If you do the same step by hand again and again, that step is a candidate for a tool.
@@ -157,10 +170,36 @@ error: line 2: not a valid log line (JSONDecodeError('Expecting property name en
 
 Treat the recommendation as a suggestion. You decide. Before you build the tool, count the cost of building and keeping it against the minutes the log shows.
 
+</details>
+
 ## What the assistant must not do
 
 - It must not give a list of options with no recommendation.
 - It must not report a slice as working without a check of the outcome in the system.
-- It must not skip the user check required by the chosen mode, or treat technical review as proof of user acceptance.
+- It must not skip the user check you agreed, or treat technical review as proof of user acceptance.
 
-**Next:** [The setup behind the guide](../../setup/)
+<details>
+<summary>For engineers: repository review and release policy</summary>
+
+## Choose when work lands
+
+The example above waits for you to try each slice before it lands. The other mode is merge before use review: the assistant merges first, and you try the result afterwards. Allow it only for a repository and a kind of change that you name. Name the branch it works on too. The assistant may commit and push to that branch so that the automated checks (CI) run. It merges only after the required checks pass. Deploying needs your separate permission, even when a push would start a deployment.
+
+Before the merge, an assistant from a different provider (another company's model) must accept the plan and the exact version to merge. Require a second review from a different provider for code quality, and a security review where the change needs one. The local checks and a CI run that actually executed must pass on that exact version. A missing review, or CI that never ran, blocks the merge. These reviews and checks provide evidence about the faults they cover. They do not show that you are happy with it. If you dislike the result when you try it, your feedback directs the next correction.
+
+Neither mode lets the assistant send data out, spend money or send messages. Neither mode lifts a hold you have set or covers a client's repositories. Your stop still applies.
+
+</details>
+
+<details>
+<summary>About these examples</summary>
+
+*Audience: a person who builds small tools with an assistant. An agent reading this page should not run any command here unless the user asks.*
+
+**Status.** The loop is how I work. The two transcripts and the log fixture are invented for teaching. The script is Computed: you can run it. How well the loop works for you is not measured.
+
+</details>
+
+For a worked household example, see [the kitchen assistant](../../workflows/build-a-kitchen-assistant/). Its implementation exercise uses Python; you can use the brief above without running that code. Engineers can explore [the setup behind the guide](../../setup/).
+
+**Next:** [What the time is for](../../start-here/what-the-time-is-for/)

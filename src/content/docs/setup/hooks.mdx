@@ -18,7 +18,7 @@ import Example from '../../../components/Example.astro';
 
 A hook has three parts: an event, a script and a reply. The event is a point in the agent loop, such as "before a tool call" or "when the agent stops". The script reads a JSON description of that event on its input. The reply is an [exit code](../../glossary/#exit-code), and sometimes JSON.
 
-The [exit-code contract, `onFailure` and what exit 2 does on each event](../../shelf/control/hooks/#exit-code-2-by-event) are on the shelf hooks page. In short, exit 0 allows, exit 2 blocks on events that can block, and by default any other non-zero code lets the action go ahead.
+The [exit-code contract, `onFailure` and what exit 2 does on each event](../../shelf/control/hooks/#exit-code-2-by-event) are on the shelf hooks page. Exit 0 means the script succeeded; its JSON can still deny a PreToolUse call. Exit 2 blocks on events that support blocking. By default, other non-zero exits are errors that do not block.
 
 ## Why exit 1 is a trap
 

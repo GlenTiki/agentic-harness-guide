@@ -8,7 +8,7 @@
       <button type="button" class="ctrl-btn" data-step="5">5. Keep</button>
     </div>
     <button type="button" class="ctrl-btn test-btn" data-action="toggle-red">
-      🧪 Run red/green test
+      Show a simulated failing check
     </button>
   </div>
 
@@ -30,7 +30,7 @@
     <rect width="640" height="250" fill="url(#wsl-grid)" opacity="0.3" rx="10" />
 
     <!-- Step 1: Notice -->
-    <g class="loop-node" data-loop-step="1" tabindex="0" role="button" aria-label="Step 1: Notice the slip">
+    <g class="loop-node" data-loop-step="1" aria-label="Step 1: Notice the slip">
       <rect x="8" y="40" width="112" height="66" rx="8" class="box" />
       <rect x="8" y="40" width="4" height="66" rx="2" class="accent-bar" />
       <text x="64" y="68" class="label">1 Notice</text>
@@ -38,7 +38,7 @@
     </g>
 
     <!-- Step 2: Name -->
-    <g class="loop-node" data-loop-step="2" tabindex="0" role="button" aria-label="Step 2: Name the weak spot">
+    <g class="loop-node" data-loop-step="2" aria-label="Step 2: Name the weak spot">
       <rect x="136" y="40" width="112" height="66" rx="8" class="box" />
       <rect x="136" y="40" width="4" height="66" rx="2" class="accent-bar" />
       <text x="192" y="68" class="label">2 Name</text>
@@ -46,7 +46,7 @@
     </g>
 
     <!-- Step 3: Engineer -->
-    <g class="loop-node" data-loop-step="3" tabindex="0" role="button" aria-label="Step 3: Engineer a check">
+    <g class="loop-node" data-loop-step="3" aria-label="Step 3: Engineer a check">
       <rect x="264" y="40" width="112" height="66" rx="8" class="box" />
       <rect x="264" y="40" width="4" height="66" rx="2" class="accent-bar" />
       <text x="320" y="68" class="label">3 Engineer</text>
@@ -54,7 +54,7 @@
     </g>
 
     <!-- Step 4: Prove (The red run) -->
-    <g class="loop-node" data-loop-step="4" tabindex="0" role="button" aria-label="Step 4: Prove it can go red">
+    <g class="loop-node" data-loop-step="4" aria-label="Step 4: Prove it can go red">
       <rect x="392" y="40" width="112" height="66" rx="8" class="box hot prove-box" />
       <rect x="392" y="40" width="4" height="66" rx="2" class="accent-bar active prove-bar" />
       <text x="448" y="68" class="label prove-label">4 Prove</text>
@@ -62,7 +62,7 @@
     </g>
 
     <!-- Step 5: Keep -->
-    <g class="loop-node" data-loop-step="5" tabindex="0" role="button" aria-label="Step 5: Keep in repeat path">
+    <g class="loop-node" data-loop-step="5" aria-label="Step 5: Keep in repeat path">
       <rect x="520" y="40" width="112" height="66" rx="8" class="box" />
       <rect x="520" y="40" width="4" height="66" rx="2" class="accent-bar" />
       <text x="576" y="68" class="label">5 Keep</text>
@@ -85,7 +85,7 @@
     <p class="readout-desc">Write down what went wrong while you still remember it. Include what you saw, not what you guessed.</p>
   </div>
 
-  <figcaption>The weak-spot loop. The accent box is the step most people skip.</figcaption>
+  <figcaption>The weak-spot loop. The accent box is the step most people skip. This simulation illustrates a check changing state. It does not run a test.</figcaption>
 </figure>
 
 <script>
@@ -108,7 +108,7 @@
       },
       4: {
         title: 'Step 4: Prove it can go red',
-        desc: 'Feed the check the defect on purpose! If it stays green when given a repeated month, the check measures nothing.',
+        desc: 'Feed the check the defect on purpose! If it stays green when given a repeated month, the check does not catch this defect.',
       },
       5: {
         title: 'Step 5: Keep in the repeat path',
@@ -139,7 +139,7 @@
 
       if (isRed) {
         proveBox?.classList.add('is-red-mode');
-        if (proveSub) proveSub.textContent = 'FAIL (exit 1) ✓';
+        if (proveSub) proveSub.textContent = 'Example: duplicate detected';
       } else {
         proveBox?.classList.remove('is-red-mode');
         if (proveSub) proveSub.textContent = 'it can go red';
@@ -308,16 +308,6 @@
 
   .dash {
     stroke-dasharray: 5 4;
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .dash {
-      animation: loopFlow 1.2s linear infinite;
-    }
-  }
-
-  @keyframes loopFlow {
-    to { stroke-dashoffset: -18; }
   }
 
   .arrow { fill: var(--ahg-line); }

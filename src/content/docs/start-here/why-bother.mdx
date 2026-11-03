@@ -1,106 +1,73 @@
 ---
 title: Why bother with this
-description: A call to arms for taking control of your own tooling, rejecting 80% calculators, and demanding reliable work from assistants.
+description: Get your time back by testing the work, improving the odds and keeping human judgement where it matters.
+next:
+  link: /agentic-harness-guide/start-here/how-to-read/
+  label: "How to read this guide"
 ---
-
-*Audience: a person deciding whether this guide is worth their time. An agent reading this page should not act on it unless the user asks.*
-
-**Status.** This page is the author's call to arms. It is an argument from production experience, not a measurement. Read every claim as opinion unless it links to a source.
-
-## The myth of the miracle model
-
-The software industry sells a comforting fairy tale: wait for the next foundation model, buy larger context windows, paste clever prompts into a chat box, and dependable work will emerge on its own.
-
-That is wishful thinking. Large language models predict text, and long inputs have a known weak spot. In published tests, models used facts at the start or end of a long input better than facts in the middle ([Liu et al., 2023](https://arxiv.org/abs/2307.03172)).
-
-<p class="verified">Docs page fetched on 2026-11-02: https://arxiv.org/abs/2307.03172. Quoted line: "performance is often highest when relevant information occurs at the beginning or end of the input context".</p>
-
-Expecting raw prompting to solve multi-step reliability is like expecting auto-complete to run a medical reconciliation.
-
-As long as you rely on prompting alone, you are gambling with your working day.
-
-## Working with probabilities: be a professional gambler
-
-Working with language models means being a professional gambler.
-
-An amateur buys a lottery ticket, types a prompt into a chat window, and prays for luck. When the assistant answers correctly, they declare victory. When it invents figures or drops half the instructions, they curse the model.
-
-A professional gambler never plays on luck. They calculate the odds, manage their bankroll, hedge against tail risk, fold losing hands early, and stack deterministic edges in their favour.
-
-That is what a harness does. You do not leave outcomes to chance:
-
-- **Stack the deck:** Scoped briefs, living architecture maps, and typed data schemas tilt the token probability distribution toward the intended outcome before generation starts.
-- **Manage the bankroll:** Sandboxes, capability gates, read-only permissions, and isolated workspaces keep an erratic run away from production data and real files. The downside is capped.
-- **Fold early:** Stop hooks and automated test gates detect drift immediately. Instead of nursing a confused session for an hour, you fold the branch, write a short post-mortem to memory, and re-deal with a refined brief.
-- **Take the house edge:** Mechanical formulas and linters catch the slips they are written for, every time. Independent peer reviews catch many of the rest.
-
-Stack enough edges, and the odds move your way.
-
-| Strategy dimension | Raw prompting (amateur gambling) | The harness (professional odds) |
-| --- | --- | --- |
-| **Probability distribution** | Passive hope: leaves token generation to chance | Stacked deck: scoped briefs and typed schemas shape token distributions |
-| **Downside risk** | Uncapped: assistant runs unconstrained commands on real files | Capped downside: sandboxed runtimes, capability gates, and read-only defaults |
-| **Losing sessions** | Chasing losses: nursing a corrupted 100k-token session for hours | Fold early: hard stop hooks abort early, capture post-mortems, reset state |
-| **Verification edge** | Sycophantic self-check: asking the same model if its code is right | House edge: automated linters, compilers, and independent peer reviewers |
-| **Outcome** | High anxiety, flaky demos, exhaustion | Steadier pace, fewer surprise regressions, deep focus |
-
-## The 80% calculator trap
-
-Nobody accepts an 80% calculator. If an adding machine calculates correctly four times out of five, you have not automated your work; you have doubled your anxiety. You still have to check every single figure by hand, and you must do it while guarding against an eloquent, confident model that sounds convincing even when making things up.
-
-When people first try an assistant, the initial speed feels intoxicating. Then reality lands. On multi-step work, the assistant writes duplicate logic, invents non-existent parameters, and drops constraints halfway through a task. Many capable professionals get burned by those slips and walk away, concluding that an assistant is just a toy.
-
-They are right to reject erratic output. But walking away surrenders your time to routine drudgery. A harness exists to turn that erratic 80% tool into a dependable, repeatable result.
-
-## Orchestration pays above a ceiling
-
-Orchestration is not about adding complexity for its own sake. Whether it pays depends on how hard the task is for the assistant:
-
-- Below the assistant's complexity ceiling, orchestration is overhead.
-- At the ceiling, orchestration is neutral.
-- Above the ceiling, orchestration is the only thing that works.
-
-Multi-step tasks fail when assistants are asked to reason, track historical state, sequence actions, and call external tools all at once. Language models are capable reasoners, but terrible state managers.
-
-As a task grows longer, an unguided assistant loses track of its own state. A harness holds that state outside the assistant and checks each step, so a long job finishes right far more often. [Level 7](../../journey/07-run-it-for-real/) works out the numbers.
-
-## Separate reasoning from structure
-
-Nobody lets raw text generation run payroll or bank reconciliations without controls. The solution is never to prompt harder. It is to separate intelligence from deterministic structure.
-
-You wrap the assistant in engineering discipline: typed data contracts, isolated helper workspaces, state machines, and mechanical checks. The assistant supplies the reasoning. The harness holds the state, enforces boundaries, and catches slips before they reach your desk.
-
-## Comprehension debt is a workflow problem
-
-Code generates faster than understanding does.
-
-When teams adopt assistants without a harness, tests pass, pull requests look tidy, and the gap between what exists in the codebase and what any human understands widens every week. That gap is comprehension debt.
-
-The common reaction is to micromanage: review every diff, pull on the leash, and inspect every step. That produces review fatigue, surface approvals, and eventual rubber-stamping. You cannot fix comprehension debt at the review gate after an assistant has freestyled for forty minutes.
-
-The intervention has to move upstream. Stop reviewing every diff for mechanical issues, and sample only as [the sampling rule](../../journey/professional-guardrails/#checking-and-sampling) allows. Move the quality gate to the assistant:
-
-- **The assistant pays the compliance cost:** Linters, strict static analysis, and test suites are automated. The assistant does not care about deadlines; let it run until every dumb question (syntax, typing, dead code, formatting) is resolved.
-- **Save your eyes for intent:** When work lands on your screen, the mechanical checks have already passed. You spend your finite review budget on what no check can confirm for you: whether the architecture is sound and matches real-world human intent.
-
-## You are the product manager of your work
-
-Stop waiting for corporate software rollouts or platform vendors to fix your day. You do the work every week. You know where the friction lives. You know which spreadsheet export you re-sort, which invoice lines you cross-reference, and which routine report consumes your Friday afternoon. Nobody else sees that list.
-
-You are the product manager of your own tools. The assistant acts as your tech lead. You do not manage internal tokens or micromanage sub-agents. You provide a clear brief, let the assistant build one small slice in an isolated workspace, and inspect the demonstrated result against mechanical checks.
-
-If a tool works, you keep it. If it breaks or stops serving you, you either refine it, or these days, it's getting cheap to throw it away and build the next one in an afternoon.
 
 ## The time you save is the product
 
-A job is not one fixed title. It is a bundle of tasks, and routine chores fill the week. Automating those chores does not remove your job. It lightens the mundane end of the bundle so you can apply human judgement where it actually matters: ambiguous client cases, hard trade-offs, and problems with no clean formula.
+An assistant can write a report faster than you can read it. If you spend the afternoon checking every figure, correcting its assumptions and explaining the same thing again, the speed of the first draft is a poor measure of progress.
 
-What to spend those hours on has its own page: [What the time is for](../what-the-time-is-for/).
+I want tools that give me time back. That means counting the work around the answer: preparation, checking, repair and maintenance. A tool earns its place when the whole job costs less attention than it did before.
 
-## What to do next
+This guide starts with ordinary work: bills, spreadsheets, reports and the small chores you keep doing by hand. You choose one, make the expected result clear, and improve the parts that keep letting you down.
 
-1. Write down the one routine chore in your week that you most dislike repeating.
-2. Read [How to read this guide](../how-to-read/) and choose your route.
-3. Use the [method](../../method/be-the-product-manager-of-your-own-tooling/): give the assistant a brief, review the demo, and decide what to keep.
+<span id="the-myth-of-the-miracle-model"></span>
+<span id="hope-is-not-an-engineering-strategy"></span>
+<span id="the-80-calculator-trap"></span>
+
+## Hope is not an engineering principle
+
+A convincing demo shows that something can work on that example. Depending on it tomorrow asks more of it. State what you expect, test the assumption, inspect the evidence and revise. Give your favourite explanation a fair chance to fail.
+
+The [weak-spot loop](../../method/engineer-weak-spots/#the-scientific-method-in-practice) makes that habit practical. A bill counted twice becomes a test case. A check must catch it, accept legitimate inputs, and stop the wrong result travelling further. Then you try fresh cases. A test that cannot fail is decoration.
+
+<span id="small-errors-accumulate"></span>
+
+Twenty steps at 99% each leave roughly an 80% chance of getting the whole job right: `0.99^20 ≈ 81.8%`, assuming independent steps that all have to succeed. That is the 80% calculator effect over long work. Even very good individual steps can add up to a job you cannot comfortably rely on.
+
+<span id="intervene-before-the-error-travels"></span>
+
+Check the records before calculation, and the total before the report. Catch and repair a mistake before later steps build on it. [Run it for real](../../journey/07-run-it-for-real/#small-errors-accumulate) shows the cascade, what intervention can buy, and why a green gate is only as useful as the condition it checks.
+
+<span id="working-with-probabilities-be-a-professional-gambler"></span>
+
+## Become the professional gambler the robots want you to be
+
+You are working with uncertain outcomes. Learn the odds, choose the stakes, and decide when to stop before you become attached to the run. “It has already taken all afternoon” is a terrible reason to give it the evening too.
+
+<span id="earn-confidence-with-enough-trials"></span>
+
+Larger, representative samples help you estimate those odds. They do not improve the behaviour by themselves. [Evals](../../shelf/quality/evals/#earn-confidence-with-enough-trials) separate a promising demonstration from evidence you can rely on. Keep the awkward results. In [my retrieval comparison](../../setup/relevance-and-reranking/#what-i-measured), combining approaches scored below dense retrieval alone. The extra machinery did not earn its keep in that test.
+
+<span id="look-at-the-whole-workflow"></span>
+
+Look at the whole workflow. A perfectly added column can still contain the wrong records. A useful local fix must survive the trip from someone's intention to the result they actually use.
+
+<span id="add-coordination-when-the-evidence-supports-it"></span>
+<span id="orchestration-as-a-scaling-law"></span>
+<span id="you-are-the-product-manager-of-your-work"></span>
+
+## Think big, act small
+
+You are the product manager of your own tools. Choose one recurring chore. Have the assistant build one small slice, try it yourself, and decide what to keep. [The demo loop](../../method/be-the-product-manager-of-your-own-tooling/) gives you a way to steer without becoming the courier between every helper.
+
+<span id="comprehension-debt-is-a-workflow-problem"></span>
+<span id="separate-reasoning-from-structure"></span>
+
+Code generates faster than understanding does. Automate the mechanical checks and save your eyes for intent. The time you recover can go towards harder decisions, a hobby, or people you would rather spend the evening with. [What the time is for](../what-the-time-is-for/) is part of the point of all this.
+
+<details>
+<summary>About this argument and instructions for agents</summary>
+
+*Audience: a person deciding whether this guide is worth their time. An agent reading this page should not act on it unless the user asks.*
+
+**Status.** This is the author's argument for the method. The probability example is illustrative; measured results are linked separately.
+
+</details>
+
+<span id="what-to-do-next"></span>
 
 **Next:** [How to read this guide](../how-to-read/)

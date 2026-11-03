@@ -5,7 +5,7 @@ import trialResults from '../../examples/wrong-behaviour/results.json';
 
 const { data } = Astro.props.entry || { data: {} };
 const hero = data?.hero || {};
-const title = hero.title || 'Harness the power of your AI companions.';
+const title = hero.title || 'Get dependable, checkable work from AI assistants.';
 const tagline =
   hero.tagline ||
   'A practical guide to getting dependable work from AI assistants. Sound engineering discipline for everyday builders, with deep technical reference shelves for software engineers.';
@@ -48,8 +48,8 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
   </div>
 
   <div class="hero-actions-row">
-    <a href={`${BASE}/method/be-the-product-manager-of-your-own-tooling/`} class="hero-btn btn-primary">
-      <span>The Product Manager Method</span>
+    <a href={`${BASE}/start-here/how-to-read/`} class="hero-btn btn-primary">
+      <span>Start with your own task</span>
       <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <line x1="5" y1="12" x2="19" y2="12"></line>
         <polyline points="12 5 19 12 12 19"></polyline>
@@ -59,7 +59,7 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
       <span>For Engineers (Deep Dive)</span>
     </a>
     <a href={`${BASE}/start-here/why-bother/`} class="hero-btn btn-minimal">
-      <span>Why Bother (The 80% Trap)</span>
+      <span>Why bother</span>
     </a>
   </div>
 
@@ -67,7 +67,7 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
     <div class="pillar-card">
       <div class="pillar-header">
         <span class="pillar-num">01</span>
-        <h2 class="pillar-title">Product Manager Mindset</h2>
+        <h2 class="pillar-title">You set the outcome</h2>
       </div>
       <p class="pillar-text">
         Direct high-level intent and define clear pass/fail criteria. Treat the assistant as a fast, fallible junior: set boundaries and check what it delivers.
@@ -77,20 +77,20 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
     <div class="pillar-card">
       <div class="pillar-header">
         <span class="pillar-num">02</span>
-        <h2 class="pillar-title">Mechanical Verification</h2>
+        <h2 class="pillar-title">Keep the checks that help</h2>
       </div>
       <p class="pillar-text">
-        Never trust unchecked claims. Use spreadsheet formulas, checks, or unit tests to catch mistakes before sign-off. If a check fails, the work halts.
+        Never trust unchecked claims. Use spreadsheet formulas, checks, or unit tests to catch mistakes before sign-off. Make a failed check stop the action it guards.
       </p>
     </div>
 
     <div class="pillar-card">
       <div class="pillar-header">
         <span class="pillar-num">03</span>
-        <h2 class="pillar-title">Disposable Micro-Tools</h2>
+        <h2 class="pillar-title">Build one useful thing</h2>
       </div>
       <p class="pillar-text">
-        Turn recurring chores into small, focused tools in an afternoon. If a tool works, keep it. If your needs change, build the next one without hesitation.
+        Turn one recurring chore into a small tool you can try. Count its upkeep as well as the work it saves. Keep it when the whole job gets easier.
       </p>
     </div>
   </div>
@@ -98,7 +98,7 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
   <div class="hero-proof-bar" role="list" aria-label="Key handbook metrics">
     <div class="proof-chip" role="listitem">
       <span class="proof-dot"></span>
-      <span class="proof-label"><strong>{recordedTrials}</strong> Recorded Trials</span>
+      <span class="proof-label"><strong>{recordedTrials}</strong> Recorded model replies</span>
     </div>
     <div class="proof-chip" role="listitem">
       <span class="proof-dot"></span>

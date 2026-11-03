@@ -300,7 +300,7 @@ Exit code 2 does not do the same thing on every event. Claude Code behaviour for
 | `PreToolUse` | Blocks the tool call. The model gets standard error as the reason. |
 | `PermissionRequest` | Nothing. The permission flow goes ahead. Deny with the JSON `decision` object instead. |
 | `UserPromptSubmit` | Blocks the prompt, so it never reaches the model. |
-| `Stop` | Stops the agent from stopping. After eight blocks in a row with no tool call between them, Claude Code ends the turn anyway. |
+| `Stop` | Stops the agent from stopping. By default, after eight consecutive continuations, Claude Code overrides the next block. A tool call resets the count; CLAUDE_CODE_STOP_HOOK_BLOCK_CAP can raise the cap. |
 | `SubagentStop` | Stops the sub-agent from stopping. |
 | `PostToolUse` | Cannot block, because the tool already ran. The model sees standard error. |
 | `SessionStart`, `SubagentStart` | Cannot block. The user sees standard error as a hook error notice, and the model does not. |
@@ -420,7 +420,7 @@ It shows the status of a pipeline in `sh`. It does not show how any harness read
 
 ### A one-shot stop reminder
 
-A stop hook that blocks every time keeps sending the agent back to work. Claude Code ends the turn after eight blocks in a row, but the count starts again each time the agent calls a tool, so the loop can run on. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
+A stop hook that blocks every time keeps sending the agent back to work. By default, Claude Code permits eight consecutive continuations and overrides the next block. A tool call resets the count, and CLAUDE_CODE_STOP_HOOK_BLOCK_CAP can raise the cap, so this is not a total-run limit. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
 
 <Example
   label="Computed"

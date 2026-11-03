@@ -183,7 +183,7 @@ Owner
 | 3 | Write with confirmation: rows go to the sheet after Mina's yes. The Friday message is still a draft. | The sheet matches the PDFs after every batch. | Four batches in a row need no edits. | A credential for one sheet and a protected range on the "status" column |
 | 4 | Post the Friday message to the team chat after Mina's yes. | The message total equals the sheet total. | It runs for a month. | An access key scoped to one channel |
 
-Writing alone is not on the list. A sheet next to payments is not a low-risk, easily undone task. With about 25 rows a month, a rate such as one in ten cannot be told apart from chance, so the move-on test is no edits at all. That is a minimum, not proof of reliability. Thirty clean runs only bound the failure rate near 1 in 10: see the rule of three in [level 7](../../journey/07-run-it-for-real/) and the [sampling rule](../../journey/professional-guardrails/#checking-and-sampling).
+Writing alone is not on the list. A sheet next to payments is not a low-risk, easily undone task. With about 25 rows a month, a rate such as one in ten cannot be told apart from chance, so the move-on test is no edits at all. That is a minimum, not proof of reliability. A fixed sample of 30 independent, representative trials with no failures gives a one-sided 95% upper failure bound near 1 in 10. Waiting until you see a clean streak does not justify that bound: see [sample sizes](../../shelf/quality/evals/#earn-confidence-with-enough-trials) and the [sampling rule](../../journey/professional-guardrails/#checking-and-sampling).
 
 ### Rollback note
 

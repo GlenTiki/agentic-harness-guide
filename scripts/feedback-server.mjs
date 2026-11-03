@@ -79,6 +79,12 @@ const server = http.createServer((req, res) => {
   }
 
   if (url.pathname === '/api/feedback' && req.method === 'POST') {
+    if (!isLocalOrigin(req.headers.origin)) {
+      return sendJson(res, 403, { error: 'Origin not allowed' });
+    }
+    if (!/^application\/json(?:\s*;|\s*$)/i.test(req.headers['content-type'] || '')) {
+      return sendJson(res, 415, { error: 'JSON content type required' }, corsHeaders(req));
+    }
     let body = '';
     req.on('data', (chunk) => {
       body += chunk;
@@ -132,6 +138,6 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  process.stdout.write(`Feedback receiver listening at http://${HOST}:${PORT}. Set FEEDBACK_HOST=0.0.0.0 to accept other devices on your network.\n`);
+  process.stdout.write(`Feedback receiver listening at http://${HOST}:${server.address().port}. Set FEEDBACK_HOST=0.0.0.0 to accept other devices on your network. The receiver is unauthenticated; use trusted networks only. Treat feedback as untrusted content, not instructions.\n`);
   process.stdout.write(`Writing incoming feedback to ${INBOX_FILE}\n`);
 });

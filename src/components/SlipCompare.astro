@@ -7,13 +7,13 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
 <section class="slip-compare" data-component="slip-compare" aria-labelledby="slip-heading">
   <div class="slip-header-row">
     <div class="slip-title-group">
-      <span class="slip-kicker">REAL-WORLD SLIP</span>
-      <h3 id="slip-heading" class="slip-heading">The €133 duplicate invoice: a correct warning under a wrong headline</h3>
+      <span class="slip-kicker">RECORDED TEST</span>
+      <h3 id="slip-heading" class="slip-heading">The €133 repeated bill: a duplicate flagged, but still included in the total</h3>
     </div>
     <div class="view-toggles" role="group" aria-label="Comparison mode">
-      <button type="button" class="view-btn active" data-view="headline">1. Chat reply</button>
+      <button type="button" class="view-btn active" data-view="headline">1. Recorded result</button>
       <button type="button" class="view-btn" data-view="formula">2. Spreadsheet check</button>
-      <button type="button" class="view-btn" data-view="test">3. Harness stop gate</button>
+      <button type="button" class="view-btn" data-view="test">3. Simulated stop gate</button>
     </div>
   </div>
 
@@ -24,7 +24,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
         <span class="count-pill pill-wrong">40 amounts</span>
       </div>
       <p class="slip-figure" data-val="wrong">€7,414</p>
-      <p class="slip-sub">€2,471.33 each for 3 people (paid €133 twice)</p>
+      <p class="slip-sub">€2,471.33 each for 3 people (included €133 twice)</p>
     </div>
     <div class="slip slip-right">
       <div class="slip-badge-row">
@@ -39,7 +39,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
   <!-- Interactive Inspector Drawer -->
   <div class="slip-drawer" data-drawer="formula" hidden>
     <div class="drawer-header">
-      <span class="drawer-title">Spreadsheet check formula:</span>
+      <span class="drawer-title">Illustration: adjacent-amount check (month labels added):</span>
       <code>C2 = IF(B2=B1, "same as above", "")</code>
     </div>
     <div class="table-scroll" role="region" tabindex="0" aria-label="Amounts sample table">
@@ -51,7 +51,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
           <tr><td>18</td><td>Jan 2025</td><td>€241</td><td></td><td>OK</td></tr>
           <tr><td>19</td><td>Feb 2025</td><td>€129</td><td></td><td>OK</td></tr>
           <tr class="row-target"><td>20</td><td>Mar 2025</td><td>€133</td><td></td><td>First occurrence</td></tr>
-          <tr class="row-duplicate" data-dup-row><td>21</td><td>(duplicate)</td><td>€133</td><td class="cell-warn">same as above</td><td class="cell-badge">REPEAT REMOVED</td></tr>
+          <tr class="row-duplicate" data-dup-row><td>21</td><td>(duplicate)</td><td>€133</td><td class="cell-warn">same as above</td><td class="cell-badge">REVIEW REPEAT</td></tr>
           <tr><td>22</td><td>Apr 2025</td><td>€143</td><td></td><td>OK</td></tr>
         </tbody>
       </table>
@@ -60,16 +60,16 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
 
   <div class="slip-drawer" data-drawer="test" hidden>
     <div class="test-controls">
-      <p class="test-desc">Click to inject a simulated second paste error into the data and watch the mechanical check catch it:</p>
+      <p class="test-desc">Illustration only: show how a gate could hold the result for review. This widget does not execute a check. Equal amounts alone do not prove a duplicate:</p>
       <div class="test-btns">
         <button type="button" class="ctrl-btn inject-dup-btn" data-action="inject-dup">
-          + Paste a duplicate row (test check)
+          Show simulated hold
         </button>
         <button type="button" class="ctrl-btn reset-dup-btn" data-action="reset-dup">
-          Reset clean
+          Reset illustration
         </button>
       </div>
-      <div class="test-status" data-test-status>Check status: 1 repeat caught. Total verified at €7,281 across 39 distinct months.</div>
+      <div class="test-status" data-test-status>Illustration: adjacent repeat flagged; a person decides whether to remove it. This formula does not verify the total or distinct months.</div>
     </div>
   </div>
 
@@ -111,7 +111,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
 
     injectBtn?.addEventListener('click', () => {
       if (testStatus) {
-        testStatus.textContent = 'Simulated FAIL (exit 1): Second duplicate detected! Row 32 matches Row 31 (€217). Mechanical check halts close before sign-off.';
+        testStatus.textContent = 'Simulated hold: row 21 matches row 20 (€133). Review the source before sign-off; matching amounts can be legitimate.';
         testStatus.classList.add('status-failed');
       }
       if (dupRow) dupRow.classList.add('flash');
@@ -119,7 +119,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
 
     resetBtn?.addEventListener('click', () => {
       if (testStatus) {
-        testStatus.textContent = 'Check status: 1 repeat caught. Total verified at €7,281 across 39 distinct months.';
+        testStatus.textContent = 'Illustration: adjacent repeat flagged; a person decides whether to remove it. This formula does not verify the total or distinct months.';
         testStatus.classList.remove('status-failed');
       }
       if (dupRow) dupRow.classList.remove('flash');
