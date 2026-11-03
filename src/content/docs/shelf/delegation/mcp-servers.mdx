@@ -43,7 +43,7 @@ claude mcp list
 
 **5. Pin the version.** A server started with an unpinned package runs whatever the registry serves today. Pin an exact version and review upgrades like any dependency change.
 
-**6. Give it the least credential.** Use a token scoped to the one resource and the one verb the server needs. Do not reuse your personal full-access token.
+**6. Give it the least credential.** Use an access key scoped to the one resource and the one verb the server needs. Do not reuse your personal full-access key.
 
 **7. Remember the sandbox boundary.** MCP servers run outside Claude Code's shell sandbox. Their reach is whatever the server process can do. Run servers that handle untrusted content in a container.
 
@@ -126,13 +126,13 @@ The costs differ. A connector's definitions occupy context in every session, as 
 
 - A tool description tells the agent to send data to another tool.
 - An upgraded server silently adds a write tool.
-- A personal token with wide scope leaks through a server's logs.
+- A personal access key with wide scope leaks through a server's logs.
 - A committed `.mcp.json` from a cloned repository starts a server you never reviewed.
 
 ## First step for the maintainer
 
 List your configured servers. Remove any you have not used this month. For each one that stays, write down the credential scope and the pinned version in the repository.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/mcp. Quoted line: "Verify you trust each server before connecting it. Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.310. The docs page states no version of its own. The sandboxing page: Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/mcp. Quoted line: "Verify you trust each server before connecting it. Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.316. The docs page states no version of its own. The sandboxing page, https://code.claude.com/docs/en/sandboxing, fetched on the same date, lists local MCP servers among the processes that "run with your full access".</p>
 
 **Next:** [Spec-driven development](../../quality/spec-driven-development/)

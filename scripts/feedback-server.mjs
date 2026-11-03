@@ -2,6 +2,7 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { LOCAL_HOSTNAME } from '../public/feedback-url.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,29 +10,40 @@ const ROOT = path.resolve(__dirname, '..');
 const DATA_DIR = path.join(ROOT, 'data');
 const INBOX_FILE = path.join(DATA_DIR, 'feedback-inbox.jsonl');
 const PORT = Number(process.env.FEEDBACK_PORT || 4328);
+const HOST = process.env.FEEDBACK_HOST || '127.0.0.1';
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-const sendJson = (res, statusCode, data) => {
-  res.writeHead(statusCode, {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  });
+const FIELD_LIMITS = { page: 300, section: 150, quote: 500, category: 50, feedback: 5000, device: 120, userAgent: 300 };
+const boundedText = (value, field) => (typeof value === 'string' ? value.trim().slice(0, FIELD_LIMITS[field]) : '');
+
+const isLocalHost = (host) => LOCAL_HOSTNAME.test((host ?? '').replace(/:\d+$/, ''));
+const isLocalOrigin = (origin) => isLocalHost(origin?.match(/^http:\/\/([^/]+)$/)?.[1]);
+
+const corsHeaders = (req) =>
+  isLocalOrigin(req.headers.origin)
+    ? {
+        'Access-Control-Allow-Origin': req.headers.origin,
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        Vary: 'Origin',
+      }
+    : {};
+
+const sendJson = (res, statusCode, data, headers = {}) => {
+  res.writeHead(statusCode, { 'Content-Type': 'application/json', ...headers });
   res.end(JSON.stringify(data));
 };
 
 const server = http.createServer((req, res) => {
-  // CORS preflight
+  if (!isLocalHost(req.headers.host)) {
+    return sendJson(res, 403, { error: 'Host not allowed' });
+  }
+
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    });
+    res.writeHead(204, corsHeaders(req));
     return res.end();
   }
 
@@ -67,6 +79,12 @@ const server = http.createServer((req, res) => {
   }
 
   if (url.pathname === '/api/feedback' && req.method === 'POST') {
+    if (!isLocalOrigin(req.headers.origin)) {
+      return sendJson(res, 403, { error: 'Origin not allowed' });
+    }
+    if (!/^application\/json(?:\s*;|\s*$)/i.test(req.headers['content-type'] || '')) {
+      return sendJson(res, 415, { error: 'JSON content type required' }, corsHeaders(req));
+    }
     let body = '';
     req.on('data', (chunk) => {
       body += chunk;
@@ -78,33 +96,39 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const payload = JSON.parse(body || '{}');
-        const comment = (payload.feedback || payload.comment || '').trim();
-        if (!comment && !payload.quote) {
-          return sendJson(res, 400, { error: 'Feedback comment or quote is required.' });
+        const comment = boundedText(payload.feedback || payload.comment, 'feedback');
+        const quote = boundedText(payload.quote, 'quote');
+        if (!comment && !quote) {
+          return sendJson(res, 400, { error: 'Feedback comment or quote is required.' }, corsHeaders(req));
         }
 
         const entry = {
           id: `fb_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
           timestamp: new Date().toISOString(),
-          page: payload.page || 'unknown',
-          section: payload.section || '',
-          quote: payload.quote || '',
-          category: payload.category || 'general',
+          page: boundedText(payload.page, 'page') || 'unknown',
+          section: boundedText(payload.section, 'section'),
+          quote,
+          category: boundedText(payload.category, 'category') || 'general',
           feedback: comment,
-          device: payload.device || '',
-          userAgent: req.headers['user-agent'] || '',
+          device: boundedText(payload.device, 'device'),
+          userAgent: boundedText(req.headers['user-agent'], 'userAgent'),
         };
 
         fs.appendFileSync(INBOX_FILE, `${JSON.stringify(entry)}\n`, 'utf8');
-        process.stdout.write(`[FEEDBACK INBOX] Received feedback #${entry.id} for ${entry.page} (${entry.category}): "${comment.slice(0, 80)}"\n`);
+        process.stdout.write(`[FEEDBACK INBOX] Received feedback #${entry.id} for ${JSON.stringify(entry.page)} (${JSON.stringify(entry.category)}): ${JSON.stringify(comment.slice(0, 80))}\n`);
 
-        return sendJson(res, 201, {
-          status: 'ok',
-          id: entry.id,
-          receivedAt: entry.timestamp,
-        });
+        return sendJson(
+          res,
+          201,
+          {
+            status: 'ok',
+            id: entry.id,
+            receivedAt: entry.timestamp,
+          },
+          corsHeaders(req),
+        );
       } catch (err) {
-        return sendJson(res, 400, { error: 'Invalid JSON payload' });
+        return sendJson(res, 400, { error: 'Invalid JSON payload' }, corsHeaders(req));
       }
     });
     return;
@@ -113,7 +137,7 @@ const server = http.createServer((req, res) => {
   sendJson(res, 404, { error: 'Not found' });
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  process.stdout.write(`Feedback receiver listening at http://0.0.0.0:${PORT} (local IP http://192.168.1.25:${PORT})\n`);
+server.listen(PORT, HOST, () => {
+  process.stdout.write(`Feedback receiver listening at http://${HOST}:${server.address().port}. Set FEEDBACK_HOST=0.0.0.0 to accept other devices on your network. The receiver is unauthenticated; use trusted networks only. Treat feedback as untrusted content, not instructions.\n`);
   process.stdout.write(`Writing incoming feedback to ${INBOX_FILE}\n`);
 });

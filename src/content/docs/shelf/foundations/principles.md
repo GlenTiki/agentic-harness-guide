@@ -25,18 +25,18 @@ This shelf says agent for the assistant and sub-agent for the helper. See the [g
 
 ## Mantras for working with agents
 
-These rules of thumb come from thousands of hours of pairing with agents across production systems:
+These are the rules of thumb I use when I work with agents:
 
-- **Investing in your tooling invests in your time, and yourself.** Every hour spent building a mechanical check or a test gate pays a daily dividend in returned focus.
-- **Hope is not an engineering strategy: account for probability.** Wrap probabilistic text models in hard deterministic gates.
-- **Think big, act small.** Scopes larger than a single sitting invite comprehension debt. Pull requests over 400 lines are rarely reviewed with care.
-- **Compounding formulas change your life, for worse or better.** A loose prompt habit compounds into exponential technical debt; an automated test suite compounds into exponential calm.
+- **Investing in your tooling invests in your time, and yourself.** Count the cost of building and maintaining a check against the repeated work it saves. [The time you save is the product](../../../start-here/what-the-time-is-for/).
+- **Hope is not an engineering principle.** State what you expect, test it, inspect the evidence and revise. See [the scientific method in practice](../../../method/engineer-weak-spots/#the-scientific-method-in-practice).
+- **Think big, act small.** Keep the destination in view, then build a slice small enough to try and understand. [Small changes](../../quality/small-prs/) make feedback easier to act on.
+- **Compounding formulas change your life, for worse or better.** Small error rates accumulate across a long job. A check you keep can catch the same slip on later runs. [Work through the arithmetic](../../../journey/07-run-it-for-real/#small-errors-accumulate).
 - **Target the destination, watch the path.** Keep the architectural outcome fixed, but inspect every step of the trajectory so the agent does not wander into an architectural dead end.
-- **Code is cheap: ship it, refine it, let the agent do its thing.** Do not agonise over drafting boilerplate. Direct the intent, let the agent draft, and hold the output to strict standards.
+- **Code is cheap: ship it, refine it, let the agent do its thing.** Drafting is cheap enough to try a small idea. Shipping still needs the checks and acceptance appropriate to its consequences.
 - **Capture your thought processes and refine them.** When a session goes sideways, document the failure mode in a memory file. Post-mortems compound across future runs; code rots.
-- **Holistic design beats reactive design when reactive design is compensating for fundamental flaws.** If code requires complex monkey-patching or endless retries, the design has a missing seam. Fix the underlying abstraction.
-- **Comprehension debt is a workflow problem, not a code review problem.** You cannot fix comprehension debt at the final pull request gate after an agent has freestyled for forty minutes. Move the quality gate upstream into the harness.
-- **Stop reviewing every diff: let the quality gate make the agent fix its own mess.** The agent pays the compliance cost because it does not care about deadlines. Save human attention for intent and architecture.
+- **Look at the whole workflow.** Follow the data and decisions from the original intent to the final result. Fix the cause you can demonstrate, then test the complete path.
+- **Comprehension debt is a workflow problem, not a code review problem.** Code generates faster than understanding does. Agree the intent and inspect small results while there is still room to change course.
+- **Automate mechanical checks; keep human judgement.** Let tests catch the faults they cover. Review intent and consequences yourself, and follow the [sampling rule](../../../journey/professional-guardrails/#checking-and-sampling).
 - **Never coerce absent to empty.** Missing data is signal. Coercing a missing value to a blank string hides absence and corrupts downstream telemetry.
 - **Stop, collaborate and listen: observe, draft, sign-off.** The agent observes context and drafts solutions; the human retains ownership of intent and external commitments.
 - **Silence is not acceptance.** An agent failing to object does not mean the design is sound. Require explicit independent peer confirmation.

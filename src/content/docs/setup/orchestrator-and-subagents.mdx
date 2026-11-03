@@ -8,9 +8,9 @@ status: mixed
 
 **Status.** Runs in my setup: the lead-agent policy, a delegation counter, a block on write-capable helpers that are not isolated, and context-ledger recovery. Built in the case study: brief templates and a shared-rules check ([chapter 7](../../case-study/ch07-orchestrator/)).
 
-## The weak spot it removes
+## The weak spot it targets
 
-**One [agent](../../glossary/#agent) does everything.** Its context fills with raw files. It reviews its own work. It loses the plan. Parallel helpers that write files can also trample each other.
+**One [agent](../../glossary/#agent) does everything.** Its context fills with raw files. It reviews its own work. It loses the plan. Parallel [helpers](../../glossary/#helper) that write files can also trample each other.
 
 ## How it works
 
@@ -29,9 +29,9 @@ Simple edits, short reads and one-line answers stay in the main thread.
 ### Hooks that support the policy
 
 1. **A counter.** A hook counts consecutive main-thread tool calls. At the fifth and tenth call it adds a nudge to delegate.
-2. **A write guard.** A before-tool hook denies a helper call that looks like it writes files. It allows the call only if the call is isolated in its own worktree, is read-only, or targets a path where isolation is impossible. The guard exists because parallel writers in one checkout collided.
-3. **A brief check.** A hook searches memory with the outgoing brief, so a helper is not told to break a standing rule.
-4. **A context ledger.** Before context compaction, a hook saves objective state: branch, short commit, count of changed files, intent and recent actions. After compaction, a session-start hook prints the newest entry. It cannot know what the agent was thinking. It records facts only.
+2. **A write guard.** A before-tool hook denies a helper call that looks like it writes files. It allows the call only if the call is isolated in its own [worktree](../../glossary/#worktree), is read-only, or targets a path where isolation is impossible. The guard exists because parallel writers in one checkout collided.
+3. **A brief reminder.** A PreToolUse hook searches memory with the outgoing brief. Its additionalContext arrives alongside the tool result, so the reminder can inform later reasoning but cannot prevent that hand-off.
+4. **A context ledger.** Before context [compaction](../../glossary/#compaction), a hook saves objective state: branch, short commit, count of changed files, intent and recent actions. After compaction, a session-start hook prints the newest entry. It cannot know what the agent was thinking. It records facts only.
 
 ### What helpers get
 
@@ -42,7 +42,7 @@ This part differs by launcher.
 | A native helper in Claude Code | Yes | Yes for custom helpers. No for the built-in Explore and Plan helpers. |
 | My own launcher built from a role file | No | No. The brief must carry them. |
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/sub-agents. Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/sub-agents. Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 Claude Code lets helpers start helpers, up to three layers. I keep to one layer by my own rule: a helper reports back and the lead starts the next one. That keeps the log flat.
 
@@ -72,7 +72,7 @@ A good brief fits on a screen. It has five parts.
 
 - A helper that returns a long dump has defeated the purpose. Ask for less.
 - A helper brief that omits the rules block is a weak spot. Chapter 7 builds a check that finds it.
-- Give the reviewer the output and the criteria, not the author's reasoning. In my isolated test, a simulated same-context reviewer (the author's reasoning put in the prompt) missed the defect in 0 of 10 trials, the same as a fresh reviewer, so this page does not claim that seeing the reasoning makes a reviewer agree. See the [evidence page](../../evidence/).
+- Give the reviewer the output and the criteria, not the author's reasoning. In my isolated test, a simulated same-context reviewer (the author's reasoning put in the prompt) found the defect in all 10 trials. A fresh reviewer also found it in all 10. So this page does not claim that seeing the reasoning makes a reviewer agree. See the [evidence page](../../evidence/).
 
 ## What this does not do
 

@@ -8,7 +8,7 @@ status: mixed
 
 **Status.** Runs in my setup: local models served by Ollama for narration, summaries and a stop-time drift check, a tool server that asks a local model, and a free-memory check. Built in the case study as optional parts: local embedding and a background indexing job ([chapter 12](../../case-study/ch12-local-models/)). Layer streaming for models larger than memory is not in my setup, and this page gives no speed numbers.
 
-## The weak spot it removes
+## The weak spot it targets
 
 **Everything costs [tokens](../../glossary/#token).** Sending every small job to a large hosted model costs money and sends your data out. A local model keeps the data on the machine and costs no per-token fee. A local model also competes for memory with everything else you run.
 
@@ -26,7 +26,9 @@ Use the smallest model that does the job.
 
 **Ollama** serves local models over a local web address. Its embeddings call returns normalised vectors. Use the same model to index and to query. Models stay loaded for a short time by default, and a setting controls how many load at once. At the last check Ollama had no native re-rank endpoint, so run a re-ranker through a library.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://docs.ollama.com/capabilities/embeddings. The page states that the embeddings call returns L2-normalised vectors and that the same model should index and query. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://docs.ollama.com/capabilities/embeddings. The page states that the embeddings call returns L2-normalised vectors and that the same model should index and query. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://docs.ollama.com/faq. Quoted line: "By default models are kept in memory for 5 minutes before being unloaded." The same page names OLLAMA_MAX_LOADED_MODELS for how many models load at once. The API list at https://docs.ollama.com/llms.txt on that date had no re-rank endpoint. Ollama on that date: 0.34.2.</p>
 
 ### Check memory first
 
@@ -49,7 +51,13 @@ You may want a larger model than your machine can hold. These options exist. I d
 
 For background indexing, my advice is to choose an embedding model that fits in memory. That is advice, not a fetched fact. Layer streaming suits an offline batch job at best, not an interactive chat.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://arxiv.org/abs/2312.11514. The page is the paper "LLM in a flash", submitted 2023-12-12. It reports running models up to twice the size of available memory. It is a research paper and not a released tool.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://github.com/ggml-org/llama.cpp/blob/master/tools/cli/README.md. Quoted line: "force system to keep model in RAM rather than swapping or compressing." The page lists memory mapping as the default load mode and a flag for the number of layers in video memory. It does not quantify the cost of paging from disk.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://github.com/lyogavin/airllm. Quoted line: "only Apple silicon is supported." The page says only Llama-style models run on macOS and gives no tokens-per-second figures.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://github.com/ml-explore/mlx. Quoted line: "MLX is an array framework for machine learning on Apple silicon". The page makes no claim about models larger than memory.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://arxiv.org/abs/2312.11514. The page is the paper "LLM in a flash", submitted 2023-12-12. It reports running models up to twice the size of available memory. It is a research paper and not a released tool.</p>
 
 ## End-to-end flow
 

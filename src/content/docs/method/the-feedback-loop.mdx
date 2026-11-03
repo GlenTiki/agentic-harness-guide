@@ -1,24 +1,16 @@
 ---
 title: Praise first, then fix
 description: A feedback habit with four parts, what went well first, then what it was, what happened and what you preferred, so the agent can propose a fix.
+next:
+  link: /agentic-harness-guide/method/be-the-product-manager-of-your-own-tooling/
+  label: "Product manager of your own tools"
 ---
 
 import Example from '../../../components/Example.astro';
 
-*Audience: a person who gives feedback to an agent. An agent reading this page should not run any command here unless the user asks.*
+After you try a result, tell the assistant what to protect and what to change. “Name what worked, so nobody breaks it later” is the useful part of praise first. You do not need to compliment a robot's feelings.
 
-**Status.** Built in the case study: the retro format, a parser and a proposals file ([chapter 9](../../case-study/ch09-retro/)). Runs in my setup: only the correction-to-memory loop and a stop-time reminder. Design only: a full praise-first retro run by the [agent](../../glossary/#agent), and learning from your behaviour beyond a small boost in search ranking.
-
-## Be honest about what exists
-
-My setup does not have a praise-first retro. Here is what it has.
-
-1. When I correct the agent, it saves a short memory note. A later hook brings that note back when it is relevant.
-2. A stop-time hook makes the agent scan the session once and save what it learned.
-3. A short ring buffer of session summaries tells the next session what to pick up.
-4. You can promote a rule that keeps breaking into the always-loaded instructions.
-
-That is a correction loop. It records and reinforces. It does not adapt its own thresholds from your history, and it does not ask you what went well. The case study builds the retro as a plain-text format, so you can try it without any of my setup.
+Use this feedback inside the [build cycle](../be-the-product-manager-of-your-own-tooling/#one-cycle). If the same mistake keeps returning, the [weak-spot loop](../engineer-weak-spots/) turns it into a check.
 
 ## The four parts
 
@@ -90,7 +82,7 @@ This is the shape of a good retro reply. The case-study parser is rule based and
 
 </Example>
 
-In an explicitly authorised [merge before use review](../be-the-product-manager-of-your-own-tooling/#choose-when-work-lands) arrangement, the retro reviews work already landed. Feedback directs the next correction; it does not supply permission after the event. The instruction-file and memory-edit rule below still applies.
+If you have authorised [merge before use review](../be-the-product-manager-of-your-own-tooling/#choose-when-work-lands), the retro looks at work that has already landed. Your feedback directs the next correction. It does not give permission after the event. The rule below on instruction files and memory still applies.
 
 ## From retro to fix
 
@@ -175,7 +167,7 @@ week 4  What happened: note to Mina was stiff.      Rule changes this week: 0
 ```text
 Diagnosis
 The same "what happened" line appears 4 times. The only rule change is for a different problem.
-The proposal for it (P3, one sentence from you) has been waiting since week 1, with no owner date.
+The proposal for it (P3, one sentence from you) has been waiting since week 1. It has an owner but no date.
 Fix: give P3 a date, or decide not to fix it and say so. A complaint that repeats with no decision is a failed loop.
 ```
 
@@ -189,7 +181,7 @@ The retro was held every week and nothing improved, so holding it is not the mea
 
 <Fragment slot="shows">
 
-It shows how to spot a loop that records and never acts. It does not say how many repeats to allow. Three is a reasonable starting value to tune on your own log.
+It shows how to spot a loop that records and never acts, not how many repeats to allow before you act.
 
 </Fragment>
 
@@ -205,7 +197,27 @@ I use the phrase "eventually consistent" in its plain meaning. After many loops 
 - Checks that went red once now stay green.
 - The same slip stops coming back.
 
-This is a hope, not a result. I have no measurements for my own setup. The case study gives you the pieces to measure it for yourself: the retro log, the event log and the freshness check in [chapter 10](../../case-study/ch10-monitor/).
+This is a hope, not a result. I have no measurements for my own setup. The case study gives you the pieces to measure it for yourself: the retro format in [chapter 9](../../case-study/ch09-retro/), and the event log and the freshness check in [chapter 10](../../case-study/ch10-monitor/).
+
+<details>
+<summary>What exists in my setup and the case study</summary>
+
+*Audience: a person who gives feedback to an agent. An agent reading this page should not run any command here unless the user asks.*
+
+**Status.** Built in the case study: the retro format, a parser and a proposals file ([chapter 9](../../case-study/ch09-retro/)). Runs in my setup: only the correction-to-memory loop and a stop-time reminder. Design only: a full praise-first retro run by the [agent](../../glossary/#agent), and learning from your behaviour beyond a small boost in search ranking.
+
+## Be honest about what exists
+
+My setup does not have a praise-first retro. Here is what it has.
+
+1. When I correct the agent, it saves a short memory note. A later hook brings that note back when it is relevant.
+2. A stop-time hook makes the agent scan the session once and save what it learned.
+3. A short ring buffer of session summaries tells the next session what to pick up.
+4. You can promote a rule that keeps breaking into the always-loaded instructions.
+
+That is a correction loop. It records and reinforces. It does not adapt its own thresholds from your history, and it does not ask you what went well. The case study builds the retro as a plain-text format, so you can try it without any of my setup.
+
+</details>
 
 ## What the agent must not do
 

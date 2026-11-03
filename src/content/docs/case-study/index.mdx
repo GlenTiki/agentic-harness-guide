@@ -1,6 +1,6 @@
 ---
 title: The case study, one fix per chapter
-description: Download one small kit per chapter, check it, unzip it and run its checks, including a check that is built to fail. Each chapter removes one weak spot.
+description: Download one small kit per chapter, check it, unzip it and run its checks, including a check that is built to fail. Each chapter targets one weak spot.
 status: mixed
 ---
 
@@ -8,7 +8,7 @@ import Example from '../../../components/Example.astro';
 
 *Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
 
-The case study rebuilds the ideas in the [setup pages](../setup/) from nothing. It wraps a tiny plain-text notes tool in a small harness kit. Each chapter removes one [weak spot](../method/engineer-weak-spots/), and each chapter has a check that you can see go red.
+The case study rebuilds the ideas in the [setup pages](../setup/) from nothing. It wraps a tiny plain-text notes tool in a small harness kit. Each chapter targets one [weak spot](../method/engineer-weak-spots/), and each chapter has a check that you can see go red.
 
 **Status.** Built in the case study, with one exception: chapter 8 is Design only, with a small working scaffold. Every command and output on the chapter pages was run on 2026-10-25 from a fresh unzip of that chapter's kit, with Python 3.13.1. The exceptions are the stored retrieval outputs in chapters 6 and 12, which you read from a clone of the guide repository. Each kit also passed `validate.py` and went red on `validate.py --bad`.
 
@@ -34,7 +34,7 @@ Each kit holds the chapter spec, a chapter note (`CHAPTER.md`), the validation s
 
 ## Downloads
 
-| Chapter | Kit | SHA-256 | Weak spot it removes |
+| Chapter | Kit | SHA-256 | Weak spot it targets |
 | --- | --- | --- | --- |
 | [0. Baseline](./ch00-baseline/) | [ch00-baseline.zip](/agentic-harness-guide/downloads/ch00-baseline.zip) | `c7135ce6e57d41e131c4fffb697d22b7d9d569e76ddf56177dfde2cef16e8edb` | Nothing is checked |
 | [1. Plain spec](./ch01-plain-spec/) | [ch01-plain-spec.zip](/agentic-harness-guide/downloads/ch01-plain-spec.zip) | `37ebb74ea24195721c63fc28ed6dafc1119f1feecda1b591127824bd0c4fca62` | Vague requests |

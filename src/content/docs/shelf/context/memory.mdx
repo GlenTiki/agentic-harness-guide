@@ -39,7 +39,7 @@ Never store secrets or personal data in memory files that are committed or share
 
 **4. Cap what loads at startup.** Claude Code behaviour: it loads the first 200 lines or 25 KB of its auto-generated memory index at the start of each session, so keep the index to short one-line pointers and put detail in topic files that load on demand.
 
-**5. Add recall hooks.** Search memory against the text of an outgoing action. A pre-tool hook can take the prompt for a sub-agent, or the content of an edit, run a keyword search over memory and add the top matches to context. Make it advisory. A wrong match should cost a glance, not a block.
+**5. Add recall hooks.** Search memory against the text the agent is about to act on. A prompt-submit hook can search your prompt and add the top matches, which arrive with the prompt, before the agent acts. A pre-tool hook can search the prompt for a sub-agent, or the content of an edit. Claude Code behaviour: context that a pre-tool hook adds arrives next to the tool result, so the agent reads it after the call has run. If a match must count before the call, the hook has to deny the call and give the matches as the reason. Keep recall advisory where you can. A wrong match should cost a glance, not a block.
 
 **6. Date entries and cite sources.** Record the date and where the fact came from. A future reader can then judge whether to trust it.
 
@@ -136,6 +136,8 @@ Do not copy one fact into two of them. [Context management](../context-managemen
 
 Create one `memory/` directory with an index file of one-line entries. Add an entry the next time you correct the agent. Review the index monthly and delete what is no longer true.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/memory. Quoted line: "Each Claude Code session begins with a fresh context window." Claude Code on that date: 2.1.310. The docs page states no version of its own. The hooks reference was not re-fetched for this page: Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/memory. Quoted line: "The first 200 lines of `MEMORY.md`, or the first 25KB, whichever comes first, are loaded at the start of every conversation." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "PreToolUse, PostToolUse, PostToolUseFailure, and PostToolBatch: next to the tool result". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 **Next:** [Diagnosing retrieval failure](../diagnosing-retrieval-failure/)

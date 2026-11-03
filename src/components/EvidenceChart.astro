@@ -24,6 +24,7 @@ interface ResultRow {
 }
 
 const rows = rawResults as ResultRow[];
+const totalTrials = rows.reduce((sum, r) => sum + r.n, 0);
 
 const pct = (num: number) => `${Math.round(num * 100)}%`;
 const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k ?? 0) > 0 ? 'C' : 'A');
@@ -33,7 +34,7 @@ const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k 
   <div class="chart-toolbar">
     <div class="filter-group" role="group" aria-label="Filter by template">
       <span class="group-label">Template:</span>
-      <button type="button" class="filter-chip active" data-filter-template="all">All (20)</button>
+      <button type="button" class="filter-chip active" data-filter-template="all">All ({rows.length})</button>
       <button type="button" class="filter-chip" data-filter-template="B">Wrong triggered (B)</button>
       <button type="button" class="filter-chip" data-filter-template="C">Headline wrong (C)</button>
       <button type="button" class="filter-chip" data-filter-template="A">0 of n triggered (A)</button>
@@ -65,7 +66,7 @@ const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k 
           const modelSlug = r.models[0] ?? '';
           const wMin = Math.round(r.wilson95[0] * 100);
           const wMax = Math.round(r.wilson95[1] * 100);
-          const pointRate = r.wrong_k > 0 ? Math.round((r.wrong_k / r.wrong_n) * 100) : (r.headline_wrong_k ?? 0) > 0 ? Math.round(((r.headline_wrong_k ?? 0) / r.n) * 100) : 0;
+          const pointRate = r.wrong_k > 0 ? Math.round((r.wrong_k / r.wrong_n) * 100) : 0;
           return (
             <tr class="chart-row" data-template={tmpl} data-model={modelSlug} data-row-id={idx}>
               <td class="cell-case">
@@ -90,7 +91,7 @@ const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k 
                     <div class="rule-three-bound" style={{ left: `${Math.round(r.rule_of_three_upper * 100)}%` }} title={`Rule of three bound: ${pct(r.rule_of_three_upper)}`}></div>
                   )}
                 </div>
-                <span class="whisker-text">{pct(r.wilson95[0])} - {pct(r.wilson95[1])}</span>
+                <span class="whisker-text">{pct(r.wilson95[0])} to {pct(r.wilson95[1])}</span>
               </td>
               <td class="cell-rate">
                 {r.wrong_k > 0 ? (
@@ -110,7 +111,7 @@ const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k 
       </tbody>
     </table>
   </div>
-  <p class="chart-caption">Interactive visualization of all 20 test arms across 310 trials. Stacked bars show pass/partial/fail distribution. Whiskers show 95% Wilson confidence intervals.</p>
+  <p class="chart-caption">All {rows.length} test arms across {totalTrials} trials. Stacked bars show pass, partial and fail. Whiskers show the 95% Wilson interval for the wrong-behaviour rate.</p>
 </div>
 
 <script>

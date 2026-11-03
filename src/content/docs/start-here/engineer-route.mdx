@@ -1,11 +1,20 @@
 ---
 title: The engineer route
 description: Where the mechanism sits in each level for engineers, then the order to read the reference shelf.
+next:
+  link: /agentic-harness-guide/shelf/foundations/principles/
+  label: "Principles"
 ---
 
-The journey is written for any reader. The mechanism that engineers care about sits in the Expert corner and the Go deeper blocks of each level. Read those first, then the shelf.
+## Start with a failing case
 
-The shelf is written against Claude Code, with notes on Codex CLI. The ideas transfer; the setting names do not. Each page names the tool, the docs page fetched and the date. Claude Code 2.1.310 was installed when the pages were checked, and the docs pages state no version of their own. Look for the line that starts "Docs page fetched on". A page that could not be fetched says `Not checked against current docs`, and a claim without either line is generic.
+Take one workflow you already run. Before adding another helper, write a small input that should stop it. For a support-ticket report, use a repeated ticket ID, an old export timestamp and refund rows in two currencies. These are constructed cases, not measured results.
+
+Write the expected behaviour beside each fixture. A repeated ID holds the report. A stale export is rejected against a freshness policy agreed with its owner. EUR and USD totals stay separate unless an explicit conversion rule exists. Put those checks before grouping or drafting.
+
+Then test the whole run: interrupt it before and after delivery. A draft needs approval for its exact content and recipients. If delivery is ambiguous and the provider cannot deduplicate, hold for reconciliation instead of blindly sending again. [Run it for real](../../journey/07-run-it-for-real/) develops that plan.
+
+Start with one of these failures, prove the check catches it and keep a clean case passing. “Think big, act small” applies to the harness too.
 
 ## Where the mechanism sits
 
@@ -14,7 +23,7 @@ The shelf is written against Claude Code, with notes on Codex CLI. The ideas tra
 | [4. Trust, but verify](../../journey/04-trust-but-verify/) | Allowlist semantics, then Go deeper on hooks and sandboxes | How a permission rule differs from a hook, and why a control that runs outside the assistant is stronger than a request |
 | [5. Check the work](../../journey/05-check-the-work/) | Expert corner | Degrees of independence between author and reviewer |
 | [6. Hire a team](../../journey/06-hire-a-team/) | Go deeper | Isolation of helpers and bounded briefs |
-| [7. Run it for real](../../journey/07-run-it-for-real/) | Go deeper | Restart, idempotency and sample size |
+| [7. Run it for real](../../journey/07-run-it-for-real/) | Go deeper | Restart and idempotency; see [Evals](../../shelf/quality/evals/#earn-confidence-with-enough-trials) for sample sizes |
 
 ## Where "harness" is defined
 
@@ -24,5 +33,14 @@ A [harness](../../glossary/#harness) is the program around the assistant: the pa
 
 1. [Principles](../../shelf/foundations/principles/), then the [baseline](../../shelf/reference/baseline/), then the [anti-patterns](../../shelf/reference/anti-patterns/). These three give the position and the minimum.
 2. Then by area: [instruction files](../../shelf/context/instruction-files/), [prompt structure](../../shelf/context/prompt-structure/), context and [retrieval](../../shelf/context/diagnosing-retrieval-failure/), [hooks](../../shelf/control/hooks/) and permissions, [sub-agents](../../shelf/delegation/sub-agents/) and skills, [specs](../../shelf/quality/spec-driven-development/) and review, [observability](../../shelf/operations/observability/) and cost.
+
+<details>
+<summary>Tool versions and source checks</summary>
+
+The journey is written for any reader. The mechanism that engineers care about sits in the Expert corner and the Go deeper blocks of each level. Read those first, then the shelf.
+
+The shelf is written against Claude Code, with notes on Codex CLI. The ideas transfer; the setting names do not. Each page names the tool, the docs page fetched and the date. Each verification line gives the installed Claude Code version; the docs pages state no version of their own. Look for the line that starts "Docs page fetched on". A page that could not be fetched says `Not checked against current docs`, and a claim without either line is generic.
+
+</details>
 
 **Next:** [Principles](../../shelf/foundations/principles/)

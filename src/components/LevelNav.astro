@@ -13,7 +13,7 @@ const current = levels.findIndex((level) => Astro.props.slug === `journey/${leve
   current >= 0 && (
     <nav class="level-nav" aria-label="Levels">
       <p class="level-line">
-        Level {current} of 9 <span class="level-note">(levels run 0 to 8)</span>: {levels[current].goal}
+        Level {current} <span class="level-note">(levels run 0 to 8)</span>: {levels[current].goal}
       </p>
       <ol class="level-dots">
         {levels.map((level, index) => (

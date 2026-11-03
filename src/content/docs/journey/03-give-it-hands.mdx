@@ -26,7 +26,7 @@ Level 2 left you copying and pasting between tools, and that is where the Februa
 
 Three ideas make this safe and useful:
 
-- **Tools and connectors.** A tool is one action, such as "look at the bank rows". A [connector](../../glossary/#connector-mcp) gives the assistant a set of tools for one system, such as a calendar, a spreadsheet or a folder. Many connectors follow an open standard called [MCP](../../glossary/#connector-mcp), so one connector style fits many tools.
+- **Tools and connectors.** A tool is one action, such as "look at the bank rows". A [connector](../../glossary/#connector-mcp) gives the assistant a set of tools for one system, such as a calendar, a spreadsheet or a folder. Many connectors follow an open standard called [MCP](../../glossary/#connector-mcp), so one connector can work in many chat apps.
 - **Read versus write.** A read tool looks. A write tool makes a change: it sends, edits, books or deletes. They carry very different risk, so you treat them differently.
 - **The order of trust.** Connect a new system in [four steps](../../glossary/#read-draft-write-with-confirmation-write-alone): read, draft, write with confirmation, write alone. Stay on each step until it has earned the next one.
 
@@ -43,7 +43,7 @@ Mina's shop shows the order. Mina gave her written OK for exactly two things: th
 <Fragment slot="input">
 
 ```text
-Summarise September from the bank export. Do not change anything except a draft saved in the drafts folder.
+Summarise September from the bank export and the invoice sheet. Do not change anything except a draft saved in the drafts folder.
 ```
 
 </Fragment>
@@ -257,7 +257,7 @@ The shelf page on [connectors (for engineers)](../../shelf/delegation/mcp-server
 </details>
 
 :::note[At work]
-In a finance team this ladder is the access request: view, prepare, approve, post, with a different person at each step. The assistant gets view and prepare. Sam prepares the month-end and Mina approves it.
+In a finance team this ladder is the access request: view, prepare, approve, post, with prepare and approve held by different people. The assistant gets view and prepare. Sam prepares the month-end and Mina approves it.
 :::
 
 ## Expert corner

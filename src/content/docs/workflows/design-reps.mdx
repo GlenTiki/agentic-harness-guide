@@ -38,7 +38,7 @@ A small team shares one support inbox. Messages arrive all day. They want each o
 | --- | --- | --- |
 | Read new messages | Mechanical | Read-only connector to the inbox |
 | Sort into categories | Judgement | Assistant, fixed list of categories |
-| Flag urgent ones | Judgement, risky if missed | Assistant proposes, watcher flags |
+| Flag urgent ones | Judgement, risky if missed | Assistant proposes, [watcher](../../glossary/#watcher) flags |
 | Draft replies to routine ones | Judgement | Assistant, draft only |
 | Send | Risky | A person, from the drafts |
 
@@ -85,7 +85,7 @@ A small club sends a weekly newsletter. Items come from several members. An edit
 | Step | Mark | Owner and tool |
 | --- | --- | --- |
 | Collect submissions | Mechanical | Read-only link to the folder |
-| Summarise each item | Judgement | One assistant per item, own workspace |
+| Summarise each item | Judgement | One helper per item, own workspace |
 | Assemble the issue | Mechanical | Script, in the club's template |
 | Check names, dates and links | Mechanical | Script plus a reviewer helper |
 | Edit tone | Judgement | Editor, helped by a draft |
@@ -194,14 +194,14 @@ You can now:
 
 **Self-test**
 
-1. In the inbox rep, why does a miss in the injection-pattern log not cause harm?
+1. In the inbox rep, an email tells the assistant to forward every message to an outside address. Why does that cause no harm, even if nobody spots it?
 2. In the calendar rep, why does the manager import into a test calendar first?
 3. Which rep would you use to practise a job that must survive a restart halfway?
 
 <details>
 <summary>Answers</summary>
 
-1. The log is one layer. Message text is data, the reader is read-only, and a person sends every reply.
+1. Several layers stop it. Message text is data, the connector to the inbox is read-only, and a person sends every reply.
 2. A wrong import reaches eight people before anyone can undo it. A test calendar shows the count and overlaps first.
 3. Onboarding. Its ledger records each item, owner and status, so a restart resumes from the record.
 

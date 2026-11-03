@@ -30,11 +30,11 @@ Approval prompts do not scale. *Principle, not measured:* a person who is asked 
 
 **2. Allow narrowly.** Allow exact commands that you run all the time. Avoid wildcards over a whole tool. A rule matches the command text as written, so the same program invoked in another form may not match. The permissions documentation shows that `Bash(git push *)` does not match `git -C . push origin main`. A deny rule on a shell command therefore covers the forms it matches and no others. Rely on the sandbox for isolation, and see [Hooks](../hooks/) for a check that parses the command.
 
-**An allow rule only skips the prompt.** In Claude Code's default mode, a call that matches no rule asks you. Only `dontAsk` mode refuses it. The permissions page puts it this way for Bash commands: "Approval required: Yes, except a built-in set of read-only commands". Its description of `dontAsk` mode reads: "Auto-denies every call that would otherwise prompt". So an allow list does not refuse everything else in the default mode. It removes the prompt for the calls it names. Choose `dontAsk` mode when you want unmatched calls refused, and then test that a call you did not list is refused.
+**An allow rule only skips the prompt.** In Claude Code's Manual mode (the `default` setting), a call that matches no rule asks you. In auto mode, a classifier reviews that call instead, and the call can run with no prompt. The permission modes page says: "With Claude Code v2.1.283 or later, auto mode is the built-in starting permission mode for interactive terminal and VS Code sessions." Only `dontAsk` mode refuses an unmatched call. The permissions page puts it this way for Bash commands in Manual mode: "Approval required: Yes, except a built-in set of read-only commands". Its description of `dontAsk` mode reads: "Auto-denies every call that would otherwise prompt". So an allow list does not refuse everything else in either mode. It removes the prompt for the calls it names. Choose `dontAsk` mode when you want unmatched calls refused, and then test that a call you did not list is refused.
 
-**3. Turn on the sandbox.** Claude Code behaviour: the sandbox covers shell commands only. It uses the macOS Seatbelt framework, or `bubblewrap` and `socat` on Linux and WSL2, and it is off by default. Writes are limited to the working directory and a temporary directory. Network access goes through a proxy that checks each host against an allowed-domains list, and that list starts empty. Enable it with the `/sandbox` command or the `sandbox.enabled` setting, and add domains one at a time with `sandbox.network.allowedDomains`.
+**3. Turn on the sandbox.** Claude Code behaviour: the sandbox covers shell commands only. It uses the macOS Seatbelt framework, or `bubblewrap` and `socat` on Linux and WSL2, and it is off by default. Writes are limited to the working directory and a temporary directory. Network access goes through a proxy that checks each host against an allowed-domains list, and that list starts empty. Enable it with the `/sandbox` command or the `sandbox.enabled` setting, and add domains one at a time with `sandbox.network.allowedDomains`. When a command fails in the sandbox, Claude can retry it outside the sandbox. In Manual mode you get a prompt, but an allow rule that matches the command approves the retry with no prompt. Set `sandbox.allowUnsandboxedCommands` to `false` to turn the retry off.
 
-**4. Know what the sandbox does not cover.** File tools, web tools, MCP servers and hooks run outside the sandbox. They follow permission rules instead. A sandbox denial on reads does not stop the file-read tool, so deny the same paths in both places.
+**4. Know what the sandbox does not cover.** The built-in file and web tools run outside the sandbox and follow permission rules instead. Hooks and local MCP servers also run outside it, with your full access. A sandbox read denial does not stop the file-read tool. The reverse does hold: Claude Code merges `Read` and `Edit` deny rules into the sandbox configuration, so write a secret's deny as a `Read` rule and it covers both.
 
 **5. Do not use "skip all prompts" modes on a machine you care about.** Run those modes only inside a disposable container or virtual machine with no credentials. You can also disable them in settings so a shared repository cannot turn them on.
 
@@ -42,7 +42,7 @@ Approval prompts do not scale. *Principle, not measured:* a person who is asked 
 
 **7. Control network egress separately.** Prefer an allow list of domains over a deny list. For web fetches, allow specific domains by rule.
 
-**8. Protect the files that constrain the agent.** The agent can edit what constrains it. If it can write to `.claude/settings.json`, to a hook script or to your capability registry, it can loosen its own limits. Add deny rules for writes to those paths. Add a file-integrity check or a CI check that fails when they change without review. This is the mechanism behind "turning off a safety control" in the [approval list](../../operations/human-in-the-loop/): the write is denied, and the check catches a change that gets through some other way. A deny rule on file tools does not stop a shell command from writing the same file. The project settings file sits inside the working directory, so a sandbox that allows writes there does not protect it. That is why the integrity or CI check matters more than the deny rule.
+**8. Protect the files that constrain the agent.** The agent can edit what constrains it. If it can write to `.claude/settings.json`, to a hook script or to your capability registry, it can loosen its own limits. Add deny rules for writes to those paths. Add a file-integrity check or a CI check that fails when they change without review. This is the mechanism behind "turning off a safety control" in the [approval list](../../operations/human-in-the-loop/): the write is denied, and the check catches a change that gets through some other way. An `Edit` deny rule covers the file tools, the shell file commands Claude Code recognises, such as `sed` and `tee`, and redirections such as `> file`. It does not cover a script that opens the file itself. Claude Code also guards its own configuration. The sandbox denies shell writes to the `.claude` settings files, `.claude/hooks` and `.mcp.json`. The permission system asks before an edit under `.claude` in Manual mode, and sends it to the classifier in auto mode. A capability registry kept elsewhere gets neither guard, and a person can still approve the prompt. That is why the integrity or CI check matters more than the deny rule.
 
 ## A deny rule that misses an equivalent command
 
@@ -81,7 +81,7 @@ echo hi                 no match    no match      harmless
 
 <Fragment slot="notice">
 
-The text rule catches one spelling in five. The parsed check catches all five, then misses the script and the `cat` of a file that a `Read(./.env)` rule denies for the file tool. No check that reads command text can see what `clean.py` does inside.
+The text rule catches one spelling in five. The parsed check catches all five, then misses the script and `cat .env`, which only a rule about the file itself can catch. No check that reads command text can see what `clean.py` does inside.
 
 </Fragment>
 
@@ -99,7 +99,7 @@ Constructed. Three sample risks and the layer that fits each. The reasoning foll
 
 | Risk | Rule | Hook | Sandbox |
 | --- | --- | --- | --- |
-| The agent reads `.env` | Deny `Read(./.env)` for the file tool | A hook cannot see file reads that the shell does by other means | Deny reads of the same path for shell commands |
+| The agent reads `.env` | Deny `Read(./.env)`. It covers the file tool and shell file commands Claude Code recognises, such as `cat` | A hook cannot see file reads that the shell does by other means | With the sandbox on, the same rule also stops a script that opens the file |
 | The agent force-pushes | An `ask` rule for the common spelling | A hook that parses the command, with its [known bypasses](../hooks/#what-this-hook-does-not-cover) | None: the push uses an allowed network route. Limit credentials instead |
 | A script the agent runs sends data out | None: the command text looks harmless | Weak: it sees the script name only | Primary: an empty network allow list |
 
@@ -115,8 +115,8 @@ Read the table by asking what the control can see. A rule sees a tool name and a
 
 ## First step for the maintainer
 
-Add the `deny` rules above, enable the sandbox, leave the network allow list empty and add only the registries your build needs.
+Add the `deny` rules above, enable the sandbox, leave the network allow list empty and add only the registries your build needs. Turn off the unsandboxed retry from item 3, because the sample `allow` rules would otherwise approve a retry of a failing test command outside the sandbox.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt". Claude Code on that date: 2.1.310. The docs page states no version of its own. The settings and sandboxing details were not re-fetched on that date and are Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "Rules are evaluated in order: deny, then ask, then allow." Claude Code on that date: 2.1.316. The docs page states no version of its own. The permission modes, sandboxing and settings pages were fetched on the same date: https://code.claude.com/docs/en/permission-modes, https://code.claude.com/docs/en/sandboxing and https://code.claude.com/docs/en/settings.</p>
 
 **Next:** [Capability gating](../capability-gating/)

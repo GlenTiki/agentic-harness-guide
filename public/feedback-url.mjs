@@ -5,6 +5,7 @@ export const READER_FIELDS = ['kind', 'comment'];
 export const MAX_URL_LENGTH = 1900;
 export const MAX_QUOTE_LENGTH = 500;
 const ELLIPSIS = '…';
+export const LOCAL_HOSTNAME = /^(?:localhost|127(?:\.\d{1,3}){3}|\[::1\]|10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2}|[\w-]+\.local)$/;
 const LIMITS = { page: 300, section: 150, device: 120 };
 
 const clean = (text, limit) => {

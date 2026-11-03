@@ -8,9 +8,9 @@ import Example from '../../../components/Example.astro';
 
 *Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
 
-**Status.** Runs in my setup: BM25 keyword search, dense embedding search, rank fusion and a small recency boost. Built and measured in the case study ([chapter 6](../../case-study/ch06-rerank/) and [chapter 12](../../case-study/ch12-local-models/)) and not in my setup: a cross-encoder re-ranker. My setup has no re-ranker of any kind.
+**Status.** Runs in my setup: [BM25](../../glossary/#bm25) keyword search, dense embedding search, rank fusion and a small recency boost. Built and measured in the case study ([chapter 6](../../case-study/ch06-rerank/) and [chapter 12](../../case-study/ch12-local-models/)) and not in my setup: a cross-encoder re-ranker. My setup has no re-ranker of any kind.
 
-## The weak spot it removes
+## The weak spot it targets
 
 **Keyword search misses the point.** A search for "stop duplicates" can miss a note titled "count each month once". The words differ and the meaning is the same. Better ranking finds the right note. The aim is to load fewer [tokens](../../glossary/#token) and the right ones.
 
@@ -25,7 +25,7 @@ import Example from '../../../components/Example.astro';
 
 A [bi-encoder](../../glossary/#embedding) such as the embedding model encodes each text on its own. A [cross-encoder](../../glossary/#cross-encoder) reads the pair together. The pair reading is more precise and slower, so the usual pattern is to run it only on the top results of a faster search.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://www.sbert.net/docs/cross_encoder/usage/usage.html. Quoted line: "Often slower than a Sentence Transformer model, as it requires computation for each pair rather than each text". The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://www.sbert.net/docs/cross_encoder/usage/usage.html. Quoted line: "Often slower than a Sentence Transformer model, as it requires computation for each pair rather than each text". The docs page states no version of its own.</p>
 
 ## What I run
 
@@ -34,7 +34,7 @@ Two searches run on the notes and each returns a ranked list.
 1. A BM25 keyword search, top 50.
 2. A dense search by cosine similarity on embeddings, top 50.
 
-Then reciprocal rank fusion (RRF) merges the lists. A note scores `1 / (k + rank)` in each list, and the two scores are added. I use k = 60 and give both lists equal weight.
+Then [reciprocal rank fusion](../../glossary/#reciprocal-rank-fusion) (RRF) merges the lists. A note scores `1 / (k + rank)` in each list, and the two scores are added. I use k = 60 and give both lists equal weight.
 
 <Example
   label="Computed"
@@ -96,13 +96,15 @@ A cross-encoder costs more per query, as the documentation above says. It might 
 ## What I will and will not claim
 
 - The cross-encoder API takes pairs and returns one score per pair. It can also rank a list of passages. This is documented.
-- Small re-rankers exist, and one is about 22 million parameters. A larger multilingual one is about 0.6 billion, so it is much heavier.
+- Small re-rankers exist, and one is about 22 million parameters. A larger multilingual one, `bge-reranker-v2-m3`, is about 0.6 billion, so it is much heavier.
 - I measured one small cross-encoder on one laptop CPU. The numbers are in the next section. They say nothing about other machines.
 - I do **not** claim identical scores across machines. A cross-encoder uses no sampling, so it should repeat on the same setup, and it did on mine. Floating-point differences can change scores across hardware, batch sizes or library versions. That part is reasoned, not tested.
 - I do **not** claim a cross-encoder helps your notes. On my set it did not raise hit@3.
 - Ollama had no native re-rank endpoint at the last check, so run the re-ranker through a library or another runtime.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2. The page states an Apache-2.0 licence and 22.7 million parameters. The page states no tool version.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2. The page states an Apache-2.0 licence and 22.7 million parameters. The page states no tool version.</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://huggingface.co/BAAI/bge-reranker-v2-m3. The page states 0.6 billion parameters, an Apache-2.0 licence and multilingual use. The page states no tool version.</p>
 
 ## What I measured
 

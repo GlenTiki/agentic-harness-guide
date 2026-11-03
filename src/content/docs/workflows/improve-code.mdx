@@ -23,7 +23,7 @@ The loop has five parts. Each has a home elsewhere in the guide:
 2. Write the [tests](../../glossary/#test) first, to pin down what must not change.
 3. Make one small change.
 4. Run the tests.
-5. Give the change to a separate [reviewer](../../glossary/#reviewer) who has the [spec](../../glossary/#spec) and the diff, and nothing else.
+5. Give the change to a separate [reviewer](../../glossary/#reviewer) who has the [spec](../../glossary/#spec) and the [diff](../../glossary/#diff) (the lines the change adds and removes), and nothing else.
 
 **"Improve" means "same behaviour, easier to read" unless you say otherwise.** Changing behaviour is a different job with a different spec. This is [level 5](../../journey/05-check-the-work/) in practice: a checkable [definition of done](../../glossary/#definition-of-done) and an independent check.
 
@@ -309,7 +309,7 @@ The work is done when:
 :::caution[Expert corner]
 Characterisation tests pin accidents as well as intentions. The old function accepted rows with extra fields. That may be a feature or an accident, and the test now makes it a promise. Decide on purpose, and say so in the test name.
 
-Give the reviewer the spec and the diff only, as [level 5](../../journey/05-check-the-work/) explains. A diff is the list of lines a change adds and removes. The guide's own test of fresh against same-context review only simulated the second (see [evidence](../../evidence/)), so a fresh reviewer is a cheap precaution and not a proven gain.
+Give the reviewer the spec and the diff only, as [level 5](../../journey/05-check-the-work/) explains. The guide's own test of fresh against same-context review only simulated the second (see [evidence](../../evidence/)), so a fresh reviewer is a cheap precaution and not a proven gain.
 
 Do not widen scope during the review. The float summation finding is real and was left out, because it needs its own spec.
 :::

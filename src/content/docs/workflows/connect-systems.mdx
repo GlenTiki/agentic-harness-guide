@@ -60,9 +60,9 @@ Request: Hook up our invoices to the spreadsheet and the team chat.
 <Fragment slot="output">
 
 ```text
-Data: Which invoices (supplier bills, or invoices Mina sends)? Where do they live today (email, a folder, an accounting app)? About how many a month? Which spreadsheet, and which tab?
+Data: Which invoices (supplier bills, or invoices Mina sends)? Where do they live today (email, a folder, an accounting app), and about how many arrive each month? Which spreadsheet, and which tab?
 Direction: Should the spreadsheet only be read, or should rows be added? Should the team chat only receive notes, or should anyone be able to act from it?
-People: Who sees the team chat channel? Who owns the spreadsheet?
+People: Who sees the team chat channel, and who owns the spreadsheet?
 Failure: What happens if an invoice is read wrongly?
 Done: What does Mina want to see at the end of the month?
 ```
@@ -88,7 +88,7 @@ It shows the questions a good refiner asks, not what a real assistant will ask.
 Before you paste real invoices into any assistant, read [confidentiality and sign-off](../../journey/professional-guardrails/). This example is made up. Mina answers:
 
 ```text
-Supplier bills, which arrive as PDFs in one shared folder. About 25 a month. The sheet is "Supplier bills" and has columns date, supplier, invoice number, net, VAT, gross, status. Mina sets "paid", from the bank, and nobody else. Only Mina and Sam see the team chat channel #shop-money. Nobody should be able to pay from it, so don't allow that. I want to see unpaid bills each Friday.
+Supplier bills, which arrive as PDFs in one shared folder. About 25 a month. The sheet is "Supplier bills" and has columns date, supplier, invoice number, net, VAT, gross, status. I set "paid", from the bank, and nobody else. Only Sam and I see the team chat channel #shop-money. Nobody should be able to pay from it, so don't allow that. I want to see unpaid bills each Friday.
 ```
 
 What changed: "invoices" became "supplier bill PDFs in one folder", and "the spreadsheet" became one named sheet with seven named columns.
@@ -96,14 +96,14 @@ What changed: "invoices" became "supplier bill PDFs in one folder", and "the spr
 ### Pass 2: add direction and the line
 
 ```text
-Direction and limits:
+Direction and constraints:
 - The assistant reads the folder. It does not edit or delete the PDFs.
 - The assistant may add or update rows in the "Supplier bills" sheet only after I confirm each batch.
 - Team chat: it may post one message to #shop-money each Friday. It may not read other channels. It may not post anywhere else.
 - It does not pay, and it does not change bank details. Only Mina sets a bill to "paid", from the bank statement.
 ```
 
-Say what enforces each line: a token scope, a protected range or a read-only credential. A line with no mechanism is advice, and the assistant can ignore advice. What changed: "read or write?" is answered per system, and payment is on the never list.
+Say what enforces each line: an access key's scope, a protected range or a read-only credential. A line with no mechanism is advice, and the assistant can ignore advice. What changed: "read or write?" is answered per system, and payment is on the never list.
 
 ### Pass 3: add untrusted input and secrets
 
@@ -146,7 +146,7 @@ Systems and access (what is allowed; what enforces it)
   Sheet "Supplier bills"
     write, after confirmation of each batch (Mina alone sets "paid"); enforced by a credential for this sheet and a protected range on the "status" column that excludes the credential, so only Mina can edit it; the confirmation is advice
   Team chat #shop-money
-    one message per Friday, nothing else; enforced by a token scoped to this channel; the one-message limit is advice
+    one message per Friday, nothing else; enforced by an access key scoped to this channel; the one-message limit is advice
   Bank, payments, other channels
     no access; enforced by issuing no credential
 
@@ -179,11 +179,11 @@ Owner
 | Week | Access | What you check | Move on when | Enforced by |
 | --- | --- | --- | --- | --- |
 | 1 | Read the folder only. The assistant lists what it found into the chat. | The list matches the folder, row for row. | Two clean weeks of lists. | A read-only credential |
-| 2 | Draft: the assistant writes the proposed rows and the Friday message into a draft file. Nothing is written to the sheet or the team chat. | Rows match the PDFs. The totals are right. | You change no rows for two weeks running (about 12 rows). | Advice: the credential still allows no writes |
+| 2 | Draft: the assistant writes the proposed rows and the Friday message into a draft file. Nothing is written to the sheet or the team chat. | Rows match the PDFs. The totals are right. | You change no rows for two weeks running (about 12 rows). | The read-only credential: it still allows no writes to the sheet or the team chat |
 | 3 | Write with confirmation: rows go to the sheet after Mina's yes. The Friday message is still a draft. | The sheet matches the PDFs after every batch. | Four batches in a row need no edits. | A credential for one sheet and a protected range on the "status" column |
-| 4 | Post the Friday message to the team chat after Mina's yes. | The message total equals the sheet total. | It runs for a month. | A token scoped to one channel |
+| 4 | Post the Friday message to the team chat after Mina's yes. | The message total equals the sheet total. | It runs for a month. | An access key scoped to one channel |
 
-Writing alone is not on the list. A sheet next to payments is not a low-risk, easily undone task. With about 25 rows a month, a rate such as one in ten cannot be told apart from chance, so the move-on test is no edits at all. That is a minimum, not proof of reliability. Thirty clean runs only bound the failure rate near 1 in 10: see the rule of three in [level 7](../../journey/07-run-it-for-real/) and the [sampling rule](../../journey/professional-guardrails/#checking-and-sampling).
+Writing alone is not on the list. A sheet next to payments is not a low-risk, easily undone task. With about 25 rows a month, a rate such as one in ten cannot be told apart from chance, so the move-on test is no edits at all. That is a minimum, not proof of reliability. A fixed sample of 30 independent, representative trials with no failures gives a one-sided 95% upper failure bound near 1 in 10. Waiting until you see a clean streak does not justify that bound: see [sample sizes](../../shelf/quality/evals/#earn-confidence-with-enough-trials) and the [sampling rule](../../journey/professional-guardrails/#checking-and-sampling).
 
 ### Rollback note
 
@@ -209,7 +209,7 @@ Each refinement pass should move one class of guess into the specification: scop
 
 The specification is a contract, so treat changes to it as reviewed changes. A rollout that adds a write path should update the specification before the access, and the grant should be tighter than the specification.
 
-Check three conditions together before any rollout: private data in scope, untrusted content in scope, and a route out. Level 4 calls this the [lethal trifecta](../../journey/04-trust-but-verify/#expert-corner). Here the PDFs are untrusted, the bills are private, and the team chat is a route out. The controls are no other channels (the scoped token), the reviewer, and Mina's send checkpoint. The one-post rule is advice, not a control.
+Check three conditions together before any rollout: private data in scope, untrusted content in scope, and a route out. Level 4 calls this the [lethal trifecta](../../journey/04-trust-but-verify/#expert-corner). Here the PDFs are untrusted, the bills are private, and the team chat is a route out. The controls are no other channels (the scoped access key), the reviewer, and Mina's send checkpoint. The one-post rule is advice, not a control.
 :::
 
 ## Agent note
@@ -219,11 +219,11 @@ Check three conditions together before any rollout: private data in scope, untru
 
 Do not connect or change access until a specification exists with: purpose, systems, access per system (read, draft, write with confirmation), rules for untrusted input, a checkable done, an owner and a rollback.
 
-If any of these is missing, list the missing items as questions and wait. Ask once per task, in one message, with every open item and your default for each (at most five items). If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action.
+If any of these is missing, list the missing items as questions within the question budget, and wait.
 
 Roll out in order: read, draft, write with confirmation. Do not skip a stage. Do not enable write alone without an explicit instruction naming the action.
 
-Before any action that changes something outside your working files, ask. The full rule is in [level 4](../../journey/04-trust-but-verify/).
+Ask before you do something that changes anything outside your own working files: sending, paying, deleting, posting, granting access, pushing, installing, or editing a file the user did not ask you to change. Record the yes as the user's chat message or a ledger line.
 
 Stop on any failed check. Report which check failed.
 
@@ -258,7 +258,7 @@ You can now:
 <details>
 <summary>Answers</summary>
 
-1. "Updates" has no edge, so it permits anything a post can carry. A single named post is a narrower request, but it is advice: the channel token allows any message to that channel. Mina's send-or-stop checkpoint is what holds the line, and the scoped token limits where a message can go.
+1. "Updates" has no edge, so it permits anything a post can carry. A single named post is a narrower request, but it is advice: the channel's access key allows any message to that channel. Mina's send-or-stop checkpoint is what holds the line, and the scoped access key limits where a message can go.
 2. A pass for untrusted input and a second look at direction. Customer emails are untrusted text, and they would add a route for hostile instructions. Keep that connector read-only and flag any instructions found in the email.
 3. Stay in week 2. Find what the four have in common, fix the instruction or the check, and re-run. The move-on rule is no edits for two weeks, so it is not met. With 25 rows, four edits is a small sample, so do not quote a percentage from it.
 
@@ -266,6 +266,6 @@ You can now:
 
 ## Bridge
 
-A specification and a careful rollout still leave the output unchecked unless someone else reads it, which is what [review content](../review-content/) shows, and the next page puts the checks into a full close.
+A specification and a careful rollout connect one system safely, and the next job puts the same kind of checks into a full month-end close.
 
 **Next:** [Workflow: small shop month-end](../small-shop-month-end/)

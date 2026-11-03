@@ -43,7 +43,7 @@ jq -cn --arg time "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg session "$session" --ar
   '{time: $time, session: $session, seq: $seq, phase: $phase, tool: $tool, id: $id, target: $target}' >> "$log_dir/actions.jsonl"
 ```
 
-Save it as `.claude/hooks/log-action.sh`. Register it on both events with the commands `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" pre` and `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" post`. In `settings.json`, escape the inner quotes as `\"`. Quote the path so a folder name with a space still works, and name `bash` so the file needs no executable permission. If you run the file directly, run `chmod +x` on it first. The log goes to `${CLAUDE_PROJECT_DIR}/.agent-log`, so it lands in one place whatever directory the session is in. Check the path first with `test -f`. A missing shell script exits 127 and the hook then silently logs nothing (see [Hooks](../../control/hooks/)).
+Save it as `.claude/hooks/log-action.sh`. Register it on both events with the commands `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" pre` and `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" post`. In `settings.json`, escape the inner quotes as `\"`. Quote the path so a folder name with a space still works, and name `bash` so the file needs no executable permission. If you run the file directly, run `chmod +x` on it first. The log goes to `${CLAUDE_PROJECT_DIR}/.agent-log`, so it lands in one place whatever directory the session is in. Check the path first with `test -f`. A missing shell script exits 127, and the hook then logs nothing. The only sign is a hook error notice in the transcript (see [Hooks](../../control/hooks/)).
 
 <Example
   label="Computed"
@@ -122,6 +122,6 @@ Parallel tool calls can race on the counter file, so treat a repeated number as 
 
 Add the action-log hook above on both events. Perform one edit and one command. Check that four lines appear, two `pre` and two `post`.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "tool events (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`, `PermissionDenied`)". Claude Code on that date: 2.1.310. The docs page states no version of its own. Transcript retention periods vary by tool and version, so this page names no figure. Check your tool's documentation.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "tool events (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`, `PermissionDenied`)". Claude Code on that date: 2.1.316. The docs page states no version of its own. Transcript retention periods vary by tool and version, so this page names no figure. Check your tool's documentation.</p>
 
 **Next:** [Cost and resource discipline](../cost-and-resources/)

@@ -61,7 +61,7 @@ const build = LAST_REVIEWED.slice(0, 10);
 
 <style>
   .feedback-button {
-    position: fixed;
+    position: static;
     inset-inline-start: 1rem;
     inset-block-end: 1rem;
     z-index: calc(var(--sl-z-index-navbar) + 1);
@@ -92,6 +92,7 @@ const build = LAST_REVIEWED.slice(0, 10);
   }
   @media (min-width: 50rem) {
     .feedback-button {
+      position: fixed;
       inset-inline-start: auto;
       inset-inline-end: 1rem;
     }
@@ -100,6 +101,10 @@ const build = LAST_REVIEWED.slice(0, 10);
     .feedback-button {
       display: none;
     }
+  }
+  :global(.main-pane) {
+    position: relative;
+    z-index: 1;
   }
 
   /* In-page Modal Dialog */

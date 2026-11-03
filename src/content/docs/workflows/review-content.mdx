@@ -9,7 +9,7 @@ import Example from '../../../components/Example.astro';
 
 *Last time (level 5): you wrote a checkable "done", and you had someone other than the author check it.*
 
-Sam writes a proposal for a new market stall for Mina's shop and asks the assistant: "Check my proposal is good." The reply says the proposal is clear, well structured and compelling. Sam feels wonderful and learns nothing. The word "good" had no edges, so the reply stayed in the middle of the road.
+Sam drafts a post for the shop's blog, telling other small-shop owners why they should try a market stall, and asks the assistant: "Check my blog post is good." The reply says the post is clear, well structured and compelling. Sam feels wonderful and learns nothing. The word "good" had no edges, so the reply stayed in the middle of the road.
 
 ## The idea
 
@@ -93,8 +93,8 @@ It shows what an unanchored review looks like, not what any real assistant said;
 Each pass adds one part. The final brief holds all four.
 
 1. **Goal and reader.** "Good" now means "persuasive to this reader". The reviewer has something to measure against.
-2. **Rubric.** Five qualities, each with a plain test for the score. A reviewer can disagree with itself, and so can you.
-3. **Separate role and severity.** The reviewer has no access to the author's intentions, which are what the author was blind to. Findings now have an order.
+2. **Rubric.** Five qualities, each with a plain test for the score. The test lets you check a score and disagree with it.
+3. **Separate role and severity.** The reviewer has no access to the author's intentions, so it reads only what is on the page. Findings now have an order.
 4. **Voice constraint and citations.** The review is anchored in the text, may not rewrite, and checks itself before it answers.
 
 ```text
@@ -186,7 +186,7 @@ Open the draft and read line 9. If a line number points at the wrong sentence, t
 **Run the review twice.** Open a second new chat, paste the same brief and draft, and compare. A finding that appears in both is likely real. A finding that appears once deserves a second look. The 1 to 3 scores are labels, not measurements, so do not average them.
 
 :::note[Want consistency]
-Keep the final brief in a notes app. Reuse it for every proposal, changing only the goal and the rubric lines.
+Keep the final brief in a notes app. Reuse it for every post, changing only the goal and the rubric lines.
 :::
 
 ### Second pass: house style and facts
@@ -220,7 +220,7 @@ The review is done when every finding has a citation and a severity, you checked
 ## Expert corner
 
 :::caution[Expert corner]
-A rubric score from a model is a noisy measurement, which is why the main exercise runs the review twice. Do not average scores to make the noise look like a number.
+A rubric score from a model is noisy: the same draft can score differently in two runs. That is why the main exercise runs the review twice.
 
 [Level 5](../../journey/05-check-the-work/) explains why a reviewer without the author's reasoning should help. The guide's own test of that idea only simulated a same-context reviewer, by pasting the author's reasoning into the prompt. That simulated reviewer scored the same as a fresh one, 10 of 10 each ([evidence](../../evidence/)). So the test does not show a gain from a fresh reviewer. A fresh chat still costs nothing. Neither a fresh context nor a different model removes your rubric's blind spots, so add a human check on a [sample](../../glossary/#sampling).
 
@@ -232,7 +232,7 @@ Hold the rubric still when comparing two drafts. If you edit the rubric after yo
 :::note[Agent note]
 **Topic: reviewing a draft.**
 
-When asked to review, use only the draft and the rubric you are given. If the rubric is missing, ask for one. Ask once per task, in one message, with every open item and your default for each (at most five items). If nobody can answer, state your assumptions and carry on with read-only work. For any action that changes something, stop and report, and take no action.
+When asked to review, use only the draft and the rubric you are given. If the rubric is missing, ask for one within the question budget.
 
 Return findings with: severity, citation, what is wrong, what is missing. Drop any finding without a citation.
 

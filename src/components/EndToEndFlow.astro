@@ -2,9 +2,9 @@
   <div class="diagram-toolbar" role="toolbar" aria-label="End-to-end flow layer controls">
     <div class="btn-group" role="group" aria-label="Status filter">
       <button type="button" class="ctrl-btn active" data-flow-filter="all">All 16 layers</button>
-      <button type="button" class="ctrl-btn" data-flow-filter="runs">Runs in my setup (10)</button>
-      <button type="button" class="ctrl-btn" data-flow-filter="built">Built in case study (4)</button>
-      <button type="button" class="ctrl-btn" data-flow-filter="design">Design only (2)</button>
+      <button type="button" class="ctrl-btn" data-flow-filter="runs">Runs in my setup</button>
+      <button type="button" class="ctrl-btn" data-flow-filter="built">Built in case study</button>
+      <button type="button" class="ctrl-btn" data-flow-filter="design">Design only</button>
     </div>
     <button type="button" class="ctrl-btn test-layer-btn" data-action="test-fault">
       ⚠ Simulate missing hook (test fault)
@@ -29,7 +29,7 @@
     <div class="flow-step" data-layer-status="runs" data-step-id="3">
       <span class="step-num">03</span>
       <div class="step-info">
-        <strong>Rank notes (hybrid)</strong>
+        <strong>Rank notes (keyword)</strong>
         <span class="status-pill pill-runs">Runs in my setup</span>
       </div>
     </div>
@@ -57,7 +57,7 @@
     <div class="flow-step fault-target" data-layer-status="built" data-step-id="7">
       <span class="step-num">07</span>
       <div class="step-info">
-        <strong>Gate work with hooks</strong>
+        <strong>Case-study hooks</strong>
         <span class="status-pill pill-built">Built in case study</span>
       </div>
     </div>
@@ -128,7 +128,7 @@
 
   <div class="diagram-readout" aria-live="polite">
     <p class="readout-title"><span class="badge-step">Pipeline</span> 16 layers from prompt to merge and memory</p>
-    <p class="readout-desc">Every layer has an honest status label and hands verified data to the next step. Each layer is built to fail loudly when broken.</p>
+    <p class="readout-desc">This illustration follows the checks between layers. A passing check covers its stated conditions; test the complete workflow too.</p>
   </div>
 
   <figcaption>The 16 steps of the end-to-end feature lifecycle, colour-coded by honest status.</figcaption>
@@ -163,13 +163,13 @@
         target?.classList.add('fault-active');
         if (titleEl && descEl) {
           titleEl.innerHTML = '<span class="badge-step badge-blocked">Loud failure</span> Layer 07 (Hooks) removed';
-          descEl.textContent = 'Simulated fault: if the pre-tool write guard is missing, the stop hook halts the close and reports an unverified write. The harness catches the failure immediately!';
+          descEl.textContent = 'Simulated fault: the missing pre-tool guard lets the write happen. A later stop check can report it and hold completion, but cannot undo that write.';
         }
       } else {
         target?.classList.remove('fault-active');
         if (titleEl && descEl) {
           titleEl.innerHTML = '<span class="badge-step">Pipeline</span> 16 layers from prompt to merge and memory';
-          descEl.textContent = 'Every layer has an honest status label and hands verified data to the next step. Each layer is built to fail loudly when broken.';
+          descEl.textContent = 'This illustration follows the checks between layers. A passing check covers its stated conditions; test the complete workflow too.';
         }
       }
     };

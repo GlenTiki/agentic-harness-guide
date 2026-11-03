@@ -25,9 +25,11 @@ Tying one figure to the document it came from, such as a total to a bank stateme
 
 ### Allowlist
 
-A list of what is permitted without asking. In Claude Code's default mode a call that matches no rule asks you, and `dontAsk` mode refuses it. An allow rule only skips the prompt.
+A list of what is permitted without asking. An allow rule only skips the prompt. In Claude Code, a call that matches no rule asks you in Manual mode, goes to a classifier model in auto mode and is refused in `dontAsk` mode. From v2.1.283, auto mode is the starting mode for terminal and VS Code sessions.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt" (the `dontAsk` row). Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "Auto-denies every call that would otherwise prompt" (the `dontAsk` row) and "Labeled Manual in the CLI" (the `default` row). Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-03: https://code.claude.com/docs/en/permission-modes. Quoted line: "With Claude Code v2.1.283 or later, auto mode is the built-in starting permission mode for interactive terminal and VS Code sessions." Claude Code on that date: 2.1.316.</p>
 
 ### Approval fatigue
 
@@ -375,10 +377,6 @@ Something that checks a condition on a schedule and raises a flag. It reports. I
 
 A mistake that can happen again. You fix it by changing the system so that the mistake is caught, not by trying harder. The five-step loop is: notice, name, engineer a fix, prove the fix can fail, keep it. The [method page](../method/engineer-weak-spots/) states it.
 
-### Wrong headline
-
-A reply whose first stated total differs from the right answer, whether or not the reply flags the problem. See [silent wrong](#silent-wrong).
-
 ### Working paper
 
 A record of what you checked, how, what you found and who signed it off, so another person can follow it later. For the record of an assistant's steps, see [audit log](#audit-log).
@@ -386,6 +384,10 @@ A record of what you checked, how, what you found and who signed it off, so anot
 ### Workspace
 
 A folder that one assistant works in. Giving each helper its own keeps their changes apart.
+
+### Wrong headline
+
+A reply whose first stated total differs from the right answer, whether or not the reply flags the problem. See [silent wrong](#silent-wrong).
 
 ## Words for experts
 
@@ -419,7 +421,13 @@ A list of numbers that stands for the meaning of a text. Texts with similar mean
 
 ### Exit code
 
-The number a program returns when it ends. In a hook, 0 means success and 2 means block on events that can block. Any other non-zero number is a non-blocking error, so the action goes ahead.
+The number a program returns when it ends. In a Claude Code hook, 0 means success and 2 blocks the action on events that can block. Any other code is a non-blocking error by default, so the action goes ahead.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead, except for hooks whose failure blocks the action". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+
+### Fixture
+
+A small, fixed sample file that a test reads, such as a three-line recipe, so the test gives the same result on every run. Make fixtures up. Do not copy real customer data into them.
 
 ### Frontmatter
 
@@ -437,13 +445,23 @@ A script that checks text or code against a list of rules. A clean run means the
 
 A program that exposes tools and data to an assistant over the Model Context Protocol. Pin its version and review its tool descriptions, because the assistant reads them as text. A [connector](#connector-mcp) is the plain name for one.
 
+### Merge before use review
+
+An arrangement you authorise for one named repository and change scope: the agent's work merges after independent review and passing checks, and you try it afterwards. Your later feedback directs a correction. It never covers deployment, spending or messages. The [product manager page](../method/be-the-product-manager-of-your-own-tooling/#choose-when-work-lands) sets the rules.
+
 ### Reciprocal rank fusion
 
 A way to merge two ranked lists. Each item scores one divided by a constant plus its rank in each list, and the scores are added.
 
+### Re-ranking
+
+A second pass that re-orders the top results of a fast search with a slower, more precise model, so the best passages come first. A [cross-encoder](#cross-encoder) is a common re-ranker. See the [relevance page](../setup/relevance-and-reranking/).
+
 ### Simplified Technical English
 
-A controlled language for technical documents, with writing rules and a dictionary of roughly 900 approved words. A script can check some rules. It cannot check conformance to the licensed dictionary.
+A controlled language for technical documents, with writing rules and a dictionary of roughly 900 approved words. A script can check some rules. Open checkers do not include the official dictionary, which ASD gives away free after a request form.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://www.asd-europe.org/standards-specifications/simplified-technical-english/what-are-the-basics-of-simplified-technical-english/. Quoted line: "To download the latest free copy of ASD-STE100 Issue 9, please fill in this form".</p>
 
 ### Worktree
 
@@ -465,6 +483,11 @@ The guide uses one word for one thing. This table maps the words we avoid to the
 | ledger, for accounting | the books, the general ledger | Here a [ledger](#ledger) is a record of work. |
 | token, for a password or key | [access key](#access-key) | Token only means a chunk of text. |
 | tool, for the chat product in levels 0 to 2 | chat app, your assistant | [Tool](#tool) is the level 3 meaning. |
-| reconcile, for tying a figure to a document | [agree to source](#agree-to-source) | [Reconciliation](#reconciliation) is the only reconcile. |
+| reconcile or tie out, for tying a figure to a document | [agree to source](#agree-to-source) | [Reconciliation](#reconciliation) is the only reconcile. |
 | test, for a human glance | check | A [test](#test) gives a clear pass or fail. |
 | connection, as a noun | [connector](#connector-mcp) | One name for the plug into another system. |
+| assistant, when the loop and the tools are the point | [agent](#agent) | An agent is an assistant that works in a loop with tools. |
+| instructions, for a task given to a helper | [brief](#brief) | A brief is the written task. Standing rules go in an instruction file. |
+| six questions | [six-step method](#six-step-method) | One name for the design method in level 8. |
+| materiality, for the 5% and 50.00 trigger | [investigation threshold](#investigation-threshold) | [Materiality](#materiality) keeps its accounting meaning. |
+| limits, for the rules in an ask | [constraint](#constraint) | One name for what the answer must include or avoid. |

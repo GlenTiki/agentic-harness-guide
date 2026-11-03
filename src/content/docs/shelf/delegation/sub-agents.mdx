@@ -9,7 +9,7 @@ import DelegationLedger from '../../../../components/DelegationLedger.astro';
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
-**Recommendation:** delegate research, search and any work that would flood the main conversation, when a delegation tool exists and the user has allowed it. A sub-agent never delegates: it returns findings to its caller. A lead agent delegates one layer only, and never delegates a decision that needs a human checkpoint. Give each sub-agent a bounded brief and ask for a short, structured summary. Keep the lead agent responsible for decisions. Prefer one level of delegation.
+**Recommendation:** delegate research, search and any work that would flood the main conversation, when a delegation tool exists and the user has allowed it. Do not let a sub-agent delegate: have it return findings to its caller. Claude Code allows nesting by default, so item 5 shows how to turn it off. A lead agent delegates one layer only, and never delegates a decision that needs a human checkpoint. Give each sub-agent a bounded brief and ask for a short, structured summary. Keep the lead agent responsible for decisions. Prefer one level of delegation.
 
 ## Why it matters
 
@@ -19,13 +19,15 @@ A sub-agent runs in its own context window. The noise of reading fifty files sta
 
 ## What to enable
 
-**1. Write the brief like a handover note.** A good brief has five parts: the goal, the files or directories in scope, what is already known or ruled out, constraints, and the exact form of the answer.
+**1. Write the brief like a handover note.** Use the five parts from level 6: the goal, the scope, the return format, the prohibited actions and a stop rule. Add what is already known or ruled out, so the sub-agent does not repeat your work.
 
 ```markdown
 Goal: find every caller of `load_config()` and say which pass a path argument.
 Scope: `src/` only. Ignore `tests/`.
 Already known: `cli.py` calls it with no argument.
 Return: a table of file, line and whether a path is passed. Under 40 lines.
+Do not: edit any file.
+Stop: when every file in scope is read. List any file you could not read.
 ```
 
 **2. Bound the output.** Ask for a summary with a size limit and for evidence as file and line references. Ask long-running agents to append findings to a file as they go, so a truncated reply loses nothing.
@@ -60,6 +62,6 @@ You are a reviewer. Report defects as file:line, symptom, severity. Do not edit 
 
 Define one read-only `code-reviewer` or `researcher` sub-agent with a restricted tool list. Use it for the next search that would have produced more than a screen of output.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/sub-agents. Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/sub-agents. Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.316. The docs page states no version of its own. The version history of the nesting default comes from https://code.claude.com/docs/en/env-vars and the Claude Code changelog (entries 2.1.172, 2.1.217 and 2.1.219), fetched on the same date.</p>
 
 **Next:** [One assistant, helpers or a pipeline](../topology/)

@@ -1,7 +1,3 @@
----
-import { BASE } from '../data/site';
----
-
 <figure class="diagram" data-diagram="team-orchestrator-flow" aria-labelledby="tof-heading">
   <div class="tof-header">
     <div class="tof-title-group">
@@ -14,7 +10,7 @@ import { BASE } from '../data/site';
         <span>👥 Multi-agent team (worktree isolated)</span>
       </button>
       <button type="button" class="tof-btn" data-topo="mono">
-        <span>👤 Monolithic single chat (context decay)</span>
+        <span>👤 Single chat (illustrated failure)</span>
       </button>
     </div>
   </div>
@@ -84,13 +80,13 @@ import { BASE } from '../data/site';
     <div class="mono-card">
       <div class="mono-badge">MONOLITHIC CHAT</div>
       <strong class="mono-title">Single assistant does all four roles</strong>
-      <p class="mono-desc">As the thread grows past 30 tool calls, attention decays. The assistant marks its own homework, drops constraints, and invents numbers.</p>
+      <p class="mono-desc">Illustrative failure: one assistant flags a duplicate but leaves it in the headline total. There is no universal tool-call threshold; compare complete workflows on your own tasks.</p>
       <div class="mono-meter">
-        <div class="meter-label">Context load & degradation</div>
+        <div class="meter-label">Illustrated checking failure</div>
         <div class="meter-bar">
           <div class="meter-fill"></div>
         </div>
-        <div class="meter-alert">ATTENTION ROT: Step 8 dropped duplicate checks</div>
+        <div class="meter-alert">SIMULATED: flagged repeat remains in the total</div>
       </div>
     </div>
   </div>
@@ -98,14 +94,16 @@ import { BASE } from '../data/site';
   <!-- Console Log -->
   <div class="tof-console">
     <div class="tof-console-head">
-      <span class="tof-console-title">Telemetry stream</span>
-      <span class="tof-status" data-tof-status>MULTI-AGENT LEDGER GREEN</span>
+      <span class="tof-console-title">Simulated steps</span>
+      <span class="tof-status" data-tof-status>SIMULATED: REVIEW PASSED</span>
     </div>
-    <div class="tof-console-log" data-tof-log tabindex="0" role="region" aria-label="Orchestration telemetry log"></div>
+    <div class="tof-console-log" data-tof-log tabindex="0" role="region" aria-label="Simulated orchestration steps" aria-live="polite"></div>
   </div>
 
+  <button type="button" class="tof-btn" data-next-step>Next simulated step</button>
+
   <figcaption class="tof-caption">
-    Interactive simulation: compare how isolated worktree helpers protect context versus a single thread degrading under its own weight.
+    Constructed illustration: compare a delegated review with a single chat that flags a problem but leaves the result unchanged. It is not evidence that delegation always helps.
   </figcaption>
 </figure>
 
@@ -123,11 +121,10 @@ import { BASE } from '../data/site';
 
     let currentTopo = 'team';
     let step = 1;
-    let timer = null;
 
     const scenarios = {
       team: {
-        status: 'MULTI-AGENT LEDGER GREEN',
+        status: 'SIMULATED: REVIEW PASSED',
         logs: [
           '01 [ORCHESTRATOR] Lead receives task. Splits into 3 bounded briefs.',
           '02 [DISPATCH] Helpers launched in parallel: Worktrees A, B, and C mounted.',
@@ -138,21 +135,21 @@ import { BASE } from '../data/site';
         ],
       },
       mono: {
-        status: 'CONTEXT ROT ALERT',
+        status: 'SIMULATED: REVIEW NEEDED',
         logs: [
           '01 [TURN 1] Assistant reads 40 rows. Thread context at 15%.',
           '02 [TURN 4] Assistant begins calculations. Thread context at 45%.',
-          '03 [TURN 7] Context reaches 78%: attention decay begins.',
-          '04 [HALLUCINATION] Model forgets instruction file constraints.',
-          '05 [SLIP] Model totals all 40 amounts (€7,414) and misses duplicate.',
-          '06 [SYCOPHANCY] When questioned, model insists output is 100% correct.',
+          '03 [REVIEW] Assistant checks the number of amounts against the stated months.',
+          '04 [WARNING] Assistant flags 40 amounts for 39 months.',
+          '05 [SLIP] Headline still includes €133 twice: €7,414.',
+          '06 [HOLD] A separate source check is still needed before using that total.',
         ],
       },
     };
 
     const render = (s) => {
       helperCards.forEach((card, idx) => {
-        card.classList.toggle('active', s >= 2 && s <= 5 && (s - 2 === idx || s === 5));
+        card.classList.toggle('active', s - 3 === idx);
       });
 
       if (logBox && scenarios[currentTopo]) {
@@ -160,7 +157,7 @@ import { BASE } from '../data/site';
         if (item) {
           const row = document.createElement('div');
           row.className = `tof-log-line ${currentTopo === 'mono' && s >= 3 ? 'line-alert' : 'line-good'}`;
-          row.textContent = item;
+          row.textContent = `Simulated: ${item}`;
           logBox.appendChild(row);
           logBox.scrollTop = logBox.scrollHeight;
         }
@@ -192,16 +189,14 @@ import { BASE } from '../data/site';
 
       render(step);
 
-      if (timer) clearInterval(timer);
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        timer = setInterval(next, 2500);
-      }
+
     };
 
     btns.forEach((b) => {
       b.addEventListener('click', () => setTopo(b.getAttribute('data-topo') || 'team'));
     });
 
+    root.querySelector('[data-next-step]')?.addEventListener('click', next);
     setTopo('team');
   })();
 </script>
@@ -341,12 +336,9 @@ import { BASE } from '../data/site';
     stroke-width: 2;
     fill: none;
     stroke-dasharray: 4 2;
-    animation: dashMove 1.5s linear infinite;
+    animation: none;
   }
 
-  @keyframes dashMove {
-    to { stroke-dashoffset: -12; }
-  }
 
   /* Helpers Grid */
   .tof-helpers-grid {

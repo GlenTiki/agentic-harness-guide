@@ -27,7 +27,7 @@ Scaffold personas with a checklist and a memory file each, and validate the scaf
 - Five persona files in `example/personas/`: architect, builder, tester, reviewer and releaser. Each has a role, a phase, a checklist of at least three items and a voice.
 - One memory file for each persona in `example/personas/memory/`. Each line is a time, a hash and a note. The hash chains to the line before, so an edit to an old line shows.
 - `personas.py` with three commands: `check`, `context` and `record`. `record` appends one line and refuses to append to a broken chain.
-- `validate.py` and six failing folders in `fixtures/bad/`.
+- `validate.py` and one failing folder, `fixtures/bad/personas`, with six defects.
 
 ## Get the kit
 
@@ -155,7 +155,7 @@ An edit to an old line shows. A full rewrite of the file would not.
 
 <Example
   label="Computed"
-  task="You run the validator on six defective folders."
+  task="You run the validator on a persona folder with six defects."
   evidence="python3 -I validate.py --bad (from the kit root)"
   env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
 >
@@ -200,7 +200,7 @@ The scaffold catches six format defects. It does not catch a bad persona.
 
 ## What is not tested
 
-This chapter is Design only, with a small working scaffold. The tests verify the file format, the chain check, the refusal to append to a broken memory, the context function and the six folder defects. They do not verify that personas catch more defects, that persona memory improves later work, or how a team lead should choose which persona runs. There is no evidence in this case study that personas help. The chain detects partial edits. It does not stop a full rewrite of a file. In my own setup, roles do not keep memories of their own.
+This chapter is Design only, with a small working scaffold. The tests verify the file format, the chain check, the refusal to append to a broken memory, the context function and the six defects in the failing folder. They do not verify that personas catch more defects, that persona memory improves later work, or how a team lead should choose which persona runs. There is no evidence in this case study that personas help. The chain detects partial edits. It does not stop a full rewrite of a file. In my own setup, roles do not keep memories of their own.
 
 **Read the matching page:** [Personas](../../setup/personas/)
 
