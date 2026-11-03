@@ -15,9 +15,9 @@ The harness loads the instruction file into every session. Every line costs cont
 
 ## What to enable
 
-**1. Use layers, and remove conflicts.** Two common conventions exist. Claude Code behaviour: it loads `CLAUDE.md` from your home directory, then from each directory from the filesystem root down to the working directory, and concatenates them. Codex CLI reads `AGENTS.md` from its home directory, then from the project root down to the working directory, one file per directory, and concatenates those. In both, text nearer the working directory comes later, and later text usually weighs more. Treat the outcome of a conflict as undefined, and do not depend on it. Remove the conflict. Put personal preferences in the home file, team rules at the repository root, and package-specific rules in the package directory.
+**1. Use layers, and remove conflicts.** Two common conventions exist. Claude Code behaviour: it loads your organisation's managed file, if there is one, and your user file at `~/.claude/CLAUDE.md`. Then it loads `CLAUDE.md` and `CLAUDE.local.md` from each directory, from the filesystem root down to the working directory, and concatenates them. A file in a subdirectory below the working directory loads later, when the agent works in that subdirectory. Codex CLI reads `AGENTS.md` from its home directory (`~/.codex` by default), then from the project root down to the working directory, one file per directory, and concatenates those. In both, text nearer the working directory comes later. The Codex docs say later files override earlier guidance. The Claude Code docs say that when two instructions contradict each other, Claude may pick one arbitrarily. Do not depend on the order. Remove the conflict. Put personal preferences in the home file, team rules at the repository root, and package-specific rules in the package directory.
 
-**2. Share one file across tools.** `AGENTS.md` is an open convention read by many tools. Claude Code v2.1.277 or later reads `AGENTS.md` directly, and only when no `CLAUDE.md` or `CLAUDE.local.md` exists in the working directory or above it. If a `CLAUDE.md` exists, only the `CLAUDE.md` files are read unless one of them imports `AGENTS.md`. If you need both, make the tool-specific file a thin wrapper that imports the shared one:
+**2. Share one file across tools.** `AGENTS.md` is an open convention read by many tools. Claude Code v2.1.277 or later reads `AGENTS.md` directly, and by default only when no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` exists in the working directory or above it. If one exists, only the `CLAUDE.md` files are read, unless one of them imports `AGENTS.md` or you change the project instructions setting. If you need both, make the tool-specific file a thin wrapper that imports the shared one:
 
 ```markdown
 @AGENTS.md
@@ -45,7 +45,7 @@ Keep only the settings that apply to this one tool here.
 ## Failure modes it reduces
 
 - The agent guesses the test command and runs the wrong suite.
-- Two layers give conflicting rules. Later text usually weighs more, but the outcome is not defined. Review the layers together when you edit any of them, and remove the conflict.
+- Two layers give conflicting rules, and nothing defines which one the agent follows. Review the layers together when you edit any of them, and remove the conflict.
 - A 600-line file buries the one rule that matters, and adherence drops.
 - Codex stops adding files once the combined instructions reach its size limit, which defaults to 32 KiB. Content past the limit is silently absent.
 
@@ -53,6 +53,8 @@ Keep only the settings that apply to this one tool here.
 
 Write `AGENTS.md` with three sections: commands, rules the agent cannot discover, and where specs live. Run a fresh session and ask it to run the tests. If it succeeds without help, the file works.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/memory. Quoted line: "By default, Claude reads `AGENTS.md` only when you have no `CLAUDE.md` in your working directory or above it." Claude Code on that date: 2.1.310. The docs page states no version of its own. The same page gives a feature floor: "Reading `AGENTS.md` directly requires Claude Code v2.1.277 or later." The Codex and agents.md pages: Not checked against current docs.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/memory. Quoted line: "By default, Claude reads `AGENTS.md` only when you have no `CLAUDE.md` in your working directory or above it." Claude Code on that date: 2.1.316. The docs page states no version of its own. The same page gives a feature floor: "Reading `AGENTS.md` directly requires Claude Code v2.1.277 or later."</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://learn.chatgpt.com/docs/agent-configuration/agents-md (the Codex AGENTS.md guide, which https://developers.openai.com/codex/guides/agents-md redirects to). Quoted line: "Files closer to your current directory override earlier guidance because they appear later in the combined prompt." The same page gives the size limit: "`project_doc_max_bytes` (32 KiB by default)". Codex CLI on that date: 0.166.0. The docs page states no version of its own.</p>
 
 **Next:** [Prompt structure and validation](../prompt-structure/)

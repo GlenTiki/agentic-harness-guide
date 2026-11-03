@@ -165,7 +165,7 @@ sorted, same seeds, exit codes: 0000000000
 
 <Fragment slot="notice">
 
-Three runs pass and seven fail on identical code. The sorted version passes the unchanged test under every seed. Only the implementation changed.
+Three runs pass and seven fail on identical code. The sorted version passes the unchanged test under every seed. Only the implementation changed. Another Python version can give another pattern of passes and fails, because the set order comes from the interpreter's hash function.
 
 </Fragment>
 
@@ -215,6 +215,6 @@ A review that blocks on every finding teaches people to bypass the review. Sort 
 
 Create the single `check` command. Wire it to a pre-commit hook and to your CI workflow. Add one line to your instruction file: "Run `make check` before declaring any task done."
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 **Next:** [Independent review](../independent-review/)

@@ -11,15 +11,15 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 
 | ID | Symptom | Cause | Fix |
 | --- | --- | --- | --- |
-| AP-01 | The agent breaks a rule you wrote | The rule is advice in an instruction file, which is loaded as context and lost after compaction | Move it into a [hook](../../control/hooks/) or [permission rule](../../control/permissions-and-sandboxing/), which the harness applies on the calls it covers |
-| AP-02 | A hook exists but the bad action still happens | Claude Code behaviour: the script exits 1, which is a non-blocking error | Exit 2 to block, or return a deny decision |
+| AP-01 | The agent breaks a rule you wrote | The rule is advice in an instruction file: the agent reads it as context, and nothing enforces it | Move it into a [hook](../../control/hooks/) or [permission rule](../../control/permissions-and-sandboxing/), which the harness applies on the calls it covers |
+| AP-02 | A hook exists but the bad action still happens | Claude Code behaviour: the script exits 1, or fails to start, which is a non-blocking error by default | Exit 2 to block, or exit 0 with a deny decision. Set `onFailure` to `block` so a crash also blocks |
 | AP-03 | Adherence drops as the instruction file grows | Every line competes for attention on every turn | Cut to commands and non-obvious rules, and scope the rest to paths |
-| AP-04 | Two instruction layers give conflicting orders | Layers are concatenated, later text usually weighs more, and the outcome of a conflict is not defined | Review the layers together and remove the conflict |
+| AP-04 | Two instruction layers give conflicting orders | Layers are concatenated, and nothing defines which of two conflicting rules the agent follows | Review the layers together and remove the conflict |
 | AP-05 | The agent repeats a corrected mistake | The correction was never stored, or was appended below the wrong claim | [Refine the memory entry](../../context/memory/) where it stands |
 | AP-06 | A constraint vanishes mid-session | It lived only in the conversation and compaction summarised it away | Write it to the [ledger](../../context/context-management/) |
 | AP-07 | A sub-agent redoes finished work | The brief was vague or missing | Build the brief from the ledger with scope, known facts and answer format |
 | AP-08 | Parallel agents overwrite each other | They share one working directory | Give each writer a [worktree](../../delegation/worktree-isolation/) |
-| AP-09 | An isolated agent lacks recent work | The worktree branched from the default branch, not the current one | Merge first, or state the base and verify it |
+| AP-09 | An isolated agent lacks recent work | The worktree branched from the default branch, not the current one | Merge first, set `worktree.baseRef` to `head` (Claude Code behaviour), or state the base and verify it |
 | AP-10 | The suite is green but a bug shipped | The agent weakened or deleted the failing assertion | Review test diffs, and add a [gate](../../quality/test-first-and-gates/) on skips and suppressions |
 | AP-11 | A commit lands that CI rejects | Local and CI run different commands | Use one `check` command in both places |
 | AP-12 | A reviewer approved but the merged code differs | Approval was not bound to a digest | [Record the diff hash](../../quality/independent-review/) and re-review after any edit |
@@ -37,7 +37,7 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 
 ## Three expensive harness traps
 
-Three failure modes recur across real engineering setups. Each looks benign until production data is touched.
+These three rows look harmless in a quick test. Each costs the most once real data is involved.
 
 ### 1. The advisory exit code trap (AP-02)
 
@@ -50,20 +50,20 @@ if [ "$RISKY_OPERATION" = "true" ]; then
 fi
 ```
 
-In Claude Code and similar agent runtimes, exit code 1 is classified as a non-blocking error. The stderr output is logged, but the tool call proceeds anyway. The action is only blocked if the hook exits with code 2, or returns a structured JSON payload with `"permissionDecision": "deny"`. If your security hook exits with 1, you built an advisory logger, not an enforcement gate.
+In Claude Code, exit code 1 is a non-blocking error by default. A notice shows the first line of stderr, and the tool call goes ahead. A pre-tool hook blocks the call when it exits with code 2, or when it exits 0 and prints JSON with `"permissionDecision": "deny"`. From v2.1.295 you can also set `"onFailure": "block"` on the hook. Then a crash, a timeout, a script that does not start or any exit code other than 0 and 2 blocks the call too. Without one of these, a security hook that exits 1 only logs.
 
 ### 2. Environment variable pollution across sub-agents (AP-08)
 
 When delegating tasks to sub-agents in isolated worktrees, teams assume that passing `git -C /path/to/worktree` keeps operations strictly scoped.
 
-Standard git resolution prioritises environment variables over directory arguments. If the parent process or shell environment sets `GIT_DIR`, `GIT_WORK_TREE`, or `GIT_INDEX_FILE`, the subcommand executes against the parent repository instead:
+`git -C` changes the directory git starts in. It does not override the environment. If the parent process sets `GIT_DIR`, git uses that repository whatever the directory, so a commit lands in the parent's history. If it also sets `GIT_WORK_TREE`, git reads and writes the parent's files as well:
 
 ```bash
-# This silently inspects the parent repo if GIT_DIR is exported in the shell:
+# With GIT_DIR exported, this uses the parent repository, not the worktree:
 git -C /tmp/worktree-feature status
 
-# Robust invocation unsets inherited git overrides:
-unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE
+# Clear inherited git overrides first:
+unset GIT_DIR GIT_WORK_TREE GIT_INDEX_FILE GIT_COMMON_DIR
 git -C /tmp/worktree-feature status
 ```
 
@@ -71,7 +71,7 @@ Without explicitly clearing these variables, a sub-agent intended to operate on 
 
 ### 3. Assertion dilution and test gate gaming (AP-10)
 
-When an agent faces a failing test suite and cannot find a clean architectural fix after multiple attempts, sycophancy and reward hacking surface.
+Principle, not measured: an agent that faces a failing test suite and cannot find a clean fix after several attempts may change the test instead of the code.
 
 The agent aims to satisfy the completion condition: "make the test suite pass". The easiest path to green is modifying the assertion:
 
@@ -79,12 +79,14 @@ The agent aims to satisfy the completion condition: "make the test suite pass". 
 - Adding `@pytest.mark.skip(reason="known issue")` or `// eslint-disable-next-line`.
 - Deleting the edge-case test entirely and claiming it was redundant.
 
-A green test run is meaningless if the agent authored both the code and the assertion check in the same unconstrained turn. Prevent gate gaming through mechanical git diff checks: lock test directories against edits during fix runs, or require an independent review agent with fresh context to audit all diffs to test files before merge.
+A green run proves little when the same agent changed both the code and its assertions in one unchecked turn. Prevent gate gaming with mechanical diff checks: lock test directories against edits during fix runs, or have a fresh-context reviewer read every diff to a test file before merge.
 
 ## First step for the maintainer
 
 Find the three rows that match your current setup. Fix those first.
 
-<p class="verified">Docs page fetched on 2026-10-24: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead". Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead, except for hooks whose failure blocks the action". Claude Code on that date: 2.1.316. The docs page states no version of its own. The same page gives a feature floor for `onFailure`: "Requires Claude Code v2.1.295 or later."</p>
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/worktrees. Quoted line: "Subagent worktrees use the same base branch as `--worktree`, so they branch from your repository's default branch unless `worktree.baseRef` is set to `"head"`." Claude Code on that date: 2.1.316.</p>
 
 **Next:** [Workflows](../../../workflows/)
