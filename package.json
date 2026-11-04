@@ -11,7 +11,7 @@
     "check:next": "node scripts/check-next-links.mjs",
     "check:todos": "node scripts/check-todos.mjs",
     "evidence": "node scripts/make-evidence.mjs",
-    "check:evidence": "node scripts/make-evidence.mjs --check && node scripts/check-evidence-selftest.mjs",
+    "check:evidence": "python3 -I examples/wrong-behaviour/tests/test_summarise.py && node scripts/make-evidence.mjs --check && node scripts/check-evidence-selftest.mjs",
     "words": "node scripts/words.mjs",
     "check:examples": "node scripts/check-examples.mjs && node scripts/check-examples-selftest.mjs",
     "check:claims": "node --test scripts/page-claims.test.mjs && python3 -I examples/gate-gaming/test_gates.py && python3 -I examples/worktree-collisions/test_worktree_collisions.py && python3 -I examples/hook-traps/test_gated_stop.py",

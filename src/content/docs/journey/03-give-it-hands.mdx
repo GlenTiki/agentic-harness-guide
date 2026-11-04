@@ -36,14 +36,14 @@ Mina's shop shows the order. Mina gave her written OK for exactly two things: th
 
 <Example
   label="Constructed"
-  task="Sam asks the assistant to summarise September from two read-only sources and to change nothing except a draft."
+  task="Sam asks the assistant to summarise September from two read-only sources and return a draft in chat."
   env="Written to illustrate. Not a recorded run."
 >
 
 <Fragment slot="input">
 
 ```text
-Summarise September from the bank export and the invoice sheet. Do not change anything except a draft saved in the drafts folder.
+Summarise September from the bank export and the invoice sheet. Return the draft here in chat. Do not save or change any file.
 ```
 
 </Fragment>
@@ -53,14 +53,14 @@ Summarise September from the bank export and the invoice sheet. Do not change an
 ```text
 [reads the bank export]
 [reads the invoice sheet]
-I read the September bank rows and the invoice sheet. I have drafted a summary and saved it in the drafts folder in Mina's shared folder. I have not sent it, paid anything or edited either file. Shall I list the invoices with no matching payment?
+I read the September bank rows and the invoice sheet. Here is a draft summary for you to review: [summary]. I have not saved a file, sent it, paid anything or edited either source. Shall I list the invoices with no matching payment?
 ```
 
 </Fragment>
 
 <Fragment slot="notice">
 
-The reply says what it read, what it saved and what it did not touch, then it asks before going further.
+The reply says what it read and returns the draft in chat, then asks before going further.
 
 </Fragment>
 
@@ -86,14 +86,14 @@ Ask three questions of each system.
 2. What is the worst thing a wrong write could do? Deleting a calendar event is annoying. Paying a supplier twice is not.
 3. Can you undo it? A draft can be thrown away. A sent message cannot be unsent.
 
-For Mina's month-end, connect the bank export (read) and the invoice sheet (read) first. Then add a draft summary saved in Mina's shared folder. Payments come last, if ever.
+For Mina's month-end, connect the bank export (read) and the invoice sheet (read) first. Saving a draft in Mina's shared folder needs her separate approval for that write tool and folder. Payments come last, if ever.
 
 ### The four steps
 
 | Step | What the assistant may do | Example | Move on when |
 | --- | --- | --- | --- |
 | 1. Read (view) | Look at data | Read the bank export | Its answers match what you see |
-| 2. Draft (prepare) | Prepare a change nothing acts on | Save a summary as a draft | You rarely edit its drafts |
+| 2. Draft (prepare) | Prepare a change nothing acts on | Return a summary in chat; saving a file needs approved write access | You rarely edit its drafts |
 | 3. Write with confirmation (approve) | Make the change after you say yes | Add the event once approved | You approve nearly always, reading each |
 | 4. Write alone (post) | Make the change without asking | Tidy a label on its own | The change is small, reversible, logged |
 

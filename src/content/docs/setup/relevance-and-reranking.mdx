@@ -168,7 +168,7 @@ On this set and this day, the scores are as stored. Re-running needs Ollama and 
 | Hybrid, rank fusion with k = 60 | 0.275 | 0.824 | 0.795 |
 | Hybrid with search prefixes | 0.275 | 0.824 | 0.808 |
 
-1. The cross-encoder raises MRR, from 0.643 to 0.803, and leaves hit@3 at 0.794. It puts the first correct note higher. It does not find more correct notes.
+1. The cross-encoder raises MRR, from 0.643 to 0.803, and leaves hit@3 at 0.794. It puts the first correct note higher. It does not increase the number of queries with a correct note in the top three. Precision@3 rises slightly, from 0.265 to 0.275, so the total number of relevant notes returned does increase.
 2. Dense retrieval won on this set. It found a correct note in the top three for 32 of 34 queries. BM25 did so for 27.
 3. The hybrid scored below dense alone. I did not investigate why. My own setup chose its fusion by judgement and has not measured it.
 4. With 34 queries, one query moves hit@3 by 0.029. The set was built to use other words than the notes, so it favours meaning-based methods. It does not show that dense retrieval is better in general.

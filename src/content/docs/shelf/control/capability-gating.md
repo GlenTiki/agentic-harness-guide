@@ -46,6 +46,6 @@ capabilities:
 
 ## First step for the maintainer
 
-Write the registry with every external action the agent can take today. Set all but the read-only ones to `disabled`. Add one test that proves a disabled capability makes the call fail.
+Write the registry with every external action the agent can take today. Enable only capabilities already approved for a named system and purpose. Leave the rest `disabled`, including read-only access such as an unapproved `mailbox.read`. Add one test that proves a disabled capability makes the call fail.
 
 **Next:** [Removing personal data before sharing](../removing-personal-data/)

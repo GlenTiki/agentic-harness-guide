@@ -14,7 +14,7 @@ import { BASE } from '../data/site';
         <span>⚙️ Mechanical check (harness)</span>
       </button>
       <button type="button" class="mcf-btn" data-path="self-review">
-        <span>💬 Model self-review (sycophancy)</span>
+        <span>💬 Model self-review</span>
       </button>
     </div>
   </div>
@@ -25,8 +25,8 @@ import { BASE } from '../data/site';
       <div class="mcf-badge-num">1</div>
       <div class="mcf-body">
         <strong class="mcf-name">Candidate output</strong>
-        <p class="mcf-text" data-mcf-text="1">Assistant totals 40 amounts for 39 months, silently including a repeated row.</p>
-        <div class="mcf-data-pill" data-mcf-pill="1">OUTPUT: €7,414 (includes duplicate)</div>
+        <p class="mcf-text" data-mcf-text="1">Four invented invoice amounts: €120, €80, €80 and €40. Are the two €80 entries separate bills?</p>
+        <div class="mcf-data-pill" data-mcf-pill="1">OUTPUT: €320; SOURCE CHECK PENDING</div>
       </div>
     </div>
 
@@ -40,8 +40,8 @@ import { BASE } from '../data/site';
       <div class="mcf-badge-num">2</div>
       <div class="mcf-body">
         <strong class="mcf-name" data-mcf-name="2">Mechanical formula gate</strong>
-        <p class="mcf-text" data-mcf-text="2">Spreadsheet formula checks rows outside model context: <code>IF(A2=A1, "DUPLICATE", "OK")</code></p>
-        <div class="mcf-data-pill pill-warn" data-mcf-pill="2">GATE: FAIL (exit code 1)</div>
+        <p class="mcf-text" data-mcf-text="2">A formula flags equal neighbouring amounts: <code>IF(A2=A1, "REVIEW", "OK")</code>. It cannot prove a duplicate.</p>
+        <div class="mcf-data-pill pill-warn" data-mcf-pill="2">GATE: HOLD FOR SOURCE REVIEW</div>
       </div>
     </div>
 
@@ -55,8 +55,8 @@ import { BASE } from '../data/site';
       <div class="mcf-badge-num">3</div>
       <div class="mcf-body">
         <strong class="mcf-name" data-mcf-name="3">Halt and alert</strong>
-        <p class="mcf-text" data-mcf-text="3">Mechanical check stops delivery before money moves. Assistant reports the exact duplicate row.</p>
-        <div class="mcf-data-pill pill-success" data-mcf-pill="3">RESULT: €133 OVERPAYMENT PREVENTED</div>
+        <p class="mcf-text" data-mcf-text="3">The workflow holds the total for source review. Check invoice IDs and the original bills before changing a row.</p>
+        <div class="mcf-data-pill pill-warn" data-mcf-pill="3">RESULT: UNRESOLVED; TOTAL UNCHANGED</div>
       </div>
     </div>
   </div>
@@ -70,7 +70,7 @@ import { BASE } from '../data/site';
   </div>
 
   <figcaption class="mcf-caption">
-    Interactive simulation: compare how a formula catches a slip that an assistant's self-review confirms as correct.
+    Constructed simulation with four invented amounts, not a recorded assistant run or an executed payment gate. Equal amounts flag a question; they do not prove duplication. In the <a href={`${BASE}/evidence/`}>recorded long-list bills experiment</a>, all 20 replies warned that 40 amounts did not match 39 months, and all 20 still led with the 40-row total of €7,414.
   </figcaption>
 </figure>
 
@@ -100,35 +100,35 @@ import { BASE } from '../data/site';
       mechanical: {
         status: 'MECHANICAL GATE ACTIVE',
         name2: 'Mechanical formula gate',
-        text2: 'Formula checks rows outside model context: IF(A2=A1, "DUPLICATE", "OK")',
-        pill2: 'GATE: FAIL (exit code 1)',
+        text2: 'Formula flags equal neighbouring amounts: IF(A2=A1, "REVIEW", "OK"). It cannot prove a duplicate.',
+        pill2: 'GATE: HOLD FOR SOURCE REVIEW',
         pill2Class: 'pill-warn',
         name3: 'Halt and alert',
-        text3: 'Mechanical check stops delivery before money moves. Assistant reports the exact duplicate row.',
-        pill3: 'RESULT: €133 OVERPAYMENT PREVENTED',
-        pill3Class: 'pill-success',
+        text3: 'The workflow holds the total for source review. Check invoice IDs and the original bills before changing a row.',
+        pill3: 'RESULT: UNRESOLVED; TOTAL UNCHANGED',
+        pill3Class: 'pill-warn',
         logs: [
-          '01 [PRODUCE] Assistant emitted total €7,414 for 39 months (40 rows supplied)',
-          '02 [EXTRACT] Data passed to deterministic script (no language model in loop)',
-          '03 [EVAL] Row 21 matches Row 20 (€133). Duplicate detected. Exit code 1.',
-          '04 [ACTION] Payout blocked. Total corrected to €7,281 across 39 distinct months.',
+          '01 [INPUT] Invented amounts: €120, €80, €80, €40. Total: €320.',
+          '02 [CHECK] Compare neighbouring amounts with a formula.',
+          '03 [FLAG] Row 3 matches row 2 (€80). Repeat suspected; source confirmation needed.',
+          '04 [HOLD] Workflow requires source review. No row removed; total stays €320.',
         ],
       },
       'self-review': {
-        status: 'SYCOPHANCY RISK DETECTED',
+        status: 'SOURCE EVIDENCE STILL NEEDED',
         name2: 'Prompting the same assistant again',
-        text2: 'User asks: "Are you sure this total is right?" Model defends its prior output.',
-        pill2: 'REPLY: "Yes, I double-checked and verified all 40 months"',
+        text2: 'User asks: "Are you sure this total is right?" The same amounts cannot establish whether both €80 bills are real.',
+        pill2: 'ILLUSTRATIVE REPLY: "The amounts add to €320."',
         pill2Class: 'pill-danger',
-        name3: 'Unchecked delivery',
-        text3: 'Model rubber-stamps its own slip. The wrong figure lands in accounts payable.',
-        pill3: 'OUTCOME: €133 PAID TWICE IN SILENT ERROR',
+        name3: 'Source question remains',
+        text3: 'A correct sum leaves the source question open. A reassuring reply must not release work that requires source confirmation.',
+        pill3: 'OUTCOME: NO SOURCE CONFIRMATION',
         pill3Class: 'pill-danger',
         logs: [
-          '01 [PRODUCE] Assistant emitted total €7,414 for 39 months',
+          '01 [INPUT] Invented amounts: €120, €80, €80, €40. Total: €320.',
           '02 [QUERY] User asks: "Are you sure? Please check carefully."',
-          '03 [SYCOPHANCY] Model replies: "Yes, I have carefully reviewed every single line."',
-          '04 [FAILURE] Unchecked invoice batch signed off. €133 overpaid to supplier.',
+          '03 [ILLUSTRATION] Possible reply: "The amounts add to €320."',
+          '04 [LIMIT] Arithmetic alone cannot establish whether a bill was entered twice.',
         ],
       },
     };

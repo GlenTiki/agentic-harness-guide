@@ -188,7 +188,7 @@ A stale, failed or missing signal turns the board red. It does not show the boar
 
 ## What is not tested
 
-The board is a snapshot built when you run the tool. It is not a live dashboard. The log proves that something wrote a line. It does not prove that the line is true. A part that crashes before it logs leaves no line, and the board then shows it as stale or unknown, never green. Nothing here is connected to a real assistant's hooks. To wire it in, add a call to `monitor.py record` at the end of a hook from chapter 2 or at the end of `check.sh`.
+The board is a snapshot built when you run the tool. It is not a live dashboard. The log proves that something wrote a line. It does not prove that the line is true. A part that crashes before it logs leaves no new line. With no earlier event, the board shows unknown. With a recent OK event, it stays green until that event exceeds `max_age_seconds`; only then does it show stale. That delay is a blind window, and you see the change only when you rebuild the snapshot. Nothing here is connected to a real assistant's hooks. To wire it in, add a call to `monitor.py record` at the end of a hook from chapter 2 or at the end of `check.sh`.
 
 **Read the matching page:** [Monitor and showcase](../../setup/monitor-and-showcase/)
 

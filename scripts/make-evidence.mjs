@@ -40,7 +40,7 @@ const wording = (r) => {
     return `In ${r.wrong_k} of ${r.wrong_n} isolated trials (${ident(r)}) the wrong behaviour happened. That is a rate of ${pct(r.wrong_k / r.wrong_n)}, 95% interval ${pct(r.wilson95[0])} to ${pct(r.wilson95[1])}. Treat the rate as ${r.stability}.`;
   }
   if (t === 'C') {
-    return `In ${r.headline_wrong_k} of ${r.wrong_n} isolated trials (${ident(r)}) the headline answer was wrong, and in each the reply also flagged the problem. The wrong behaviour without a flag happened in 0 of ${r.wrong_n}.`;
+    return `In ${r.headline_wrong_k} of ${r.headline_wrong_n} isolated trials (${ident(r)}) the headline answer was wrong, and in each the reply also flagged the problem. The wrong behaviour without a flag happened in 0 of ${r.wrong_n}.`;
   }
   return `In ${r.wrong_n} isolated trials (${ident(r)}) the wrong behaviour did not happen. That does not show it never happens: the true rate could still be as high as about ${pct(r.rule_of_three_upper)} (rule of three).`;
 };
@@ -55,7 +55,7 @@ const table = (caseRows) => {
   const lines = [`| ${head.join(' | ')} |`, `| ${head.map(() => '---').join(' | ')} |`];
   for (const r of caseRows) {
     const cells = [r.arm === 'same-context' ? 'simulated same-context' : r.arm, r.models.join(', '), r.n, `${r.pass} / ${r.partial} / ${r.fail}`, `${score(r.mean)} (${score(r.min)} to ${score(r.max)})`, `${r.wrong_k} of ${r.wrong_n}`, `${pct(r.wilson95[0])} to ${pct(r.wilson95[1])}`];
-    if (showHeadline) cells.push(`${r.headline_wrong_k} of ${r.n}`);
+    if (showHeadline) cells.push(r.headline_wrong_n > 0 ? `${r.headline_wrong_k} of ${r.headline_wrong_n}` : 'Not measured');
     if (showDoi) cells.push(`${r.unresolved_doi_k} of ${r.n}`);
     cells.push(r.stability, templateOf(r));
     lines.push(`| ${cells.join(' | ')} |`);

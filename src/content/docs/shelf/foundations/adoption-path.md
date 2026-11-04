@@ -19,7 +19,7 @@ description: A staged checklist for building a harness, ordered by effort and no
 - [ ] Set a deny list for secrets files and a short allow list for routine commands (an allow rule only skips the prompt; in Claude Code, a call that matches no rule asks you in Manual mode, goes to a classifier model in auto mode and is denied in `dontAsk` mode; auto mode is the starting mode for terminal sessions from v2.1.283). See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
 - [ ] Turn on the sandbox for shell commands if your harness has one.
 
-Exit check: you tried to read your secrets file and the read was refused, and you tried to reach a host you did not list and the call failed.
+Exit check: in a throwaway project, a read of a harmless decoy credential file that matches your deny pattern was refused. A call to a host you did not list also failed. A broken rule exposes only the decoy. Then apply the same rule to your real secret paths.
 
 ## Stage 2: write the instructions
 
