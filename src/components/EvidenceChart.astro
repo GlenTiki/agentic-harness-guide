@@ -18,7 +18,8 @@ interface ResultRow {
   wrong_n: number;
   wilson95: [number, number];
   stability: string;
-  headline_wrong_k?: number;
+  headline_wrong_k: number;
+  headline_wrong_n: number;
   unresolved_doi_k?: number;
   rule_of_three_upper?: number;
 }
@@ -55,8 +56,9 @@ const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k 
           <th>Model</th>
           <th>n</th>
           <th>Pass / Part / Fail</th>
-          <th>95% Wilson Interval</th>
-          <th>Rate</th>
+          <th>Wrong-behaviour 95% Wilson interval</th>
+          <th>Wrong behaviour</th>
+          <th>Wrong headline</th>
           <th>Template</th>
         </tr>
       </thead>
@@ -94,13 +96,10 @@ const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k 
                 <span class="whisker-text">{pct(r.wilson95[0])} to {pct(r.wilson95[1])}</span>
               </td>
               <td class="cell-rate">
-                {r.wrong_k > 0 ? (
-                  <span class="rate-badge rate-wrong">{r.wrong_k}/{r.wrong_n}</span>
-                ) : (r.headline_wrong_k ?? 0) > 0 ? (
-                  <span class="rate-badge rate-headline">{r.headline_wrong_k}/{r.n}</span>
-                ) : (
-                  <span class="rate-badge rate-clean">0/{r.wrong_n}</span>
-                )}
+                <span class={`rate-badge ${r.wrong_k > 0 ? 'rate-wrong' : 'rate-clean'}`}>{r.wrong_k}/{r.wrong_n}</span>
+              </td>
+              <td class="cell-headline">
+                {r.headline_wrong_n > 0 ? `${r.headline_wrong_k}/${r.headline_wrong_n}` : 'Not measured'}
               </td>
               <td class="cell-tmpl">
                 <span class={`tmpl-badge tmpl-${tmpl}`}>{tmpl}</span>
@@ -111,7 +110,7 @@ const templateOf = (r: ResultRow) => (r.wrong_k > 0 ? 'B' : (r.headline_wrong_k 
       </tbody>
     </table>
   </div>
-  <p class="chart-caption">All {rows.length} test arms across {totalTrials} trials. Stacked bars show pass, partial and fail. Whiskers show the 95% Wilson interval for the wrong-behaviour rate.</p>
+  <p class="chart-caption">All {rows.length} test arms across {totalTrials} trials. Stacked bars show pass, partial and fail. Whiskers show the 95% Wilson interval for the wrong-behaviour rate; the count beside them measures that same outcome. Wrong headlines are a separate outcome; a warning elsewhere in the reply can keep a misleading headline out of the wrong-behaviour count.</p>
 </div>
 
 <script>

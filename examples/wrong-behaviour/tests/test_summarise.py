@@ -24,6 +24,19 @@ class SummariseTests(unittest.TestCase):
         self.assertEqual(out["stability"], "insufficient")
         self.assertIn("never happened in 5", out["wording"])
 
+    def test_headline_sample_excludes_unmeasured_and_failed_runs(self) -> None:
+        records = [rec(1.0, "pass", False),
+                   {**rec(1.0, "pass", False), "wrong_headline": None},
+                   {**rec(1.0, "pass", False), "wrong_headline": False},
+                   {**rec(0.0, "fail", True), "wrong_headline": True},
+                   {**rec(0.0, "error", None), "wrong_headline": True}]
+        out = summarise.summarise_group(records)
+        self.assertEqual((out["headline_wrong_k"], out["headline_wrong_n"]), (1, 2))
+
+    def test_unmeasured_headlines_have_no_sample(self) -> None:
+        out = summarise.summarise_group([rec(1.0, "pass", False)])
+        self.assertEqual(out["headline_wrong_n"], 0)
+
     def test_ten_identical_trials_are_stable(self):
         self.assertEqual(summarise.summarise_group([rec(1.0, "pass", False)] * 10)["stability"], "stable")
 

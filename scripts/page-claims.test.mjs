@@ -85,3 +85,18 @@ test('the hook timeline sits inside an Example and the latency disclaimer is nar
   assert.doesNotMatch(text, /This guide did not time any hook/);
   assert.match(text, /measured no harness-level latency and no parallel-hook latency/);
 });
+
+test('evidence chart keeps wrong-behaviour rates beside their intervals', () => {
+  const html = fs.readFileSync('dist/evidence/index.html', 'utf8');
+  const results = JSON.parse(fs.readFileSync('examples/wrong-behaviour/results.json', 'utf8'));
+  const rows = [...html.matchAll(/<tr class="chart-row[^"]*"[^>]*>([\s\S]*?)<\/tr>/g)];
+  assert.equal(rows.length, results.length);
+  for (const [index, row] of rows.entries()) {
+    const result = results[index];
+    const rate = row[1].match(/<td class="cell-rate[^"]*"[^>]*>([\s\S]*?)<\/td>/)[1].replace(/<[^>]+>/g, '').trim();
+    assert.equal(rate, `${result.wrong_k}/${result.wrong_n}`, `${result.case}/${result.arm}`);
+    const headline = row[1].match(/<td class="cell-headline[^"]*"[^>]*>([\s\S]*?)<\/td>/);
+    assert.ok(headline, 'headline outcome has its own labelled column');
+    assert.equal(headline[1].replace(/<[^>]+>/g, '').trim(), result.headline_wrong_n > 0 ? `${result.headline_wrong_k}/${result.headline_wrong_n}` : 'Not measured');
+  }
+});

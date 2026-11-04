@@ -187,7 +187,11 @@ It shows the no-negative-stock rule; it does not show how the script copes with 
 
 ### Part 3: build the shopping list
 
-Sam picks two recipes for the week. The script adds the quantities each one needs, subtracts stock and prints what is short. Flour is held in grams, so a recipe in grams and a bag in kilograms still compare.
+Sam picks two recipes for the week. The script adds the quantities each one needs, subtracts stock and prints what is short. Flour is held in grams, so a recipe in grams and a bag in kilograms still compare. Add the omelette to the catalogue from part 1 before asking for both recipes:
+
+```sh
+python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe examples/kitchen-assistant/fixtures/omelette.txt catalogue.json
+```
 
 <Example
   label="Computed"
@@ -229,7 +233,13 @@ It shows set subtraction across two recipes; it ignores pack sizes, so Sam still
 
 </Example>
 
-Now the failing case. The stock file keeps oil in millilitres and a recipe asks for it in grams. Converting would need the oil's density, which the script does not know, so it stops.
+Now the failing case. Save the fried rice recipe in its own catalogue first:
+
+```sh
+python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe examples/kitchen-assistant/fixtures/fried-rice.txt rice.json
+```
+
+The stock file keeps oil in millilitres and the recipe asks for it in grams. Converting would need the oil's density, which the script does not know, so it stops.
 
 <Example
   label="Computed"

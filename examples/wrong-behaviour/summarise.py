@@ -6,6 +6,7 @@ import math
 import sys
 from collections import defaultdict
 from pathlib import Path
+from typing import Any
 
 HERE = Path(__file__).resolve().parent
 Z = 1.96
@@ -28,7 +29,7 @@ def stability(scores, verdicts):
     return "stable" if (max(scores) - min(scores) <= 0.25 and modal >= 0.9) else "unstable"
 
 
-def summarise_group(records):
+def summarise_group(records: list[dict[str, Any]]) -> dict[str, Any]:
     ok = [r for r in records if r["verdict"] != "error"]
     scores = [r["score"] for r in ok]
     verdicts = [r["verdict"] for r in ok]
@@ -42,7 +43,8 @@ def summarise_group(records):
                                                       for c in r.get("criteria", []))),
         "extras_k": {key: sum(1 for r in ok if (r.get("extras") or {}).get(key))
                      for key in sorted({k for r in ok for k in (r.get("extras") or {})})},
-        "headline_wrong_k": sum(1 for r in ok if r.get("wrong_headline")),
+        "headline_wrong_k": sum(1 for r in ok if r.get("wrong_headline") is True),
+        "headline_wrong_n": sum(1 for r in ok if isinstance(r.get("wrong_headline"), bool)),
         "wrong_k": k, "wrong_n": n, "wilson95": wilson(k, n),
         "rule_of_three_upper": round(3 / n, 3) if (n and k == 0) else None,
         "mean": round(sum(scores) / len(scores), 3) if scores else None,
@@ -103,8 +105,9 @@ def main():
              "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
     for s in rows:
         ci = "n/a" if not s["wilson95"] else f"{pct(s['wilson95'][0])} to {pct(s['wilson95'][1])}"
+        headline = f"{s['headline_wrong_k']}/{s['headline_wrong_n']}" if s["headline_wrong_n"] else "Not measured"
         lines.append(f"| {s['case']} | {s['arm']} | {s['n']} | {s['pass']} | {s['partial']} | {s['fail']} | "
-                     f"{s['wrong_k']}/{s['wrong_n']} | {s['headline_wrong_k']} | {ci} | {s['mean']} | {s['min']} | {s['max']} | {s['stability']} |")
+                     f"{s['wrong_k']}/{s['wrong_n']} | {headline} | {ci} | {s['mean']} | {s['min']} | {s['max']} | {s['stability']} |")
     extras = [s for s in rows if s["extras_k"]]
     if extras:
         lines += ["", "## Extra counts (full-ask arm)", "", "| case | arm | n | counted 13 | asked first | mis-add |", "| --- | --- | --- | --- | --- | --- |"]

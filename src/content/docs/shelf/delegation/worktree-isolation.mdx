@@ -293,7 +293,9 @@ The check finds a stale base. It does not say whether the rebase left the agent'
 
 </Example>
 
-## A case that cannot be isolated
+<span id="a-case-that-cannot-be-isolated"></span>
+
+## When an outer worktree omits the inner repository
 
 A repository can hold another repository inside it that the outer repository ignores. A worktree of the outer repository contains only tracked files, so the inner repository is not there.
 
@@ -336,7 +338,7 @@ A worktree of the outer repository cannot isolate work in the inner one. It show
 
 </Example>
 
-Run the writers that touch the inner repository one at a time. Read-only agents can still share it.
+The inner repository can have its own worktree. If its access rules permit it and it has a commit, run `git -C outer/inner worktree add -b agent/inner ../../inner-agent HEAD` from the folder containing `outer`. That creates a separate checkout at `inner-agent`, next to `outer`; it does not copy the inner repository into the outer worktree. If you cannot create an inner worktree, run its writers one at a time. Read-only agents can still share it.
 
 ## Failure modes it reduces
 

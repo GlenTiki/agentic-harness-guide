@@ -89,7 +89,7 @@ import { BASE } from '../data/site';
       <div class="tlf-node-body">
         <strong class="tlf-node-title">Reply to user</strong>
         <span class="tlf-pill pill-return" data-return-pill>COMPLETE</span>
-        <p class="tlf-node-sub" data-node-sub="5">Data feeds back into model context. Assistant produces verified September draft.</p>
+        <p class="tlf-node-sub" data-node-sub="5">Data feeds back into model context. Assistant returns a September draft in chat for review.</p>
       </div>
     </div>
   </div>
@@ -108,7 +108,7 @@ import { BASE } from '../data/site';
       <div class="ladder-tier">
         <div class="tier-badge">Step 2</div>
         <strong class="tier-name">Draft</strong>
-        <p class="tier-desc">Assistant writes into a designated drafts folder. Never sends or publishes.</p>
+        <p class="tier-desc">Assistant prepares a draft in chat. Saving a file needs separately approved write access.</p>
       </div>
       <div class="ladder-tier">
         <div class="tier-badge">Step 3</div>
@@ -174,13 +174,13 @@ import { BASE } from '../data/site';
         sub2: 'Decides it needs external data and emits structured call: read_file("september.csv")',
         sub3: 'Harness checks allowlist. Read-only tool on approved file passes automatically.',
         sub4: 'Operating system executes read. Returns 39 rows of tabular CSV data.',
-        sub5: 'Data feeds back into model context. Assistant produces verified September draft.',
+        sub5: 'Data feeds back into model context. Assistant returns a September draft in chat for review.',
         logs: [
           '01 [PROMPT] User asks: "Summarise September candle sales"',
           '02 [TOOL CALL] Assistant emits: read_file(path="september.csv")',
           '03 [SECURITY] Permission gate checked: read operation on allowed path -> ALLOW',
           '04 [EXEC] Connector returned 39 rows (1,248 bytes)',
-          '05 [CONTEXT] Data integrated into assistant reply. Draft saved in drafts folder.',
+          '05 [CONTEXT] Data integrated into assistant reply. Draft returned in chat for review.',
         ],
       },
       write: {
