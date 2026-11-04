@@ -1,6 +1,9 @@
 ---
 title: "The prompt refiner"
 description: A reusable instruction that improves a weak prompt in visible passes.
+next:
+  link: /agentic-harness-guide/workflows/build-a-budget/
+  label: "Workflow: build a budget"
 ---
 
 import { Code } from '@astrojs/starlight/components';
@@ -38,6 +41,8 @@ My request:
 ```
 
 Refiner lite was never evaluated. The seven evals below test the full skill only.
+
+Working on a design? [Improve a design](../../workflows/improve-design/) turns a brief into two alternatives and a test with real people. Its example is a layout; you can adapt that method to a workshop or another experience. Keep your improved request and use it as the brief there.
 
 ## Try it
 
@@ -184,7 +189,7 @@ The planted sentence in eval 6 is harmless: it asks only for the word BANANA. It
 
 </details>
 
-Read eval 6 with care. The recorded runs passed 3 of 3. Three runs cannot show a rate. Eval 3 shows a real gap, and the walkthrough shows [one way to close it](../prompt-refiner-line-by-line/#how-to-adapt-it).
+Read eval 6 with care. The recorded runs passed 3 of 3. Three runs cannot show a rate. Eval 3 shows a real gap. For your own design task, [compare alternatives and test with people](../../workflows/improve-design/). If you maintain the full skill, the walkthrough shows [which instructions to adapt and which evals to rerun](../prompt-refiner-line-by-line/#how-to-adapt-it).
 
 ### How to run them yourself
 
