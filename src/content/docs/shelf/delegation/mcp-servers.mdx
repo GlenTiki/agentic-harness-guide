@@ -49,6 +49,23 @@ claude mcp list
 
 **8. Treat output as data.** A search result, a ticket body or a page the server returns can contain injected instructions. See [Untrusted input](../../control/untrusted-input/).
 
+## Useful utilities, chosen by the job
+
+Before building a connector, look for a maintained tool that already does the job. These are starting points I recommend investigating, not a bundle to install. Choose one against a repeated problem, then check whether the whole workflow improves.
+
+| Repeated problem | Tool to consider | First useful check |
+| --- | --- | --- |
+| The agent reads whole folders or dumps huge JSON responses | Local utilities: [ripgrep](https://github.com/BurntSushi/ripgrep) for text search and [jq](https://jqlang.org/) for JSON filtering | Find one known line or field. Keep the source available so a narrow filter cannot hide a failure. |
+| The agent guesses an outdated library API | Documentation retrieval: [Context7](https://github.com/upstash/context7), through its CLI or MCP interface | Name the library and version. Check the returned source matches them before using its example. |
+| The agent says a page works without opening it | Browser automation: [Playwright](https://github.com/microsoft/playwright-mcp), with CLI/skills or MCP access | Use a disposable browser context to test one successful action and one invalid input. Inspect the rendered page too. |
+| A connector returns something the agent cannot use | Connector diagnostics: [MCP Inspector](https://github.com/modelcontextprotocol/inspector) | Use a current Inspector release with a reviewed server. Inspect its schema and call a read-only tool on dummy data; this is not a security review. |
+
+Start with utilities already available in your environment. A command-line tool needs no extra MCP server when your agent can already run it. For a procedure you repeat, inspect a maintained [community skill](../skills/) before writing your own. Read its instructions and bundled scripts; check its source, version, data destinations and required access.
+
+A local process can still send data elsewhere. Documentation queries may leave your machine; browser tools can act through a signed-in session. Use the smallest scope that demonstrates the benefit. Keep a note of how to disable the addition. Your time is your product; maintaining a collection of unused plugins is a peculiar way to spend it.
+
+<p class="verified">Project documentation checked on 2026-11-04: <a href="https://github.com/BurntSushi/ripgrep">ripgrep</a>, <a href="https://jqlang.org/">jq</a>, <a href="https://github.com/upstash/context7">Context7</a>, <a href="https://github.com/microsoft/playwright-mcp">Playwright MCP and its CLI guidance</a>, and <a href="https://github.com/modelcontextprotocol/inspector">MCP Inspector</a>. The Inspector README describes it as "A developer tool for inspecting" MCP servers. These are current project pages, not pinned release documentation; no utility was installed for this recommendation. Capability descriptions come from the maintainers; this is not a comparative benchmark or an audit of those projects.</p>
+
 ## Tool definitions use context before any call
 
 The assistant knows a tool exists only because it reads the tool's definition: the name, the description and the input schema. In a harness that sends every definition up front, those definitions sit in the [context window](../../../glossary/#context-window) before the first call and stay there. Check how your harness loads them. A server with many tools can then cost more than a long instruction file.
