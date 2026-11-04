@@ -1,6 +1,6 @@
 ---
 title: Evals for LLM-driven steps
-description: Test every step that a model decides, using real output as fixtures and a rubric you do not move.
+description: Measure complete outcomes, diagnose model-driven failures, and compare changes using real cases and a stable rubric.
 ---
 
 import Example from '../../../../components/Example.astro';
@@ -9,15 +9,23 @@ import Example from '../../../../components/Example.astro';
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
-**Recommendation:** give every step where a model makes a decision its own eval. Build the fixtures from real model output. Before you trust a check, make it fail on purpose. Score new runs against the old rubric.
+**Recommendation:** measure whether the complete job succeeds, then add focused evals where model decisions create important failures. Build the fixtures from real model output. Before you trust a check, make it fail on purpose. Score new runs against the old rubric.
 
 ## Why it matters
 
-Unit tests cover code that returns the same answer each time. A model step varies from run to run, so a single passing run proves little. A step with no eval is a step you cannot change safely, because you cannot tell whether a change helped.
+Unit tests check specified code behaviour. A model step can vary from run to run, so a single passing run proves little. Without a relevant measure, you cannot tell whether a change helped.
+
+## Start with the outcome
+
+Known requirements can be checked before implementation: a total must reconcile, a required field must exist, a forbidden action must be refused. Uncertain model behaviour needs observation. Inspect actual failures before inventing a complex grader for them. This follows [Hamel Husain and Shreya Shankar's evals guidance](https://hamel.dev/blog/posts/evals-faq/), including their distinction between speculative evaluators and known constraints. Article fetched on 2026-11-04.
+
+For a multi-step agent, first ask whether the user's complete task succeeded. Use step-level checks to diagnose where failures arise. Green individual steps do not establish a useful final result. Automate checks whose value justifies their construction and maintenance.
+
+[Promptfoo](https://www.promptfoo.dev/docs/intro/) is one open-source option for comparing prompts and models across cases, with assertions and a results matrix. You still define the cases, acceptance rules and permitted data destinations. Running the tool locally does not stop its configured model providers receiving requests. Documentation fetched on 2026-11-04; no comparative tool benchmark is claimed here.
 
 ## What to enable
 
-**1. One eval per decision point.** List every place a model chooses something: a router picks a tool, a classifier picks a label, a reviewer picks a verdict, a parser reads model text. Give each a small set of cases with expected outcomes. A stub that returns a canned answer tests your wiring and not the model, so do not count it as an eval.
+**1. Map the decisions that affect the outcome.** List where a model chooses a tool, label or review verdict. Use observed failures and consequences to choose which need their own cases with expected outcomes. A stub that returns a canned answer tests your wiring and not the model, so do not count it as an eval.
 
 **2. Use real output as fixtures.** If your code parses model output, capture actual replies and test against those. Hand-written examples are tidier than real replies and hide the quirks that break parsers, such as extra prose, code fences and missing fields.
 
@@ -197,6 +205,6 @@ If you must decide with few runs, say so in the record: "2 of 20 against 3 of 20
 
 ## First step for the maintainer
 
-Choose the one model-driven step you worry about most. Collect ten real inputs, write the expected outcome for each, and run them three times. That table is your first baseline.
+Choose the one workflow whose outcome you worry about most. Collect ten real inputs, write the expected outcome for each, and run them three times. That table is your first baseline.
 
 **Next:** [Capture expert judgement](../expert-judgement/)
