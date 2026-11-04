@@ -1,9 +1,11 @@
 ---
 title: "Workflow: review content"
-description: Review a piece of writing against a brief, using a reviewer who sees only the draft, in a chat-only workflow.
+description: Review writing against a brief, or check factual claims against supplied sources, in a chat-only workflow.
 ---
 
 import Example from '../../../components/Example.astro';
+
+Checking facts in an update or report? [Start with the source check](#check-factual-claims). For clarity, structure and voice, use the style exercise below.
 
 ## Scene
 
@@ -18,7 +20,7 @@ Sam drafts a post for the shop's blog, telling other small-shop owners why they 
 Four parts make the review worth having:
 
 - **A rubric.** A short list of qualities, each with a plain description of what good and bad look like.
-- **A reviewer role.** A separate run that sees only the draft and the rubric, not the author's notes or intentions.
+- **A reviewer role.** For style, a separate run sees the draft and rubric without the author's explanation. For facts, it also needs the source material.
 - **A [severity scale](../../glossary/#severity-scale).** A typo and a missing section must not look equally urgent.
 - **A voice constraint.** The review says what is wrong. It does not rewrite the author's voice.
 
@@ -28,7 +30,7 @@ You write the brief with [the prompt refiner](../../appendix/prompt-refiner/), o
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-You need any chat assistant. This takes about 20 minutes. The second pass at the end is optional and is not counted. Use a short piece of your own, or this ten-line draft, which is written for teaching. The refiner works on the shape of your ask, so do not paste confidential material into it, and read its output before you use it ([the injection result](../../appendix/prompt-refiner/#the-seven-evals)).
+You need any chat assistant. This takes about 20 minutes. The house-style pass at the end is optional and is not counted. If you need factual verification, the source check is required. Use a short piece of your own, or this ten-line draft, which is written for teaching. The refiner works on the shape of your ask, so do not paste confidential material into it, and read its output before you use it ([the injection result](../../appendix/prompt-refiner/#the-seven-evals)).
 
 ```text
 1. Why your candle shop should try a market stall
@@ -189,7 +191,9 @@ Open the draft and read line 9. If a line number points at the wrong sentence, t
 Keep the final brief in a notes app. Reuse it for every post, changing only the goal and the rubric lines.
 :::
 
-### Second pass: house style and facts
+<span id="second-pass-house-style-and-facts"></span>
+
+### Second pass: house style
 
 The first pass uses a general rubric. Real editing has levels: structural (does the piece work), copy (clarity, style and consistency) and proof (typos). Tell the assistant which level it does. Here it does a copy-level read against a house-style rubric. This one is an example, so use your own:
 
@@ -200,12 +204,31 @@ The first pass uses a general rubric. Real editing has levels: structural (does 
 4. Sensitive wording: flag any wording that could defame a named person or business. Do not fix it.
 ```
 
-Fact claims need a separate pass with source tracing. Ask the assistant to list every claim as a table. You fill in the source column, because the assistant must not supply sources:
+### Check factual claims
+
+A citation to a sentence tells you where a claim is. It does not tell you whether it is true. For an update or report, give a new chat the draft and the notes or records you are allowed to share. Keep the author's explanation of what they intended out of the review. Use this brief:
+
+```text
+Check this draft against only the source material I supply.
+For every factual claim, give its location in the draft, the source passage
+that supports or contradicts it, and a verdict: supported, contradicted,
+or not established. Preserve qualifications and uncertainty in the source.
+If evidence is missing, mark it [NEEDED]. Do not invent a source or fill a gap.
+Do not rewrite the draft. List the claims I must resolve before sharing it.
+Draft: [paste]
+Source material: [paste permitted notes or records, with labels]
+```
+
+Inspect every claimed match in the source. If a verdict or citation is wrong, correct it; agreement between two assistants is not confirmation. A claim with no evidence stays unverified. Supply the missing record, qualify or remove the claim, then check the revised draft. An accurate match to a source also cannot prove the source itself is correct.
+
+For the shop post, Sam fills in the source column. Here are two example checks:
 
 | Line | Claim as written | Source (you fill this in) | Checked by |
 | --- | --- | --- | --- |
 | 4 | Last spring I took a stall at the Saturday market in town | Sam's diary entry | Sam |
 | 9 | Stalls always sell well | None found: needs a source or a rewrite | Sam |
+
+When each factual claim is supported by the supplied evidence, or clearly marked as unresolved, return to your update and decide what is ready to share. If you want a practice case, [the short update exercise](../../start-here/consistency-fast-track/#try-it-on-one-update) gives you notes to work from.
 
 ## Under the bonnet
 
@@ -215,7 +238,7 @@ A required citation does three jobs. It forces the reviewer to point at real tex
 
 The voice constraint works as an [allowlist](../../glossary/#allowlist) for the reviewer's output: it may point, score and explain what is missing, and it may not write replacement text. Without it, an assistant may tidy your paragraph and remove what made it yours. Principle, not measured.
 
-The review is done when every finding has a citation and a severity, you checked at least one citation by hand, and a named person who is not the preparer, or the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/), has reviewed and approved it.
+The style review is done when every finding has a citation and a severity, you checked at least one draft citation by hand, and a named person who is not the preparer, or the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/), has reviewed and approved it. A factual review also requires checking every claim against its source and resolving or explicitly retaining uncertainty before sign-off.
 
 ## Expert corner
 
@@ -232,7 +255,7 @@ Hold the rubric still when comparing two drafts. If you edit the rubric after yo
 :::note[Agent note]
 **Topic: reviewing a draft.**
 
-When asked to review, use only the draft and the rubric you are given. If the rubric is missing, ask for one within the question budget.
+For style review, use only the draft and the rubric you are given. For factual review, also require supplied source material; missing evidence means not established. If the rubric is missing, ask for one within the question budget.
 
 Return findings with: severity, citation, what is wrong, what is missing. Drop any finding without a citation.
 
@@ -245,9 +268,9 @@ Check: the reply states the finding count, and each finding has a citation and a
 
 ## Mistakes people make
 
-**Asking the author's own chat to review.** A reviewer that remembers the intent may share the author's assumptions. The guide's test only simulated this and found no difference (see Expert corner), so this fix is cheap insurance, not a proven gain. Fix: open a new chat, paste only the draft and the review brief.
+**Asking the author's own chat to review.** A reviewer that remembers the intent may share the author's assumptions. The guide's test only simulated this and found no difference (see Expert corner), so this fix is cheap insurance, not a proven gain. Fix: open a new chat with the draft and review brief. Include the source material when checking facts.
 
-**Accepting findings without checking one.** A confident finding can still point at the wrong sentence. Fix: check one citation by hand every time. If it is wrong, doubt the rest.
+**Accepting findings without checking them.** A confident finding can still point at the wrong sentence. For a style review, check at least one draft citation by hand. For facts, check every source match. If a citation is wrong, doubt the rest.
 
 **Letting the review rewrite your voice.** The draft improves on paper and stops sounding like you. Fix: keep the "do not rewrite" constraint in the brief, and ask for what is missing, not for new text.
 
@@ -258,8 +281,8 @@ Check: the reply states the finding count, and each finding has a citation and a
 You can now:
 
 - Turn "check my work is good" into a goal, a rubric and a severity scale.
-- Set up a reviewer who sees only the draft and the brief.
-- Require citations, and use them to check the review.
+- Set up a style reviewer with the draft and brief, or a factual reviewer with those plus supplied sources.
+- Require citations, and check every source match when verifying facts.
 - Keep the author's voice by forbidding rewrites.
 
 **Self-test**

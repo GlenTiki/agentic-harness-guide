@@ -32,6 +32,25 @@ for (const file of files) {
     const target = resolveTarget(file, href);
     if (!target) problems.push(`${rel}: Next link does not resolve: ${href}`);
     else if (titleOf(target) !== text) problems.push(`${rel}: Next text "${text}" differs from the page title "${titleOf(target)}"`);
+    const route = rel.replace(/(^|\/)index\.mdx?$/, '$1').replace(/\.mdx?$/, '/');
+    const built = path.join('dist', route, 'index.html');
+    if (!fs.existsSync(built)) {
+      problems.push(`${rel}: built page missing; run the build first`);
+      continue;
+    }
+    const html = fs.readFileSync(built, 'utf8');
+    const inlineLinks = [...html.matchAll(/<p><strong>Next:<\/strong>\s*<a href="([^"]+)"/g)];
+    const cards = [...html.matchAll(/<a\b(?=[^>]*\brel="next")(?=[^>]*\bhref="([^"]+)")[^>]*>/g)];
+    const [inline] = inlineLinks;
+    const [card] = cards;
+    const base = `https://guide.invalid/agentic-harness-guide/${route}`;
+    if (inlineLinks.length !== 1 || cards.length > 1) problems.push(`${rel}: built Next links missing or ambiguous`);
+    if (!card && rel !== 'shelf/reference/anti-patterns.md') problems.push(`${rel}: navigation card missing`);
+    if (!inline) continue;
+    if (new URL(inline[1], base).href !== new URL(href, base).href) problems.push(`${rel}: built Next differs from source; rebuild`);
+    if (card && new URL(inline[1], base).href !== new URL(card[1], base).href) {
+      problems.push(`${rel}: inline Next and navigation card have different destinations`);
+    }
   }
 }
 console.log(`${links} Next links checked, ${problems.length} problems`);

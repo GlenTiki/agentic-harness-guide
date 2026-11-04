@@ -1,10 +1,18 @@
 ---
+const levelPaths: Record<number, string> = {
+  1: '01-say-it-properly',
+  3: '03-give-it-hands',
+  4: '04-trust-but-verify',
+  5: '05-check-the-work',
+  8: '08-design-anything',
+};
+
 const workflows = [
   {
     num: '01',
     slug: 'build-a-budget',
     title: 'Build a budget',
-    pairs: 'Levels 1 & 5',
+    pairs: [1, 5],
     category: 'chat',
     categoryLabel: 'Chat only',
     summary: 'Build a budget for a small shop with the assistant, and check the totals.',
@@ -14,7 +22,7 @@ const workflows = [
     num: '02',
     slug: 'spreadsheet-monday',
     title: 'Spreadsheet Monday',
-    pairs: 'Level 5',
+    pairs: [5],
     category: 'spreadsheet',
     categoryLabel: 'Spreadsheet',
     summary: 'Use the assistant to write formulas you can check, instead of adding in prose.',
@@ -24,17 +32,17 @@ const workflows = [
     num: '03',
     slug: 'review-content',
     title: 'Review content',
-    pairs: 'Level 5',
+    pairs: [5],
     category: 'chat',
     categoryLabel: 'Chat only',
-    summary: 'Review writing against a brief with a reviewer who sees only the draft.',
+    summary: 'Review writing against a brief, with source evidence when checking facts.',
     tryIt: '20 minutes',
   },
   {
     num: '04',
     slug: 'improve-code',
     title: 'Improve code',
-    pairs: 'Level 5',
+    pairs: [5],
     category: 'code',
     categoryLabel: 'Code & tools',
     summary: 'Refine a piece of code in small, tested passes with an independent review.',
@@ -44,7 +52,7 @@ const workflows = [
     num: '05',
     slug: 'improve-design',
     title: 'Improve a design',
-    pairs: 'Level 5',
+    pairs: [5],
     category: 'chat',
     categoryLabel: 'Chat only',
     summary: 'Refine a layout or visual design against a written brief and a checklist.',
@@ -54,7 +62,7 @@ const workflows = [
     num: '06',
     slug: 'connect-systems',
     title: 'Connect systems',
-    pairs: 'Levels 3 & 4',
+    pairs: [3, 4],
     category: 'code',
     categoryLabel: 'Code & tools',
     summary: 'Decide what to connect, in what order, with what access.',
@@ -64,7 +72,7 @@ const workflows = [
     num: '07',
     slug: 'small-shop-month-end',
     title: 'Small shop month-end',
-    pairs: 'Level 5',
+    pairs: [5],
     category: 'spreadsheet',
     categoryLabel: 'Spreadsheet',
     summary: 'Work through a credible September month-end, from proving sales to the bank to sign-off.',
@@ -74,7 +82,7 @@ const workflows = [
     num: '08',
     slug: 'define-a-workflow',
     title: 'Define a workflow',
-    pairs: 'Level 8',
+    pairs: [8],
     category: 'chat',
     categoryLabel: 'Chat only',
     summary: 'Turn a repeated job into a written workflow with steps, checks and stop points.',
@@ -84,7 +92,7 @@ const workflows = [
     num: '09',
     slug: 'research-a-decision',
     title: 'Research a decision',
-    pairs: 'Level 8',
+    pairs: [8],
     category: 'chat',
     categoryLabel: 'Chat only',
     summary: 'Research a choice with sources, a comparison table and a stated recommendation.',
@@ -94,7 +102,7 @@ const workflows = [
     num: '10',
     slug: 'design-reps',
     title: 'Design reps',
-    pairs: 'Level 8',
+    pairs: [8],
     category: 'chat',
     categoryLabel: 'Chat only',
     summary: 'Practise the six-step method on five more jobs, such as triaging a shared inbox.',
@@ -104,7 +112,7 @@ const workflows = [
     num: '11',
     slug: 'build-a-kitchen-assistant',
     title: 'Build a kitchen assistant',
-    pairs: 'Level 8',
+    pairs: [8],
     category: 'code',
     categoryLabel: 'Code & tools',
     summary: 'Build four small, tested scripts that catalogue meal ideas, track stock and suggest a dish.',
@@ -132,7 +140,9 @@ const workflows = [
             <span class="card-num">{wf.num}</span>
             <div class="card-tags">
               <span class={`tag-pill tag-${wf.category}`}>{wf.categoryLabel}</span>
-              <span class="tag-pairs">{wf.pairs}</span>
+              <span class="tag-pairs">
+                {wf.pairs.map((level, index) => <>{index > 0 && ' & '}<a href={`../journey/${levelPaths[level]}/`}>Level {level}</a></>)}
+              </span>
             </div>
           </div>
           <h3 class="card-title">
