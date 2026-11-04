@@ -42,6 +42,28 @@ Keep only the settings that apply to this one tool here.
 
 **5. Leave out what the harness already knows or can discover.** Omit language tutorials, a tour of the directory tree that `ls` shows, and style rules that a formatter enforces. Omit anything that changes weekly. Omit secrets.
 
+## Learn the controls you already have
+
+Before adding another instruction file, inspect your agent's settings and help. Find the active model, output style, loaded instructions, enabled tools and permission mode. Check whether a change affects this session, this project or every project. Save the old value before changing it.
+
+In the **Claude Code terminal**, `/config` opens a settings dialog. It is not a complete view of `settings.json`. Output styles are one useful control: select one there, or use `/output-style`. Style-file edits need a restart. If you customise a style for coding, read the reference on `keep-coding-instructions` before relying on it. See the [settings guide](https://code.claude.com/docs/en/settings) and [output-style reference](https://code.claude.com/docs/en/output-styles).
+
+In **Codex**, personal settings live in `~/.codex/config.toml`; trusted projects can supply `.codex/config.toml` overrides. Reusable working instructions belong in `AGENTS.md`, with personal defaults under `~/.codex` unless you changed its home. Configuration settings and a working agreement are different things. Use the [configuration guide](https://learn.chatgpt.com/docs/config-file/config-basic) to check the controls your client supports; do not assume Claude's slash commands transfer.
+
+Use a settings screen or local editor to prepare a small excerpt first. Remove credentials, account identifiers and private paths before sharing it. Do not attach a whole configuration file: it may contain secrets. Then ask:
+
+```text
+Review only the redacted settings excerpt and working rules I paste below.
+Do not open other files, retrieve credentials or change settings.
+Which setting or instruction could reduce needless clarification questions?
+Show its scope, any conflicting rule and how I would undo the change.
+Mark anything you cannot inspect as unknown.
+```
+
+Check its answer against the files or settings screen. Then change one thing and try an ordinary task and a task that needs your decision. A reply that repeats the rule proves less than behaviour that follows it. The [Mako example](../../../method/product-manager-and-team-lead/#configure-the-working-relationship) shows a working agreement you can adapt.
+
+<p class="verified">Documentation checked on 2026-11-04: <a href="https://code.claude.com/docs/en/settings">Claude Code settings</a>, <a href="https://code.claude.com/docs/en/output-styles">output styles</a>, <a href="https://learn.chatgpt.com/docs/config-file/config-basic">Codex configuration</a> and <a href="https://learn.chatgpt.com/docs/agent-configuration/agents-md">Codex instructions</a>. The output-style page says: "Run `/output-style &lt;style&gt;` in the terminal, or run `/config` and select your style under Output style." The Codex configuration page says: "For security, Codex loads project `.codex/` layers only when you trust the project." Locally installed clients: Claude Code 2.1.318 and Codex CLI 0.166.0. The pages do not identify a release version. These are documented controls, not an executed comparison of their effects.</p>
+
 ## Failure modes it reduces
 
 - The agent guesses the test command and runs the wrong suite.

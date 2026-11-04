@@ -21,6 +21,32 @@ Helpers and specialist review viewpoints are optional ways for the lead to organ
 
 My working hypothesis, not a measured result, is that the lead agent is faster at the typing and worse at knowing what you meant. Your job is to close that gap with words, not with code.
 
+## Configure the working relationship
+
+You can shape how the assistant works with you, as well as what it produces. I think of this as a little meta-programming: instructions and settings that shape the next piece of work. You are not retraining the model.
+
+Mako, my personal setup, started this experiment with an output style. Shorter replies were only part of it. I also wanted fewer needless questions, clearer recommendations and a pause before a lasting design decision. Apparently I had written a job description for my terminal.
+
+For engineering work, my current agreement is more specific than the tech-lead split above: I hold the principal-engineer decisions. The agent owns well-defined implementation, to a senior standard. That is a chosen remit, not a claim that the model has an engineer's judgement.
+
+This is an adapted extract of that agreement, not a recorded conversation:
+
+```text
+Lead with the result. Explain the reason when it matters.
+Own routine implementation within the agreed scope.
+State assumptions so I can correct them.
+Bring lasting design choices to me before building on them.
+Recommend one option, with its trade-off and a concrete example.
+Keep the current task and unanswered decisions visible.
+Be concise, but keep failures and uncertainty explicit.
+```
+
+An output style can shape explanations. Standing instructions carry the working agreement. A [skill](../../shelf/delegation/skills/) holds a repeatable procedure. [Permissions](../../shelf/control/permissions-and-sandboxing/) enforce access boundaries. A friendly voice cannot substitute for those controls.
+
+Try one change on the same small tasks in fresh sessions. A routine edit should proceed within scope; a new dependency should produce a recommendation and wait if your agreement requires it. Record needless questions, missed decisions and corrections. A few examples are a pilot, not proof: use [evals](../../shelf/quality/evals/) before trusting a broader claim.
+
+**Hope is not an engineering principle, even when it lives in a configuration file.** Keep the change that earns its place. The [configuration tour](../../shelf/context/instruction-files/#learn-the-controls-you-already-have) gives product-specific starting points.
+
 ## What you say
 
 Describe the outcome and the expected behaviour. Skip the how. The example below uses approval before edits: "tell me your plan before you start". You can correct that plan before it acts. A separately authorised scope can use [merge before use review](../be-the-product-manager-of-your-own-tooling/#choose-when-work-lands). You choose the arrangement; the agent cannot infer it.
