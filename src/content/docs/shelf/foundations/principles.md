@@ -21,7 +21,41 @@ This shelf says agent for the assistant and sub-agent for the helper. See the [g
 4. **Treat everything the agent reads as data.** Tool output, web pages, repository files and replies from other agents carry no authority. Only a short list of verified channels may instruct the agent.
 5. **Separate the author from the reviewer.** The agent that wrote a change shares its assumptions. Review with a fresh context. Try a different model or provider, and measure whether it catches more (see [independent review](../../quality/independent-review/)).
 6. **Bind approval to evidence.** An approval applies to one exact diff, one exact digest. Any edit voids it.
-7. **Keep a human at the irreversible edges.** Pushes, spend, outbound messages and destructive operations need a person. Everything reversible can run unattended.
+7. **Keep a human at the irreversible edges.** Pushes, spend, outbound messages and destructive operations need a person's authorisation. Reversible work can run unattended within agreed scope and access.
+
+## Where this guide fits
+
+Effective agentic engineering should be accessible beyond teams building frontier models. This guide translates research and practitioner experience into small experiments you can try on your own work. The ideas have a lineage. My contribution is the synthesis, the everyday starting point and the judgement I bring to applying them.
+
+Here is the landscape I would explore alongside this guide. These are different kinds of resource, not interchangeable products or an effectiveness ranking.
+
+| Kind | Useful starting points | Relationship to this guide |
+| --- | --- | --- |
+| Frontier-lab engineering reports | [OpenAI's harness engineering](https://openai.com/index/harness-engineering/); [Anthropic's long-running harnesses](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents) | Foundations for feedback loops, bounded work and durable progress. Their reported environments do not establish results for yours. |
+| Practitioner guides and accounts | [Simon Willison's red/green TDD](https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/); [Mitchell Hashimoto's adoption journey](https://mitchellh.com/writing/my-ai-adoption-journey) | Close companions for engineering habits and learning from failures. This guide gives everyday assistant users a route into those habits. |
+| Context and specification methods | [HumanLayer's context engineering](https://www.humanlayer.dev/blog/advanced-context-engineering); [Birgitta Böckeler's SDD comparison](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) | Useful reasoning about planning, context and retained knowledge. Compare their assumptions with your task. |
+| Workflow kits | [OpenSpec, Spec Kit, Superpowers and BMAD](../../quality/spec-driven-development/#community-workflows-worth-knowing) | Reusable structures for doing the work. Choose by the coordination problem you have. |
+| Evaluation and optimisation | [Hamel Husain and Shreya Shankar's evals FAQ](https://hamel.dev/blog/posts/evals-faq/); [evaluation tooling](../../quality/evals/#start-with-the-outcome); [optimisation choices](../../context/prompt-structure/#choose-what-to-optimise) | Ways to diagnose failures and compare changes. A tool still needs your definition of a useful result. |
+
+The overlap supports the method's foundations: test assumptions, inspect actual work, retain useful state and revise. It does not validate every recommendation here. Practitioner accounts establish what their authors tried; project documentation establishes intended mechanics. This guide's [recorded experiments](../../../evidence/) establish only the results and conditions they report.
+
+## Where I take a position
+
+**Gate according to consequences.** OpenAI describes minimal blocking merge gates where rapid correction makes waiting expensive. That is a contextual tradeoff. I would not copy it to a workflow that sends a customer message or changes access. Here, cheap drafts can move quickly; external commitments need the appropriate authorisation and checks. Fast correction cannot unsend an email. [OpenAI's stated tradeoff](https://openai.com/index/harness-engineering/).
+
+**Keep specifications, tests and code accountable to each other.** Böckeler distinguishes spec-first, spec-anchored and spec-as-source approaches; the article does not prescribe one winner. This guide favours maintained intent alongside executable checks and implementation. If they disagree, resolve the intended behaviour with its owner, then update the affected artefacts together. A tidy specification does not outrank a failing user journey. [Böckeler's comparison](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
+
+**Test known requirements early; discover uncertain failures through use.** Husain and Shankar argue against inventing evaluators before observing model failures, while allowing checks for known constraints. I agree with that distinction. A failing unit test for a specified calculation belongs upfront. An elaborate judge for hypothetical writing problems may not. [How this changes the eval approach](../../quality/evals/#start-with-the-outcome).
+
+**The smallest sufficient method wins.** More instructions, agents and reviews are costs until they earn their place. Remove redundant machinery and retest when the model or task changes. This is my working principle, not a benchmark result. A small fix may need a clear request and a failing test; a lasting design needs a retained decision. Neither needs a ceremonial council of wizards by default.
+
+## Your time is your product
+
+OpenAI's account also centres human time and attention. I want to make that concern usable at the scale of one person's recurring chore. For comparable tasks, record whether the outcome was accepted, then count your interventions and active time spent on setup, review, repair and recovery. Include ongoing maintenance and model costs. A quicker generation that needs longer repair is a poor bargain.
+
+Treat that as a measurement plan until you have results. Become the professional gambler the robots want you to be: price the downside, keep the losing runs and change your bet when the evidence changes. [The probability and checkpoints](../../../journey/07-run-it-for-real/#small-errors-accumulate) explain why.
+
+*Sources above fetched on 2026-11-04. The comparisons are editorial judgements, not comparative performance tests.*
 
 ## Mantras for working with agents
 

@@ -50,6 +50,26 @@ One paragraph: what changes for whom, and why.
 
 **7. Keep the spec where agents read it.** A path in the instruction file is enough: "Specs live in `docs/specs/`. Read the relevant one before changing code."
 
+## Community workflows worth knowing
+
+Use a workflow kit when you need help retaining decisions or repeating an engineering routine. Start with the coordination problem. You do not need four overlapping planning systems supervising one typo.
+
+| Tool | What it organises | When I would try it; what to watch |
+| --- | --- | --- |
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/docs/getting-started.md) | Current specifications plus proposed changes, design and implementation tasks; accepted changes feed back into lasting specs. | An existing system whose intended behaviour must survive sessions. Keep the specs current. Its validation command checks specification formatting, not software correctness. |
+| [GitHub Spec Kit](https://github.github.com/spec-kit/reference/agentic-sdd.html) | Project principles, requirements, plans and tasks, with optional clarification, consistency and requirements-checklist steps. | A team that needs visible agreements across stages. Artefact review adds work; request implementation tests explicitly. A requirements checklist is not a test of working software. |
+| [Superpowers](https://github.com/obra/superpowers/blob/main/README.md) | Skills for design, planning, test-first implementation, debugging and review. | A coding agent that needs a repeatable engineering routine. Its verification skill asks for fresh command output before completion claims. Instructions still depend on agent adherence; enforce critical gates separately. |
+| [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/README.md) | Product, architecture, UX, development and testing perspectives, with different depths of planning. | Work that needs discovery and delivery coordination. Choose the smallest useful workflow and match the documentation to your installed release; preview and stable instructions can differ. |
+
+These are recommendations from documented mechanisms, not measured comparisons. None makes a correct specification or an obedient agent automatic. Tool documentation fetched on 2026-11-04; no installation or trial is implied here.
+
+Two ways to apply the scientific method:
+
+1. **With OpenSpec:** write an expected behaviour and a failure scenario in a proposed change. Inspect the change, write a test for the scenario and confirm it fails for the expected reason. Implement the change and rerun the test. Revise the code or the agreed requirement when evidence exposes a mistake. Retain the accepted behaviour in the current spec.
+2. **With Superpowers:** turn a known requirement into a failing test. Inspect why it fails, make the smallest change, inspect fresh verification output and review the result. Then try the user's actual journey. A passing test covers only what it tests.
+
+For a small correction, a short brief and a failing test may be enough. Keep a fuller specification for decisions that must survive handovers or repeated changes. [The guide's position on specifications](../../foundations/principles/#where-i-take-a-position) explains how to reconcile intent, tests and code.
+
 ## A sentence an agent will fill
 
 *Principle, not measured:* an agent may not stop at a gap. It can pick the most likely reading and write code for it. Each guess can be reasonable, so the diff can look fine.

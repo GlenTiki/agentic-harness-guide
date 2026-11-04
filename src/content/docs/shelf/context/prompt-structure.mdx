@@ -1,6 +1,6 @@
 ---
 title: Prompt structure and validation
-description: Order an ask, choose between an example and a constraint, ask for structured output with a validator, and re-run a fixed case set after a model change.
+description: Structure and validate an ask, then choose prompt, context or model changes according to the failure you need to fix.
 ---
 
 import Example from '../../../../components/Example.astro';
@@ -11,11 +11,36 @@ import Example from '../../../../components/Example.astro';
 
 **Recommendation:** write the ask as goal, constraints, output shape and check, in that order. Make the check a required field of the output shape. Accept a reply only when a script has parsed it and re-computed what it can. Keep a fixed set of cases and re-run it whenever the prompt or the model changes.
 
-No tool-specific setting is named on this page. The ideas work in any chat tool or harness that lets you read the reply as text.
+The prompting and validation ideas work in any chat tool or harness that lets you read the reply as text. The optimisation choices below also cover techniques that require training or hosting access.
 
 ## Why it matters
 
 A good ask still gets a wrong reply some of the time. [Level 1](../../../journey/01-say-it-properly/) shows the parts of a good ask. This page turns those parts into something a script can enforce. A reply that a script can reject is a reply you do not have to read for form, so your attention goes to the content.
+
+## Choose what to optimise
+
+Start with the failure, then choose the intervention. Prompt optimisation, retrieval and fine-tuning solve different problems; they are not successive levels you must unlock. [OpenAI's accuracy guide](https://developers.openai.com/api/docs/guides/optimizing-llm-accuracy) explicitly separates missing context from inconsistent behaviour.
+
+| Intervention | What changes | When it earns a trial |
+| --- | --- | --- |
+| Prompt optimisation | Instructions, examples or output format | The request is ambiguous or omits a requirement. Cheap to edit, but compare on cases you did not use to write it. |
+| Context selection or pruning | Which documents, history and instructions enter the request | Relevant facts are buried among irrelevant material. Remove distractions while retaining constraints, provenance and unresolved decisions. |
+| Context compression | The representation of retained material, such as summaries or token-level compression | Necessary history is too large. Check what the shorter version lost, especially exceptions and negations. |
+| Retrieval, often called RAG | Relevant source material supplied at run time | The answer needs current or private facts. Evaluate source selection as well as the final answer. Wrong retrieval still gives the model wrong evidence. |
+| Fine-tuning | Learned model parameters or adapters, using training examples | A repeated behaviour remains inconsistent despite clear instructions and sufficient context. It needs representative data and separate evaluation; it is not a live knowledge index or permission control. |
+| Distillation | A student model learns from a teacher's outputs or signals | You want a task-capable student, often smaller, with cheaper inference. Validate the teaching data and the resulting behaviour; teacher mistakes can be copied. |
+| Model weight pruning | Connections or weights removed or set to zero | You control the model and want a smaller or sparser representation. Speed gains depend on the structure and runtime; zero weights alone do not guarantee faster execution. |
+| Quantisation | Lower numerical precision for model values | Memory use is the constraint. Measure quality and latency on the target hardware; lower precision is not automatically faster. |
+
+“Pruning” needs that qualifier. Removing an irrelevant document from a prompt is context pruning. Removing model weights changes the model. Ordinary hosted chat settings do not give you access to prune the model's weights. Distillation can use fine-tuning, and quantisation can follow either; these techniques can be combined.
+
+The technical foundations are [Anthropic on context engineering](https://www.anthropic.com/research/effective-context-engineering-for-ai-agents), [Microsoft's LLMLingua compression research](https://www.microsoft.com/en-us/research/project/llmlingua/llmlingua/), [Hugging Face on parameter-efficient fine-tuning](https://huggingface.co/docs/transformers/peft), [Hinton, Vinyals and Dean on distillation](https://arxiv.org/abs/1503.02531), [SparseGPT on weight pruning](https://arxiv.org/abs/2301.00774) and [Hugging Face on quantisation](https://huggingface.co/docs/transformers/quantization/overview). Sources fetched on 2026-11-04. Their results apply to their tested settings, not every workflow.
+
+For automated prompt search, [DSPy's GEPA optimiser](https://github.com/stanfordnlp/dspy/blob/main/docs/docs/api/optimizers/GEPA/overview.md) revises text using scores and textual feedback. It does not change model weights. This can be worth trying when you have representative examples and a trustworthy scoring process. Count the optimisation calls in the cost, and keep final test cases out of prompt selection. A search can get very good at pleasing a bad grader. Documentation fetched on 2026-11-04.
+
+Constructed decision example, not a measured run: an invoice assistant uses an old policy and returns a wrong total. Retrieve the current policy for the first problem. Recompute the total with a calculator for the second. If the draft is also too verbose, try a clearer output constraint. Fine-tuning does not fetch the current policy. Changing the prompt, retrieval and calculation together would also hide which change helped.
+
+Compare the current workflow with one change on fresh, representative cases. Keep the acceptance rule fixed and record quality, latency, model cost and human repair time. [The eval chapter](../../quality/evals/#earn-confidence-with-enough-trials) covers sample sizes and uncertainty. Sometimes the best optimisation is removing an unnecessary model call altogether.
 
 ## What to enable
 
