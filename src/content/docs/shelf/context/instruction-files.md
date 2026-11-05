@@ -42,6 +42,14 @@ Keep only the settings that apply to this one tool here.
 
 **5. Leave out what the harness already knows or can discover.** Omit language tutorials, a tour of the directory tree that `ls` shows, and style rules that a formatter enforces. Omit anything that changes weekly. Omit secrets.
 
+## Make an instruction earn its place
+
+A well-documented setup is a source of hypotheses. Copy one practice, name the failure it should prevent, then test it on your work. Keep the model, task and acceptance criteria fixed while you compare. Count missed defects, needless interruptions and your time spent reviewing or repairing the result.
+
+Anthropic's [application-harness account](https://www.anthropic.com/research/harness-design-long-running-apps) describes removing scaffolding as models changed. Try that principle on one advisory rule: compare mandatory architecture reading with a rule that requests it only for changes to service boundaries. Include a copy edit and a boundary change. Inspect the actual files read and outcomes; a promise to follow the rule is not a result.
+
+Keep permission, consent and mandatory organisational controls intact. Include the original failure and fresh cases, repeat the comparison, and restore an advisory rule if consequential failures return. One clean run is a pilot. The cheapest instruction is sometimes the one you can justify deleting.
+
 ## Learn the controls you already have
 
 Before adding another instruction file, inspect your agent's settings and help. Find the active model, output style, loaded instructions, enabled tools and permission mode. Check whether a change affects this session, this project or every project. Save the old value before changing it.

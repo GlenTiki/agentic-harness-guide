@@ -38,7 +38,7 @@ Exit check: you can trigger each hook on purpose and see it fire.
 
 ## Stage 4: add review and gates
 
-- [ ] Run types, lint and the full test suite in pre-commit and CI. See [Test-first and quality gates](../../quality/test-first-and-gates/).
+- [ ] Run quick local checks and complete required verification before merge, with CI on a clean checkout. See [Test-first and quality gates](../../quality/test-first-and-gates/).
 - [ ] Review each change with a fresh-context reviewer. See [Independent review](../../quality/independent-review/).
 
 Exit check: a deliberately broken change is rejected by a gate, not by you.

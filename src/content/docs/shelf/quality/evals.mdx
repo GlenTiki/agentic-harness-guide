@@ -23,6 +23,14 @@ For a multi-step agent, first ask whether the user's complete task succeeded. Us
 
 [Promptfoo](https://www.promptfoo.dev/docs/intro/) is one open-source option for comparing prompts and models across cases, with assertions and a results matrix. You still define the cases, acceptance rules and permitted data destinations. Running the tool locally does not stop its configured model providers receiving requests. Documentation fetched on 2026-11-04; no comparative tool benchmark is claimed here.
 
+## Test the setup people actually use
+
+A component check can pass while the assistant chooses the wrong tool or supplies the wrong arguments. OpenAI's [plugin-evaluation example](https://developers.openai.com/cookbook/examples/partners/harness_aware_plugin_evals/harness_aware_plugin_evals) compares shared cases across direct tools, a standalone loop and Codex. Differences in supplied instructions mattered. That is a configuration diagnosis, not a ranking of assistants.
+
+Proposed exercise: use a known answer, missing data and an ambiguous request in one read-only workflow. Run the same cases through its component check and the assistant surface you use. Save the model, loaded instructions, available tools, actual calls and final answer. Check both the outcome and permitted actions. Fix one demonstrated difference, then repeat, including fresh cases. Keep failed runs in the denominator.
+
+Preserve earlier candidates when a model judge guides revisions. Anthropic's [design-harness account](https://www.anthropic.com/research/harness-design-long-running-apps) notes that an intermediate design could be preferable to the final one. Compare candidates without their scores visible, against the original task and audience. Accessibility and working controls need their own checks. The last draft has no automatic claim on first place.
+
 ## What to enable
 
 **1. Map the decisions that affect the outcome.** List where a model chooses a tool, label or review verdict. Use observed failures and consequences to choose which need their own cases with expected outcomes. A stub that returns a canned answer tests your wiring and not the model, so do not count it as an eval.
