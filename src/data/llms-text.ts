@@ -5,7 +5,7 @@ const summary =
 
 export const blockquote = `> ${summary}`;
 
-export const preamble = `# The Agentic Harness Guide
+export const preamble = `# Judgement First: A guide to working with AI
 
 ${blockquote}
 

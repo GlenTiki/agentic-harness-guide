@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import { buildClock } from './scripts/lib/notes.mjs';
 import starlight from '@astrojs/starlight';
 import fs from 'node:fs';
 import sitemap from '@astrojs/sitemap';
@@ -13,6 +14,7 @@ const SITE_BASE = '/agentic-harness-guide/';
 const NOT_INDEXED = ['/shelf/foundations/glossary/', '/404', '/showcase/render/'];
 
 export default defineConfig({
+  vite: { define: { __NOTES_BUILD_NOW__: JSON.stringify(buildClock(process.env.NOTES_BUILD_NOW)) } },
   site: 'https://glentiki.dev',
   base: '/agentic-harness-guide',
   redirects: { '/shelf/foundations/glossary': '/agentic-harness-guide/glossary/' },
@@ -22,14 +24,15 @@ export default defineConfig({
       filter: (url) => !NOT_INDEXED.some((path) => url.includes(path)),
       serialize(item) {
         const id = decodeURI(new URL(item.url).pathname).replace(SITE_BASE, '').replace(/\/$/, '') || 'index';
+        if (id === 'field-notes' || id.startsWith('field-notes/')) return item;
         const source = sourceFileFor(id === 'index' ? 'index' : id);
         const lastmod = (source ? lastCommitDate(source) : null) ?? (source ? null : reviewedAt);
         return lastmod ? { ...item, lastmod } : item;
       },
     }),
     starlight({
-      title: 'Harness',
-      description: 'A plain-English guide to getting reliable, checkable work from AI assistants, from your first chat to systems of several assistants.',
+      title: 'Judgement First',
+      description: 'Set the task, check the work and decide when an AI assistant is worth using.',
       customCss: ['./src/styles/tokens.css', './src/styles/custom.css'],
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/GlenTiki/agentic-harness-guide' }],
       editLink: { baseUrl: 'https://github.com/GlenTiki/agentic-harness-guide/edit/main/' },
@@ -49,6 +52,7 @@ export default defineConfig({
         PageTitle: './src/components/PageTitle.astro',
       },
       sidebar: [
+        { label: 'Field notes', link: '/field-notes/' },
         {
           label: 'Start here',
           items: [

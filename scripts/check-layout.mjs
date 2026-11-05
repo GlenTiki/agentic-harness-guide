@@ -16,7 +16,7 @@ if (!fs.existsSync(chrome)) {
 const WIDTHS = [320, 360, 390, 412, 768];
 const SCHEMES = ['light', 'dark'];
 const HOME = '/';
-const OTHER_PAGES = ['/journey/00-hello-robot/', '/journey/05-check-the-work/', '/setup/relevance-and-reranking/', '/case-study/ch06-rerank/', '/case-study/ch02-hooks/', '/evidence/', '/showcase/'];
+const OTHER_PAGES = ['/field-notes/', '/field-notes/why-this-guide-exists/', '/journey/00-hello-robot/', '/journey/05-check-the-work/', '/setup/relevance-and-reranking/', '/case-study/ch06-rerank/', '/case-study/ch02-hooks/', '/evidence/', '/showcase/'];
 
 const server = http.createServer((req, res) => {
   const url = decodeURIComponent(new URL(req.url, 'http://x').pathname).replace(BASE, '');

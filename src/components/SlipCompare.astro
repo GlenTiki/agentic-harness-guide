@@ -8,7 +8,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
   <div class="slip-header-row">
     <div class="slip-title-group">
       <span class="slip-kicker">RECORDED TEST</span>
-      <h3 id="slip-heading" class="slip-heading">The €133 repeated bill: a duplicate flagged, but still included in the total</h3>
+      <h3 id="slip-heading" class="slip-heading">40 amounts for 39 months: a count mismatch, not an arithmetic failure</h3>
     </div>
     <div class="view-toggles" role="group" aria-label="Comparison mode">
       <button type="button" class="view-btn active" data-view="headline">1. Recorded result</button>
@@ -18,28 +18,28 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
   </div>
 
   <div class="slip-pair">
-    <div class="slip slip-wrong">
+    <div class="slip slip-neutral">
       <div class="slip-badge-row">
         <p class="slip-label">The assistant's total (all 40 rows added)</p>
-        <span class="count-pill pill-wrong">40 amounts</span>
+        <span class="count-pill pill-neutral">40 amounts</span>
       </div>
       <p class="slip-figure" data-val="wrong">€7,414</p>
-      <p class="slip-sub">€2,471.33 each for 3 people (included €133 twice)</p>
+      <p class="slip-sub">€2,471.33 each for 3 people (correct sum of supplied rows)</p>
     </div>
-    <div class="slip slip-right">
+    <div class="slip slip-neutral">
       <div class="slip-badge-row">
-        <p class="slip-label">Total with the repeat removed (39 months)</p>
-        <span class="count-pill pill-right" data-count-pill>39 months</span>
+        <p class="slip-label">Conditional total after confirming removal of one €133</p>
+        <span class="count-pill pill-neutral" data-count-pill>39 months</span>
       </div>
       <p class="slip-figure" data-val="right">€7,281</p>
-      <p class="slip-sub" data-sub-right>€2,427.00 each for 3 people (duplicate caught)</p>
+      <p class="slip-sub" data-sub-right>€2,427.00 each for 3 people (requires source confirmation)</p>
     </div>
   </div>
 
   <!-- Interactive Inspector Drawer -->
   <div class="slip-drawer" data-drawer="formula" hidden>
     <div class="drawer-header">
-      <span class="drawer-title">Illustration: adjacent-amount check (month labels added):</span>
+      <span class="drawer-title">Illustration: adjacent-amount check (labels supplied by the author):</span>
       <code>C2 = IF(B2=B1, "same as above", "")</code>
     </div>
     <div class="table-scroll" role="region" tabindex="0" aria-label="Amounts sample table">
@@ -51,7 +51,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
           <tr><td>18</td><td>Jan 2025</td><td>€241</td><td></td><td>OK</td></tr>
           <tr><td>19</td><td>Feb 2025</td><td>€129</td><td></td><td>OK</td></tr>
           <tr class="row-target"><td>20</td><td>Mar 2025</td><td>€133</td><td></td><td>First occurrence</td></tr>
-          <tr class="row-duplicate" data-dup-row><td>21</td><td>(duplicate)</td><td>€133</td><td class="cell-warn">same as above</td><td class="cell-badge">REVIEW REPEAT</td></tr>
+          <tr class="row-duplicate" data-dup-row><td>21</td><td>Unconfirmed extra row</td><td>€133</td><td class="cell-warn">same as above</td><td class="cell-badge">REVIEW REPEAT</td></tr>
           <tr><td>22</td><td>Apr 2025</td><td>€143</td><td></td><td>OK</td></tr>
         </tbody>
       </table>
@@ -73,8 +73,8 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
     </div>
   </div>
 
-  <p class="slip-reason">One amount was pasted twice. The reply noticed 40 amounts for 39 months and said so, but its headline payout still added all 40.</p>
-  <p class="slip-caption">Observed: in 20 of 20 recorded runs the headline total included the repeat and every reply flagged the mismatch. claude-sonnet-5-5, Claude Code 2.1.310, 2026-10-25. <a href={`${blob}/runs/2026-10-25/raw/C01-bills-total-long-unlabelled-t01.txt`}>Raw reply</a>, <a href={`${BASE}/evidence/`}>all counts</a>.</p>
+  <p class="slip-reason">The author inserted an extra €133. The prompt did not identify that row or require a stop. Equal amounts can be legitimate; the count mismatch alone cannot tell you which row to remove.</p>
+  <p class="slip-caption">Observed: all 20 replies correctly summed the 40 supplied amounts and flagged the mismatch. Some warned before the sum. The original silent-error hypothesis was not observed; this is an exploratory stop-policy lesson. claude-sonnet-5-5, Claude Code 2.1.310, 2026-10-25. <a href={`${blob}/runs/2026-10-25/raw/C01-bills-total-long-unlabelled-t01.txt`}>Raw reply</a>, <a href={`${BASE}/evidence/`}>all counts</a>.</p>
 </section>
 
 <script>
@@ -158,7 +158,7 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
     font-size: 0.7rem;
     font-weight: 800;
     letter-spacing: 0.05em;
-    color: var(--ahg-wrong);
+    color: var(--ahg-muted);
     text-transform: uppercase;
   }
 
@@ -247,14 +247,9 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
     font-weight: 700;
   }
 
-  .pill-wrong {
-    background: var(--ahg-wrong);
-    color: #ffffff;
-  }
-
-  .pill-right {
-    background: var(--ahg-right);
-    color: #ffffff;
+  .pill-neutral {
+    background: var(--ahg-panel);
+    color: var(--ahg-text);
   }
 
   .slip-figure {
@@ -272,14 +267,9 @@ const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
     color: var(--ahg-muted);
   }
 
-  .slip-wrong {
-    background: var(--ahg-wrong-soft);
-    color: var(--ahg-wrong);
-  }
-
-  .slip-right {
-    background: var(--ahg-right-soft);
-    color: var(--ahg-right);
+  .slip-neutral {
+    background: var(--ahg-panel);
+    color: var(--ahg-text);
   }
 
   .slip-drawer {

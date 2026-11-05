@@ -129,7 +129,7 @@ A repeatable check of how well the assistant does a task, scored the same way ea
 
 ### Example
 
-A sample of the answer you want, shown to the assistant so it can copy the pattern. On this site, an example also means a labelled run with five parts (see [how to read an example](../start-here/how-to-read/)).
+A sample of the answer you want, shown to the assistant so it can copy the pattern. On this site, an example also means a labelled run with four parts and an optional fifth. “What it shows” is optional when one run could be read as more than it is (see [how to read an example](../start-here/how-to-read/)).
 
 ### Fallback reviewer
 
@@ -245,7 +245,7 @@ The order of trust for connecting a system. Move up a step only when the step be
 
 ### Read-only
 
-Access that lets the assistant look but not change anything. Start every new connection read-only.
+Access that lets the assistant look but not change anything. Start every new connector read-only.
 
 ### Reconciliation
 
@@ -319,7 +319,7 @@ A fixed ordering of findings (blocker, major, minor) so that serious problems do
 
 ### Silent wrong
 
-A wrong headline that the reply also never flags. The recorded runs on the 40-bill list had a wrong headline in 20 of 20 trials and a silent wrong in 0 of 20, because every reply flagged the doubt. See [the evidence](../evidence/).
+A legacy grader label for an answer that differs from the reference without flagging a problem. The 40-amount bills run did not show this: all 20 replies flagged the count mismatch and correctly summed the supplied rows. The historical “wrong headline” label compared that sum with the author's intended removal, which the prompt did not identify. See [the evidence](../evidence/).
 
 ### Six-step method
 
@@ -387,7 +387,7 @@ A folder that one assistant works in. Giving each helper its own keeps their cha
 
 ### Wrong headline
 
-A reply whose first stated total differs from the right answer, whether or not the reply flags the problem. See [silent wrong](#silent-wrong).
+A legacy grader label for a first stated total that differs from the author's reference answer, whether or not the reply flags a problem. In C01 long-unlabelled, the reference assumes removal of an extra 133 that the prompt did not identify. The label therefore does not establish an arithmetic error. See [the evidence](../evidence/) and [silent wrong](#silent-wrong).
 
 ## Words for experts
 

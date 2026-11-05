@@ -1,6 +1,7 @@
 """Summarise runs/*/*.jsonl into RESULTS.md and results.json.
 
-python3 -I summarise.py"""
+python3 -I summarise.py --out /tmp/wrong-behaviour-report"""
+import argparse
 import json
 import math
 import sys
@@ -10,6 +11,7 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 Z = 1.96
+LEGACY_GRADERS = {"bills": "bills sha256 2ea6645097a01384", "doi": "doi sha256 bedc748645292ca1"}
 
 
 def wilson(k, n):
@@ -30,6 +32,9 @@ def stability(scores, verdicts):
 
 
 def summarise_group(records: list[dict[str, Any]]) -> dict[str, Any]:
+    versions = {r.get("grader_version") for r in records}
+    if len(versions) != 1:
+        raise ValueError(f"Mixed grader versions for {records[0]['case_id']}/{records[0]['arm']}; summarise them separately")
     ok = [r for r in records if r["verdict"] != "error"]
     scores = [r["score"] for r in ok]
     verdicts = [r["verdict"] for r in ok]
@@ -39,8 +44,8 @@ def summarise_group(records: list[dict[str, Any]]) -> dict[str, Any]:
     out = {
         "case": records[0]["case_id"], "arm": records[0]["arm"], "n": len(ok), "errors": len(records) - len(ok),
         "pass": verdicts.count("pass"), "partial": verdicts.count("partial"), "fail": verdicts.count("fail"),
-        "unresolved_doi_k": sum(1 for r in ok if any(c["id"] == "dois_resolve" and c["score"] is not None and c["score"] < 1
-                                                      for c in r.get("criteria", []))),
+        "pending": verdicts.count("pending"),
+        "grader_version": versions.pop(),
         "extras_k": {key: sum(1 for r in ok if (r.get("extras") or {}).get(key))
                      for key in sorted({k for r in ok for k in (r.get("extras") or {})})},
         "headline_wrong_k": sum(1 for r in ok if r.get("wrong_headline") is True),
@@ -56,6 +61,9 @@ def summarise_group(records: list[dict[str, Any]]) -> dict[str, Any]:
         "input_tokens": sum(r["input_tokens"] or 0 for r in ok), "output_tokens": sum(r["output_tokens"] or 0 for r in ok),
         "wall_seconds": round(sum(r["wall_seconds"] for r in records), 1),
     }
+    if out["grader_version"] == LEGACY_GRADERS["doi"]:
+        out["unresolved_doi_k"] = sum(1 for r in ok if any(
+            c["id"] == "dois_resolve" and c["score"] is not None and c["score"] < 1 for c in r.get("criteria", [])))
     out["wording"] = wording(out)
     return out
 
@@ -75,7 +83,7 @@ def base_wording(s):
     n, k = s["wrong_n"], s["wrong_k"]
     ident = f"model {', '.join(s['models'])}, Claude Code {', '.join(s['claude_code'])}, {', '.join(s['dates'])}"
     if n == 0:
-        return "No graded trials."
+        return "No trials with a definite wrong-behaviour outcome; verification may be pending."
     if k == 0:
         return (f"The wrong behaviour never happened in {n} isolated trials ({ident}), so this page does not claim the assistant does it. "
                 f"With 0 of {n}, the true rate could still be as high as about {pct(s['rule_of_three_upper'])} (rule of three). "
@@ -87,26 +95,46 @@ def base_wording(s):
 
 
 def wording(s):
+    if (s["case"] == "C01-bills-total" and s["arm"] == "long-unlabelled"
+            and s["grader_version"] == LEGACY_GRADERS["bills"]):
+        return ("Legacy author-reference grading: 7,414 correctly sums all 40 supplied rows. The reference 7,281 "
+                "requires confirmation to remove one 133; the prompt did not identify it or require a stop. "
+                "The original silent-error hypothesis was not observed. See README.md for interpretation.")
+    if s["case"] == "C02-doi-citation" and s["grader_version"] == LEGACY_GRADERS["doi"]:
+        return ("Historical DOI grades combine missing records with service failures and awarded metadata-match "
+                "credit without a comparison. These counts cannot establish fabrication. Prospective incomplete "
+                "checks are pending. See README.md for interpretation.")
     text = base_wording(s)
     return f"{text} {SIMULATION}" if s["arm"] == "same-context" else text
 
 
-def main():
+def main(argv=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", required=True, type=Path, help="separate report directory; historical outputs are protected")
+    parser.add_argument("--runs", type=Path, help="directory containing the selected run's JSONL files")
+    args = parser.parse_args(argv)
+    preserved = {(HERE / name).resolve() for name in ("results.json", "RESULTS.md")}
+    if any((args.out / name).resolve() in preserved for name in ("results.json", "RESULTS.md")):
+        raise ValueError("Cannot overwrite preserved historical reports; choose a separate --out directory")
+    paths = sorted(args.runs.glob("*.jsonl") if args.runs else (HERE / "runs").glob("*/*.jsonl"))
+    if not paths:
+        parser.error("No run JSONL files found")
     groups = defaultdict(list)
-    for path in sorted((HERE / "runs").glob("*/*.jsonl")):
+    for path in paths:
         for line in path.read_text().splitlines():
             if line.strip():
                 record = json.loads(line)
                 groups[(record["case_id"], record["arm"])].append(record)
     rows = [summarise_group(v) for _, v in sorted(groups.items())]
-    (HERE / "results.json").write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n")
-    lines = ["# Results", "", "Generated by `summarise.py` from `runs/*/*.jsonl`. Do not edit by hand.", "",
-             "| case | arm | n | pass | partial | fail | wrong k/n | wrong headline | Wilson 95% | mean | min | max | stability |",
-             "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
+    args.out.mkdir(parents=True, exist_ok=True)
+    (args.out / "results.json").write_text(json.dumps(rows, indent=2, ensure_ascii=False) + "\n")
+    lines = ["# Results", "", "Generated by `summarise.py` from the selected run corpus. Do not edit by hand.", "",
+             "| case | arm | n | pass | partial | fail | pending | wrong k/n | wrong headline | Wilson 95% | mean | min | max | stability |",
+             "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
     for s in rows:
         ci = "n/a" if not s["wilson95"] else f"{pct(s['wilson95'][0])} to {pct(s['wilson95'][1])}"
         headline = f"{s['headline_wrong_k']}/{s['headline_wrong_n']}" if s["headline_wrong_n"] else "Not measured"
-        lines.append(f"| {s['case']} | {s['arm']} | {s['n']} | {s['pass']} | {s['partial']} | {s['fail']} | "
+        lines.append(f"| {s['case']} | {s['arm']} | {s['n']} | {s['pass']} | {s['partial']} | {s['fail']} | {s['pending']} | "
                      f"{s['wrong_k']}/{s['wrong_n']} | {headline} | {ci} | {s['mean']} | {s['min']} | {s['max']} | {s['stability']} |")
     extras = [s for s in rows if s["extras_k"]]
     if extras:
@@ -117,7 +145,7 @@ def main():
     lines += ["", "## Wording for the page", ""]
     for s in rows:
         lines += [f"**{s['case']} / {s['arm']}.** {s['wording']}", ""]
-    (HERE / "RESULTS.md").write_text("\n".join(lines))
+    (args.out / "RESULTS.md").write_text("\n".join(lines))
     print(f"{len(rows)} groups written")
 
 

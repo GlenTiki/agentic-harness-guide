@@ -28,7 +28,7 @@ That is the whole method. The rest of this page adds a diagram, the same example
 
 **Hope is not an engineering principle.** The loop needs a testable explanation between noticing a mistake and keeping a fix. Suppose a bill appears twice. “The duplicate rule was unclear” is a hypothesis. Predict what a clearer rule should change before you run it.
 
-Compare the original and revised asks on the same cases, with the model and other settings held fixed. Include duplicates, ordinary bills and legitimate equal amounts. Decide beforehand whether success means mentioning the problem or stopping the wrong total. Those are different outcomes, as the [bill experiment](../../evidence/#c01-bills-total) shows.
+Compare the original and revised asks on the same cases, with the model and other settings held fixed. Include duplicates, ordinary bills and legitimate equal amounts. Decide beforehand whether success means mentioning the problem or withholding an unconfirmed total. Those are different outcomes, as the [bill experiment](../../evidence/#c01-bills-total) shows.
 
 Repeat the trials and save fresh cases for the final evaluation. If the clearer rule fails, inspect where the mistake starts. Perhaps the import lost the month labels before the assistant saw them. Fixing the wording cannot restore missing data. Change the explanation when the evidence asks you to.
 
@@ -62,12 +62,12 @@ Put the fix where it runs without you: a hook, a pre-commit step, an [instructio
 
 ## Two terms the evidence uses
 
-- **[Wrong headline](../../glossary/#wrong-headline).** The first total in the reply differs from the right answer. It counts whether or not the reply goes on to flag the problem.
+- **[Wrong headline](../../glossary/#wrong-headline).** A legacy label for disagreement with the author's reference total. In the unlabelled long-list case, that reference used information absent from the prompt, so the label does not prove arithmetic failure.
 - **[Silent wrong](../../glossary/#silent-wrong).** The headline is wrong and the reply never mentions the problem. This is the narrower case.
 
 ## A worked example from the flat-share thread
 
-Sam splits twelve months of shared bills between three flatmates. Suppose a total comes out as 2,318.00 where the statements say 2,120.00. This slip is invented to show the loop. In my isolated runs on this list, the Sonnet headline was wrong in 0 of 20 trials. The Haiku headline was wrong in 1 of 20 trials, and silent wrong in 0 of 20 (see [the evidence](../../evidence/)). A person or a sheet can make this slip, so the check below is worth having anyway.
+Sam splits twelve months of shared bills between three flatmates. Suppose a total comes out as 2,318.00 where the statements say 2,120.00. This slip is invented to show the loop. In my isolated runs on this list, the legacy grader recorded a different first total from its reference in 0 of 20 Sonnet trials and 1 of 20 Haiku trials. It recorded an unflagged wrong total in 0 of 20 for each model (see [the evidence](../../evidence/)). A person or a sheet can make this slip, so the check below is worth having anyway.
 
 <Example
   label="Computed"

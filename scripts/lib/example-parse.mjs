@@ -1,9 +1,10 @@
 export const LABELS = ['Observed', 'Computed', 'Constructed'];
 export const SLOTS = ['input', 'output', 'notice', 'shows'];
+export const REQUIRED_SLOTS = ['input', 'output', 'notice'];
 export const REPO_BLOB = 'https://github.com/GlenTiki/agentic-harness-guide/blob/main/';
 
 const OPEN = /<Example((?:\s+[A-Za-z]+="[^"]*")*)\s*>/g;
-const SLOT = /<Fragment\s+slot="([a-z]+)"\s*>([\s\S]*?)<\/Fragment>/g;
+const SLOT = /<Fragment\s+slot="([a-z]+)"\s*(?:\/>|>([\s\S]*?)<\/Fragment>)/g;
 const ATTR = /([A-Za-z]+)="([^"]*)"/g;
 
 export const findExamples = (source) =>
@@ -12,7 +13,7 @@ export const findExamples = (source) =>
     const close = source.indexOf('</Example>', bodyStart);
     const body = close === -1 ? source.slice(bodyStart) : source.slice(bodyStart, close);
     const attrs = Object.fromEntries([...open[1].matchAll(ATTR)].map((m) => [m[1], m[2]]));
-    const slots = Object.fromEntries([...body.matchAll(SLOT)].map((m) => [m[1], m[2].trim()]));
+    const slots = Object.fromEntries([...body.matchAll(SLOT)].map((m) => [m[1], (m[2] ?? '').trim()]));
     const end = close === -1 ? source.length : close + '</Example>'.length;
     return { start: open.index, end, line: source.slice(0, open.index).split('\n').length, attrs, slots, closed: close !== -1 };
   });
@@ -30,7 +31,7 @@ export const exampleToMarkdown = ({ attrs, slots }) => {
     `**Input**\n\n${slots.input}`,
     `**Output**\n\n${slots.output}`,
     `**What to notice.** ${slots.notice}`,
-    `**What it shows.** ${slots.shows}`,
+    slots.shows && `**What it shows.** ${slots.shows}`,
     meta && `*${meta}.*`,
   ]
     .filter(Boolean)
@@ -42,4 +43,5 @@ export const replaceExamples = (source) =>
     .reverse()
     .reduce((text, example) => `${text.slice(0, example.start)}${exampleToMarkdown(example)}${text.slice(example.end)}`, source);
 
-export const TWIN_PARTS = ['**Task.**', '**Input**', '**Output**', '**What to notice.**', '**What it shows.**'];
+export const TWIN_PARTS = ['**Task.**', '**Input**', '**Output**', '**What to notice.**'];
+export const SHOWS_PART = '**What it shows.**';

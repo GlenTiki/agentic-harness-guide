@@ -20,6 +20,13 @@ const failures = [];
 try {
   browser = await chromium.launch({ executablePath: process.env.CHROME_PATH ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', headless: true });
   const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  await page.goto(`http://127.0.0.1:${server.address().port}${base}/`);
+  assert.match(await page.title(), /Judgement First/);
+  assert.equal(await page.locator('h1').innerText(), 'Put your judgement in charge of AI.');
+  assert.equal(await page.getByRole('link', { name: 'Start with your own task', exact: true }).count(), 1);
+  assert.equal(await page.getByRole('link', { name: 'Read Field notes', exact: true }).count(), 1);
+  assert.equal(await page.locator('iframe[src*="ko-fi.com"], script[src*="ko-fi.com"]').count(), 0);
+  assert.equal(await page.locator('body').evaluate((el) => el.scrollWidth <= window.innerWidth), true);
   for (const route of pages) {
     await page.goto(`http://127.0.0.1:${server.address().port}${base}/${route}/`);
     const links = await page.evaluate(() => {
@@ -60,6 +67,12 @@ try {
   assert.ok((await page.locator('[data-feedback-quote]').innerText()).includes(selectedQuote.slice(0, 160)));
   await page.getByRole('button', { name: 'Close dialog' }).click();
   assert.equal(await page.locator('#feedback-modal').evaluate((el) => el.open), false);
+  await page.goto(`http://127.0.0.1:${server.address().port}${base}/evidence/`);
+  const filter = page.locator('[data-filter-template="B"]');
+  assert.equal(await filter.getAttribute('aria-pressed'), 'false');
+  await filter.click();
+  assert.equal(await filter.getAttribute('aria-pressed'), 'true');
+  assert.equal(await page.locator('[data-filter-template="all"]').getAttribute('aria-pressed'), 'false');
   await page.goto(`http://127.0.0.1:${server.address().port}${base}/journey/06-hire-a-team/`);
   const team = page.locator('[data-diagram="team-orchestrator-flow"]');
   await team.getByRole('button', { name: 'Next simulated step' }).click();

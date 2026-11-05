@@ -1,7 +1,7 @@
 """Run one case for n trials in strict isolation and grade each reply.
 
 python3 -I run.py --case C01-bills-total [--arm sonnet] [--n 5] [--max-calls 20] [--resolve]
-Writes runs/<date>/<case>.jsonl (one line per trial) and runs/<date>/raw/ (verbatim replies and JSON envelopes)."""
+Writes runs/<date>/<case>.jsonl (one line per trial) and runs/<date>/raw/ (replies and JSON envelopes with email-shaped strings redacted)."""
 import argparse
 import concurrent.futures
 import datetime
@@ -68,7 +68,8 @@ def one_trial(case, arm, trial, day_dir, version, resolve):
     grade = REGISTRY[arm.get("grader", case["grader"])]
     arm_case = {**case, "expected": arm.get("expected")}
     graded = grade(reply, arm_case, resolver=crossref_resolver) if (resolve and case["grader"] == "doi") else grade(reply, arm_case)
-    record.update({k: graded[k] for k in ("criteria", "score", "wrong_behaviour", "verdict", "wrong_headline", "extras") if k in graded})
+    record.update({k: graded[k] for k in ("criteria", "score", "wrong_behaviour", "verdict", "wrong_headline", "extras",
+                                         "pending_resolution", "verification_complete", "resolution_checks") if k in graded})
     return record
 
 

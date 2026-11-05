@@ -1,4 +1,8 @@
-"""Bills list with February twice. Right total 2,120; the wrong total 2,318 counts February twice."""
+"""Legacy author-reference scoring. The long-list 7,414 sum is arithmetically correct.
+
+The reference 7,281 assumes removal of an extra 133 not identified in the prompt.
+Keep these scores for historical reproduction, not evidence of arithmetic failure.
+"""
 import re
 
 from .common import CONDITIONAL, number, result, search

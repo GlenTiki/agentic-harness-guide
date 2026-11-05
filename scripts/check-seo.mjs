@@ -33,7 +33,7 @@ const checkNode = (page, node) => {
     if (type !== 'Person' && typeof value === 'string' && /^(url|item|image|mainEntityOfPage)$/.test(key) && !value.startsWith(ORIGIN)) fail(page, `JSON-LD ${key} is not under ${ORIGIN}`);
   }
   if (type === 'ListItem' && (!Number.isInteger(node.position) || !node.name || !node.item)) fail(page, 'ListItem needs position, name and item');
-  if (type === 'TechArticle' && !(node.headline && node.datePublished && node.dateModified && node.author)) fail(page, 'TechArticle needs headline, dates and author');
+  if (['TechArticle', 'BlogPosting'].includes(type) && !(node.headline && node.datePublished && node.dateModified && node.author)) fail(page, `${type} needs headline, dates and author`);
   for (const key of ['datePublished', 'dateModified']) {
     if (node[key] !== undefined && !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(node[key])) fail(page, `${key} is not UTC seconds with Z`);
   }
@@ -59,7 +59,9 @@ for (const file of htmlFiles) {
   const canonical = html.match(/<link rel="canonical" href="([^"]*)"/)?.[1];
   if (!canonical?.startsWith(ORIGIN)) fail(page, `canonical is ${canonical}`);
   if (!stub && canonical !== meta(html, 'property', 'og:url')) fail(page, 'canonical and og:url differ');
-  const expectedType = isHome ? 'website' : 'article';
+  const isNotesArchive = page === 'field-notes';
+  const isNote = page.startsWith('field-notes/');
+  const expectedType = isHome || isNotesArchive ? 'website' : 'article';
   if (meta(html, 'property', 'og:type') !== expectedType) fail(page, `og:type is ${meta(html, 'property', 'og:type')}, expected ${expectedType}`);
   for (const [attr, name] of [['property', 'og:image'], ['property', 'og:image:alt'], ['name', 'twitter:image'], ['name', 'twitter:image:alt']]) {
     if (!meta(html, attr, name)) fail(page, `missing ${name}`);
@@ -79,7 +81,9 @@ for (const file of htmlFiles) {
         if (isHome && !types.includes('WebSite')) fail(page, 'home has no WebSite');
         if (!isHome && !types.includes('BreadcrumbList')) fail(page, 'no BreadcrumbList');
         if (page === 'journey' && !types.includes('LearningResource')) fail(page, 'journey has no LearningResource');
-        if (!isHome && page !== 'journey' && !types.includes('TechArticle')) fail(page, 'no TechArticle');
+        if (isNotesArchive && !types.includes('CollectionPage')) fail(page, 'Field notes archive has no CollectionPage');
+        if (isNote && !types.includes('BlogPosting')) fail(page, 'Field note has no BlogPosting');
+        if (!isHome && !isNotesArchive && !isNote && page !== 'journey' && !types.includes('TechArticle')) fail(page, 'no TechArticle');
       } catch (error) {
         fail(page, `JSON-LD does not parse: ${error.message}`);
       }
@@ -96,7 +100,7 @@ else {
 
 const sitemap = fs.readFileSync(path.join(dist, 'sitemap-0.xml'), 'utf8');
 const urls = [...sitemap.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((m) => m[1]);
-if (urls.some((u) => !/<lastmod>/.test(u))) fail('sitemap', 'a URL has no lastmod');
+if (urls.some((u) => !/<loc>[^<]*\/field-notes(?:\/|<)/.test(u) && !/<lastmod>/.test(u))) fail('sitemap', 'a URL has no lastmod');
 if (/shelf\/foundations\/glossary/.test(sitemap)) fail('sitemap', 'the hidden glossary stub is listed');
 if (/\/404/.test(sitemap)) fail('sitemap', '404 is listed');
 

@@ -14,7 +14,9 @@ An assistant that is wrong can sound as sure as one that is right. This page giv
 
 The assistant writes the likeliest text that fits your question. Good grammar and a calm tone come from that process. They tell you nothing about whether the content is true.
 
-The recorded long-list case shows it. The list had 40 amounts for 39 months, with one amount pasted twice. The headline total was wrong in 20 of 20 trials (7,414 against the right 7,281), and every reply flagged "40 amounts for 39 months". None found the repeated amount. The doubt was in the reply. The wrong total was still the headline, and a reader who follows the headline gets the wrong answer. In the DOI runs, 16 of 20 replies had a DOI that did not resolve, and most of those replies hedged. [Level 0](../00-hello-robot/#five-minute-win) shows one reply.
+The recorded long-list case did not show the proposed silent arithmetic failure. All 20 replies flagged 40 amounts for 39 months and gave 7,414, the correct sum of all supplied rows. The author had inserted an extra 133, but the prompt did not identify it or require a stop. The total becomes 7,281 only after that removal is confirmed. This exploratory case shows why a warning and a stop rule are different. Some replies warned before the total. [Level 0](../00-hello-robot/#five-minute-win) shows one.
+
+The DOI records contain unsuccessful Crossref lookups in 16 of 20 replies. The old resolver mixed missing records with service errors, so that count does not establish fabrication. Most replies hedged; neither a hedge nor a fluent citation replaces a source check.
 
 The fix is a check you can run: count the lines, then add them again yourself. Do not rely on the tone of the reply.
 
@@ -30,7 +32,7 @@ The recorded runs did not trigger it on this task. Given "I worked out the yearl
 
 ## It completes answers
 
-The assistant writes an answer to the question you put. Principle, not measured: a reply that gives an answer is the likeliest text after a question. In the recorded runs it flagged its doubt in the long-list case and hedged in most of the DOI replies, but it still led with the wrong answer. If you need to know when it is unsure, ask for the evidence behind each claim and check that.
+The assistant writes an answer to the question you put. In the long-list runs, a warning did not prevent it from calculating the supplied rows. That was not a breach of an explicit stop rule: the prompt had none. If your workflow must wait for missing information, state that rule and test whether the assistant waits.
 
 ## Long inputs lose detail
 

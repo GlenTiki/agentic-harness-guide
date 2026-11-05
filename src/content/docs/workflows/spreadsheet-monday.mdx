@@ -11,7 +11,7 @@ import Example from '../../../components/Example.astro';
 
 *If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
-Monday morning. Sam pastes twelve months of shared bills into a chat and asks for the total. The assistant adds the numbers in prose and gives one confident figure. A person adding the column in a spreadsheet would see every row. A total in prose does not show which rows were counted. In the guide's long-list run (40 lines for 39 months), the headline total was wrong in 20 of 20 trials, and each reply flagged the 40 amounts for 39 months ([evidence](../../evidence/)). A formula and a check cell make the count visible to you.
+Monday morning. Sam pastes twelve months of shared bills into a chat and asks for the total. The assistant adds the numbers in prose and gives one confident figure. A person adding the column in a spreadsheet would see every row. A total in prose does not show which rows were counted. In the guide's exploratory long-list run, all 20 replies flagged 40 amounts for 39 months and correctly summed the supplied rows. The prompt did not identify the extra row or require a stop ([evidence](../../evidence/)). A formula and a check cell make the count visible to you.
 
 ## The idea
 
@@ -23,7 +23,7 @@ Three habits keep the Monday routine safe:
 2. **A check cell.** One cell shows TRUE or FALSE, so a wrong total shows itself.
 3. **Traceable commentary.** Every figure in a sentence about the numbers has its cell reference.
 
-Anonymise first. The steps are in [how to anonymise a spreadsheet](../../journey/professional-guardrails/#how-to-anonymise-a-spreadsheet).
+Pseudonymise first. The steps are in [how to pseudonymise a spreadsheet](../../journey/professional-guardrails/#how-to-anonymise-a-spreadsheet).
 
 ## Try it
 
@@ -261,17 +261,17 @@ Using only the figures in the table below, write two sentences on the materials 
 
 Check every figure in the reply against its cell. A figure with no cell is an invented figure.
 
-Before you paste real figures from a real business, anonymise them and read [confidentiality and sign-off](../../journey/professional-guardrails/). The work is done when the formulas give the results above, the check cell shows TRUE, every figure in the commentary has a cell reference, and a named person who is not the preparer, or the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/), has reviewed and approved it.
+Before you paste real figures from a real business, pseudonymise them and read [confidentiality and sign-off](../../journey/professional-guardrails/). The work is done when the formulas give the results above, the check cell shows TRUE, every figure in the commentary has a cell reference, and a named person who is not the preparer, or the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/), has reviewed and approved it.
 
 ## Under the bonnet
 
 *How it works. Optional reading.*
 
-An assistant writes text one piece at a time. A long sum "in its head" can give a likely-looking total. In the guide's recorded level 1 run of the full ask, 10 of 20 replies stated a sum or share that was wrong while they stopped to ask ([level 1](../../journey/01-say-it-properly/), [evidence](../../evidence/)). A formula moves the arithmetic to a tool that does it the same way every time.
+An assistant writes text one piece at a time. A long sum "in its head" can give a likely-looking total. In the guide's recorded level 1 run of the full ask, 10 of 20 replies stated a sum or share that was wrong while they asked ([level 1](../../journey/01-say-it-properly/), [evidence](../../evidence/)). A formula moves the arithmetic to a tool that does it the same way every time.
 
 Asking for the formula also gives you something to read. You can see that the range is A2:A13 and not A2:A12, and you can test the formula on a case with a known answer. A total in prose cannot be tested.
 
-The check cell turns the rule into a signal. A person skimming a sheet will not notice a wrong total, but will notice a red FALSE.
+The check cell turns the rule into a signal. A person skimming a sheet can miss a wrong total. A visible FALSE gives them a specific result to investigate.
 
 :::note[At work]
 Keep the check cell, the source figures and the reviewer's initials on the sheet. That is a working paper: it shows where each number came from and who checked it. A total typed over a formula and a range that stops one row short are two common ways a sheet goes wrong.
@@ -284,7 +284,7 @@ The distinct-count formula treats "Feb" and "Feb " (with a trailing space) as di
 
 An assistant can write a formula that looks right and points at the wrong range. Test every formula on a case with a known answer before you trust it on real data.
 
-Anonymising reduces what leaves your machine. It does not remove the need for permission to use the data.
+Pseudonymising reduces what leaves your machine. It does not remove the need for permission to use the data.
 :::
 
 ## Agent note
@@ -318,7 +318,7 @@ You can now:
 - Ask an assistant for a formula instead of a total.
 - Build a check cell that shows TRUE or FALSE, and make it fail on purpose.
 - Ask for commentary in which every figure points at a cell.
-- Anonymise a range before you paste it.
+- Pseudonymise a range before you paste it.
 
 **Self-test**
 

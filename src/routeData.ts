@@ -1,6 +1,8 @@
 import { defineRouteMiddleware } from '@astrojs/starlight/route-data';
 import { getCollection } from 'astro:content';
 import { jsonLdScript } from './data/jsonld';
+import { publicNotes, notesSite } from './data/notes';
+import { notesJsonLd, noteModified } from '../scripts/lib/notes.mjs';
 import { dateModified, datePublished, type STATUS_LABELS } from './data/pages';
 import { HOME_TITLE, OG_ALT, OG_IMAGE, pageUrl, SITE_URL, twinUrl } from './data/site';
 
@@ -33,13 +35,25 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
     const title = head.find((tag) => tag.tag === 'title');
     if (title) title.content = HOME_TITLE;
   }
-  setMeta(head, 'property', 'og:type', isHome ? 'website' : 'article');
+  setMeta(head, 'property', 'og:type', isHome || id === 'field-notes' ? 'website' : 'article');
   setMeta(head, 'property', 'og:image', OG_IMAGE);
   setMeta(head, 'property', 'og:image:width', '1200');
   setMeta(head, 'property', 'og:image:height', '630');
   setMeta(head, 'property', 'og:image:alt', OG_ALT);
   setMeta(head, 'name', 'twitter:image', OG_IMAGE);
   setMeta(head, 'name', 'twitter:image:alt', OG_ALT);
+
+  if (id === 'field-notes' || id.startsWith('field-notes/')) {
+    const note = (await publicNotes()).find((note) => `field-notes/${note.id}` === id) ?? null;
+    head.push({ tag: 'link', attrs: { rel: 'alternate', type: 'text/markdown', href: twinUrl(id) } });
+    head.push({ tag: 'link', attrs: { rel: 'alternate', type: 'application/atom+xml', href: `${SITE_URL}field-notes/feed.xml`, title: 'Field notes' } });
+    head.push({ tag: 'script', attrs: { type: 'application/ld+json' }, content: notesJsonLd(note, notesSite) });
+    if (note) {
+      setMeta(head, 'property', 'article:published_time', note.data.publishedAt);
+      setMeta(head, 'property', 'article:modified_time', noteModified(note));
+    }
+    return;
+  }
 
   head.push({ tag: 'link', attrs: { rel: 'alternate', type: 'text/markdown', href: twinUrl(id) } });
   head.push({ tag: 'link', attrs: { rel: 'alternate', type: 'application/atom+xml', href: `${SITE_URL}feed.xml`, title: 'Recently changed pages' } });

@@ -103,6 +103,8 @@ Each of 3 pays: 50.00
 
 **Pass 4: assemble the ask.** Put the parts in this order and send them as one message, with the original 13-figure list.
 
+The recorded ask below also replaces the opening with “Bills, in euros per month” and drops the original split instruction. The goal supplies that instruction instead. It tests the combined prompt, not each wording change separately.
+
 <Example
   label="Observed"
   task="Sam sends the full ask with the 13-figure list, to see whether the assistant stops and asks instead of guessing."
@@ -155,7 +157,7 @@ In 20 of 20 trials the full ask counted 13 entries and asked. A stop that waits 
 
 </Example>
 
-Reply with February once. The assistant should now give the 12-month result: total 2,120.00, shares 706.67, 706.67 and 706.66.
+The recorded runs stop at this first reply. If you reply with February once, compare the next answer with the correct total, 2,120.00, and shares 706.67, 706.67 and 706.66.
 
 **Step 5: save the ask.** Save it as `bills-ask-v1` in a notes app or a Word document. Put a blank where the expected count goes ("If the count is not [the count you expect]"), so you can reuse it.
 

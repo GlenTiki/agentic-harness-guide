@@ -1,0 +1,26 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { publicNotes } from '../../data/notes';
+import { BASE } from '../../data/site';
+
+const notes = await publicNotes();
+---
+
+<StarlightPage frontmatter={{ title: 'Field notes', description: 'Notes on judgement, experiments and corrections as the guide develops.', template: 'splash', editUrl: false }}>
+  <p>Notes on judgement, experiments and corrections as the guide develops.</p>
+  <p><a href={`${BASE}/journey/`}>Read the Guide</a> · <a href={`${BASE}/field-notes/feed.xml`}>Subscribe to Field notes</a></p>
+  {notes.length === 0 ? <p>No notes published yet.</p> : <ul class="notes-list">
+    {notes.map(note => <li>
+      <h2><a href={`${BASE}/field-notes/${note.id}/`}>{note.data.title}</a></h2>
+      <p>{note.data.description}</p>
+      <p class="published">Published <time datetime={note.data.publishedAt}>{new Date(note.data.publishedAt).toLocaleDateString('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' })}</time></p>
+    </li>)}
+  </ul>}
+</StarlightPage>
+
+<style>
+  .notes-list { list-style: none; padding: 0; }
+  .notes-list li { padding: 1.25rem 0; border-bottom: 1px solid var(--ahg-line); }
+  .notes-list h2 { margin-top: 0; font-size: var(--sl-text-xl); }
+  .published { color: var(--ahg-muted); font-size: var(--sl-text-sm); }
+</style>

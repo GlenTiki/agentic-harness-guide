@@ -80,7 +80,7 @@
     <div class="mono-card">
       <div class="mono-badge">MONOLITHIC CHAT</div>
       <strong class="mono-title">Single assistant does all four roles</strong>
-      <p class="mono-desc">Illustrative failure: one assistant flags a duplicate but leaves it in the headline total. There is no universal tool-call threshold; compare complete workflows on your own tasks.</p>
+      <p class="mono-desc">Constructed scenario: a confirmed duplicate must be removed before the total is approved. There is no universal tool-call threshold; compare complete workflows on your own tasks.</p>
       <div class="mono-meter">
         <div class="meter-label">Illustrated checking failure</div>
         <div class="meter-bar">
@@ -129,7 +129,7 @@
           '01 [ORCHESTRATOR] Lead receives task. Splits into 3 bounded briefs.',
           '02 [DISPATCH] Helpers launched in parallel: Worktrees A, B, and C mounted.',
           '03 [READER] Worktree A: 39 rows verified and formatted (context: 4% used).',
-          '04 [CALCULATOR] Worktree B: Total computed at €7,281 across 39 months.',
+          '04 [CALCULATOR] Worktree B: With one €133 removal confirmed, total is €7,281.',
           '05 [REVIEWER] Worktree C: Blind check agrees with source. Reconciliation exit code 0.',
           '06 [LEDGER] Context ledger updated. Clean PR ready for human sign-off.',
         ],
@@ -141,7 +141,7 @@
           '02 [TURN 4] Assistant begins calculations. Thread context at 45%.',
           '03 [REVIEW] Assistant checks the number of amounts against the stated months.',
           '04 [WARNING] Assistant flags 40 amounts for 39 months.',
-          '05 [SLIP] Headline still includes €133 twice: €7,414.',
+          '05 [SLIP] Constructed failure: €7,414 still includes the confirmed extra row.',
           '06 [HOLD] A separate source check is still needed before using that total.',
         ],
       },

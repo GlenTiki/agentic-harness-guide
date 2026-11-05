@@ -55,10 +55,14 @@ const links = label === 'Observed' ? (evidence ?? '').split(/\s+/).filter(Boolea
     <div class="ex-text"><slot name="notice" /></div>
   </div>
 
-  <div class="ex-section">
-    <p class="ex-h"><span class="section-icon">💡</span> What it shows</p>
-    <div class="ex-text"><slot name="shows" /></div>
-  </div>
+  {
+    Astro.slots.has('shows') && (
+      <div class="ex-section">
+        <p class="ex-h"><span class="section-icon">💡</span> What it shows</p>
+        <div class="ex-text"><slot name="shows" /></div>
+      </div>
+    )
+  }
 </section>
 
 <style>

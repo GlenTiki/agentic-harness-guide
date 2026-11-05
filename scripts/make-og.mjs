@@ -54,10 +54,6 @@ const hex = (value) => [1, 3, 5].map((i) => parseInt(value.slice(i, i + 2), 16))
 const INK = hex('#1b1d1f');
 const BACKGROUND = hex('#fafaf7');
 const ACCENT = hex('#1a5fd0');
-const WRONG = hex('#a8261c');
-const WRONG_SOFT = hex('#fbe9e7');
-const RIGHT = hex('#1e6b2e');
-const RIGHT_SOFT = hex('#e4f3e7');
 const MUTED = hex('#565b61');
 
 const pixels = Buffer.alloc(WIDTH * HEIGHT * 3);
@@ -86,21 +82,13 @@ const drawText = (text, x, y, scale, color) => {
 };
 
 fillRect(0, 0, WIDTH, 12, ACCENT);
-drawText('THE AGENTIC HARNESS GUIDE', 60, 56, 5, ACCENT);
-drawText('GET DEPENDABLE', 60, 126, 10, INK);
-drawText('WORK FROM AN', 60, 214, 10, INK);
-drawText('AI ASSISTANT', 60, 302, 10, INK);
-
-const card = (x, color, soft, label, figure, detail) => {
-  fillRect(x, 395, 520, 160, color);
-  fillRect(x + 8, 399, 508, 152, soft);
-  drawText(label, x + 28, 415, 3, color);
-  drawText(figure, x + 28, 445, 8, INK);
-  drawText(detail, x + 28, 521, 3, MUTED);
-};
-card(60, WRONG, WRONG_SOFT, 'OBSERVED: WRONG HEADLINE', '7,414', 'ALL 20 FLAGGED DOUBT');
-card(620, RIGHT, RIGHT_SOFT, 'COMPUTED: CHECKED', '7,281', 'THREE LINES, SAME BILLS');
-const note = 'SAME 40 BILLS, TWO TOTALS';
+drawText('JUDGEMENT FIRST', 60, 65, 11, ACCENT);
+drawText('A GUIDE TO', 60, 190, 9, INK);
+drawText('WORKING WITH AI', 60, 275, 9, INK);
+fillRect(60, 390, 1080, 2, ACCENT);
+drawText('SET THE TASK. CHECK THE WORK.', 60, 435, 5, INK);
+drawText('DECIDE WHAT IS WORTH USING.', 60, 490, 5, INK);
+const note = 'GLEN KEANE';
 drawText(note, WIDTH - 60 - textWidth(note, 3), 580, 3, MUTED);
 
 const crcTable = Array.from({ length: 256 }, (_, n) => {

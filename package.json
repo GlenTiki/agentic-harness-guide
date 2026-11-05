@@ -11,7 +11,7 @@
     "check:next": "node scripts/check-next-links.mjs",
     "check:todos": "node scripts/check-todos.mjs",
     "evidence": "node scripts/make-evidence.mjs",
-    "check:evidence": "python3 -I examples/wrong-behaviour/tests/test_summarise.py && node scripts/make-evidence.mjs --check && node scripts/check-evidence-selftest.mjs",
+    "check:evidence": "python3 -I -m unittest discover -s examples/wrong-behaviour/tests -p 'test_*.py' && node scripts/make-evidence.mjs --check && node scripts/check-evidence-selftest.mjs",
     "words": "node scripts/words.mjs",
     "check:examples": "node scripts/check-examples.mjs && node scripts/check-examples-selftest.mjs",
     "check:claims": "node --test scripts/page-claims.test.mjs && python3 -I examples/gate-gaming/test_gates.py && python3 -I examples/worktree-collisions/test_worktree_collisions.py && python3 -I examples/hook-traps/test_gated_stop.py",
@@ -19,7 +19,7 @@
     "check:llms": "node scripts/check-llms.mjs",
     "check:mako": "node scripts/check-mako-standards.mjs",
     "check:slop": "node scripts/audit-slop.mjs",
-    "check": "npm run build && npm run check:links && npm run check:skill-coverage && npm run check:todos && npm run check:examples && npm run check:claims && npm run check:evidence && npm run check:llms && npm run check:contrast && npm run check:seo && npm run check:og && npm run check:layout && npm run check:entry && npm run check:orphans && npm run check:showcase && npm run check:health && npm run check:downloads && npm run check:feedback && npm run check:next && npm run check:mako && npm run check:slop",
+    "check": "node --test scripts/support-url.test.mjs scripts/git-dates.test.mjs && npm run build && npm run check:notes && npm run check:links && npm run check:skill-coverage && npm run check:todos && npm run check:examples && npm run check:claims && npm run check:evidence && npm run check:llms && npm run check:contrast && npm run check:seo && npm run check:og && npm run check:layout && npm run check:entry && npm run check:orphans && npm run check:showcase && npm run check:health && npm run check:downloads && npm run check:feedback && npm run check:next && npm run check:mako && npm run check:slop",
     "check:contrast": "node scripts/check-contrast.mjs",
     "check:seo": "node scripts/check-seo.mjs",
     "check:og": "node scripts/check-og.mjs",
@@ -40,7 +40,8 @@
     "feedback:inbox": "node scripts/monitor-feedback.mjs --once",
     "narrative:facts": "node scripts/narrative-facts.mjs",
     "test:narrative": "node --test scripts/narrative-facts.test.mjs",
-    "check:entry": "node scripts/check-entry-flows.mjs"
+    "check:entry": "node scripts/check-entry-flows.mjs",
+    "check:notes": "node --test scripts/notes.test.mjs scripts/notes-seo.test.mjs scripts/notes-build.test.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "0.4.5",

@@ -1,18 +1,18 @@
 ---
 title: "Level 0: Hello, robot"
-description: Catch a wrong total from an assistant, then fix it with a spreadsheet check you can run without code.
+description: Check a bill count and sum, confirm ambiguous rows against the source, and learn when a workflow needs an explicit stop rule.
 ---
 
 import Example from '../../../components/Example.astro';
 
-**The lesson:** A confident total can be wrong. Check it.
+**The lesson:** A correct sum can still need a data check.
 
 ## Scene
 
 Sam pastes 39 months of shared bills into a chat assistant and asks for each person's share. The reply is calm, tidy and sure. Sam is about to send it to Priya and Tom. Try it now: [paste the list](#five-minute-win), then check the total.
 
 :::note[Weak spot]
-**The assistant sounds sure even when it is wrong, and nothing in the chat tells you which answers to trust.** The fix at this level is a check you can run. This level is step 1 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-1-notice), Notice. The whole loop is on [Engineer your weak spots away](../../method/engineer-weak-spots/).
+**A warning does not settle which rows belong in a total.** The fix at this level is a check you can run. This level is step 1 of [the weak-spot loop](../../method/engineer-weak-spots/#loop-1-notice), Notice. The whole loop is on [Engineer your weak spots away](../../method/engineer-weak-spots/).
 :::
 
 ## The idea
@@ -130,7 +130,7 @@ Four amounts appear twice in the list (133, 152, 175 and 217), because real bill
 
 ### What the recorded runs gave
 
-In 20 of 20 recorded runs of this exact prompt (claude-sonnet-5-5, Claude Code 2.1.310, 2026-10-25), the headline total included the repeated 133 (7,414) and every reply flagged "40 amounts for 39 months". None found the repeated 133. An assistant that flags the mismatch and asks which amount is extra has done what you want. Your assistant may differ ([evidence](../../evidence/)).
+All 20 recorded replies to this exact prompt gave 7,414, the correct sum of all 40 supplied amounts, and flagged the count mismatch. Some warned before the total, including the reply below. The prompt did not identify the extra 133 or require the assistant to stop. The author's reference total of 7,281 needs that removal confirmed first. Equal amounts alone cannot identify a duplicate. The original silent-error hypothesis was not observed; this is an exploratory lesson about count checks and explicit stop rules ([evidence](../../evidence/), claude-sonnet-5-5, Claude Code 2.1.310, 2026-10-25).
 
 <Example
   label="Observed"
@@ -186,7 +186,7 @@ That adds up to €7,414.00. The extra cent is only there because the total does
 
 <Fragment slot="notice">
 
-The first line says 40 amounts for 39 months, yet the table and the split use 7,414. That total counts the repeated 133 twice. The last line guesses that a 152 is the extra. Full prompt: [the case file](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/wrong-behaviour/cases/C01-bills-total.json).
+The reply warns before the sum and correctly totals all 40 amounts as 7,414. It cannot identify which row should be removed. Its final line gives a conditional example, not a confirmed correction. Full prompt: [the case file](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/wrong-behaviour/cases/C01-bills-total.json).
 
 </Fragment>
 
@@ -198,7 +198,7 @@ One recorded run of this prompt, on one model and one day. It is not a rate for 
 
 </Example>
 
-If your assistant asked which amount is extra, or gave 7,281 after you confirmed the repeat, the check cost you two minutes. If it led with 7,414, you caught the mismatch. Before you paste real data, read [using an assistant at work](../professional-guardrails/).
+If your assistant asked which amount is extra, confirm it against the source. A total of 7,414 correctly sums the supplied rows; 7,281 is justified only after you confirm removal of one 133. For a future test, explicitly require a stop at a count mismatch. Before you paste real data, read [using an assistant at work](../professional-guardrails/).
 
 ### Optional: check a source
 
@@ -210,7 +210,9 @@ Give me two published studies on whether standing desks improve office productiv
 
 A DOI is a short code that names one paper. Type `https://doi.org/` and then each DOI into your browser. Do not use a link from the reply. Compare the title, year and journal with what the assistant said.
 
-In recorded runs of this prompt, at least one DOI could not be resolved in 16 of 20 trials. Most of those replies hedged. Telling the assistant to cite only what it is certain of did not help: 8 of 10 trials still had an unresolvable DOI. Yours will differ ([evidence](../../evidence/), claude-sonnet-5-5, 2026-10-25). Look up every source before you rely on it.
+The historical records contain at least one unsuccessful Crossref lookup in 16 of 20 trials, and 8 of 10 with “only cite what you are certain exists”. Most replies hedged. The old resolver combined missing records with service errors, so the unknown service-error contribution prevents a claim about fabrication or whether that instruction helped ([evidence](../../evidence/), claude-sonnet-5-5, 2026-10-25). Look up every source and compare its title and year before you rely on it.
+
+One more quick win first? [Why it sounds sure](../why-it-sounds-sure/) is a 15-minute test of whether the assistant agrees with you.
 
 Your version: swap in a task of your own, for example a status update to tighten.
 
@@ -258,7 +260,7 @@ Check: the reply states the item count and the sum.
 
 ## Mistakes people make
 
-**Trusting a calm tone.** A reply can flag a doubt and still lead with the wrong answer. Fix: count the items and add them yourself.
+**Treating a sum as approval to share.** A reply can correctly add the rows and flag an unresolved count. Fix: confirm which rows belong, then recompute.
 
 **Treating the assistant as a fact lookup.** It writes likely text. Fix: give it the material and ask it to work from that. Look up any source.
 
@@ -283,7 +285,7 @@ You can now:
 <details>
 <summary>Answers</summary>
 
-1. No. The flag shows doubt, and the total ignores it. Count and add the items yourself.
+1. It may be the correct sum of the supplied rows. That does not confirm which rows belong to the 39 months. Check the source before sharing a final amount.
 2. Not by itself. Real bills repeat by chance. A repeat on the next row is more suspicious, but only the statement or invoice list settles it.
 3. Count the invoices (12). Add the amounts in a spreadsheet and compare with 1,980. Agree the total to a statement or other independent source.
 
@@ -293,6 +295,5 @@ You can now:
 
 A vague ask invites a wrong answer, so level 1 shows how to say what you want.
 
-One more quick win first? [Why it sounds sure](../why-it-sounds-sure/) is a 15-minute test of whether the assistant agrees with you.
 
 **Next:** [Level 1: Write a good prompt](../01-say-it-properly/)

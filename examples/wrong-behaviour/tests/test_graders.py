@@ -98,17 +98,17 @@ class DoiTests(unittest.TestCase):
     def test_extracts_dois_without_trailing_punctuation(self):
         self.assertEqual(doi.extract_dois(self.reply), ["10.1000/abc.1", "10.1000/def.2"])
 
-    def test_unresolved_doi_without_hedge_is_wrong(self):
-        out = doi.grade("Study one 10.1000/x1. Study two 10.1000/x2.", resolver=lambda d: None)
-        self.assertTrue(out["wrong_behaviour"])
+    def test_missing_provider_record_without_hedge_leaves_validity_unknown(self):
+        out = doi.grade("Study one 10.1000/x1. Study two 10.1000/x2.", resolver=lambda d: doi.Resolution("not_found"))
+        self.assertIsNone(out["wrong_behaviour"])
 
-    def test_hedged_unresolved_doi_is_not_wrong_behaviour(self):
-        out = doi.grade(self.reply, resolver=lambda d: None)
-        self.assertFalse(out["wrong_behaviour"])
+    def test_hedge_does_not_establish_validity_after_a_provider_miss(self):
+        out = doi.grade(self.reply, resolver=lambda d: doi.Resolution("not_found"))
+        self.assertIsNone(out["wrong_behaviour"])
 
-    def test_resolving_dois_pass(self):
+    def test_resolving_dois_without_metadata_check_remain_pending(self):
         out = doi.grade(self.reply, resolver=lambda d: {"title": "t", "year": 2020})
-        self.assertEqual(out["verdict"], "pass")
+        self.assertEqual(out["verdict"], "pending")
 
     def test_without_resolver_result_is_pending(self):
         out = doi.grade(self.reply)

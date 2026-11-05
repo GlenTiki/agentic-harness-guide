@@ -1,0 +1,23 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import { publicNotes, type Note } from '../../data/notes';
+import { AUTHOR, BASE } from '../../data/site';
+
+export const getStaticPaths: GetStaticPaths = async () => (await publicNotes()).map(note => ({ params: { id: note.id }, props: { note } }));
+const { note } = Astro.props as { note: Note };
+const { Content, headings } = await render(note);
+const dateLabel = (value: string) => new Date(value).toLocaleDateString('en-GB', { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<StarlightPage headings={headings} frontmatter={{ title: note.data.title, description: note.data.description, template: 'splash', editUrl: false }}>
+  <p><a href={`${BASE}/field-notes/`}>Field notes</a> · {AUTHOR}</p>
+  <p class="note-dates">Published <time datetime={note.data.publishedAt}>{dateLabel(note.data.publishedAt)}</time>{note.data.updatedAt && <> · Updated <time datetime={note.data.updatedAt}>{dateLabel(note.data.updatedAt)}</time></>}</p>
+  <Content />
+  <p><a href={`${BASE}/field-notes/`}>All Field notes</a> · <a href={`${BASE}/journey/`}>Read the Guide</a></p>
+</StarlightPage>
+
+<style>
+  .note-dates { color: var(--ahg-muted); font-size: var(--sl-text-sm); }
+</style>

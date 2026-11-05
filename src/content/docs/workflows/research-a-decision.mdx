@@ -39,7 +39,7 @@ My rough ask: which card reader should Mina get for her market stall?
 
 2. Answer its questions about what matters to Mina: cost, working without a signal, how fast money arrives.
 3. Read the three "What changed" lines. Compare the result with the worked example below.
-4. Open every link in the result, and check every DOI on doi.org or Crossref before you rely on it.
+4. Open every source. Resolve each DOI at `https://doi.org/` and compare the title and year before you rely on it. A Crossref miss alone does not show a DOI is invalid.
 
 ### The worked refinement
 
@@ -204,13 +204,13 @@ Fix the question, criteria and sources before searching. Otherwise the search fi
 
 Run the disconfirming step as a separate task with a clean brief, as in [level 6](../../journey/06-hire-a-team/), because a helper that has just written the case may share its blind spots. That is a principle: the guide's one test of fresh against same-context review did not separate them (see [evidence](../../evidence/)). See [independent review](../../shelf/quality/independent-review/) (for engineers).
 
-**Never accept a source you have not opened.** An assistant that cannot find a source may write a plausible one: a real-looking title, author and DOI. This is a [hallucination](../../glossary/#hallucination). The guide measured it.
+**Never accept a source you have not opened.** An assistant that cannot find a source may write a plausible one: a real-looking title, author and DOI. An invented source is a [hallucination](../../glossary/#hallucination). The guide's historical DOI test could not establish fabrication; see [the evidence](../../evidence/#c02-doi-citation).
 
 <Example
   label="Observed"
   task="Sam asks for two published studies on standing desks, with DOIs, and checks the DOIs against Crossref."
   evidence="examples/wrong-behaviour/cases/C02-doi-citation.json examples/wrong-behaviour/runs/2026-10-25/raw/C02-doi-citation-asis-t02.txt"
-  env="claude-sonnet-5-5, Claude Code 2.1.310, no tools and no instructions, 2026-10-25. DOIs looked up again on Crossref the same day."
+  env="claude-sonnet-5-5, Claude Code 2.1.310, no tools and no instructions, 2026-10-25. Historical Crossref grades did not retain lookup status or metadata comparisons."
 >
 
 <Fragment slot="input">
@@ -239,19 +239,19 @@ Two studies that address this directly. I'm giving these from memory and haven't
 
 <Fragment slot="notice">
 
-The reply hedges in its first sentence. The page drops the reply's bold and italic marks; the words are unchanged. Crossref has no record of the first DOI. The second DOI resolves to a review with the cited title in Applied Ergonomics.
+The reply hedges in its first sentence. The page drops the reply's bold and italic marks; the words are unchanged. The historical grade records an unsuccessful lookup, but does not preserve the response status or a title/year comparison. It cannot establish which citation was missing, whether the service failed, or whether a resolving DOI matched the claimed study.
 
 </Fragment>
 
 <Fragment slot="shows">
 
-In 16 of 20 runs of this prompt, at least one DOI did not resolve. Most replies hedged, and 1 of 20 was wrong and unhedged. Adding "only cite what you are certain exists" did not help: 8 of 10 runs had an unresolved DOI. One model, one prompt, one day.
+The historical records show unsuccessful Crossref lookups in 16 of 20 runs, and 8 of 10 with “only cite what you are certain exists”. Most replies hedged. The old resolver treated missing records, transport errors and malformed responses alike; it also awarded metadata-match credit without comparing titles or years. The recorded 1 of 20 “wrong and unhedged” count uses that flawed definition. These counts do not prove fabrication or whether the revised instruction helped. No new model trial or live DOI check was run for this correction.
 
 </Fragment>
 
 </Example>
 
-Check every DOI on doi.org or Crossref. A hedge in the reply does not replace the lookup. If a source cannot be opened, mark the claim "unverified" or remove it. Prefer "not found" to a guess, and tell the assistant that "not found" is an acceptable answer.
+Resolve each DOI at `https://doi.org/` and compare the returned title and year. A Crossref miss alone does not show a DOI is invalid. A hedge in the reply does not replace the lookup. If a source cannot be opened, mark the claim "unverified" or remove it. Prefer "not found" to a guess, and tell the assistant that "not found" is an acceptable answer.
 
 ## Expert corner
 

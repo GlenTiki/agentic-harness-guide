@@ -1,21 +1,27 @@
 ---
 import Default from '@astrojs/starlight/components/Footer.astro';
+import { supportUrl } from '../../scripts/lib/support-url.mjs';
 import FeedbackButton from './FeedbackButton.astro';
 import { AUTHOR, BASE, LAST_REVIEWED, LICENCE } from '../data/site';
 
+const support = supportUrl(import.meta.env.SUPPORT_URL);
 const reviewedDate = LAST_REVIEWED.slice(0, 10);
 ---
 
 <Default {...Astro.props}><slot /></Default>
 <p class="site-colophon">
-  By {AUTHOR}. Last reviewed <time datetime={LAST_REVIEWED}>{reviewedDate}</time>. Licence: {LICENCE}.
+  By {AUTHOR}. Guide last reviewed <time datetime={LAST_REVIEWED}>{reviewedDate}</time>. Licence: {LICENCE}.
 </p>
 <p class="site-colophon feedback-line">
   <FeedbackButton variant="footer" /> Select text first for a precise note.
 </p>
 <p class="site-colophon">
-  Proof: <a href={`${BASE}/health/`}>guide health</a>, <a href={`${BASE}/showcase/`}>showcase</a>. For machines: <a href={`${BASE}/llms.txt`}>llms.txt</a>, <a href={`${BASE}/llms-full.txt`}>the whole guide as text</a>,
-  <a href={`${BASE}/agent-rules.txt`}>agent rules</a>, <a href={`${BASE}/feed.xml`}>Atom feed</a>.
+  Checks and examples: <a href={`${BASE}/health/`}>guide health</a>, <a href={`${BASE}/showcase/`}>showcase</a>. For machines: <a href={`${BASE}/llms.txt`}>llms.txt</a>, <a href={`${BASE}/llms-full.txt`}>the whole guide as text</a>,
+  <a href={`${BASE}/agent-rules.txt`}>agent rules</a>, <a href={`${BASE}/feed.xml`}>Guide changes feed</a>.
+</p>
+<p class="site-colophon">
+  <a href={`${BASE}/`}>Guide</a> · <a href={`${BASE}/field-notes/`}>Field notes</a> · <a href={`${BASE}/field-notes/feed.xml`}>Field notes feed</a>
+  {support && <> · <a href={support} rel="noopener noreferrer">Support this guide on Ko-fi</a></>}
 </p>
 <FeedbackButton />
 

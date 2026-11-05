@@ -1,0 +1,402 @@
+{
+  "src/content/docs/appendix/prompt-refiner-line-by-line.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/appendix/prompt-refiner.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/case-study/ch00-baseline.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-02T22:49:02Z"
+  },
+  "src/content/docs/case-study/ch01-plain-spec.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-02T22:56:25Z"
+  },
+  "src/content/docs/case-study/ch02-hooks.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-02T22:49:31Z"
+  },
+  "src/content/docs/case-study/ch03-link-resolver.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-10-25T02:22:45Z"
+  },
+  "src/content/docs/case-study/ch04-reference-walker.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-10-25T02:22:45Z"
+  },
+  "src/content/docs/case-study/ch05-memory.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-02T22:49:31Z"
+  },
+  "src/content/docs/case-study/ch06-rerank.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/case-study/ch07-orchestrator.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-02T22:49:31Z"
+  },
+  "src/content/docs/case-study/ch08-personas.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-02T22:47:12Z"
+  },
+  "src/content/docs/case-study/ch09-retro.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-10-25T02:22:45Z"
+  },
+  "src/content/docs/case-study/ch10-monitor.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/case-study/ch11-surfaces.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-10-25T02:22:45Z"
+  },
+  "src/content/docs/case-study/ch12-local-models.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/case-study/index.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-02T22:53:54Z"
+  },
+  "src/content/docs/evidence/index.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-10-28T02:15:12Z"
+  },
+  "src/content/docs/glossary.mdx": {
+    "first": "2026-10-22T20:16:39Z",
+    "last": "2026-11-03T00:06:15Z"
+  },
+  "src/content/docs/index.mdx": {
+    "first": "2026-10-22T20:11:45Z",
+    "last": "2026-11-04T22:42:02Z"
+  },
+  "src/content/docs/journey/00-hello-robot.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-02T22:54:09Z"
+  },
+  "src/content/docs/journey/01-say-it-properly.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-02T22:55:16Z"
+  },
+  "src/content/docs/journey/02-house-rules.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T22:07:03Z"
+  },
+  "src/content/docs/journey/03-give-it-hands.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T22:07:03Z"
+  },
+  "src/content/docs/journey/04-trust-but-verify.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-02T22:51:49Z"
+  },
+  "src/content/docs/journey/05-check-the-work.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/journey/06-hire-a-team.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-02T22:52:26Z"
+  },
+  "src/content/docs/journey/07-run-it-for-real.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/journey/08-design-anything.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/journey/index.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-02T22:53:58Z"
+  },
+  "src/content/docs/journey/professional-guardrails.mdx": {
+    "first": "2026-10-22T21:50:16Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/journey/progress.mdx": {
+    "first": "2026-10-22T21:50:15Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/journey/why-it-sounds-sure.mdx": {
+    "first": "2026-10-22T21:50:16Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/method/be-the-product-manager-of-your-own-tooling.mdx": {
+    "first": "2026-10-26T23:46:58Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/method/engineer-weak-spots.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/method/product-manager-and-team-lead.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-04T22:07:03Z"
+  },
+  "src/content/docs/method/the-feedback-loop.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/setup/connecting-surfaces.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T00:07:46Z"
+  },
+  "src/content/docs/setup/end-to-end-flows.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/setup/fast-feedback-and-alerts.mdx": {
+    "first": "2026-10-25T19:59:25Z",
+    "last": "2026-10-26T19:43:23Z"
+  },
+  "src/content/docs/setup/hooks.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/setup/index.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T00:03:12Z"
+  },
+  "src/content/docs/setup/link-and-reference-checks.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T00:07:46Z"
+  },
+  "src/content/docs/setup/local-models.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T00:07:46Z"
+  },
+  "src/content/docs/setup/memory.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/setup/monitor-and-showcase.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T00:07:46Z"
+  },
+  "src/content/docs/setup/orchestrator-and-subagents.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/setup/personas.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T00:07:46Z"
+  },
+  "src/content/docs/setup/plain-text-and-simple-english.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T00:07:46Z"
+  },
+  "src/content/docs/setup/relevance-and-reranking.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/setup/retros.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-03T00:07:46Z"
+  },
+  "src/content/docs/shelf/context/context-management.mdx": {
+    "first": "2026-10-26T23:32:26Z",
+    "last": "2026-11-02T22:56:16Z"
+  },
+  "src/content/docs/shelf/context/diagnosing-retrieval-failure.mdx": {
+    "first": "2026-10-26T23:32:26Z",
+    "last": "2026-11-02T22:55:55Z"
+  },
+  "src/content/docs/shelf/context/instruction-files.md": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-04T22:07:03Z"
+  },
+  "src/content/docs/shelf/context/memory.mdx": {
+    "first": "2026-10-26T23:32:26Z",
+    "last": "2026-11-02T22:52:23Z"
+  },
+  "src/content/docs/shelf/context/prompt-structure.mdx": {
+    "first": "2026-10-26T23:32:26Z",
+    "last": "2026-11-04T22:42:02Z"
+  },
+  "src/content/docs/shelf/control/capability-gating.md": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/shelf/control/hooks.mdx": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/shelf/control/permissions-and-sandboxing.mdx": {
+    "first": "2026-10-26T23:25:53Z",
+    "last": "2026-11-02T22:58:43Z"
+  },
+  "src/content/docs/shelf/control/removing-personal-data.mdx": {
+    "first": "2026-10-26T23:25:53Z",
+    "last": "2026-10-26T23:25:53Z"
+  },
+  "src/content/docs/shelf/control/untrusted-input.mdx": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-02T22:58:28Z"
+  },
+  "src/content/docs/shelf/delegation/mcp-servers.mdx": {
+    "first": "2026-10-26T23:32:26Z",
+    "last": "2026-11-04T22:07:03Z"
+  },
+  "src/content/docs/shelf/delegation/skills.mdx": {
+    "first": "2026-10-26T23:29:08Z",
+    "last": "2026-11-02T22:56:03Z"
+  },
+  "src/content/docs/shelf/delegation/sub-agents.mdx": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-02T22:58:09Z"
+  },
+  "src/content/docs/shelf/delegation/topology.mdx": {
+    "first": "2026-10-26T23:29:08Z",
+    "last": "2026-11-02T22:58:09Z"
+  },
+  "src/content/docs/shelf/delegation/worktree-isolation.mdx": {
+    "first": "2026-10-26T23:29:08Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/shelf/foundations/adoption-path.md": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/shelf/foundations/principles.md": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-04T22:42:02Z"
+  },
+  "src/content/docs/shelf/operations/change-control.md": {
+    "first": "2026-10-26T23:29:08Z",
+    "last": "2026-10-26T23:29:08Z"
+  },
+  "src/content/docs/shelf/operations/cost-and-resources.md": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-10-26T23:25:00Z"
+  },
+  "src/content/docs/shelf/operations/human-in-the-loop.mdx": {
+    "first": "2026-10-26T23:25:53Z",
+    "last": "2026-11-02T22:56:03Z"
+  },
+  "src/content/docs/shelf/operations/model-tier.mdx": {
+    "first": "2026-10-26T23:25:00Z",
+    "last": "2026-11-04T22:42:02Z"
+  },
+  "src/content/docs/shelf/operations/observability.mdx": {
+    "first": "2026-10-25T02:22:45Z",
+    "last": "2026-11-02T22:56:03Z"
+  },
+  "src/content/docs/shelf/quality/evals.mdx": {
+    "first": "2026-10-26T23:25:00Z",
+    "last": "2026-11-04T22:42:02Z"
+  },
+  "src/content/docs/shelf/quality/expert-judgement.mdx": {
+    "first": "2026-10-26T23:25:00Z",
+    "last": "2026-10-26T23:54:54Z"
+  },
+  "src/content/docs/shelf/quality/independent-review.mdx": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-10-25T02:22:45Z"
+  },
+  "src/content/docs/shelf/quality/line-citations.mdx": {
+    "first": "2026-10-26T23:29:08Z",
+    "last": "2026-11-02T22:54:10Z"
+  },
+  "src/content/docs/shelf/quality/small-prs.md": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-02T22:54:10Z"
+  },
+  "src/content/docs/shelf/quality/spec-driven-development.mdx": {
+    "first": "2026-10-26T23:29:08Z",
+    "last": "2026-11-04T22:42:02Z"
+  },
+  "src/content/docs/shelf/quality/test-first-and-gates.mdx": {
+    "first": "2026-10-26T23:29:08Z",
+    "last": "2026-11-02T22:54:11Z"
+  },
+  "src/content/docs/shelf/reference/anti-patterns.md": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-02T23:02:16Z"
+  },
+  "src/content/docs/shelf/reference/baseline.md": {
+    "first": "2026-10-22T20:14:38Z",
+    "last": "2026-11-02T23:02:45Z"
+  },
+  "src/content/docs/start-here/cheat-sheet.mdx": {
+    "first": "2026-10-22T21:50:15Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/start-here/consistency-fast-track.mdx": {
+    "first": "2026-10-22T21:50:15Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/start-here/engineer-route.mdx": {
+    "first": "2026-10-22T21:50:15Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/start-here/how-to-read.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/start-here/professional-route.mdx": {
+    "first": "2026-10-22T21:50:15Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/start-here/what-the-time-is-for.mdx": {
+    "first": "2026-10-26T23:46:15Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/start-here/why-bother.mdx": {
+    "first": "2026-10-26T23:46:58Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/workflows/build-a-budget.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-02T22:56:04Z"
+  },
+  "src/content/docs/workflows/build-a-kitchen-assistant.mdx": {
+    "first": "2026-10-26T23:46:15Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/workflows/connect-systems.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-03T10:54:43Z"
+  },
+  "src/content/docs/workflows/define-a-workflow.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/workflows/design-reps.mdx": {
+    "first": "2026-10-22T21:50:16Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/workflows/improve-code.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-02T22:56:48Z"
+  },
+  "src/content/docs/workflows/improve-design.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T10:12:36Z"
+  },
+  "src/content/docs/workflows/index.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/workflows/research-a-decision.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-02T22:57:03Z"
+  },
+  "src/content/docs/workflows/review-content.mdx": {
+    "first": "2026-10-22T20:18:14Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/workflows/small-shop-month-end.mdx": {
+    "first": "2026-10-22T21:50:16Z",
+    "last": "2026-11-04T01:39:17Z"
+  },
+  "src/content/docs/workflows/spreadsheet-monday.mdx": {
+    "first": "2026-10-22T21:50:16Z",
+    "last": "2026-11-02T22:58:41Z"
+  }
+}

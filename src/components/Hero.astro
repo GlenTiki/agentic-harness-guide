@@ -1,52 +1,16 @@
 ---
-import { getCollection } from 'astro:content';
 import { BASE } from '../data/site';
-import trialResults from '../../examples/wrong-behaviour/results.json';
 
 const { data } = Astro.props.entry || { data: {} };
 const hero = data?.hero || {};
-const title = hero.title || 'Get dependable, checkable work from AI assistants.';
-const tagline =
-  hero.tagline ||
-  'A practical guide to getting dependable work from AI assistants. Sound engineering discipline for everyday builders, with deep technical reference shelves for software engineers.';
-const recordedTrials = trialResults.reduce((sum, arm) => sum + arm.n, 0);
-const shelfAndWorkflowPages = (await getCollection('docs')).filter(
-  (entry) => entry.id.startsWith('shelf/') || entry.id.startsWith('workflows/'),
-).length;
+const title = hero.title || 'Put your judgement in charge of AI.';
+const tagline = hero.tagline || 'Learn to set the task, check the work and decide when an assistant is worth using.';
 ---
 
 <header class="harness-hero" aria-label="Introduction">
-  <div class="hero-kicker-row">
-    <div class="kicker-badge">
-      <span class="kicker-dot" aria-hidden="true"></span>
-      <span class="kicker-text">OPEN-SOURCE FIELD GUIDE</span>
-    </div>
-    <div class="kicker-formula" aria-label="Core formula: Agent equals Model plus Harness">
-      <span class="formula-term">Agent</span>
-      <span class="formula-op">=</span>
-      <span class="formula-term">Model</span>
-      <span class="formula-op">+</span>
-      <span class="formula-term formula-highlight">Harness</span>
-    </div>
-  </div>
-
+  <div class="kicker-badge">A GUIDE TO WORKING WITH AI</div>
   <h1 id="_top" class="hero-title">{title}</h1>
-
   <p class="hero-tagline">{tagline}</p>
-
-  <div class="hero-author-card">
-    <div class="author-avatar" aria-hidden="true">GK</div>
-    <div class="author-details">
-      <div class="author-byline">
-        <span class="author-name">Glen Keane</span>
-        <span class="author-badge">AI ENGINEER</span>
-      </div>
-      <p class="author-bio">
-        Formerly Wayflyer and Nearform. Currently building production AI systems for regulated enterprise clients at Brightbeam.
-      </p>
-    </div>
-  </div>
-
   <div class="hero-actions-row">
     <a href={`${BASE}/start-here/how-to-read/`} class="hero-btn btn-primary">
       <span>Start with your own task</span>
@@ -56,63 +20,14 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
       </svg>
     </a>
     <a href={`${BASE}/start-here/engineer-route/`} class="hero-btn btn-secondary">
-      <span>For Engineers (Deep Dive)</span>
+      <span>For engineers</span>
     </a>
-    <a href={`${BASE}/start-here/why-bother/`} class="hero-btn btn-minimal">
-      <span>Why bother</span>
+    <a href={`${BASE}/field-notes/`} class="hero-btn btn-minimal">
+      <span>Read Field notes</span>
     </a>
   </div>
 
-  <div class="hero-pillars-grid">
-    <div class="pillar-card">
-      <div class="pillar-header">
-        <span class="pillar-num">01</span>
-        <h2 class="pillar-title">You set the outcome</h2>
-      </div>
-      <p class="pillar-text">
-        Direct high-level intent and define clear pass/fail criteria. Treat the assistant as a fast, fallible junior: set boundaries and check what it delivers.
-      </p>
-    </div>
-
-    <div class="pillar-card">
-      <div class="pillar-header">
-        <span class="pillar-num">02</span>
-        <h2 class="pillar-title">Keep the checks that help</h2>
-      </div>
-      <p class="pillar-text">
-        Never trust unchecked claims. Use spreadsheet formulas, checks, or unit tests to catch mistakes before sign-off. Make a failed check stop the action it guards.
-      </p>
-    </div>
-
-    <div class="pillar-card">
-      <div class="pillar-header">
-        <span class="pillar-num">03</span>
-        <h2 class="pillar-title">Build one useful thing</h2>
-      </div>
-      <p class="pillar-text">
-        Turn one recurring chore into a small tool you can try. Count its upkeep as well as the work it saves. Keep it when the whole job gets easier.
-      </p>
-    </div>
-  </div>
-
-  <div class="hero-proof-bar" role="list" aria-label="Key handbook metrics">
-    <div class="proof-chip" role="listitem">
-      <span class="proof-dot"></span>
-      <span class="proof-label"><strong>{recordedTrials}</strong> Recorded model replies</span>
-    </div>
-    <div class="proof-chip" role="listitem">
-      <span class="proof-dot"></span>
-      <span class="proof-label"><strong>{shelfAndWorkflowPages}</strong> Shelf & Workflow Pages</span>
-    </div>
-    <div class="proof-chip" role="listitem">
-      <span class="proof-dot"></span>
-      <span class="proof-label"><strong>9</strong> Journey Levels</span>
-    </div>
-    <div class="proof-chip" role="listitem">
-      <span class="proof-dot"></span>
-      <span class="proof-label"><strong>CC BY 4.0</strong> Text, MIT Code</span>
-    </div>
-  </div>
+  <p class="author-bio">By Glen Keane, software engineer. Formerly Wayflyer and NearForm; building AI systems at Brightbeam. Views and mistakes are my own.</p>
 </header>
 
 <style>
@@ -124,14 +39,6 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
     display: flex;
     flex-direction: column;
     gap: 1.4rem;
-  }
-
-  .hero-kicker-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.75rem;
   }
 
   .kicker-badge {
@@ -147,33 +54,6 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
     letter-spacing: 0.06em;
     color: var(--ahg-accent-strong);
     white-space: nowrap;
-  }
-
-  .kicker-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--ahg-accent);
-  }
-
-  .kicker-formula {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.25rem 0.65rem;
-    border-radius: var(--ahg-radius-control);
-    background: var(--ahg-panel);
-    border: 1px solid var(--ahg-line);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.74rem;
-    font-weight: 700;
-    color: var(--ahg-muted);
-    white-space: nowrap;
-  }
-
-  .formula-highlight {
-    color: var(--ahg-right);
-    font-weight: 800;
   }
 
   .hero-title {
@@ -194,74 +74,11 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
     max-width: 48rem;
   }
 
-  .hero-author-card {
-    display: flex;
-    align-items: center;
-    gap: 0.85rem;
-    padding: 0.75rem 1rem;
-    border-radius: var(--ahg-radius-card);
-    background: var(--ahg-panel);
-    border: 1px solid var(--ahg-line);
-    max-width: fit-content;
-    box-sizing: border-box;
-  }
-
-  .author-avatar {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--ahg-accent-soft);
-    border: 1.5px solid var(--ahg-accent);
-    color: var(--ahg-accent-strong);
-    font-weight: 800;
-    font-size: 0.82rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .author-details {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  .author-byline {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .author-name {
-    font-weight: 800;
-    font-size: 0.88rem;
-    color: var(--ahg-text);
-  }
-
-  .author-badge {
-    font-size: 0.62rem;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    padding: 0.1rem 0.35rem;
-    border-radius: 4px;
-    background: var(--ahg-atwork-soft);
-    color: var(--ahg-atwork);
-    border: 1px solid var(--ahg-atwork);
-  }
-
   .author-bio {
     margin: 0.2rem 0 0;
     font-size: 0.78rem;
     color: var(--ahg-muted);
     line-height: 1.4;
-  }
-
-  .author-bio code {
-    font-size: 0.74rem;
-    padding: 0.1rem 0.3rem;
-    background: var(--ahg-code-bg);
-    border-radius: 3px;
   }
 
   .hero-actions-row {
@@ -323,94 +140,11 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
     flex-shrink: 0;
   }
 
-  .hero-pillars-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-top: 0.6rem;
-  }
-
-  .pillar-card {
-    background: var(--ahg-panel);
-    border: 1px solid var(--ahg-line);
-    border-radius: var(--ahg-radius-card);
-    padding: 1.15rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    box-sizing: border-box;
-  }
-
-  .pillar-header {
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-  }
-
-  .pillar-num {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.78rem;
-    font-weight: 800;
-    color: var(--ahg-accent);
-  }
-
-  .pillar-title {
-    font-size: 0.92rem;
-    font-weight: 800;
-    color: var(--ahg-text);
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
-
-  .pillar-text {
-    font-size: 0.8rem;
-    color: var(--ahg-muted);
-    line-height: 1.46;
-    margin: 0;
-  }
-
-  .hero-proof-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.65rem 1.5rem;
-    padding: 0.75rem 1rem;
-    border-radius: var(--ahg-radius-control);
-    background: var(--ahg-panel);
-    border: 1px dashed var(--ahg-line);
-    font-size: 0.76rem;
-    color: var(--ahg-muted);
-    box-sizing: border-box;
-  }
-
-  .proof-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-  }
-
-  .proof-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--ahg-right);
-    flex-shrink: 0;
-  }
-
-  @media (max-width: 860px) {
-    .hero-pillars-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
   @media (max-width: 580px) {
     .hero-title {
       font-size: 2.1rem;
     }
-    .hero-kicker-row {
-      flex-direction: column;
-      align-items: flex-start;
-    }
+
     .hero-actions-row {
       flex-direction: column;
       align-items: stretch;
@@ -418,10 +152,6 @@ const shelfAndWorkflowPages = (await getCollection('docs')).filter(
     .hero-btn {
       width: 100%;
     }
-    .hero-proof-bar {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.4rem;
-    }
+
   }
 </style>
