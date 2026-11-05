@@ -1,7 +1,7 @@
 {
   "src/content/docs/appendix/prompt-refiner-line-by-line.mdx": {
     "first": "2026-10-22T20:18:14Z",
-    "last": "2026-11-04T01:39:17Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/appendix/prompt-refiner.mdx": {
     "first": "2026-10-22T20:18:14Z",
@@ -65,23 +65,23 @@
   },
   "src/content/docs/evidence/index.mdx": {
     "first": "2026-10-25T02:22:45Z",
-    "last": "2026-10-28T02:15:12Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/glossary.mdx": {
     "first": "2026-10-22T20:16:39Z",
-    "last": "2026-11-03T00:06:15Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/index.mdx": {
     "first": "2026-10-22T20:11:45Z",
-    "last": "2026-11-04T22:42:02Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/journey/00-hello-robot.mdx": {
     "first": "2026-10-22T20:18:14Z",
-    "last": "2026-11-02T22:54:09Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/journey/01-say-it-properly.mdx": {
     "first": "2026-10-22T20:18:14Z",
-    "last": "2026-11-02T22:55:16Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/journey/02-house-rules.mdx": {
     "first": "2026-10-22T20:18:14Z",
@@ -109,7 +109,7 @@
   },
   "src/content/docs/journey/08-design-anything.mdx": {
     "first": "2026-10-22T20:18:14Z",
-    "last": "2026-11-04T01:39:17Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/journey/index.mdx": {
     "first": "2026-10-22T20:18:14Z",
@@ -117,7 +117,7 @@
   },
   "src/content/docs/journey/professional-guardrails.mdx": {
     "first": "2026-10-22T21:50:16Z",
-    "last": "2026-11-04T10:12:36Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/journey/progress.mdx": {
     "first": "2026-10-22T21:50:15Z",
@@ -125,7 +125,7 @@
   },
   "src/content/docs/journey/why-it-sounds-sure.mdx": {
     "first": "2026-10-22T21:50:16Z",
-    "last": "2026-11-04T01:39:17Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/method/be-the-product-manager-of-your-own-tooling.mdx": {
     "first": "2026-10-26T23:46:58Z",
@@ -133,11 +133,11 @@
   },
   "src/content/docs/method/engineer-weak-spots.mdx": {
     "first": "2026-10-25T02:22:45Z",
-    "last": "2026-11-03T10:54:43Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/method/product-manager-and-team-lead.mdx": {
     "first": "2026-10-25T02:22:45Z",
-    "last": "2026-11-04T22:07:03Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/method/the-feedback-loop.mdx": {
     "first": "2026-10-25T02:22:45Z",
@@ -189,7 +189,7 @@
   },
   "src/content/docs/setup/plain-text-and-simple-english.mdx": {
     "first": "2026-10-25T02:22:45Z",
-    "last": "2026-11-03T00:07:46Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/setup/relevance-and-reranking.mdx": {
     "first": "2026-10-25T02:22:45Z",
@@ -217,7 +217,7 @@
   },
   "src/content/docs/shelf/context/prompt-structure.mdx": {
     "first": "2026-10-26T23:32:26Z",
-    "last": "2026-11-04T22:42:02Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/shelf/control/capability-gating.md": {
     "first": "2026-10-22T20:14:38Z",
@@ -329,7 +329,7 @@
   },
   "src/content/docs/start-here/consistency-fast-track.mdx": {
     "first": "2026-10-22T21:50:15Z",
-    "last": "2026-11-03T10:54:43Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/start-here/engineer-route.mdx": {
     "first": "2026-10-22T21:50:15Z",
@@ -337,7 +337,7 @@
   },
   "src/content/docs/start-here/how-to-read.mdx": {
     "first": "2026-10-22T20:18:14Z",
-    "last": "2026-11-03T10:54:43Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/start-here/professional-route.mdx": {
     "first": "2026-10-22T21:50:15Z",
@@ -385,7 +385,7 @@
   },
   "src/content/docs/workflows/research-a-decision.mdx": {
     "first": "2026-10-22T20:18:14Z",
-    "last": "2026-11-02T22:57:03Z"
+    "last": "2026-11-05T00:53:05Z"
   },
   "src/content/docs/workflows/review-content.mdx": {
     "first": "2026-10-22T20:18:14Z",
@@ -397,6 +397,6 @@
   },
   "src/content/docs/workflows/spreadsheet-monday.mdx": {
     "first": "2026-10-22T21:50:16Z",
-    "last": "2026-11-02T22:58:41Z"
+    "last": "2026-11-05T00:53:05Z"
   }
 }
