@@ -1,0 +1,11 @@
+session,boundary,tokens_used,window,constraint_dropped
+s1,spec agreed,18000,200000,0
+s1,tests written,52000,200000,0
+s1,implementation,121000,200000,0
+s1,review,164000,200000,1
+s2,spec agreed,22000,200000,0
+s2,tests written,70000,200000,0
+s2,implementation,138000,200000,1
+s3,spec agreed,15000,200000,0
+s3,tests written,61000,200000,0
+s3,implementation,109000,200000,0

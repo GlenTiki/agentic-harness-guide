@@ -1,0 +1,28 @@
+The bills total **€2,120.00**, so each person's share is **€706.67** (€706.66 for one of you, since three equal shares of €2,120 don't come out to a whole cent).
+
+Your list has February twice (198 and 198) and 13 entries, but a year has 12 months. I've counted February once. If both February entries were real bills, the total would be €2,318, and each share would be €772.67.
+
+**Working**
+
+| Month | Bill (€) | Running total (€) |
+|---|---:|---:|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | **2,120** |
+
+**Split**
+
+- Total: €2,120.00
+- Per person: €2,120 ÷ 3 = €706.666…
+- Sam: €706.67
+- Priya: €706.67
+- Tom: €706.66

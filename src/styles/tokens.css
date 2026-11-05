@@ -1,0 +1,78 @@
+:root,
+:root[data-theme='light'] {
+  --ahg-bg: #fafaf7;
+  --ahg-panel: #ffffff;
+  --ahg-text: #1b1d1f;
+  --ahg-muted: #565b61;
+  --ahg-line: #d6d5cc;
+  --ahg-code-bg: #eeede6;
+  --ahg-scroll-cue: rgb(0 0 0 / 0.3);
+  --ahg-accent: #1a5fd0;
+  --ahg-accent-ink: #ffffff;
+  --ahg-accent-strong: #0b3d91;
+  --ahg-accent-soft: #e6eefc;
+  --ahg-agent: #4a5563;
+  --ahg-agent-soft: #eceff3;
+  --ahg-atwork: #0b6e5f;
+  --ahg-atwork-soft: #e3f2ef;
+  --ahg-consistency: #4a4fb8;
+  --ahg-consistency-soft: #eaebfa;
+  --ahg-expert: #8a5a00;
+  --ahg-expert-soft: #faf0d9;
+  --ahg-newbie: #2f6f2a;
+  --ahg-newbie-soft: #e6f3e4;
+  --ahg-whichapp: #7a3f8f;
+  --ahg-whichapp-soft: #f2e8f6;
+  --ahg-wrong: #a8261c;
+  --ahg-wrong-soft: #fbe9e7;
+  --ahg-right: #1e6b2e;
+  --ahg-right-soft: #e4f3e7;
+}
+
+:root[data-theme='dark'] {
+  --ahg-bg: #121415;
+  --ahg-panel: #1b1e20;
+  --ahg-text: #ecebe6;
+  --ahg-muted: #a3a8ad;
+  --ahg-line: #3a3f43;
+  --ahg-code-bg: #262a2c;
+  --ahg-scroll-cue: rgb(255 255 255 / 0.3);
+  --ahg-accent: #6ea0ff;
+  --ahg-accent-ink: #08162e;
+  --ahg-accent-strong: #bcd6ff;
+  --ahg-accent-soft: #14233f;
+  --ahg-agent: #aab4c2;
+  --ahg-agent-soft: #1e2329;
+  --ahg-atwork: #5fd0bb;
+  --ahg-atwork-soft: #12261f;
+  --ahg-consistency: #b0b3ff;
+  --ahg-consistency-soft: #1c1d36;
+  --ahg-expert: #e8b94d;
+  --ahg-expert-soft: #2a2213;
+  --ahg-newbie: #95d98f;
+  --ahg-newbie-soft: #172616;
+  --ahg-whichapp: #dbb0ec;
+  --ahg-whichapp-soft: #281c2e;
+  --ahg-wrong: #ffb4ab;
+  --ahg-wrong-soft: #321816;
+  --ahg-right: #9be0a6;
+  --ahg-right-soft: #14281a;
+}
+
+:root {
+  --ahg-text-small: 0.875rem;
+  --ahg-text-body: 1.0625rem;
+  --ahg-text-display: clamp(2rem, 6vw, 3rem);
+  --ahg-measure: 40rem;
+  --ahg-space-1: 0.25rem;
+  --ahg-space-2: 0.5rem;
+  --ahg-space-3: 0.75rem;
+  --ahg-space-4: 1rem;
+  --ahg-space-5: 1.5rem;
+  --ahg-space-6: 2rem;
+  --ahg-radius-control: 6px;
+  --ahg-radius-card: 10px;
+  --ahg-shadow-overlay: 0 8px 28px rgb(0 0 0 / 0.28);
+  --ahg-touch: 44px;
+  --ahg-motion-fast: 120ms;
+}

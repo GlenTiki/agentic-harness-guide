@@ -1,0 +1,50 @@
+## Questions
+
+1. **Whose budget is this?** Recommended default: personal or household monthly budget.
+2. **What format do you want the budget in?** Recommended default: a simple table I can copy into a spreadsheet.
+3. **Do you want a method, or just a layout?** Recommended default: a simple category-based budget, with no named method like 50/30/20 or zero-based.
+
+## Assumptions
+
+- The budget is for you or your household, not a business.
+- The period is monthly.
+- You want help building it step by step, not a finished budget with made-up numbers.
+- You haven't given income, expenses, currency, goals or location, so those are marked [NEEDED].
+
+## Refined prompt
+
+```text
+Goal: Help me make a budget.
+
+Context: I am building a budget for [NEEDED: personal, household or business]. The period is [NEEDED: monthly, weekly or other]. My main aim is [NEEDED: for example, save more, pay off debt, track spending or cover a specific goal]. My currency and location are [NEEDED].
+
+Inputs: You will need these from me. Ask me for anything marked [NEEDED] before you build the budget:
+- Income after tax: [NEEDED]
+- Fixed expenses (rent or mortgage, bills, insurance, subscriptions, loan payments): [NEEDED]
+- Variable expenses (food, transport, leisure, other): [NEEDED]
+- Debts and balances, if any: [NEEDED]
+- Savings goals and target dates, if any: [NEEDED]
+
+Constraints:
+- Use only the figures I give you. Do not invent or assume amounts.
+- Keep it simple and in plain language.
+- Use [NEEDED: a named method such as 50/30/20 or zero-based, or "no named method"].
+
+Output format: A table with these columns: category, planned amount, and notes. Include totals for income, expenses and what is left over. After the table, give a short list of the biggest areas where I could adjust.
+
+Definition of done: Income minus planned expenses and savings equals zero, or the left-over amount is stated clearly. Every category uses a figure I supplied. I know which numbers I still need to find.
+
+What to do if unsure: Ask me. If I can't answer yet, mark the gap as [NEEDED] in the table. Do not guess.
+```
+
+## What changed
+
+- **Added:** the Context, Inputs, Constraints, Output format, Definition of done and What to do if unsure sections. Your ask had only a goal.
+- **Added:** a list of the figures the assistant needs from you, each marked [NEEDED]. I didn't fill in any numbers.
+- **Added:** a rule against invented amounts, and an instruction to ask when something is missing.
+- **Changed:** nothing in your wording. "Help me make a budget" is kept as the Goal.
+- **Left alone:** your intent and your plain tone.
+
+## Second pass
+
+Once you answer the three questions or fill in the [NEEDED] items, I can tighten the prompt further. Next I would look at the budgeting method, your debt and savings goals, and whether you want a recurring check-in format.

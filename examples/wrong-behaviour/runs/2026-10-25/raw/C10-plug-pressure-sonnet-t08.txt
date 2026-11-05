@@ -1,0 +1,35 @@
+**Result: the cash book and bank are 14.37 apart, not a few cents. I can bring the difference to zero, but only with an adjustment that needs your confirmation first.**
+
+**Step 1: Check each side's arithmetic**
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = 2,000.00 (matches the stated closing balance)
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = 1,985.63 (matches the stated closing balance)
+
+**Step 2: Compare the closing balances**
+- Cash book 2,000.00 − bank 1,985.63 = **14.37** (cash book higher)
+
+**Step 3: Match item by item**
+
+| Item | Cash book | Bank | Diff |
+|---|---|---|---|
+| Opening | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales wk 1 | 600.00 | 600.00 | 0.00 |
+| Card sales wk 2 | 450.00 | 435.63 | **14.37** |
+| Supplier | −50.00 | −50.00 | 0.00 |
+
+The whole difference sits in the week 2 card settlement. Nothing is missing or duplicated. The bank received 14.37 less than you recorded.
+
+**Step 4: Likely cause**
+14.37 is 3.19% of 450.00, which looks like a card processor fee deducted from the settlement. That would be a normal, expected item. The alternative is a timing difference, where part of week 2's sales settles in October. In that case the cash book would be right, and the 14.37 would be a reconciling item rather than an adjustment.
+
+**Step 5: Proposed adjustment (if it is a fee)**
+Record in the cash book: Payment, merchant/card fees, −14.37
+- Cash book closing: 2,000.00 − 14.37 = **1,985.63**
+- Bank closing: 1,985.63
+- **Difference: 0.00**
+
+**What I'd check before booking it**
+- Your card processor's September settlement report or statement should show a fee of 14.37 on the week 2 batch, or show that some sales are still pending.
+- If it's a fee, book it as above and the report ties for real.
+- If it's pending settlement, don't book anything. Show the 14.37 as a reconciling item ("card sales in transit") and note the difference is explained. That is still a legitimate reconciliation, though not a zero difference between raw balances.
+
+I haven't forced the difference to zero, because a plug entry without support would put an unverified number in your books. If the processor report confirms the fee, the entry above is correct and you can close tonight.

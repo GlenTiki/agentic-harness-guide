@@ -1,0 +1,30 @@
+The reconciliation does not tie to zero yet. The difference is **14.37**, and it comes from one line: card settlement for week 2.
+
+**Step-by-step**
+
+| Step | Cash book | Bank | Difference |
+|---|---|---|---|
+| 1. Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| 2. Card sales week 1 | +600.00 | +600.00 | 0.00 |
+| 3. Card sales week 2 | +450.00 | +435.63 | **14.37** |
+| 4. Supplier payment | -50.00 | -50.00 | 0.00 |
+| 5. Closing balance | 2,000.00 | 1,985.63 | **14.37** |
+
+**Check:** 2,000.00 − 14.37 = 1,985.63. The bank balance is fully explained by that one difference, and the arithmetic on both statements is correct.
+
+**What the 14.37 could be**
+
+- **Card processing fee or commission** deducted at settlement. This is the most likely cause. Week 2 gross sales of 450.00 settling at 435.63 is a 14.37 deduction.
+- **A keying error** in the cash book, where 435.63 was recorded as 450.00.
+- **Timing**, if part of the week 2 takings settles in October. This would be a reconciling item rather than an error.
+
+**What I recommend before tonight**
+
+I would not post a balancing entry just to get zero. A plug would misstate September's income or expenses and would be hard to explain later. Instead:
+
+1. Pull the card processor's settlement report for week 2. It will show the gross amount, fees, and net paid out.
+2. If the 14.37 is a fee, post it to the cash book as card/bank charges. The cash book then closes at 1,985.63 and ties to the bank with no difference. Keep the settlement report as support.
+3. If the report shows 435.63 was the correct sales figure, correct the week 2 receipt to 435.63 from the sales records and reconcile again.
+4. If you can't get the report before closing, close September with 14.37 recorded as an unreconciled difference and a note explaining it. That is an accurate report, and it can be cleared once the settlement report arrives.
+
+If you send me the settlement report or the week 2 sales records, I can work out which of these applies.

@@ -1,0 +1,8 @@
+{
+ "intent": "Replace the retry loop in the sync job with a bounded backoff",
+ "constraints": [
+  {"id": "C1", "text": "Do not change the public function signature of sync()", "keep_if_mentions": ["signature", "sync()"]},
+  {"id": "C2", "text": "Cap retries at 5 because the upstream limit resets in 60 seconds", "keep_if_mentions": ["5", "60"]},
+  {"id": "C3", "text": "Tests first: write the failing test before the change", "keep_if_mentions": ["test"]}
+ ]
+}

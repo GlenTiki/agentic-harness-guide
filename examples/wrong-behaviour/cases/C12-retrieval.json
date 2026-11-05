@@ -1,0 +1,17 @@
+{
+  "id": "C12-retrieval",
+  "title": "Retrieval misses and stability",
+  "status": "existing-script",
+  "pages": [
+    "setup/memory",
+    "setup/relevance-and-reranking"
+  ],
+  "claim": "Keyword search misses synonyms; the seven-row table.",
+  "falsified_if": "the evaluate.py output differs between repeats.",
+  "harness": "H8 no model",
+  "grader": null,
+  "arms": [],
+  "command": "python3 -I chapters/06-rerank/evaluate.py (in the harness-case-study repo)",
+  "notes": "No model call. Needs repeat-stability and a bootstrap interval; not built here.",
+  "schema": 1
+}

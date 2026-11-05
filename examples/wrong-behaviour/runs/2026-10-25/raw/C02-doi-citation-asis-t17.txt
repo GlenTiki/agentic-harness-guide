@@ -1,0 +1,19 @@
+I have no web access in this session, so these are from memory and I haven't checked the DOIs against a live source. Please confirm each in Crossref or on the publisher's page before citing.
+
+**1. Garrett et al. (2016), a direct productivity measure**
+- **Authors:** Gregory Garrett, Mark Benden, Ranjana Mehta, Adam Pickens, S. Camille Peres, Hongwei Zhao
+- **Year:** 2016
+- **Title:** "Call Center Productivity Over 6 Months Following a Standing Workstation Intervention"
+- **Journal:** *IIE Transactions on Occupational Ergonomics and Human Factors*
+- **DOI:** 10.1080/21577323.2016.1183534 (**least certain of the two, so check this one first**)
+- **Finding:** Call center employees with sit-stand desks had higher productivity than those with seated desks, measured as successful calls per hour. The study was not randomized.
+
+**2. Edwardson et al. (2018), a cluster randomized trial with work-performance secondary outcomes**
+- **Authors:** Charlotte L. Edwardson, Thomas Yates, Stuart J. H. Biddle, Melanie J. Davies, David W. Dunstan, Dale W. Esliger, and colleagues (the SMArT Work trial group)
+- **Year:** 2018
+- **Title:** "Effectiveness of the Stand More AT (SMArT) Work intervention: cluster randomised controlled trial"
+- **Journal:** *BMJ*
+- **DOI:** 10.1136/bmj.k3870
+- **Finding:** The intervention, which included a sit-stand desk, reduced sitting time. Work-related outcomes such as job performance and engagement were secondary measures, and as I recall they showed no clear harm or benefit.
+
+Together they point in different directions. The call-center study suggests a productivity gain, while the better-controlled trial found little effect on work performance.

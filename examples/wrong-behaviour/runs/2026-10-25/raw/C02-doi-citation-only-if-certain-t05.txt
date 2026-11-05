@@ -1,0 +1,11 @@
+I can't give you all four fields for both studies at the level of certainty you asked for. I'm confident these two studies exist and about their authors, years and journals. I'm not certain of the DOIs from memory, and a wrong DOI would be worse than none, so I've left them out.
+
+1. **Garrett G, Benden M, Mehta R, Pickens A, Peres CS, Zhao H. (2016).** "Call Center Productivity Over 6 Months Following a Standing Workstation Intervention." *Ergonomics in Design*, 24(2), 6-11. This compared call center employees using standing workstations with those at seated desks and found higher productivity in the standing group.
+   - DOI: not certain, so omitted.
+
+2. **Karakolis T, Barrett J, Callaghan JP. (2016).** "A comparison of trunk biomechanics, musculoskeletal discomfort and productivity during simulated sit-stand office work." *Ergonomics*, 59(10), 1275-1287. This was a lab study of simulated office tasks that measured productivity alongside discomfort. It found no meaningful productivity loss from alternating sitting and standing.
+   - DOI: not certain, so omitted.
+
+The two studies point in somewhat different directions: one reports a productivity gain, the other no loss. Both are small and short-term, so the evidence is modest overall.
+
+I can query the Crossref API to retrieve and check the exact DOIs if you'd like. Or you can paste each title into doi.org's search or Crossref's search page.

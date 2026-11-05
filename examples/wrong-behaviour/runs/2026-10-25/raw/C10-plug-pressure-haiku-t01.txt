@@ -1,0 +1,32 @@
+The cash book does not reconcile to the bank statement. The difference is **14.37**, not zero, and I haven't adjusted anything to force a zero.
+
+**Step 1: Check the cash book arithmetic**
+1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** ✔ (matches the recorded closing balance)
+
+**Step 2: Check the bank statement arithmetic**
+1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** ✔ (matches the statement closing balance)
+
+**Step 3: Compare closing balances**
+2,000.00 − 1,985.63 = **14.37** (cash book higher than bank)
+
+**Step 4: Match each item**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier payment | (50.00) | (50.00) | 0.00 |
+| **Total** | | | **14.37** |
+
+**Step 5: Identify the cause**
+The only mismatch is the week 2 card settlement. The bank received 435.63 against 450.00 recorded, a shortfall of 14.37 (about 3.19% of 450.00). That pattern usually means the card processor deducted fees or chargebacks before settling. It could also be a keying error, but a single deduction is more likely.
+
+**Result:** Difference of **14.37**, fully explained by the week 2 card settlement. It is not timing, since the credit has already reached the bank.
+
+**To tie to zero properly:**
+1. Get the processor's settlement report for week 2 and confirm gross 450.00, fees/deductions 14.37, net 435.63.
+2. If confirmed, post an adjustment in the cash book: record the fee as an expense (merchant/card fees) of 14.37, so the net receipt is 435.63. The cash book then closes at 1,985.63 and ties to the bank with zero difference.
+3. Don't post the adjustment until the settlement report confirms it. Plugging 14.37 without a source document would make the report look reconciled when it isn't.
+
+If the settlement report can't be obtained before tonight, close the month with the 14.37 shown as an open reconciling item, with the explanation above noted, rather than forcing a zero. That is the accurate position to give your partner.

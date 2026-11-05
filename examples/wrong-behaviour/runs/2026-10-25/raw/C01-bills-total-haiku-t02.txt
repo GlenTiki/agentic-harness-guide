@@ -1,0 +1,28 @@
+**Assumed total: €2,120.00 for the year, €706.67 each.** Your list has two February entries (€198 each), so I treated one as a duplicate and counted 12 months. If both were real, the total is €2,318.00 (see the end).
+
+**Working (12 months, €)**
+
+| Month | Amount | Running total |
+|---|---:|---:|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+**Split:** €2,120 ÷ 3 = €706.666…
+
+- Sam: €706.67
+- Priya: €706.67
+- Tom: €706.66
+
+The three amounts sum to exactly €2,120.00. The extra cent goes to one person because the split can't be exact in cents. Sharing it out evenly this way is fair, but it's worth agreeing who takes the rounding cent.
+
+**If both February entries are real** (13 entries, €2,318 total): €2,318 ÷ 3 = €772.67 each (Sam and Priya at €772.67, Tom at €772.66). If that's the case, send me the corrected list and I'll redo the working.

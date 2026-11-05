@@ -1,0 +1,6 @@
+Months counted: 13 (Jan, Feb, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+Sum of the figures as listed: 2,520.00
+
+The count is not 12 because Feb 198 appears twice. I haven't guessed which is right, so I've stopped before splitting.
+
+Is the second Feb 198 a duplicate entry to drop (total would be 2,322.00), or is one of them meant to be a different month or amount?

@@ -1,0 +1,63 @@
+## Questions
+
+1. What should "better" mean: readability, speed, error handling, or all three? Default: readability and robustness, with the same results for valid input.
+2. What does each item look like? The code reads positions 1 and 2, which suggests (name, price, quantity). Default: treat it as that, but say it is unconfirmed.
+3. Can the function's name, signature and behavior change? Default: keep the name and signature `total(items)`.
+
+## Assumptions
+
+- The language is Python 3, based on the syntax.
+- `i[1] * i[2]` is a unit price times a quantity. This is a guess, so it is marked [NEEDED] in the prompt.
+- You want an improved version of the function, not a rewrite of the surrounding code.
+- Nothing is known about the number types (int, float, Decimal), the size of the input, or the Python version.
+
+## Refined prompt
+
+```text
+Goal:
+Improve the Python function below. Keep its current behavior for valid input, and make it clearer, more idiomatic and more robust.
+
+Context:
+This is a small helper that sums a value across a list of items. It appears to compute the sum of item[1] * item[2], possibly price times quantity. [NEEDED: confirm what the items and fields represent, and where the function is used.]
+
+Inputs:
+The function:
+
+    def total(items):
+        t = 0
+        for i in items:
+            t = t + i[1] * i[2]
+        return t
+
+- [NEEDED: the shape of each item, for example (name, price, quantity) tuples.]
+- [NEEDED: the number types involved (int, float or Decimal), and whether money precision matters.]
+- [NEEDED: the Python version.]
+
+Constraints:
+- Keep the function name and signature unless you explain why a change is needed.
+- Do not change the result for valid input.
+- Do not add dependencies.
+- Keep the change small and in plain Python. Do not over-engineer.
+
+Output format:
+1. The improved function in one code block.
+2. A short list of what you changed and why.
+3. Any behavior differences, such as new errors for bad input, called out explicitly.
+
+Definition of done:
+The new function returns the same totals as the original for valid input, including an empty list. It is more readable, and any added input handling is described.
+
+What to do if unsure:
+If something above is marked [NEEDED] or ambiguous, ask me or state your assumption clearly. Do not guess silently.
+```
+
+## What changed
+
+- **Added:** a clear goal, constraints (keep the signature, keep behavior), an output format, a definition of done, and a "what to do if unsure" rule. The original ask had none of these.
+- **Changed:** "Make this function better" now says what "better" means (clearer, more idiomatic, more robust), based on my default for question 1.
+- **Left alone:** your code, exactly as written, and your short, direct tone.
+- **Marked as gaps:** item shape, number types, Python version, and the function's purpose. I did not invent any of these.
+
+## Second pass
+
+If you answer the three questions, I can remove the [NEEDED] markers and tighten the constraints. Next I would look at whether to ask for tests or type hints, and whether to name a specific concern such as float precision.

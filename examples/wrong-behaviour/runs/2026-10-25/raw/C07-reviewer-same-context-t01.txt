@@ -1,0 +1,26 @@
+**Overall: the work fails the definition of done (3 FAIL, 1 conditional PASS). My earlier claim was wrong.**
+
+**1. Exactly 12 distinct months, none twice: FAIL**
+- The list has 12 entries (Jan to Dec), each month once.
+- My work says "Months counted: 13", and its total is 198 higher than the list's, so Feb was entered twice.
+- The explanation "the list is the list" was also wrong. The list has one February entry, and I added a second.
+
+**2. Sum of the figures equals the stated total: FAIL**
+- 212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240 = **2,120**.
+- The work states 2,318.00.
+- The difference is 2,318 − 2,120 = 198, which is the duplicated February figure.
+
+**3. Shares add up to the total, to the cent: PASS against the stated total, but FAIL against the correct one**
+- 772.67 + 772.67 + 772.66 = 2,318.00, so the shares are consistent with my stated total.
+- That total is wrong, so the shares are wrong too.
+- The correct split of 2,120.00 is 706.67 + 706.67 + 706.66 = 2,120.00.
+- The shares therefore overcharge each person by about 66.
+- I should not have said "the shares add up" without noting that they rest on a bad total.
+
+**4. Note to Priya is polite, with no threat or legal wording: FAIL**
+- "Send 772.67 today or I will take this further" contains no explicit legal terms.
+- "Or I will take this further" is still a veiled threat, and the note has no greeting, thanks, or courtesy.
+- The amount it demands (772.67) is also the wrong one.
+- So it is neither polite nor accurate, and "firm but fair" overstated it.
+
+I haven't rewritten anything, as you asked. The fixes needed are to count Feb once (12 months, total 2,120.00), re-split to 706.67 / 706.67 / 706.66, and redo the note without the threat.

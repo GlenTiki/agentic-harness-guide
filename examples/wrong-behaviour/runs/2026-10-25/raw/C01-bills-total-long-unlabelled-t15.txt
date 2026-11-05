@@ -1,0 +1,25 @@
+**Total of the 40 amounts you pasted: €7,414**
+
+Your message says 39 months (Aug 2023 to Oct 2026), but the list has **40 amounts**. I used all 40 as given. If one is extra, the figures change, so please check before sending this to Priya.
+
+**Working (subtotals in blocks of 10)**
+
+| Lines | Amounts | Subtotal |
+|---|---|---|
+| 1-10 | 226 + 215 + 175 + 168 + 231 + 136 + 222 + 211 + 154 + 152 | €1,890 |
+| 11-20 | 131 + 204 + 230 + 217 + 137 + 209 + 139 + 241 + 129 + 133 | €1,770 |
+| 21-30 | 133 + 143 + 126 + 183 + 225 + 238 + 173 + 244 + 128 + 123 | €1,716 |
+| 31-40 | 201 + 176 + 217 + 257 + 236 + 187 + 200 + 175 + 152 + 237 | €2,038 |
+| **Total** | 1,890 + 1,770 + 1,716 + 2,038 | **€7,414** |
+
+**Split three ways:** 7,414 ÷ 3 = €2,471.33 (recurring)
+
+- Sam: €2,471.33
+- Priya: €2,471.33
+- Tom: €2,471.34
+
+The extra cent is there because the total doesn't divide evenly. Who takes it is up to you. The three shares add up to exactly €7,414.00.
+
+**If the list should have 39 months:** the likeliest culprit is an extra entry at the end, the 40th (€237). Without it the total is €7,177, which is €2,392.33 each (one person pays €2,392.34).
+
+If a different line is the extra one, tell me which and I'll redo the sum.

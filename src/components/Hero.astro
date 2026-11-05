@@ -1,0 +1,157 @@
+---
+import { BASE } from '../data/site';
+
+const { data } = Astro.props.entry || { data: {} };
+const hero = data?.hero || {};
+const title = hero.title || 'Put your judgement in charge of AI.';
+const tagline = hero.tagline || 'Learn to set the task, check the work and decide when an assistant is worth using.';
+---
+
+<header class="harness-hero" aria-label="Introduction">
+  <div class="kicker-badge">A GUIDE TO WORKING WITH AI</div>
+  <h1 id="_top" class="hero-title">{title}</h1>
+  <p class="hero-tagline">{tagline}</p>
+  <div class="hero-actions-row">
+    <a href={`${BASE}/start-here/how-to-read/`} class="hero-btn btn-primary">
+      <span>Start with your own task</span>
+      <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </a>
+    <a href={`${BASE}/start-here/engineer-route/`} class="hero-btn btn-secondary">
+      <span>For engineers</span>
+    </a>
+    <a href={`${BASE}/field-notes/`} class="hero-btn btn-minimal">
+      <span>Read Field notes</span>
+    </a>
+  </div>
+
+  <p class="author-bio">By Glen Keane, software engineer. Formerly Wayflyer and NearForm; building AI systems at Brightbeam. Views and mistakes are my own.</p>
+</header>
+
+<style>
+  .harness-hero {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 1.5rem 0 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+
+  .kicker-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    background: var(--ahg-accent-soft);
+    border: 1px solid var(--ahg-accent);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: var(--ahg-accent-strong);
+    white-space: nowrap;
+  }
+
+  .hero-title {
+    font-size: clamp(2.2rem, 5.2vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.12;
+    letter-spacing: -0.035em;
+    color: var(--ahg-text);
+    margin: 0;
+    max-width: 52rem;
+  }
+
+  .hero-tagline {
+    font-size: clamp(1.02rem, 2vw, 1.2rem);
+    line-height: 1.55;
+    color: var(--ahg-muted);
+    margin: 0;
+    max-width: 48rem;
+  }
+
+  .author-bio {
+    margin: 0.2rem 0 0;
+    font-size: 0.78rem;
+    color: var(--ahg-muted);
+    line-height: 1.4;
+  }
+
+  .hero-actions-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  .hero-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    height: 44px;
+    padding: 0 1.25rem;
+    border-radius: var(--ahg-radius-control);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: all 0.15s ease-out;
+  }
+
+  .btn-primary {
+    background: var(--ahg-accent);
+    color: var(--ahg-accent-ink) !important;
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    color: var(--ahg-text) !important;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent) !important;
+  }
+
+  .btn-minimal {
+    background: transparent;
+    color: var(--ahg-muted) !important;
+    padding: 0 0.85rem;
+  }
+
+  .btn-minimal:hover {
+    color: var(--ahg-text) !important;
+    text-decoration: underline;
+  }
+
+  .btn-arrow {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 580px) {
+    .hero-title {
+      font-size: 2.1rem;
+    }
+
+    .hero-actions-row {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .hero-btn {
+      width: 100%;
+    }
+
+  }
+</style>

@@ -1,0 +1,25 @@
+**Total for the year: €2,120.00**, so each of you owes **€706.67** (Tom's share is €706.66 so the three amounts add up to exactly €2,120.00).
+
+**Working:**
+
+| Month | Bill (€) | Running total (€) |
+|-------|---------:|------------------:|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+Total: €2,120.00
+Per person: €2,120 ÷ 3 = €706.666… → €706.67 (Sam and Priya), €706.66 (Tom)
+
+**Check:** 12 months × €176.67 average ≈ €2,120. ✓
+
+**Please check the Feb entry.** You listed February twice (198 and 198). I assumed that was a copy error and counted it once. If both were real bills, the total is €2,318.00, and each share is €772.67 (Sam and Priya) or €772.66 (Tom). Let me know which is right and I'll confirm the figures.

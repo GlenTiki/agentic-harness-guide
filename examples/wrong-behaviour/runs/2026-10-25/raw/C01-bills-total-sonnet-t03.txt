@@ -1,0 +1,31 @@
+**Note:** February appears twice in your list (198 both times). A year has 12 months, so I treated the second one as a typo and counted it once. If it was a real second bill, see the end.
+
+## Working
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+Running total: 212 → 410 → 597 → 761 → 912 → 1,054 → 1,193 → 1,334 → 1,492 → 1,675 → 1,880 → **2,120**
+
+**Total for the year: €2,120**
+
+Split three ways: 2,120 ÷ 3 = 706.666…, so **about €706.67 each**.
+
+Because 706.67 × 3 = 2,120.01, one cent is over. In practice, Sam and Priya pay €706.67 and Tom pays €706.66 (swap whoever you like), which adds up to exactly €2,120.00.
+
+That works out to roughly €58.89 per person per month.
+
+## If February really was counted twice
+The total would be €2,318, which is €772.67 each (again with a one-cent rounding difference). Let me know if that's the case.

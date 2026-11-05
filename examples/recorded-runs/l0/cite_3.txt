@@ -1,0 +1,13 @@
+I can't look anything up in this session, so the citations below are from memory. Please check each DOI at doi.org before you rely on it.
+
+**1. Call-center productivity (the strongest match)**
+- Garrett, G., Benden, M., Mehta, R., Pickens, A., Peres, C. S., & Zhao, H. (2016). "Call center productivity over 6 months following a standing desk intervention." *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195.
+- DOI: 10.1080/21577323.2016.1183739
+- Finding: call-center workers with standing desks were about 46% more productive (successful calls per hour) than seated controls over 6 months. This was a single employer with no randomization, so it is observational and may not generalize.
+
+**2. Cognitive performance (a weaker, indirect match)**
+- Mehta, R. K., Shortz, A. E., & Benden, M. E. (2016). "Standing up for learning: A pilot investigation on the neurocognitive benefits of standing desks." *International Journal of Environmental Research and Public Health*, 13(1), 59.
+- DOI: 10.3390/ijerph13010059
+- Finding: standing improved some executive-function measures. It was a small pilot, and I believe the participants were young adults rather than office workers, so it doesn't directly show workplace productivity.
+
+**Caveat:** The evidence is mixed. A large cluster-randomized trial, Edwardson et al. (2018), *BMJ*, 363:k3870 (the SMArT Work trial), found reduced sitting but no clear change in job performance measures. Systematic reviews generally conclude that sit-stand desks reduce sitting time, with weak or inconsistent evidence of productivity gains. I couldn't find two strong, direct, peer-reviewed studies that I'm confident show productivity improvements. If you need that claim for a paper or report, I'd cite Garrett et al. alongside the null findings rather than present the evidence as settled.

@@ -1,0 +1,121 @@
+---
+title: Choose a model tier
+description: Compare reasoning, general and small tuned models by measuring your own cases, and keep the choice swappable behind one function.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 7: Run it for real](../../../journey/07-run-it-for-real/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** use the cheapest tier that passes your own cases, and call it through one function so you can change tier without touching the rest of your code. This page names no prices and no benchmarks: they change, and they are not about your task.
+
+## Why it matters
+
+Call volume changes the economics: compare the value of a successful result with the cost of producing and checking it. The right tier is not always the largest. Principle, not measured: run your cases to find which option meets your quality, cost and latency requirements.
+
+## The decision
+
+| Candidate | Why try it | Costs to measure |
+| --- | --- | --- |
+| Reasoning model | Ambiguous input, several steps of judgement, rare cases | Inference effort, response time, retries and human review |
+| General model without extended reasoning | Extraction, drafting or routing with clear instructions | Provider cost, response time and correction work |
+| Small tuned model | A repeated task with representative labelled examples | Training, serving, response time, quality checks and retraining when the task changes |
+
+*Candidates to test, not a performance ranking. Model size and labels such as “reasoning” do not establish cost or latency order. Measure the actual model, provider, hardware and workload.*
+
+Before paying to train anything, identify what is wrong. [Prompt optimisation, retrieval, fine-tuning and compression](../../context/prompt-structure/#choose-what-to-optimise) change different parts of the system.
+
+Three questions pick the row.
+
+1. **Is the input ambiguous?** If a human expert needs to think, start with the reasoning tier.
+2. **How many calls a day, and how fast must each be?** A step on the critical path of a person waiting has a latency budget. A nightly batch does not.
+3. **Will the task stay the same?** Changing categories can require new labels and retraining. Include that work when deciding whether a tuned model saves anything.
+
+## Keep the choice swappable
+
+Principle, not measured: model versions are replaced over time, and a tier that suits you today may not next year. Put the model behind one function. Everything else in your code calls that function and never names a model. A change of tier is then a change in one place, and your cases tell you whether it is safe.
+
+The sketch below takes any client with a `complete(prompt)` method. It has no vendor code, so a test can pass a fake.
+
+```python
+LABELS = ("urgent", "routine")
+
+
+def classify(text, client):
+    reply = client.complete(f"Answer with one word, urgent or routine.\n\n{text}").strip().lower()
+    if reply not in LABELS:
+        raise ValueError(f"unexpected reply: {reply!r}")
+    return reply
+```
+
+The function checks the reply against the allowed labels. A tier that answers in a sentence fails loudly instead of passing a sentence downstream.
+
+<Example
+  label="Computed"
+  task="A maintainer runs the same six cases through three scripted fake clients, to show that the seam scores any client and separates a wrong answer from an unusable reply."
+  evidence="cd examples/model-seam && python3 -I seam.py && python3 test_seam.py"
+  env="Python 3.13, no dependencies, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```text
+seam.py: classify(text, client), score(client, cases), and FakeClient, which answers from a fixed table.
+small-fake knows one answer and says "routine" for the rest.
+large-fake knows all six answers.
+chatty-fake answers every case with a sentence.
+python3 -I seam.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+small-fake: {"right": 4, "bad_replies": 0, "total": 6} calls=6
+large-fake: {"right": 6, "bad_replies": 0, "total": 6} calls=6
+chatty-fake: {"right": 0, "bad_replies": 6, "total": 6} calls=6
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The three clients are scripted fakes, so these scores say nothing about any real model. Look at the third line: `chatty-fake` answers every case with the same sentence, "I think this is urgent!", which is not one of the allowed labels. The seam scores 0 right and 6 bad replies, because it counts an unusable reply apart from a wrong label. The sentence is not a correct answer in disguise: it is wrong for the routine cases and malformed for all of them.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows a swap point and a scoring loop that work with any client. It does not show how any real tier performs.
+
+</Fragment>
+
+</Example>
+
+To use it, write one adapter per tier that wraps your provider's client in a `complete(prompt)` method. Keep the model id in configuration next to the pinned version from [evals](../../quality/evals/).
+
+## Measure on your own cases
+
+1. Collect real inputs with the answer you want for each. Start with 30 to 100, a starting range to tune. A few cases cannot separate two tiers that differ a little.
+2. Run each tier on the same cases. Record right answers, unusable replies, and time per call.
+3. Work out cost per 1,000 calls from your own bill, not from a price list.
+4. Add maintenance to your record: who retrains, who hosts, who is paged.
+5. Pick the cheapest tier whose right-answer count meets the criterion you wrote beforehand. Use the exact-count method on the [evals page](../../quality/evals/) to tell a real gap from noise.
+
+Re-run when the task, the model or your inputs change.
+
+## Failure modes it reduces
+
+- A large model is used for a simple task and the bill grows with no gain.
+- A small model is used for an ambiguous task and the errors are found in production.
+- A model id is written in twenty places, so a change takes a week and nobody re-tests.
+- A tier is swapped and the replies change shape, which breaks a parser nobody ran against the new tier.
+
+## First step for the maintainer
+
+Find every place your code names a model. Move them behind one function. Then run your cases through it with a fake client, so the test passes before any real model is involved.
+
+**Next:** [Human-in-the-loop](../human-in-the-loop/)

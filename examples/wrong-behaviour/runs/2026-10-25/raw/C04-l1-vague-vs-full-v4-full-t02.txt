@@ -1,0 +1,8 @@
+Check: I counted 13 entries, not 12, because Feb 198 appears twice. The figures sum to 2,520 as listed, but that includes the repeated Feb.
+
+I'm stopping here rather than guessing. Which is right?
+
+1. Feb 198 was entered twice by mistake (the total would be 2,322.00, and each share 774.00).
+2. One of the two Feb entries is meant to be a different month, such as a missing figure for another month. Nothing is missing from the list, though: Jan through Dec are all present, so this seems less likely.
+
+If it's option 1, confirm and I'll send you the final layout.

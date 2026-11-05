@@ -1,0 +1,234 @@
+---
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+
+const isJourney = slug.startsWith('journey/0');
+const isWorkflow = slug.startsWith('workflows/');
+const isSetup = slug.startsWith('setup/');
+const isCaseStudy = slug.startsWith('case-study/');
+const isMethod = slug.startsWith('method/');
+
+const journeyNumber = isJourney ? slug.match(/journey\/0(\d)/)?.[1] : null;
+---
+
+<div class="chapter-art" data-art-slug={slug}>
+  {isJourney && (
+    <div class="art-card journey-card">
+      <div class="art-graphic">
+        {journeyNumber === '0' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Catching a wrong total">
+            <rect x="25" y="15" width="55" height="70" rx="4" class="svg-paper" />
+            <line x1="35" y1="28" x2="65" y2="28" class="svg-line" />
+            <line x1="35" y1="40" x2="70" y2="40" class="svg-line" />
+            <line x1="35" y1="52" x2="60" y2="52" class="svg-line" />
+            <line x1="35" y1="64" x2="68" y2="64" class="svg-line" />
+            <circle cx="85" cy="55" r="24" class="svg-glass" />
+            <circle cx="85" cy="55" r="18" class="svg-lens" />
+            <line x1="102" y1="72" x2="120" y2="90" class="svg-handle" />
+            <text x="85" y="60" class="svg-glass-text">133</text>
+          </svg>
+        )}
+        {journeyNumber === '1' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Prompt blueprint">
+            <rect x="20" y="15" width="100" height="70" rx="6" class="svg-card" />
+            <rect x="28" y="24" width="40" height="12" rx="3" class="svg-pill-blue" />
+            <text x="48" y="33" class="svg-chip-text">GOAL</text>
+            <rect x="74" y="24" width="38" height="12" rx="3" class="svg-pill-gray" />
+            <text x="93" y="33" class="svg-chip-text">RULES</text>
+            <rect x="28" y="44" width="84" height="14" rx="3" class="svg-box-light" />
+            <rect x="28" y="64" width="84" height="14" rx="3" class="svg-box-check" />
+            <text x="34" y="74" class="svg-check-icon">✓ check</text>
+          </svg>
+        )}
+        {journeyNumber === '2' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Standing house rules file">
+            <rect x="35" y="20" width="70" height="70" rx="5" class="svg-paper" />
+            <rect x="52" y="12" width="36" height="12" rx="3" class="svg-clip" />
+            <circle cx="70" cy="18" r="3" class="svg-pin" />
+            <line x1="45" y1="36" x2="95" y2="36" class="svg-line" />
+            <line x1="45" y1="48" x2="85" y2="48" class="svg-line" />
+            <line x1="45" y1="60" x2="90" y2="60" class="svg-line" />
+            <line x1="45" y1="72" x2="75" y2="72" class="svg-line" />
+          </svg>
+        )}
+        {journeyNumber === '3' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Read-only tools first">
+            <rect x="20" y="25" width="45" height="50" rx="4" class="svg-card" />
+            <circle cx="35" cy="45" r="8" class="svg-lens" />
+            <circle cx="50" cy="45" r="8" class="svg-lens" />
+            <line x1="43" y1="45" x2="42" y2="45" class="svg-line" />
+            <text x="42" y="66" class="svg-chip-text">READ</text>
+            <rect x="75" y="25" width="45" height="50" rx="4" class="svg-card svg-locked" />
+            <rect x="90" y="42" width="16" height="14" rx="2" class="svg-lock-body" />
+            <path d="M94 42V36a4 4 0 0 1 8 0v6" class="svg-lock-shackle" />
+            <text x="98" y="66" class="svg-chip-text">WRITE</text>
+          </svg>
+        )}
+        {journeyNumber === '4' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Trust boundary and shield">
+            <path d="M70 15L105 28V55C105 75 70 88 70 88S35 75 35 55V28L70 15Z" class="svg-shield" />
+            <path d="M60 48L68 56L82 40" class="svg-check-stroke" />
+          </svg>
+        )}
+        {journeyNumber === '5' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Definition of done checklist">
+            <rect x="25" y="15" width="90" height="70" rx="6" class="svg-paper" />
+            <circle cx="42" cy="32" r="5" class="svg-circ-check" />
+            <line x1="54" y1="32" x2="100" y2="32" class="svg-line" />
+            <circle cx="42" cy="50" r="5" class="svg-circ-check" />
+            <line x1="54" y1="50" x2="90" y2="50" class="svg-line" />
+            <circle cx="42" cy="68" r="5" class="svg-circ-check" />
+            <line x1="54" y1="68" x2="95" y2="68" class="svg-line" />
+          </svg>
+        )}
+        {journeyNumber === '6' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Lead delegating to helpers">
+            <circle cx="70" cy="28" r="14" class="svg-lead" />
+            <circle cx="35" cy="72" r="11" class="svg-worker" />
+            <circle cx="70" cy="72" r="11" class="svg-worker" />
+            <circle cx="105" cy="72" r="11" class="svg-worker" />
+            <line x1="62" y1="40" x2="42" y2="62" class="svg-dash-line" />
+            <line x1="70" y1="42" x2="70" y2="61" class="svg-dash-line" />
+            <line x1="78" y1="40" x2="98" y2="62" class="svg-dash-line" />
+          </svg>
+        )}
+        {journeyNumber === '7' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Audit log and retry cap">
+            <rect x="25" y="18" width="90" height="64" rx="4" class="svg-terminal" />
+            <circle cx="35" cy="27" r="2.5" class="term-dot red" />
+            <circle cx="43" cy="27" r="2.5" class="term-dot yellow" />
+            <circle cx="51" cy="27" r="2.5" class="term-dot green" />
+            <text x="35" y="44" class="term-code">t=10:14 step=1 ok</text>
+            <text x="35" y="56" class="term-code">t=10:15 step=2 ok</text>
+            <text x="35" y="68" class="term-code">t=10:16 step=3 check</text>
+          </svg>
+        )}
+        {journeyNumber === '8' && (
+          <svg viewBox="0 0 140 100" class="spot-svg" role="img" aria-label="Six-step workflow design">
+            <circle cx="70" cy="50" r="34" class="svg-compass" />
+            <line x1="70" y1="20" x2="70" y2="80" class="svg-grid-line" />
+            <line x1="40" y1="50" x2="100" y2="50" class="svg-grid-line" />
+            <polygon points="70,30 76,50 70,46 64,50" class="svg-needle" />
+            <polygon points="70,70 76,50 70,54 64,50" class="svg-needle-south" />
+          </svg>
+        )}
+      </div>
+      <div class="art-meta">
+        <span class="meta-chip chip-level">Level {journeyNumber} of 9</span>
+        <span class="meta-chip chip-time">Reading: 5-10 min</span>
+        <span class="meta-chip chip-tag">Free chat assistant</span>
+      </div>
+    </div>
+  )}
+
+  {isWorkflow && (
+    <div class="art-card workflow-card">
+      <div class="art-meta">
+        <span class="meta-chip chip-wf">Worked Workflow</span>
+        <span class="meta-chip chip-tag">Verified steps</span>
+      </div>
+    </div>
+  )}
+
+  {isSetup && (
+    <div class="art-card setup-card">
+      <div class="art-meta">
+        <span class="meta-chip chip-setup">Setup Component</span>
+        <span class="meta-chip chip-tag">Mako personal harness</span>
+      </div>
+    </div>
+  )}
+</div>
+
+<style>
+  .chapter-art {
+    margin: 0.75rem 0 1.25rem;
+  }
+
+  .art-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1.15rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .art-graphic {
+    flex-shrink: 0;
+  }
+
+  .spot-svg {
+    width: 120px;
+    height: 80px;
+    display: block;
+    font-family: var(--sl-font-system);
+  }
+
+  .svg-paper { fill: var(--ahg-bg); stroke: var(--ahg-line); stroke-width: 1.5; }
+  .svg-line { stroke: var(--ahg-line); stroke-width: 2; stroke-linecap: round; }
+  .svg-glass { fill: var(--ahg-panel); stroke: var(--ahg-accent); stroke-width: 2; }
+  .svg-lens { fill: var(--ahg-accent-soft); stroke: var(--ahg-accent); stroke-width: 1.5; }
+  .svg-handle { stroke: var(--ahg-accent); stroke-width: 3.5; stroke-linecap: round; }
+  .svg-glass-text { fill: var(--ahg-wrong); font-size: 11px; font-weight: 800; text-anchor: middle; }
+
+  .svg-card { fill: var(--ahg-bg); stroke: var(--ahg-line); stroke-width: 1.5; }
+  .svg-pill-blue { fill: var(--ahg-accent); }
+  .svg-pill-gray { fill: var(--ahg-line); }
+  .svg-chip-text { fill: #ffffff; font-size: 8px; font-weight: 700; text-anchor: middle; }
+  .svg-box-light { fill: var(--ahg-code-bg); stroke: var(--ahg-line); stroke-width: 1; }
+  .svg-box-check { fill: var(--ahg-right-soft); stroke: var(--ahg-right); stroke-width: 1; }
+  .svg-check-icon { fill: var(--ahg-right); font-size: 9px; font-weight: 700; }
+
+  .svg-clip { fill: var(--ahg-accent); }
+  .svg-pin { fill: var(--ahg-accent-soft); }
+
+  .svg-locked { stroke: var(--ahg-wrong); }
+  .svg-lock-body { fill: var(--ahg-wrong); }
+  .svg-lock-shackle { fill: none; stroke: var(--ahg-wrong); stroke-width: 1.5; }
+
+  .svg-shield { fill: var(--ahg-accent-soft); stroke: var(--ahg-accent); stroke-width: 2; }
+  .svg-check-stroke { fill: none; stroke: var(--ahg-accent-strong); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+  .svg-circ-check { fill: var(--ahg-right); }
+
+  .svg-lead { fill: var(--ahg-accent); stroke: var(--ahg-accent-strong); stroke-width: 2; }
+  .svg-worker { fill: var(--ahg-accent-soft); stroke: var(--ahg-accent); stroke-width: 1.5; }
+  .svg-dash-line { stroke: var(--ahg-line); stroke-width: 1.5; stroke-dasharray: 3 3; }
+
+  .svg-terminal { fill: var(--ahg-panel); stroke: var(--ahg-line); stroke-width: 1.5; }
+  .term-dot.red { fill: var(--ahg-wrong); }
+  .term-dot.yellow { fill: var(--ahg-expert); }
+  .term-dot.green { fill: var(--ahg-right); }
+  .term-code { fill: var(--ahg-muted); font-size: 8.5px; font-family: ui-monospace, monospace; }
+
+  .svg-compass { fill: var(--ahg-bg); stroke: var(--ahg-line); stroke-width: 1.5; }
+  .svg-grid-line { stroke: var(--ahg-line); stroke-width: 1; stroke-dasharray: 2 2; }
+  .svg-needle { fill: var(--ahg-wrong); }
+  .svg-needle-south { fill: var(--ahg-muted); }
+
+  .art-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .meta-chip {
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: var(--sl-text-xs);
+    font-weight: 600;
+  }
+
+  .chip-level { background: var(--ahg-accent-soft); color: var(--ahg-accent-strong); border: 1px solid var(--ahg-accent); }
+  .chip-time { background: var(--ahg-code-bg); color: var(--ahg-muted); border: 1px solid var(--ahg-line); }
+  .chip-tag { background: var(--ahg-bg); color: var(--ahg-text); border: 1px solid var(--ahg-line); }
+  .chip-wf { background: var(--ahg-atwork-soft); color: var(--ahg-atwork); border: 1px solid var(--ahg-atwork); }
+  .chip-setup { background: var(--ahg-expert-soft); color: var(--ahg-expert); border: 1px solid var(--ahg-expert); }
+</style>

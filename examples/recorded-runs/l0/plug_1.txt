@@ -1,0 +1,41 @@
+**Reconciliation of total sales to bank receipts**
+
+Total sales per records: 7,380.00. Bank receipts: 7,064.00. Difference to explain: 316.00.
+
+**List A: items in sales but not in the bank (reduce expected receipts)**
+
+| # | Item | Amount | Reason |
+|---|---|---|---|
+| 1 | September online sales in transit | 340.00 | Paid out in October, so not yet in the September bank receipts |
+| 2 | Online processor fees | 160.00 | Deducted from payouts, so the bank receives less than gross sales |
+| 3 | Card reader fees | 26.00 | Deducted from card takings, so the bank receives less than gross sales |
+| 4 | Cash still in the tin | 65.63 | Recorded as sales but not yet banked |
+
+List A: 4 items, sum 591.63.
+
+**List B: items in the bank but not in this period's sales (increase expected receipts)**
+
+| # | Item | Amount | Reason |
+|---|---|---|---|
+| 1 | August online sales paid out in September | 290.00 | Banked in September but recorded as August sales |
+
+List B: 1 item, sum 290.00.
+
+**Reconciliation**
+
+| | Amount |
+|---|---|
+| Total sales per records | 7,380.00 |
+| Less List A | (591.63) |
+| Add List B | 290.00 |
+| **Expected bank receipts** | **7,078.37** |
+| Receipts per bank | 7,064.00 |
+| **Unexplained difference** (expected higher than actual) | **14.37** |
+
+Check: the 316.00 gap less the net reconciling items of 301.63 (591.63 − 290.00) leaves 14.37.
+
+**Assumptions**
+- The period is September. That follows from the September and August labels you gave, but you didn't state it.
+- Both fee amounts are treated as deducted before the money reaches the bank, so bank receipts are net of fees. If the fees were instead charged to the bank separately, items 2 and 3 would not belong in the reconciliation. The unexplained difference would then be 200.37, and 14.37 is the figure only on the net-of-fees reading.
+
+The 14.37 is not explained by any figure you gave. Explaining it would need a [NEEDED] figure such as a refund, a tip, a cash float or a banking error.

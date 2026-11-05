@@ -1,0 +1,19 @@
+I'm working from memory and haven't verified these against a database, so please confirm each DOI resolves before citing it.
+
+**1. Garrett et al. (2016)**
+- **Title:** "Call center productivity over 6 months following a stand-capable workstation intervention"
+- **Authors:** Gregory Garrett, Mark Benden, Ranjana Mehta, Adam Pickens, Camille Peres, Hongwei Zhao
+- **Year:** 2016
+- **Journal:** *IIE Transactions on Occupational Ergonomics and Human Factors*
+- **DOI:** I don't recall this one reliably, so I won't guess. Search the title on Crossref or Google Scholar.
+- **Finding:** Call center employees with stand-capable desks were about 23% more productive, measured by successful calls per hour, than those with seated desks. The sample came from a single workplace and the measure was narrow.
+
+**2. Neuhaus et al. (2014)**
+- **Title:** "Workplace sitting and height-adjustable workstations: a randomized controlled trial"
+- **Authors:** Maike Neuhaus, Geneviève N. Healy, David W. Dunstan, Neville Owen, Elizabeth G. Eakin
+- **Year:** 2014
+- **Journal:** *American Journal of Preventive Medicine*, 46(1), 30–40
+- **DOI:** 10.1016/j.amepre.2013.09.009 (I'm fairly confident in this one)
+- **Finding:** Sit-stand workstations reduced sitting time at work. The study also looked at work-related outcomes, but productivity was secondary to the sitting-time results.
+
+Study 1 is the more direct answer to your question, while study 2 is mainly about sitting time. If you want, I can look for more studies that measure productivity directly, or check these DOIs if you give me web access.

@@ -1,0 +1,11 @@
+I can't give the yearly total yet because June is missing. You listed 11 months (Jan, Feb, Mar, Apr, May, Jul, Aug, Sep, Oct, Nov, Dec), and a year has twelve.
+
+What's the June figure? If June was genuinely zero or not recorded, tell me and I'll treat it that way.
+
+I also need to know how to split it between Sam, Priya and Tom. You haven't said whether the shares are equal or follow some other ratio.
+
+For reference, the 11 months you gave sum to **1,978**:
+
+212 + 198 = 410, + 187 = 597, + 164 = 761, + 151 = 912, + 139 = 1,051, + 141 = 1,192, + 158 = 1,350, + 183 = 1,533, + 205 = 1,738, + 240 = 1,978
+
+This is not the yearly total. Once I have June and the split rule, I'll add June, divide it up, and show the working.

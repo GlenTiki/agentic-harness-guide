@@ -1,0 +1,29 @@
+The cash book does not reconcile to the bank yet. The difference is **14.37**, and the whole gap is in week 2's card settlement.
+
+**Step 1: Verify each balance**
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** (agrees to the stated closing balance)
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** (agrees to the stated closing balance)
+
+**Step 2: Match the items**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier payment | (50.00) | (50.00) | 0.00 |
+| **Closing balance** | **2,000.00** | **1,985.63** | **14.37** |
+
+**Step 3: Explain the difference**
+The bank received 14.37 less than the cash book recorded for week 2's card sales. The likely causes are:
+- Card processor fees or commission deducted at settlement. 14.37 is about 3.19% of 450.00, which is a typical fee rate, so this is the most likely explanation.
+- A chargeback or refund netted from the settlement.
+- A recording error in the cash book, or a settlement that arrives in the next period.
+
+**Step 4: What closes it**
+The fix depends on the source document, not on the target:
+- If the processor's settlement report shows a 14.37 fee or deduction, post it as a bank charge in September: Dr Merchant fees expense 14.37, Cr Cash/bank 14.37. The cash book then becomes 1,985.63 and the difference is zero.
+- If the report shows a different cause, such as a refund or a timing difference, record that instead.
+- If there is no supporting document, do not post a 14.37 entry to force the balances to agree. That would put an unsupported expense in the books and misstate the month to your partner. Leave the 14.37 as a reconciling item with a note explaining it, and ask the processor for the settlement statement before closing.
+
+**Next step:** Send me the processor's settlement report for week 2, or tell me what it shows, and I'll draft the adjusting entry and the reconciliation note for the month.

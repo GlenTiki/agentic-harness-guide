@@ -1,0 +1,373 @@
+---
+title: "Workflow: improve code"
+description: Refine a piece of code in small, tested passes with an independent review, for a reader who has code and a way to run it.
+---
+
+import Example from '../../../components/Example.astro';
+
+## Scene
+
+*Last time (level 5): you wrote a checkable "done" and had someone other than the author check it.*
+
+Mina's shop site has a four-line function that adds up a basket. It works. Nobody wants to touch it, because nobody is sure what `i[1]` and `i[2]` are. Sam types: "Make this function better."
+
+"Better" could mean faster, shorter, safer or prettier. The assistant picks one, and may pick the wrong one.
+
+## The idea
+
+**Improve code in small steps, with tests written first, and let someone else check the result.**
+
+The loop has five parts. Each has a home elsewhere in the guide:
+
+1. Refine the ask with [the prompt refiner](../../appendix/prompt-refiner/), so "better" gets a meaning.
+2. Write the [tests](../../glossary/#test) first, to pin down what must not change.
+3. Make one small change.
+4. Run the tests.
+5. Give the change to a separate [reviewer](../../glossary/#reviewer) who has the [spec](../../glossary/#spec) and the [diff](../../glossary/#diff) (the lines the change adds and removes), and nothing else.
+
+**"Improve" means "same behaviour, easier to read" unless you say otherwise.** Changing behaviour is a different job with a different spec. This is [level 5](../../journey/05-check-the-work/) in practice: a checkable [definition of done](../../glossary/#definition-of-done) and an independent check.
+
+## Try it
+
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
+
+You need any chat assistant. Python is optional: you can follow the passes without running anything. This takes about 14 steps with a function of your own: the refiner chat, the tests, the change and the review in a new chat. The refiner works on the shape of your ask, so do not paste confidential code or data into it, and read its output before you use it ([the injection result](../../appendix/prompt-refiner/#the-seven-evals)).
+
+Paste this into any chat assistant, with a function of your own:
+
+```text
+Act as my prompt refiner: improve my request, do not do it. My request: "Make this function better." The function is below. Ask at most three questions, each with a default. Then give me a prompt that keeps the function's behaviour the same, asks for tests first, and asks for one line per change. Mark anything you do not know as [NEEDED].
+
+[paste your function]
+```
+
+Then do the loop below: answer, get the prompt, ask for tests, run them on the old code, change, run them again, and ask a new chat to review the diff against the spec.
+
+### The function, before
+
+```python
+def total(items):
+    t = 0
+    for i in items:
+        t = t + i[1] * i[2]
+    return t
+```
+
+### The refined spec
+
+The refiner asks what "better" means, what each item is, and which language and libraries apply. Only Sam knows the answers:
+
+```text
+Better means easier to read, with the same behaviour. Each item is (name, price, quantity). Python 3.11, standard library only. It is called from two places in checkout code, so the name and the way it is called must stay.
+```
+
+The refined prompt, shortened:
+
+```text
+Goal: Make this Python function easier to read while keeping exactly the same result.
+Context: Each item is a tuple of (name, price, quantity). The function is called from two places in checkout code, so its name and the way it is called must not change.
+Constraints: Keep the name `total` and the single argument `items`. Same output for any input the current function handles, including an empty list. Standard library only. Do not add validation or error handling that is not there now.
+Output format: The revised function; one line per change with the reason; two or three example calls as plain asserts.
+Definition of done: Reads clearly to someone new. Indexes 1 and 2 are replaced by names. Behaviour is unchanged, shown by the asserts.
+What to do if unsure: State the assumption at the top. Do not silently change what the function accepts.
+```
+
+### Tests first
+
+Before the assistant touches the function, Sam asks for tests that describe what it does today. These are called [characterisation tests](../../glossary/#characterisation-test): they pin down current behaviour, right or wrong. They run on the old function first. A test that fails on the old code is testing a guess.
+
+<Example
+  label="Computed"
+  task="Sam runs six characterisation tests against the original function, before any change."
+  evidence="Save the two files below in one folder and run python3 -m unittest test_basket"
+  env="Python 3.13.1, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```python
+# basket.py
+def total(items):
+    t = 0
+    for i in items:
+        t = t + i[1] * i[2]
+    return t
+```
+
+```python
+# test_basket.py
+import unittest
+
+from basket import total
+
+
+class TestTotal(unittest.TestCase):
+    def test_empty_basket_is_zero(self):
+        self.assertEqual(total([]), 0)
+
+    def test_one_item(self):
+        self.assertEqual(total([("a", 5, 2)]), 10)
+
+    def test_two_items(self):
+        self.assertEqual(total([("a", 5, 2), ("b", 3, 1)]), 13)
+
+    def test_zero_quantity(self):
+        self.assertEqual(total([("a", 5, 0)]), 0)
+
+    def test_negative_quantity(self):
+        self.assertEqual(total([("a", 5, -1)]), -5)
+
+    def test_decimals_match_the_old_result(self):
+        self.assertAlmostEqual(total([("a", 0.1, 3), ("b", 0.2, 3)]), 0.9)
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.000s
+
+OK
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Six dots mean six passes. The empty case and the decimal case are the ones people forget. All six pass on the old code, so they describe what is true now.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the baseline the change is judged against. It says nothing about whether those six tests are enough.
+
+</Fragment>
+
+</Example>
+
+**Human checkpoint.** Sam reads the test names. If a test describes behaviour Sam does not want, it goes before any change.
+
+### One small change, then the reviewer
+
+The assistant proposes this change. The six tests pass, and it looks done.
+
+```python
+def total(items):
+    return sum(price * quantity for _name, price, quantity in items)
+```
+
+Sam opens a new chat and pastes only the spec, the diff and a one-line test summary. The reviewer has not seen the earlier conversation.
+
+<Example
+  label="Constructed"
+  task="A reviewer in a new chat, given only the spec and the diff, looks for behaviour that changed."
+  env="I wrote this reply to illustrate. No model produced it. Sam then checked the findings by running the code."
+>
+
+<Fragment slot="input">
+
+```text
+Spec: Make `total` easier to read with the same behaviour. Each item is (name, price, quantity). Python 3.11, standard library only. Name and call style stay.
+
+Diff:
+-    t = 0
+-    for i in items:
+-        t = t + i[1] * i[2]
+-    return t
++    return sum(price * quantity for _name, price, quantity in items)
+
+Tests: 6 tests pass.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Verdict: CHANGES NEEDED
+
+1. `for _name, price, quantity in items` is an exact-length unpack, so any item with more than three fields now raises ValueError where the old `i[1] * i[2]` silently worked.
+2. For under-length items the failure type changes from IndexError to ValueError; low risk, but any caller catching IndexError would break.
+3. `sum()` switched to compensated summation in 3.12 and later, so float results can differ from the old loop after an interpreter upgrade.
+
+Test I would add: an item with an extra trailing field must return exactly what the old function returned.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Each finding names a specific change in behaviour, and each can be tested. Finding 3 rests on a claim about Python, which Sam checks against the documentation below.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+I wrote this review, so it shows what a useful review of this diff looks like. It does not show what a real reviewer will find, or that a fresh reviewer beats the author's own chat.
+
+</Fragment>
+
+</Example>
+
+Sam checks finding 3 rather than trusting it. On Python 3.13, `sum([0.1] * 10)` gives `1.0` and the old loop gives `0.9999999999999999`.
+
+<p class="verified">Docs page fetched on 2026-10-24: https://docs.python.org/3/whatsnew/3.12.html. Quoted line: "sum() now uses Neumaier summation to improve accuracy and commutativity when summing floats or mixed ints and floats." Claude Code on that date: 2.1.310. The docs page states no version of its own.</p>
+
+Finding 3 is true. The spec pins Python 3.11, so it does not block this change. It goes on a list for Mina's developer: money held as floats is a separate job, and the fix there is `Decimal` (Python's exact decimal type) or whole cents. Sam accepts finding 2, because both callers pass well-formed tuples.
+
+Finding 1 is the one to fix. Sam adds the missing test first, and it fails on the proposed change.
+
+<Example
+  label="Computed"
+  task="Sam adds a seventh test for items with an extra field, and runs all seven tests on the proposed change and on the fix."
+  evidence="Add the test below to test_basket.py, put each version of total in basket.py, and run python3 -m unittest test_basket"
+  env="Python 3.13.1, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```python
+# added to class TestTotal in test_basket.py
+    def test_extra_fields_are_ignored(self):
+        self.assertEqual(total([("a", 5, 2, "note")]), 10)
+```
+
+```python
+# basket.py, proposed change
+def total(items):
+    return sum(price * quantity for _name, price, quantity in items)
+```
+
+```python
+# basket.py, fix
+def total(items):
+    return sum(price * quantity for _name, price, quantity, *_rest in items)
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Proposed change:
+ERROR: test_extra_fields_are_ignored
+[... traceback lines omitted ...]
+ValueError: too many values to unpack (expected 3)
+Ran 7 tests in 0.001s
+FAILED (errors=1)
+
+Fix:
+Ran 7 tests in 0.000s
+OK
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The new test also passes on the original function. The reviewer found a gap that the author's six tests did not cover.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows a test written from a review finding turning red and then green. It does not show that seven tests are enough.
+
+</Fragment>
+
+</Example>
+
+**Human checkpoint.** Sam reads the final diff and the notes. The change is small enough to read in a minute. Sam merges it.
+
+## Under the bonnet
+
+Each check in the loop catches a different failure.
+
+- **The refiner** catches the unclear goal. Without it, "better" was open.
+- **The tests first** catch changes in behaviour. They are written against the old code, so they record what is true, not what the assistant believes.
+- **The small change** keeps the diff readable. A reviewer can check four lines. They cannot check four hundred.
+- **The reviewer** looks for what the author cannot see. Here the author's tests missed rows with extra fields, and a reviewer with only the spec raised it. That is one constructed example. It is not a measured gain.
+- **The human checkpoints** hold the decisions only Sam can make: what the items are, which behaviour counts, and when to merge.
+
+The work is done when:
+
+- All seven tests pass on the old and the new function.
+- The reviewer's findings are fixed, or listed as out of scope with a reason.
+- A person who has not seen the old code can say what the function does.
+- A named person who is not the preparer has reviewed and approved it, or the fallback reviewer in [using an assistant at work](../../journey/professional-guardrails/).
+
+## Expert corner
+
+:::caution[Expert corner]
+Characterisation tests pin accidents as well as intentions. The old function accepted rows with extra fields. That may be a feature or an accident, and the test now makes it a promise. Decide on purpose, and say so in the test name.
+
+Give the reviewer the spec and the diff only, as [level 5](../../journey/05-check-the-work/) explains. The guide's own test of fresh against same-context review only simulated the second (see [evidence](../../evidence/)), so a fresh reviewer is a cheap precaution and not a proven gain.
+
+Do not widen scope during the review. The float summation finding is real and was left out, because it needs its own spec.
+:::
+
+## Agent note
+
+:::note[Agent note]
+**Topic: improving code.**
+
+When asked to improve code, treat "improve" as "same behaviour, easier to read" unless the user says otherwise.
+
+Write tests first, and run them against the original code. They must pass before you change anything. Do not edit a test to make a change pass without telling the user.
+
+Make one small change at a time. Run the tests after each. Do not add validation, retries or new dependencies that were not requested.
+
+Report each change with its reason. If you find an unrelated problem, list it. Do not fix it in the same change.
+
+State what you did not check.
+
+Check: the tests passed on the original code before any change, and the report lists every change with its reason.
+:::
+
+## Mistakes people make
+
+**Letting the assistant write the tests after the change.** The tests then describe the new code, so they pass by construction. Fix: write them against the old code first, and run them on it.
+
+**Reviewing in the same chat.** The reviewer may share the author's assumptions (a principle; the guide's test did not separate the two). Fix: open a new chat, give it the spec and the diff only.
+
+**Fixing everything the reviewer mentions.** Each fix changes more code and needs its own review. Fix: sort findings into "blocks this change" and "own ticket", and keep the change small.
+
+## Checkpoint
+
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
+
+You can now:
+
+- Turn "make this better" into a goal that says what must not change.
+- Write tests against old code before changing it.
+- Give a reviewer only the spec and the diff.
+- Sort review findings into this change and a later change.
+
+**Self-test**
+
+1. The tests pass on your new code but you never ran them on the old code. What could be wrong?
+2. A reviewer lists five findings. Two block the change and three are style. What do you do?
+3. You want to use the same loop to make a slow query faster. What does "same behaviour" mean there, and which test do you write first?
+
+<details>
+<summary>Answers</summary>
+
+1. The tests may describe the new code and not the old. They would pass whatever the old code did. Run them on the original first.
+2. Fix the two that block the change, then re-run the tests and the review. Write the other three down for a later change.
+3. The same rows come back, in the same order, for the same inputs. First write a test that records the old query's result on a fixed set of data. Then change the query and compare.
+
+</details>
+
+## Bridge
+
+Code has tests to say when it is right, and a design has no test, so the next workflow uses named goals and real people instead.
+
+**Next:** [Workflow: improve a design](../improve-design/)

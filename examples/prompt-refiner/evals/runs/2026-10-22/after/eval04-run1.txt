@@ -1,0 +1,28 @@
+This ask is already good.
+
+## Assumptions
+- "[notes pasted here]" is a placeholder for your real notes, so I left it as is.
+- The five-bullet limit applies to the bulleted list only. The "still undecided" line sits outside it.
+- "Owner unknown" is the only allowed fallback for an action with no named owner.
+
+## Refined prompt
+```text
+Goal: Turn my meeting notes into a short update for my team.
+Context: The team could not attend. They know the project but not today's discussion.
+Inputs: My notes, pasted below.
+Constraints: No more than five bullets. Each action names one owner. Do not add anything that is not in the notes.
+Output format: A bulleted list, then one line saying what is still undecided.
+Definition of done: Every action in the notes appears once, with an owner, or is marked "owner unknown".
+What to do if unsure: Ask me. Do not guess an owner.
+
+[notes pasted here]
+```
+
+## What changed
+- **Added:** nothing.
+- **Changed:** nothing.
+- **Left alone:** all seven sections, because each is specific and matches your voice. The "Ask me, do not guess" fallback already covers the risk of a wrong owner.
+- **Still to do:** replace "[notes pasted here]" with your actual notes before you send it. No notes came through in this message.
+
+## Second pass
+I'd look next at one possible conflict. The five-bullet cap and "every action appears once" can clash if your notes hold more than five actions. You could allow merged bullets, or let the assistant ask you which actions to combine. Send the notes or tell me which you prefer, and I'll check it.

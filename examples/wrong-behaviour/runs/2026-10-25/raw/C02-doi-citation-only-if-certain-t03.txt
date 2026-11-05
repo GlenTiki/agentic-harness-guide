@@ -1,0 +1,15 @@
+I can't verify DOIs from here, so I'm separating what I'm confident of from what I'm not.
+
+**1. Garrett, Benden, Mehta, Pickens, Peres & Zhao (2016)**
+- Title: "Call Center Productivity Over 6 Months Following a Standing Workstation Intervention"
+- Journal: *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195
+- Finding: call center workers with standing desks were more productive than those with sit-only desks, though this was a single-industry study with a performance-based productivity measure.
+- DOI: I'm not certain of it, so I won't give one.
+
+**2. Neuhaus, Healy, Dunstan, Owen & Eakin (2014)**
+- Title: "Workplace Sitting and Height-Adjustable Workstations: A Randomized Controlled Trial"
+- Journal: *American Journal of Preventive Medicine*, 46(1), 30-40
+- DOI: 10.1016/j.amepre.2013.09.009 (I'm fairly confident, but not certain)
+- Caveat: this trial mainly measures sitting time. It's relevant to productivity research, but it's not a direct productivity outcome study.
+
+Please check both on Crossref (search the title at search.crossref.org) or by pasting the DOI into doi.org before citing. If you give me web access or a way to query Crossref, I can confirm them and look for stronger candidates, such as studies using direct productivity measures.

@@ -1,0 +1,27 @@
+**Each person owes €706.67 for the year.** This assumes the second "Feb 198" is a typo, since there are 12 months. If both February bills were real, the total would be €2,318 and each share €772.67.
+
+**Working**
+
+Total of the 12 months: 212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240 = **€2,120**
+
+Each person's share: 2,120 ÷ 3 = **€706.67**
+
+Monthly breakdown (each month ÷ 3):
+
+| Month | Bill (€) | Each share (€) |
+|---|---|---|
+| Jan | 212 | 70.67 |
+| Feb | 198 | 66.00 |
+| Mar | 187 | 62.33 |
+| Apr | 164 | 54.67 |
+| May | 151 | 50.33 |
+| Jun | 142 | 47.33 |
+| Jul | 139 | 46.33 |
+| Aug | 141 | 47.00 |
+| Sep | 158 | 52.67 |
+| Oct | 183 | 61.00 |
+| Nov | 205 | 68.33 |
+| Dec | 240 | 80.00 |
+| **Total** | **2,120** | **706.67** |
+
+The rounded monthly shares add up to €706.66, one cent short, because each month was rounded separately. To settle the cent, one person can pay €0.01 extra over the year.

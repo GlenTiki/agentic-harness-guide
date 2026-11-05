@@ -1,0 +1,15 @@
+{
+  "id": "C08-calculator-brief",
+  "title": "Level 6: calculator notices the repeat; vague reviewer brief",
+  "status": "designed",
+  "pages": [
+    "journey/06-hire-a-team"
+  ],
+  "claim": "The producer counts ten months and does not mind; a vague brief gives a worse shape than a pass/fail brief.",
+  "falsified_if": "the calculator names the repeat in 10 of 10.",
+  "harness": "H3 reviewer",
+  "grader": null,
+  "arms": [],
+  "notes": "Needs the level 6 brief text and a grader. Not built in the pilot phase.",
+  "schema": 1
+}

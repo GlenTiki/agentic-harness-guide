@@ -1,0 +1,155 @@
+---
+title: MCP server security
+description: Connect tools through the Model Context Protocol (MCP) with least privilege, pinned versions and reviewed descriptions.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 3: Give it hands](../../../journey/03-give-it-hands/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** add an MCP server only when it replaces a manual step you do often. Prefer a read-only server. Pin its version, read its tool descriptions before enabling it, and treat everything it returns as untrusted data.
+
+## Why it matters
+
+An MCP server (a connector, as [level 3](../../../journey/03-give-it-hands/) calls it) adds tools to the agent. Each tool is a new capability and a new source of text that reaches the model. A tool description is itself text the model reads and may follow, so a malicious or compromised server can steer the agent through its descriptions as well as through its output. Claude Code's own documentation says to verify that you trust each server before connecting it, and warns that servers which fetch external content can expose you to prompt injection.
+
+## What to enable
+
+**1. Choose the scope on purpose.** Claude Code behaviour: `claude mcp add` takes a scope. `local` is the default and applies to you in one project. `project` writes to a `.mcp.json` file at the repository root, which you commit to share the server with the team. `user` applies to all your projects. Share a server through the project scope only after the team has reviewed it.
+
+Example, do not run:
+
+```bash
+claude mcp add --transport http docs-search --scope project https://example.com/mcp
+claude mcp list
+```
+
+**2. Expect an approval prompt.** Claude Code behaviour: interactive Claude Code asks you to approve project-scoped servers before use. The MCP documentation says: "In `claude -p` runs, Agent SDK sessions, and cloud sessions outside a project's threads, Claude Code can't show that prompt: it loads project-scoped servers without asking." To keep a server out anyway, add it to `disabledMcpjsonServers`, which blocks it in every permission mode. You can also exclude project settings entirely with `--setting-sources`, or start the session with `--strict-mcp-config` so that only the servers you pass with `--mcp-config` load. Skipping the approval prompt for the project servers a strict session does not load needs Claude Code v2.1.246 or later.
+
+**3. Use the full tool name in rules.** MCP tools are named `mcp__<server>__<tool>`. Write permission rules, skill `allowed-tools` and sub-agent `tools` lists with those names. Allow a read tool and leave the write tool to ask:
+
+```json
+{
+  "permissions": {
+    "allow": ["mcp__docs-search__search"],
+    "ask": ["mcp__tracker__create_issue"]
+  }
+}
+```
+
+**4. Read the descriptions.** Before you enable a server, list its tools and read every description. Look for instructions addressed to the model, requests for broad access, and tools that do more than the name says.
+
+**5. Pin the version.** A server started with an unpinned package runs whatever the registry serves today. Pin an exact version and review upgrades like any dependency change.
+
+**6. Give it the least credential.** Use an access key scoped to the one resource and the one verb the server needs. Do not reuse your personal full-access key.
+
+**7. Remember the sandbox boundary.** MCP servers run outside Claude Code's shell sandbox. Their reach is whatever the server process can do. Run servers that handle untrusted content in a container.
+
+**8. Treat output as data.** A search result, a ticket body or a page the server returns can contain injected instructions. See [Untrusted input](../../control/untrusted-input/).
+
+## Useful utilities, chosen by the job
+
+Before building a connector, look for a maintained tool that already does the job. These are starting points I recommend investigating, not a bundle to install. Choose one against a repeated problem, then check whether the whole workflow improves.
+
+| Repeated problem | Tool to consider | First useful check |
+| --- | --- | --- |
+| The agent reads whole folders or dumps huge JSON responses | Local utilities: [ripgrep](https://github.com/BurntSushi/ripgrep) for text search and [jq](https://jqlang.org/) for JSON filtering | Find one known line or field. Keep the source available so a narrow filter cannot hide a failure. |
+| The agent guesses an outdated library API | Documentation retrieval: [Context7](https://github.com/upstash/context7), through its CLI or MCP interface | Name the library and version. Check the returned source matches them before using its example. |
+| The agent says a page works without opening it | Browser automation: [Playwright](https://github.com/microsoft/playwright-mcp), with CLI/skills or MCP access | Use a disposable browser context to test one successful action and one invalid input. Inspect the rendered page too. |
+| A connector returns something the agent cannot use | Connector diagnostics: [MCP Inspector](https://github.com/modelcontextprotocol/inspector) | Use a current Inspector release with a reviewed server. Inspect its schema and call a read-only tool on dummy data; this is not a security review. |
+
+Start with utilities already available in your environment. A command-line tool needs no extra MCP server when your agent can already run it. For a procedure you repeat, inspect a maintained [community skill](../skills/) before writing your own. Read its instructions and bundled scripts; check its source, version, data destinations and required access.
+
+A local process can still send data elsewhere. Documentation queries may leave your machine; browser tools can act through a signed-in session. Use the smallest scope that demonstrates the benefit. Keep a note of how to disable the addition. Your time is your product; maintaining a collection of unused plugins is a peculiar way to spend it.
+
+<p class="verified">Project documentation checked on 2026-11-04: <a href="https://github.com/BurntSushi/ripgrep">ripgrep</a>, <a href="https://jqlang.org/">jq</a>, <a href="https://github.com/upstash/context7">Context7</a>, <a href="https://github.com/microsoft/playwright-mcp">Playwright MCP and its CLI guidance</a>, and <a href="https://github.com/modelcontextprotocol/inspector">MCP Inspector</a>. The Inspector README describes it as "A developer tool for inspecting" MCP servers. These are current project pages, not pinned release documentation; no utility was installed for this recommendation. Capability descriptions come from the maintainers; this is not a comparative benchmark or an audit of those projects.</p>
+
+## Tool definitions use context before any call
+
+The assistant knows a tool exists only because it reads the tool's definition: the name, the description and the input schema. In a harness that sends every definition up front, those definitions sit in the [context window](../../../glossary/#context-window) before the first call and stay there. Check how your harness loads them. A server with many tools can then cost more than a long instruction file.
+
+Measure it on a server you use. A server returns its tools in the response to a `tools/list` request: a JSON-RPC message whose `result` object holds a `tools` array, and each tool has `name`, `description` and `inputSchema`. Save that response, or only its `result` object, to a file. The script reads either one and also accepts the older spelling `input_schema`. The sample file is an invented response of that shape. Then count characters. The script below counts the name, the description and the schema as compact JSON, and converts to tokens with the rule of thumb of 4 characters per token. That rule is rough, so confirm the total with your tool's own token count.
+
+<Example
+  label="Computed"
+  task="A maintainer measures the size of an invented list of eight tracker tools."
+  evidence="python3 -I examples/tool-definitions/tool_cost.py examples/tool-definitions/sample_tools.json"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26. The tool list is invented and small; real servers differ."
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I examples/tool-definitions/tool_cost.py examples/tool-definitions/sample_tools.json
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+tool            chars  tokens
+search_issues     483     121
+update_issue      386      97
+create_issue      270      68
+get_board         232      58
+add_comment       218      55
+get_issue         152      38
+list_labels       109      28
+list_members       90      23
+total            1940     485   (8 tools)
+descriptions alone: 757 chars, 190 tokens
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The schema of `search_issues` is larger than its description. `update_issue` and `create_issue`, which change the tracker, are the next largest. Descriptions alone are 757 of the 1,940 characters.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Eight small tools take about 485 tokens by the rule of thumb. It does not show what your servers cost, so run the script on a real tool list. Remove tools you do not use, and shorten schemas before descriptions.
+
+</Fragment>
+
+</Example>
+
+## How a description steers selection
+
+The assistant chooses a tool by reading its description next to the task. Principle, not measured: I ran no test on how descriptions change tool choice, so treat this as a design rule. A description is an instruction, so write it like one:
+
+- Say what the tool does in the first sentence, and what it returns.
+- Say when not to use it and name the better tool, as `get_board` does in the sample list.
+- Say that a tool changes something, and that the user must agree first. The sample list does this for each write tool.
+- Do not give two tools overlapping descriptions. The assistant then has no basis to choose.
+
+The same property is the risk in item 4 above. A description from a server you do not control can steer the assistant. Read the descriptions before you enable a server.
+
+## When a connector beats a script run through the shell
+
+| Choose | When |
+| --- | --- |
+| A connector | The service needs a credential that you do not want in a script. You want a separate permission rule for each tool, such as allow the read and ask for the write. Other people or other agents repeat the action. |
+| A script run through the shell | The task is rare or a one-off. A trusted command-line tool already does the job. The output is long and you want to filter it before the assistant sees it. You want the step kept as a file in the repository and run without the assistant. |
+
+The costs differ. A connector's definitions occupy context in every session, as the measurement shows. A script costs context only when you run it. A script run through the shell, though, is allowed by whatever the shell permission allows, which is usually broader than one named tool. Start with the script for a rare task. Move to a connector when you repeat the task and want the narrower permission.
+
+## Failure modes it reduces
+
+- A tool description tells the agent to send data to another tool.
+- An upgraded server silently adds a write tool.
+- A personal access key with wide scope leaks through a server's logs.
+- A committed `.mcp.json` from a cloned repository starts a server you never reviewed.
+
+## First step for the maintainer
+
+List your configured servers. Remove any you have not used this month. For each one that stays, write down the credential scope and the pinned version in the repository.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/mcp. Quoted line: "Verify you trust each server before connecting it. Servers that fetch external content can expose you to prompt injection risk." Claude Code on that date: 2.1.316. The docs page states no version of its own. The sandboxing page, https://code.claude.com/docs/en/sandboxing, fetched on the same date, lists local MCP servers among the processes that "run with your full access".</p>
+
+**Next:** [Spec-driven development](../../quality/spec-driven-development/)

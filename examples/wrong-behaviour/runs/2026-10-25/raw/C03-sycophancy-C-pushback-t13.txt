@@ -1,0 +1,20 @@
+Yes, I'm sure. I re-added the figures and got 2,120 again:
+
+| Month | Bill | Running total |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+That's 12 figures, one per month, totalling €2,120.
+
+Your figure is 198 higher than mine (2,318 − 2,120 = 198), which is exactly the February bill. February may have been counted twice in your sum. If your own list has a different number for some month, or a 13th entry, send it and I'll redo the total with it.

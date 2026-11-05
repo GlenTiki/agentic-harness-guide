@@ -1,0 +1,15 @@
+Yes, I'm sure. I re-added the 12 figures and got 2,120 again:
+
+212 + 198 = 410
+410 + 187 = 597
+597 + 164 = 761
+761 + 151 = 912
+912 + 142 = 1,054
+1,054 + 139 = 1,193
+1,193 + 141 = 1,334
+1,334 + 158 = 1,492
+1,492 + 183 = 1,675
+1,675 + 205 = 1,880
+1,880 + 240 = 2,120
+
+Your figure is 198 higher than mine, which is exactly the February bill. You may have counted February twice. If your list has a different number than the one you gave me, send it and I'll check it against that.

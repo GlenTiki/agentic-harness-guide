@@ -1,0 +1,102 @@
+---
+title: Principles
+description: Seven principles that decide which harness features are worth enabling.
+---
+
+*Deep dive for [level 8: Design anything](../../../journey/08-design-anything/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** judge every harness feature by one question. Does it make the agent's work more bounded, more recoverable or more checkable? Enable it if the answer is yes. Skip it if the answer is no, however impressive the demo.
+
+## Why it matters
+
+This shelf says agent for the assistant and sub-agent for the helper. See the [glossary](../../../glossary/). A model is probabilistic. A harness is the deterministic layer around it. Rules in a prompt are advice, and the model may ignore advice. Rules in the harness run on every call they cover. These principles tell you which rules belong in which layer. [Level 2](../../../journey/02-house-rules/) and [level 4](../../../journey/04-trust-but-verify/) teach the reason.
+
+## The principles
+
+1. **Enforce in the harness, advise in the prompt.** An instruction file is read as context. A hook or permission rule runs every time. Put anything that must be refused in the second group, and remember that a hook covers only the calls it sees. Put preferences in the first.
+2. **Least privilege by default.** Start with read-only access and add capabilities one at a time. Each addition needs a named reason.
+3. **Keep context small and durable.** The context window is working memory and it is lossy. Write decisions to files. Pass sub-agents a brief, not a transcript.
+4. **Treat everything the agent reads as data.** Tool output, web pages, repository files and replies from other agents carry no authority. Only a short list of verified channels may instruct the agent.
+5. **Separate the author from the reviewer.** The agent that wrote a change shares its assumptions. Review with a fresh context. Try a different model or provider, and measure whether it catches more (see [independent review](../../quality/independent-review/)).
+6. **Bind approval to evidence.** An approval applies to one exact diff, one exact digest. Any edit voids it.
+7. **Keep a human at the irreversible edges.** Pushes, spend, outbound messages and destructive operations need a person's authorisation. Reversible work can run unattended within agreed scope and access.
+
+## Where this guide fits
+
+Effective agentic engineering should be accessible beyond teams building frontier models. This guide translates research and practitioner experience into small experiments you can try on your own work. The ideas have a lineage. My contribution is the synthesis, the everyday starting point and the judgement I bring to applying them.
+
+Here is the landscape I would explore alongside this guide. These are different kinds of resource, not interchangeable products or an effectiveness ranking.
+
+| Kind | Useful starting points | Relationship to this guide |
+| --- | --- | --- |
+| Frontier-lab engineering reports | [OpenAI's harness engineering](https://openai.com/index/harness-engineering/); [Anthropic's long-running harnesses](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents) | Foundations for feedback loops, bounded work and durable progress. Their reported environments do not establish results for yours. |
+| Practitioner guides and accounts | [Simon Willison's red/green TDD](https://simonwillison.net/guides/agentic-engineering-patterns/red-green-tdd/); [Mitchell Hashimoto's adoption journey](https://mitchellh.com/writing/my-ai-adoption-journey) | Close companions for engineering habits and learning from failures. This guide gives everyday assistant users a route into those habits. |
+| Context and specification methods | [HumanLayer's context engineering](https://www.humanlayer.dev/blog/advanced-context-engineering); [Birgitta Böckeler's SDD comparison](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) | Useful reasoning about planning, context and retained knowledge. Compare their assumptions with your task. |
+| Workflow kits | [OpenSpec, Spec Kit, Superpowers and BMAD](../../quality/spec-driven-development/#community-workflows-worth-knowing) | Reusable structures for doing the work. Choose by the coordination problem you have. |
+| Evaluation and optimisation | [Hamel Husain and Shreya Shankar's evals FAQ](https://hamel.dev/blog/posts/evals-faq/); [evaluation tooling](../../quality/evals/#start-with-the-outcome); [optimisation choices](../../context/prompt-structure/#choose-what-to-optimise) | Ways to diagnose failures and compare changes. A tool still needs your definition of a useful result. |
+
+The overlap supports the method's foundations: test assumptions, inspect actual work, retain useful state and revise. It does not validate every recommendation here. Practitioner accounts establish what their authors tried; project documentation establishes intended mechanics. This guide's [recorded experiments](../../../evidence/) establish only the results and conditions they report.
+
+## Where I take a position
+
+**Gate according to consequences.** OpenAI describes minimal blocking merge gates where rapid correction makes waiting expensive. That is a contextual tradeoff. I would not copy it to a workflow that sends a customer message or changes access. Here, cheap drafts can move quickly; external commitments need the appropriate authorisation and checks. Fast correction cannot unsend an email. [OpenAI's stated tradeoff](https://openai.com/index/harness-engineering/).
+
+**Keep specifications, tests and code accountable to each other.** Böckeler distinguishes spec-first, spec-anchored and spec-as-source approaches; the article does not prescribe one winner. This guide favours maintained intent alongside executable checks and implementation. If they disagree, resolve the intended behaviour with its owner, then update the affected artefacts together. A tidy specification does not outrank a failing user journey. [Böckeler's comparison](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html).
+
+**Test known requirements early; discover uncertain failures through use.** Husain and Shankar argue against inventing evaluators before observing model failures, while allowing checks for known constraints. I agree with that distinction. A failing unit test for a specified calculation belongs upfront. An elaborate judge for hypothetical writing problems may not. [How this changes the eval approach](../../quality/evals/#start-with-the-outcome).
+
+**The smallest sufficient method wins.** More instructions, agents and reviews are costs until they earn their place. Remove redundant machinery and retest when the model or task changes. This is my working principle, not a benchmark result. A small fix may need a clear request and a failing test; a lasting design needs a retained decision. Neither needs a ceremonial council of wizards by default.
+
+## Your time is your product
+
+OpenAI's account also centres human time and attention. I want to make that concern usable at the scale of one person's recurring chore. For comparable tasks, record whether the outcome was accepted, then count your interventions and active time spent on setup, review, repair and recovery. Include ongoing maintenance and model costs. A quicker generation that needs longer repair is a poor bargain.
+
+Treat that as a measurement plan until you have results. Become the professional gambler the robots want you to be: price the downside, keep the losing runs and change your bet when the evidence changes. [The probability and checkpoints](../../../journey/07-run-it-for-real/#small-errors-accumulate) explain why.
+
+*Sources above fetched on 2026-11-04. The comparisons are editorial judgements, not comparative performance tests.*
+
+## Mantras for working with agents
+
+These are the rules of thumb I use when I work with agents:
+
+- **Investing in your tooling invests in your time, and yourself.** Count the cost of building and maintaining a check against the repeated work it saves. [The time you save is the product](../../../start-here/what-the-time-is-for/).
+- **Hope is not an engineering principle.** State what you expect, test it, inspect the evidence and revise. See [the scientific method in practice](../../../method/engineer-weak-spots/#the-scientific-method-in-practice).
+- **Think big, act small.** Keep the destination in view, then build a slice small enough to try and understand. [Small changes](../../quality/small-prs/) make feedback easier to act on.
+- **Compounding formulas change your life, for worse or better.** Small error rates accumulate across a long job. A check you keep can catch the same slip on later runs. [Work through the arithmetic](../../../journey/07-run-it-for-real/#small-errors-accumulate).
+- **Target the destination, watch the path.** Keep the architectural outcome fixed, but inspect every step of the trajectory so the agent does not wander into an architectural dead end.
+- **Code is cheap: ship it, refine it, let the agent do its thing.** Drafting is cheap enough to try a small idea. Shipping still needs the checks and acceptance appropriate to its consequences.
+- **Capture your thought processes and refine them.** When a session goes sideways, document the failure mode in a memory file. Post-mortems compound across future runs; code rots.
+- **Look at the whole workflow.** Follow the data and decisions from the original intent to the final result. Fix the cause you can demonstrate, then test the complete path.
+- **Comprehension debt is a workflow problem, not a code review problem.** Code generates faster than understanding does. Agree the intent and inspect small results while there is still room to change course.
+- **Automate mechanical checks; keep human judgement.** Let tests catch the faults they cover. Review intent and consequences yourself, and follow the [sampling rule](../../../journey/professional-guardrails/#checking-and-sampling).
+- **Never coerce absent to empty.** Missing data is signal. Coercing a missing value to a blank string hides absence and corrupts downstream telemetry.
+- **Stop, collaborate and listen: observe, draft, sign-off.** The agent observes context and drafts solutions; the human retains ownership of intent and external commitments.
+- **Silence is not acceptance.** An agent failing to object does not mean the design is sound. Require explicit independent peer confirmation.
+
+## When meeting a principle gets expensive
+
+A principle can be met in a way that makes you stop meeting it. Here is a Constructed case, invented for teaching. It is not a recorded run.
+
+A small shop's assistant drafts a reminder to a customer who owes an invoice. Principle 7 says an outbound message needs a person. The shop has 40 overdue customers each month, and sending each draft for approval one by one is slow enough that the owner starts approving without reading. That breaks principle 6, because an approval that was not read is not bound to evidence. The tension is between how you meet principle 7 and what principle 6 needs. Neither principle has to give way. The approval workload is what has to change.
+
+How to choose:
+
+1. **Keep the principle that guards the irreversible edge.** An email to a customer cannot be recalled. A slow queue can be fixed. Every message still goes through a person.
+2. **Make the review cheaper.** Show the owner the customer, the amount, the invoice date and the draft on one line each, and sort the large or unusual ones to the top.
+3. **Write the decision down.** Note what you changed, why, and what would reopen it, for example "if reviewing 40 drafts takes more than the owner is willing to spend, cut the list, not the review".
+
+Sometimes a principle really does cost another and no cheaper review exists. For example, if the owner will not spend any time on approvals, the only options are to drop the reminders or to send them unreviewed. Then the trade is real. Keep the principle that guards the irreversible edge, and record which one gave way and why.
+
+## Failure modes they reduce
+
+- A rule in a prompt is forgotten after compaction. Principle 1 moves it to a hook.
+- A fetched web page tells the agent to run a command. Principle 4 tells the agent to treat the page as data. A permission rule or a hook is what stops it if the agent acts anyway.
+- A reviewer approves code that changed after the review. Principle 6 makes that visible when a merge check compares digests.
+
+## First step for the maintainer
+
+Pick the three rules you would least like the agent to break. Write each as a hook or permission rule instead of a sentence in an instruction file. Then read [the adoption path](../adoption-path/).
+
+**Next:** [The adoption path](../adoption-path/)

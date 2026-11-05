@@ -1,0 +1,5 @@
+Months counted: 13 entries (Jan, Feb, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec). Feb is listed twice, both times at 198.
+
+Sum of the figures as given: 2,318 with the duplicate, 2,120 with Feb counted once.
+
+The count isn't 12, so I'm stopping here. Is the second Feb 198 a typo (a duplicate to drop), or is one of those entries meant to be a different month, or a different amount? Once you confirm, I'll give you the split.

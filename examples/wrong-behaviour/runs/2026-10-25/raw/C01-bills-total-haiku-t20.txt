@@ -1,0 +1,35 @@
+## Annual split: €706.67 each (Sam, Priya, Tom)
+
+The list has February twice (198 and 198). I've treated that as a copy error and counted it once, so there are 12 months. If the second February was a real extra bill, see the note at the end.
+
+**Step 1: Total for the year (12 months)**
+
+| Month | Bill (€) | Each share (÷3, €) |
+|---|---:|---:|
+| Jan | 212 | 70.67 |
+| Feb | 198 | 66.00 |
+| Mar | 187 | 62.33 |
+| Apr | 164 | 54.67 |
+| May | 151 | 50.33 |
+| Jun | 142 | 47.33 |
+| Jul | 139 | 46.33 |
+| Aug | 141 | 47.00 |
+| Sep | 158 | 52.67 |
+| Oct | 183 | 61.00 |
+| Nov | 205 | 68.33 |
+| Dec | 240 | 80.00 |
+| **Total** | **2,120** | **706.66** |
+
+Check: 212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240 = **€2,120**
+
+**Step 2: Split three ways**
+
+2,120 ÷ 3 = **€706.67 each**
+
+Three shares of €706.67 come to €2,120.01, one cent over. Summing the rounded monthly shares gives €706.66. So the exact amount is €706.666…, and one person should pay €706.66 so the total comes to exactly €2,120.00.
+
+**Step 3: Monthly view (optional)**
+
+2,120 ÷ 12 months = €176.67 per month for the household, or about **€58.89 per person per month**.
+
+**Note on the duplicate February:** If the second February 198 was a real bill, the total is €2,318 and each person's share is **€772.67**.

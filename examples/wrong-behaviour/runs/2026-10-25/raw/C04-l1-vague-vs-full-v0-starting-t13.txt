@@ -1,0 +1,7 @@
+**Total for the year: €2,120**, which is **€706.67 each** for Sam, Priya and Tom.
+
+Your list had Feb 198 twice. I treated that as a copy-paste duplicate, since that leaves 12 months. The months sum as 212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240.
+
+The shares don't divide evenly (€2,120 / 3 = €706.666...), so one person pays 1 cent less: two of you pay €706.67 and one pays €706.66.
+
+If the second Feb was a real, separate charge, the total is €2,318, or about €772.67 each (two pay €772.67 and one pays €772.66).

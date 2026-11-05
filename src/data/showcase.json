@@ -1,0 +1,50 @@
+[
+  {
+    "id": "hook-matrix",
+    "title": "Hook test matrix output",
+    "kind": "tool output",
+    "summary": "The sample pre-tool hook run against 32 commands and 6 malformed inputs, with its known bypasses listed.",
+    "provenance": "guide-owned",
+    "textFile": "artefacts/hook-matrix.txt",
+    "image": "showcase/hook-matrix.png",
+    "imageAlt": "Terminal output with one line per command. Lines start with OK and show the exit code and the command. A block of known bypasses follows, and the last line reads 0 BAD.",
+    "learnMore": "shelf/control/hooks/",
+    "preparedAt": "2026-10-25T02:16:19Z"
+  },
+  {
+    "id": "eval-results",
+    "title": "Prompt refiner eval results",
+    "kind": "eval results",
+    "summary": "Hand-graded results for seven evals, before and after two wording edits, from 42 recorded runs.",
+    "provenance": "guide-owned",
+    "textFile": "artefacts/eval-results.md",
+    "image": "showcase/eval-results.png",
+    "imageAlt": "A table with seven rows, one per eval. Columns give the eval name, the grade before the edit, the grade after the edit and a note. Most after-edit cells read pass, with some partial grades.",
+    "learnMore": "appendix/prompt-refiner/",
+    "preparedAt": "2026-10-25T02:16:19Z"
+  },
+  {
+    "id": "recorded-run",
+    "title": "A recorded run: the bills total",
+    "kind": "recorded run",
+    "summary": "One unedited reply to the shared-bills prompt from 2026-10-22 (claude-sonnet-5-5, Claude Code 2.1.308), kept as evidence for level 0. Observed, prompt not kept: the reply is real, but the exact prompt was not saved, so you cannot re-run it.",
+    "provenance": "observed-prompt-not-kept",
+    "textFile": "artefacts/recorded-run.md",
+    "image": "showcase/recorded-run.png",
+    "imageAlt": "An assistant reply headed Shared bills split, last year. It notes that February appears twice, then shows a working table of months and amounts.",
+    "learnMore": "journey/00-hello-robot/",
+    "preparedAt": "2026-10-25T02:16:19Z"
+  },
+  {
+    "id": "prompt-refiner",
+    "title": "The prompt refiner skill",
+    "kind": "prompt",
+    "summary": "The full skill file that turns a vague ask into a checkable one.",
+    "provenance": "guide-owned",
+    "textFile": "artefacts/prompt-refiner.md",
+    "image": "showcase/prompt-refiner.png",
+    "imageAlt": "The start of the prompt refiner skill file: a short header, then numbered rules that tell the assistant how to sharpen an ask and what to mark as needed.",
+    "learnMore": "appendix/prompt-refiner/",
+    "preparedAt": "2026-10-25T02:16:19Z"
+  }
+]

@@ -1,0 +1,32 @@
+**Heads-up:** your list has Feb 198 twice, which gives 13 entries for a 12-month year. I've counted it once. If the second one is a real separate bill, see the alternative at the end.
+
+**Working (12 months)**
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+Running total: 212 → 410 → 597 → 761 → 912 → 1,054 → 1,193 → 1,334 → 1,492 → 1,675 → 1,880 → **2,120**
+
+**Total: €2,120**
+
+**Split three ways:** 2,120 ÷ 3 = 706.666…
+
+- Sam: €706.67
+- Priya: €706.67
+- Tom: €706.66 (one person absorbs the 1-cent rounding so the total is exactly €2,120)
+
+That's about €58.89 per person per month (€176.67 average monthly bill ÷ 3).
+
+**If Feb really was billed twice:** the total is 2,120 + 198 = €2,318, and each share is 2,318 ÷ 3 ≈ €772.67 (two people pay €772.67, one pays €772.66).

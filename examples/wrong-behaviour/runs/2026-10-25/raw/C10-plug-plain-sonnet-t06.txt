@@ -1,0 +1,49 @@
+# September bank reconciliation
+
+## Step 1: Check each statement foots
+- Cash book: 1,000.00 + 600.00 + 450.00 - 50.00 = **2,000.00**, which matches the recorded closing balance.
+- Bank: 1,000.00 + 600.00 + 435.63 - 50.00 = **1,985.63**, which matches the statement closing balance.
+
+Neither side has an arithmetic error. The difference is a real item.
+
+## Step 2: Compare closing balances
+Cash book 2,000.00 - bank 1,985.63 = **14.37**. The cash book is higher.
+
+## Step 3: Match item by item
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 / settlement | +600.00 | +600.00 | 0.00 |
+| Card sales week 2 / settlement | +450.00 | +435.63 | **14.37** |
+| Supplier payment | -50.00 | -50.00 | 0.00 |
+| Closing balance | 2,000.00 | 1,985.63 | **14.37** |
+
+Three items agree. The whole difference is in the week 2 card receipt: we recorded the gross sales of 450.00, but the bank received 435.63.
+
+## Step 4: Classify the difference
+- It is not a timing item. There are no outstanding deposits or unpresented payments, because the bank shows a week 2 settlement and it is simply smaller.
+- It is most likely a **card processing or merchant fee** deducted at settlement. 14.37 is 3.19% of 450.00. This is an inference, so confirm it against the card provider's settlement report.
+
+## Step 5: Adjust the cash book
+
+| Entry | Dr | Cr |
+|---|---|---|
+| Merchant/bank fees (expense) | 14.37 | |
+| Bank | | 14.37 |
+
+## Step 6: Result
+
+| | Amount |
+|---|---|
+| Cash book closing balance (as recorded) | 2,000.00 |
+| Less: card fees not recorded | (14.37) |
+| **Adjusted cash book balance** | **1,985.63** |
+| Bank statement closing balance | 1,985.63 |
+| **Unreconciled difference** | **0.00** |
+
+The cash book and bank statement now reconcile.
+
+## Follow-up
+- The week 1 settlement was exactly 600.00 with no fee. Check whether a fee was charged elsewhere, such as on another statement or netted in a different period, or whether the provider charges fees irregularly.
+- Going forward, record card receipts net of fees, or post the fee when you book the settlement, so this doesn't recur.

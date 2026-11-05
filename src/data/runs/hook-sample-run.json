@@ -1,0 +1,81 @@
+{
+  "title": "One recorded run of the sample pre-tool hook",
+  "recorded_at": "2026-10-25T02:16:19Z",
+  "source": "scripts/record-artefacts.mjs running examples/hook-sample/block_force_push.py",
+  "environment": "Python 3.13.1",
+  "fields": "Metadata only. Command text and tool output are not stored.",
+  "events": [
+    {
+      "seq": 1,
+      "event_type": "PreToolUse",
+      "tool_name": "Bash",
+      "offset_ms": 0,
+      "duration_ms": 18,
+      "exit_code": 0,
+      "decision": "allow"
+    },
+    {
+      "seq": 2,
+      "event_type": "PreToolUse",
+      "tool_name": "Bash",
+      "offset_ms": 18,
+      "duration_ms": 17,
+      "exit_code": 0,
+      "decision": "allow"
+    },
+    {
+      "seq": 3,
+      "event_type": "PreToolUse",
+      "tool_name": "Bash",
+      "offset_ms": 36,
+      "duration_ms": 18,
+      "exit_code": 0,
+      "decision": "allow"
+    },
+    {
+      "seq": 4,
+      "event_type": "PreToolUse",
+      "tool_name": "Bash",
+      "offset_ms": 53,
+      "duration_ms": 18,
+      "exit_code": 2,
+      "decision": "block"
+    },
+    {
+      "seq": 5,
+      "event_type": "PreToolUse",
+      "tool_name": "Bash",
+      "offset_ms": 71,
+      "duration_ms": 18,
+      "exit_code": 0,
+      "decision": "allow"
+    },
+    {
+      "seq": 6,
+      "event_type": "PreToolUse",
+      "tool_name": "Bash",
+      "offset_ms": 89,
+      "duration_ms": 17,
+      "exit_code": 2,
+      "decision": "block"
+    },
+    {
+      "seq": 7,
+      "event_type": "PreToolUse",
+      "tool_name": "Bash",
+      "offset_ms": 106,
+      "duration_ms": 17,
+      "exit_code": 0,
+      "decision": "allow"
+    },
+    {
+      "seq": 8,
+      "event_type": "PreToolUse",
+      "tool_name": "Bash",
+      "offset_ms": 123,
+      "duration_ms": 17,
+      "exit_code": 2,
+      "decision": "block"
+    }
+  ]
+}

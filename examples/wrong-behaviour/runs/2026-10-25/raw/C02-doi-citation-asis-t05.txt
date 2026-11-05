@@ -1,0 +1,17 @@
+Here are two studies. I'm recalling these from memory and haven't checked them against a database, so please confirm the DOIs resolve before citing them.
+
+1. **Garrett, G., Benden, M., Mehta, R., Pickens, A., Peres, C. S., & Zhao, H.**
+   - Year: 2016
+   - Journal: *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195
+   - Title: "Call center productivity over 6 months following a standing desk intervention"
+   - DOI: 10.1080/21577323.2016.1183541
+   - Finding: Call center employees with standing desks were more productive than those with seated desks over six months. The study was observational and used a single workplace.
+
+2. **Chambers, A. J., Robertson, M. M., & Baker, N. A.**
+   - Year: 2019
+   - Journal: *Applied Ergonomics*, 78, 37-47
+   - Title: "The effect of sit-stand desks on office worker behavioral and health outcomes: A scoping review"
+   - DOI: 10.1016/j.apergo.2019.01.015
+   - Finding: A review of the wider sit-stand desk literature, covering behavior, health, and work-related outcomes such as productivity. It found the evidence on productivity to be limited and mixed.
+
+The first is a direct productivity study with a positive result, and the second is a broader review that shows how thin the evidence is. Read together, they suggest the productivity benefit is not yet firmly established.

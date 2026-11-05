@@ -1,0 +1,589 @@
+---
+title: "Claude Code hooks: block, format, log"
+description: Claude Code hooks run scripts at fixed points, such as PreToolUse, to block risky calls on the paths they cover, format code and keep an audit log.
+---
+
+import HookLifecycle from '../../../../components/HookLifecycle.astro';
+import HookTimeline from '../../../../components/HookTimeline.astro';
+import Example from '../../../../components/Example.astro';
+import hookRun from '../../../../data/runs/hook-sample-run.json';
+
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** use a hook for each rule that you want the harness to apply on every call it covers. Start with three hooks. A pre-tool hook blocks one dangerous action. A post-tool hook formats edited files. A stop hook runs your tests. Make a hook block only when a wrong action is costly or irreversible. Make every other hook advise.
+
+## Why it matters
+
+An instruction file is advice, and nothing guarantees the model follows it. That is a principle. [Level 4](../../../journey/04-trust-but-verify/) measured a planted line, not forgetting. A hook is code that the harness runs at a fixed event, outside the model's context. A blocking hook turns "please do not" into a refusal by the harness, on the paths the hook covers. It costs no tokens, and the model's reply does not change the result. It does not cover paths it never sees, as the last section of this page explains.
+
+<HookLifecycle />
+
+## What to enable
+
+**1. Know the events.** Claude Code documents more than thirty hook events. The ones that matter first are `PreToolUse` (before a tool call), `PostToolUse` (after a call succeeds) and `Stop` (when the agent finishes). Two more are `UserPromptSubmit` (before a prompt is processed) and `SessionStart`. Others cover sub-agents, compaction, worktrees, configuration changes and permission requests. Other harnesses use different names for the same ideas.
+
+**2. Register hooks in a shared settings file.** In Claude Code, hooks live in `~/.claude/settings.json` (all projects), `.claude/settings.json` (shared with the team) or `.claude/settings.local.json` (yours only). The shape is event, then matcher group, then handler:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [{ "type": "command", "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/format-changed.sh\"" }]
+      }
+    ]
+  }
+}
+```
+
+**3. Choose blocking or advising deliberately.** Claude Code behaviour: for command hooks, exit code 0 means success. Exit code 2 blocks the action on events that can block, and feeds standard error back to the model as the reason. [Exit code 2 by event](#exit-code-2-by-event) lists what it does on each event. By default, any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not block anything. In Claude Code v2.1.295 or later, you can set `"onFailure": "block"` on a command handler. A hook that cannot start, times out, prints invalid JSON or exits with a code other than 0 or 2 then blocks the action. The setting has no effect on stop hooks. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
+
+**4. Parse the command. Do not match text.** A hook that looks for the string `push --force` misses `git push origin main -f`, because the flag comes later. The sample below splits the command into words with `shlex` and looks at the flags. It reads the tool call as JSON on standard input. It is a teaching sample, not a security boundary.
+
+The sample blocks a `git push` that carries any of these:
+
+- `--force`, `--force-with-lease`, `--force-if-includes`, `--delete`, `--mirror` or `--prune`.
+- Any abbreviation of those that is five or more characters long, counting the two dashes. So `--del` and `--forc` are blocked.
+- A short flag group that contains `f` or `d`.
+- A refspec that starts with `+` or `:`.
+
+The sample also handles these cases. It recognises `git` by its file name, so `/usr/bin/git` and `env git` count, and a leading `(`, `{`, `$(` or backtick is ignored. It also looks inside a quoted string, so `sh -c "git push -f"` and `bash -c '...'` are blocked. It exits 2 when it cannot read the call. It blocks nothing else.
+
+```python
+#!/usr/bin/env python3
+import json
+import os
+import shlex
+import sys
+
+RISKY_LONG = ("--force", "--force-with-lease", "--force-if-includes", "--delete", "--mirror", "--prune")
+RISKY_SHORT = "fd"
+
+
+def is_risky_flag(token):
+    token = token.rstrip(")}`")
+    if token.startswith("--"):
+        name = token.split("=")[0]
+        return len(name) >= 5 and any(long.startswith(name) for long in RISKY_LONG)
+    if token.startswith("-"):
+        return any(letter in token[1:] for letter in RISKY_SHORT)
+    return token.startswith(("+", ":"))
+
+
+def is_risky_push(tokens):
+    for index, token in enumerate(tokens):
+        if " " in token and is_risky_push(shlex.split(token)):
+            return True
+        if os.path.basename(token.lstrip("({$`")) == "git" and "push" in tokens[index:]:
+            after_push = tokens[tokens.index("push", index) + 1:]
+            return any(is_risky_flag(flag) for flag in after_push)
+    return False
+
+
+def main():
+    try:
+        command = json.load(sys.stdin)["tool_input"]["command"]
+        risky = is_risky_push(shlex.split(command))
+    except (ValueError, KeyError, TypeError, AttributeError) as error:
+        print(f"Blocked: the hook could not read this call ({error}).", file=sys.stderr)
+        sys.exit(2)
+    if risky:
+        print("Blocked: this push can overwrite or delete remote history. Ask the user to run it themselves.", file=sys.stderr)
+        sys.exit(2)
+
+
+if __name__ == "__main__":
+    main()
+```
+
+The same file is at `examples/hook-sample/block_force_push.py`. A test file next to it, `test_matrix.py`, runs it on every row of the table below and prints one line per row.
+
+**Where to put it and how to register it.** Save the script as `.claude/hooks/block_force_push.py` in your project. Register it with the project-root variable, not a relative path. The hooks reference defines it in these words: "`${CLAUDE_PROJECT_DIR}`: the project root where the session started." Its own examples use the form `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.sh`. The same page says that handlers "run in the current directory", so a relative path breaks when the session moves to another directory.
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/block_force_push.py\"" }]
+      }
+    ]
+  }
+}
+```
+
+Quote the expanded path, as the example does. A shell splits an unquoted path that contains a space into several words. Run through `sh -c` in a scratch folder with a space in its name, the quoted command ran the script, and the unquoted one exited 2 because Python could not open the split path. On that hook, exit 2 blocks the call. Name the interpreter (`python3` or `bash`) in the command, so the script needs no executable permission. If you run a script directly instead, run `chmod +x` on it first.
+
+**A broken hook can block every Bash call, or do nothing.** A missing Python script exits with code 2, which blocks. A missing shell script exits with code 127, which is a non-blocking error. The call goes ahead, and the only sign is a hook error notice in the transcript. With `"onFailure": "block"` (item 3), the missing script blocks the call instead.
+
+<Example
+  label="Computed"
+  task="A maintainer checks what the harness would see when the hook path is wrong, for a Python script and for a shell script."
+  evidence="python3 ./missing.py; echo $?   and   sh ./missing.sh; echo $?"
+  env="macOS 26.5, Python 3.13.1, zsh, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```bash
+python3 ./missing.py; echo $?
+sh ./missing.sh; echo $?
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python3: can't open file '<folder>/./missing.py': [Errno 2] No such file or directory
+2
+sh: ./missing.sh: No such file or directory
+127
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The two numbers are 2 and 127. Only 2 is the blocking code. The page replaces your folder path with `<folder>`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the exit codes of the two interpreters. It does not show how Claude Code treats them, which the docs line at the end of this page covers.
+
+</Fragment>
+
+</Example>
+
+**Fail safe, and what it costs.** The sample exits 2 when it cannot read the call, because a guard that quietly lets everything through is worse. The cost is that every Bash call is blocked if the harness ever changes the shape of the JSON it sends. The block lasts until you fix the script or switch the hook off. The hooks reference explains how to switch hooks off. It says: "To temporarily disable all hooks without removing them, set `"disableAllHooks": true` in your settings file." You can also delete the entry. Keep a second window open while you test, so you can undo the change.
+
+**Test it in this order.**
+
+1. Check that the file exists: `test -f .claude/hooks/block_force_push.py`.
+2. Pipe a call to it by hand: `echo '{"tool_input":{"command":"git status"}}' | python3 .claude/hooks/block_force_push.py; echo $?` must print 0. Then try `git push --force` and expect 2 and the block message.
+3. Register it in a throwaway repository first, not your real settings.
+4. In that session, run `git status` and confirm it is allowed.
+5. Ask the assistant for `git push --force` to a local bare repository you created for the test, and confirm you see the block message.
+6. Only then register it in your real settings.
+
+<Example
+  label="Computed"
+  task="A maintainer runs the sample hook on 32 commands and 6 malformed inputs to see which it blocks."
+  evidence="python3 -I examples/hook-sample/test_matrix.py"
+  env="Python 3.13.1, macOS 26.5, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```bash
+python3 -I examples/hook-sample/test_matrix.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+OK  exit=2 expect=block :: git push --force
+OK  exit=2 expect=block :: git push -f origin main
+OK  exit=2 expect=block :: git push origin main -f
+OK  exit=2 expect=block :: git push origin +main
+OK  exit=2 expect=block :: git push --force-with-lease
+OK  exit=2 expect=block :: git push origin -d feature
+[... omitted: 20 more blocked commands ...]
+OK  exit=0 expect=allow :: git status
+OK  exit=0 expect=allow :: git push origin main
+OK  exit=0 expect=allow :: git push -u origin feature-fix
+OK  exit=0 expect=allow :: git log --grep push
+OK  exit=0 expect=allow :: git commit -m 'push -f docs'
+OK  exit=0 expect=allow :: echo hello
+OK  exit=2 expect=block (malformed input: empty stdin)
+OK  exit=2 expect=block (malformed input: not json)
+[... omitted: 4 more malformed inputs, a missing-script row, the known-bypass section and a self-check line ...]
+32 command rows, 6 malformed rows, 0 BAD
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The command `git push origin main -f` has the flag last, and the sample still blocks it. `git commit -m 'push -f docs'` is allowed, because the words are inside a message. Unreadable input exits 2.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows what the script does with each input. It does not show that the harness calls the script. The full file is `examples/hook-sample/test_matrix.py`.
+
+</Fragment>
+
+</Example>
+
+The script blocks `--force-with-lease` too. That flag is safer than `--force`, but it can still overwrite remote work, so this sample sends the decision back to a person. Change that line if your team decides otherwise.
+
+<Example
+  label="Computed"
+  task="A maintainer pipes eight made-up tool calls, one at a time, into the sample pre-tool hook script and records each exit code."
+  evidence="node scripts/record-artefacts.mjs (the hook section writes src/data/runs/hook-sample-run.json)"
+  env="Python 3.13.1, macOS 26.5, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+The script starts the hook once per call and feeds it a JSON line such as `{"tool_name": "Bash", "tool_input": {"command": "git status"}}`. The eight commands, in order:
+
+```text
+1. git status
+2. git log --oneline
+3. git push -u origin feature-fix
+4. git push --force
+5. git commit -m "update notes"
+6. git push origin +main
+7. echo hello
+8. git push -f origin main
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+call  exit code  decision
+1     0          allow
+2     0          allow
+3     0          allow
+4     2          block
+5     0          allow
+6     2          block
+7     0          allow
+8     2          block
+```
+
+The chart shows the same eight events with the time each script run took. The recording keeps metadata only. See the [recorded data](https://github.com/GlenTiki/agentic-harness-guide/blob/main/src/data/runs/hook-sample-run.json).
+
+<HookTimeline run={hookRun} id="hooks-page-timeline" />
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Exit code 0 lets a call through. Exit code 2 blocks it. Calls 4, 6 and 8 are blocked. The durations are the time of one standalone script start, including the start of the Python process.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It is a standalone script measurement with made-up tool-call JSON. It is not a harness session, and no harness called the hook. It does not show harness-level latency or the effect of hooks that run in parallel.
+
+</Fragment>
+
+</Example>
+
+**5. Write good block messages.** The message is the only thing the model sees. Say what was blocked, why, and what to do instead.
+
+**6. Keep hooks fast and quiet.** A slow hook slows every tool call. Set a timeout on each handler. Print nothing on success.
+
+**7. Use hooks for the audit log.** A post-tool hook that appends one line per action gives you a trail without relying on the model to report. See [Observability and audit log](../../operations/observability/).
+
+### Exit code 2 by event
+
+Exit code 2 does not do the same thing on every event. Claude Code behaviour for the common events:
+
+| Event | What exit code 2 does |
+| --- | --- |
+| `PreToolUse` | Blocks the tool call. The model gets standard error as the reason. |
+| `PermissionRequest` | Nothing. The permission flow goes ahead. Deny with the JSON `decision` object instead. |
+| `UserPromptSubmit` | Blocks the prompt, so it never reaches the model. |
+| `Stop` | Stops the agent from stopping. By default, after eight consecutive continuations, Claude Code overrides the next block. A tool call resets the count; CLAUDE_CODE_STOP_HOOK_BLOCK_CAP can raise the cap. |
+| `SubagentStop` | Stops the sub-agent from stopping. |
+| `PostToolUse` | Cannot block, because the tool already ran. The model sees standard error. |
+| `SessionStart`, `SubagentStart` | Cannot block. The user sees standard error as a hook error notice, and the model does not. |
+
+With `"onFailure": "block"`, a failed hook does what exit code 2 does on its event, except on `PermissionRequest`, where it denies the request. On `Stop` and `SubagentStop`, an exit 2 with nothing on stdout and a file-not-found message on standard error counts as a non-blocking error, so a missing stop-hook script does not keep the agent working. The hooks reference lists every event. Check the row for yours before you rely on exit code 2.
+
+## What this hook does not cover
+
+The hook sees one thing: a Bash call whose command text, once split into words, shows `git`, then `push`, then a risky flag. The routes below get past it.
+
+<Example
+  label="Computed"
+  task="A maintainer runs nine pushes that the sample hook is known to miss, to see what exit code each gets."
+  evidence="python3 -I examples/hook-sample/test_matrix.py (the known-bypass section)"
+  env="Python 3.13.1, macOS 26.5, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```bash
+python3 -I examples/hook-sample/test_matrix.py
+```
+
+Read the section that starts with `--- known bypasses`. The rows above it are the ones from the earlier example.
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+--- known bypasses: these pass through by design, see the page
+    exit=0 :: F=-f; git push $F
+    exit=0 :: g=git; $g push -f origin main
+    exit=0 :: git push origin main $'\x2df'
+    exit=0 :: git push origin main "$(echo --force)"
+    exit=0 :: git push --de origin x
+    exit=0 :: git -c alias.p=push p -f origin main
+    exit=0 :: /usr/libexec/git-core/git-push -f origin main
+    exit=0 :: python3 -c 'import os;os.system("git push -f")'
+    exit=0 :: ./deploy.sh
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Every row exits 0, which means the hook lets the call through. Git also ran rows such as `--de`, the command-line alias and the dashed `git-push` form against a throwaway repository on the same date.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows nine routes that this script misses. It does not list every route, and it does not test the harness.
+
+</Fragment>
+
+</Example>
+
+Why each route gets past the script:
+
+- Variable expansion: the script sees the text `$F` or `$g`, not `-f` or `git`.
+- ANSI-C quoting: `$'\x2df'` is the text `-f` to the shell and a different word to the script.
+- Command substitution inside quotes: `"$(echo --force)"` becomes `--force` only when the shell runs it.
+- A shortened long option: git accepts `--de` for `--delete`. The sample only checks abbreviations of five or more characters.
+- An alias that expands to a push without the word `push`, such as `git p -f`.
+- The dashed form: the script looks for a word named `git`, and `git-push` is a different word.
+- Code that runs a push: `python3 -c` with `os.system`, and any wrapper script such as `./deploy.sh`. The hook sees the script name, not the push inside it.
+- Another tool, or an MCP server, that makes the same push by its own means. The matrix does not run this one.
+- The agent editing the hook script or `settings.json`. The matrix does not run this one. Deny writes to those files with permission rules (see [Permissions and sandboxing](../permissions-and-sandboxing/)).
+
+Treat the hook as one layer. It reduces the common routes. It does not close every route.
+
+## Traps that bite in practice
+
+### A pipe into tail hides the exit status
+
+A shell pipeline returns the exit status of its last command. A check piped into `tail` therefore reports the status of `tail`, which succeeds. Capture the output to a file, keep the status, then show the tail.
+
+<Example
+  label="Computed"
+  task="A maintainer compares a failing command piped into tail with the same command whose output is captured first."
+  evidence="sh -c 'false | tail -n 1; echo $?' and the captured form below"
+  env="sh on macOS 26.5, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```bash
+sh -c 'false | tail -n 1; echo $?'
+sh -c 'false > out.txt; status=$?; tail -n 1 out.txt; echo $status'
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+0
+1
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+`false` always fails. The pipe reports 0. The captured form reports 1. In Bash, `set -o pipefail` also makes the pipe report 1, but `sh` setups differ, so the file form is the portable fix.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the status of a pipeline in `sh`. It does not show how any harness reads a status.
+
+</Fragment>
+
+</Example>
+
+### A one-shot stop reminder
+
+A stop hook that blocks every time keeps sending the agent back to work. By default, Claude Code permits eight consecutive continuations and overrides the next block. A tool call resets the count, and CLAUDE_CODE_STOP_HOOK_BLOCK_CAP can raise the cap, so this is not a total-run limit. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
+
+<Example
+  label="Computed"
+  task="A maintainer sends five stop events from two sessions through the one-shot reminder."
+  evidence="python3 -I examples/hook-traps/test_one_shot_stop.py"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```bash
+python3 -I examples/hook-traps/test_one_shot_stop.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+session=s1 exit=2 expect=2
+session=s1 exit=0 expect=0
+session=s1 exit=0 expect=0
+session=s2 exit=2 expect=2
+session=s2 exit=0 expect=0
+unreadable input exit=2 expect=2
+ok
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Each session is blocked once, and the second session starts fresh. Unreadable input blocks, as in the sample above. The script does not read the `stop_hook_active` input field, which the docs say is true when Claude Code is already continuing because of a stop hook.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the script's logic with made-up session names. It does not show a real session, or where the harness keeps your marker files. Delete old markers on a schedule. After the first stop, the script lets every later stop through, even if the tests fail.
+
+</Fragment>
+
+</Example>
+
+### A stop gate that checks the result
+
+A real gate runs the tests at every stop and reads the result. If the tests fail, it blocks and returns the failure text to the agent. It counts the failed attempts for the session. After three, it lets the agent stop and writes an escalation file that holds the last failure output, so a person reviews the session. The limit of three is a starting value: it bounds the cost of a loop, so tune it on your own sessions. The script reads the test command from `TEST_COMMAND`. A timeout counts as a failed attempt. Missing or corrupt state and invalid session identifiers block with exit code 2. Set `STOP_STATE_DIR` to an existing directory. Use `exec` before the command to replace its shell; this sample does not manage descendant processes.
+
+<Example
+  label="Computed"
+  task="A maintainer sends seven stop events from two sessions through the gate, with a failing test command and then a passing one."
+  evidence="python3 -I examples/hook-traps/test_gated_stop.py"
+  env="Python 3.13.1, macOS 26.5, 2026-10-27T00:23:42Z. Standard output shown; test-runner diagnostics use standard error."
+>
+
+<Fragment slot="input">
+
+```bash
+python3 -I examples/hook-traps/test_gated_stop.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+session=s1 tests=fail exit=2 expect=2
+session=s1 tests=fail exit=2 expect=2
+session=s1 tests=pass exit=0 expect=0
+session=s1 tests=fail exit=2 expect=2
+session=s2 tests=fail exit=2 expect=2
+session=s2 tests=fail exit=2 expect=2
+session=s2 tests=fail exit=0 expect=0
+escalation files: ['s2.escalate']
+unreadable input exit=2 expect=2
+ok
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Session `s1` fails twice, passes on its third stop, and then fails again with a fresh count. Session `s2` fails three times. On the third failure the gate lets the stop through and writes `s2.escalate`. Later failing stops also pass once the count reaches three; the escalation file remains for human review. Unreadable input blocks.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the gate logic with the shell commands `true` and `false` in place of a real suite. The regression tests also exercise timeouts and state errors. It does not show a real harness, a production suite, or how a person sees the escalation file. The docs say exit code 2 on `Stop` continues the conversation. The docs say that at exit 0 the agent never sees standard error, and stdout from a stop hook goes to the debug log, not the transcript. Read the file rather than the terminal.
+
+</Fragment>
+
+</Example>
+
+### Three outcomes, and which exit code means "deliberate"
+
+A pre-action check has three outcomes. A hard deny stops the call. A soft deny stops the call and tells the model why, so it can choose another route. A pass lets the call run. Your tool decides which exit code or output means which. In Claude Code, exit code 2 blocks and sends standard error back, and by default any other non-zero code does not block (item 3 covers the `onFailure` setting that changes this). Check your own tool's docs before you rely on a code, because another harness may treat 1 as the deliberate denial.
+
+### Every blocking check needs a bypass route
+
+A block with no way round gets disabled the first time it is wrong. Give each blocking check a documented bypass that a person controls, such as an environment variable the agent cannot set, or a one-line change to the settings file. Log each use of it. The bypass belongs in the check's block message, so the person sees it when the check fires.
+
+### The wrong repository
+
+A hook that asks git about a repository can answer about another one. Git reads `GIT_DIR`, `GIT_WORK_TREE` and `GIT_INDEX_FILE` from the environment, and `git -C` does not override them. If a session started inside a nested repository, the hook inspects that one.
+
+<Example
+  label="Computed"
+  task="A maintainer builds two throwaway repositories and asks git about the outer one while GIT_DIR points at the inner one."
+  evidence="sh examples/hook-traps/nested_repo_trap.sh"
+  env="git 2.50.1, macOS 26.5, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```bash
+sh examples/hook-traps/nested_repo_trap.sh
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+hook asks about outer, environment points at inner:
+  last commit: commit in inner
+same call with the git variables removed:
+  last commit: commit in outer
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The first call names the outer folder and still reads the inner repository. The fix is to run git with `env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows git's behaviour with an inherited variable. It does not show how your harness sets the environment, so print it in a test hook.
+
+</Fragment>
+
+</Example>
+
+### Several hooks and latency
+
+The docs say: "When an event fires, its matching hooks run in parallel." So the wait for an event is about the slowest hook, not the sum. For pre-tool hooks the docs state the order: "When multiple PreToolUse hooks return different decisions, precedence is `deny` > `defer` > `ask` > `allow`." For other events, test two hooks that disagree before you rely on an order. The same page gives command hooks a default timeout of 600 seconds, so set a shorter one on each. This guide measured no harness-level latency and no parallel-hook latency. The only timings are the standalone script runs in the chart above.
+
+## Failure modes it reduces
+
+- The agent runs a destructive command that the instruction file forbids, because an instruction file is advice. A rule given only in chat can also be gone after compaction.
+- Unformatted or unlinted code reaches review.
+- The agent stops with failing tests and reports success.
+- A hook script exits 1 and the team believes it blocks a rule.
+- A hook path that no longer resolves blocks every Bash call, or lets every call through, depending on the script type.
+- A text-matching hook misses the same command written in another order.
+
+## First step for the maintainer
+
+Add one `PostToolUse` hook on `Edit|Write` that runs your formatter. Add one `PreToolUse` hook on `Bash` that blocks the single command you fear most. Trigger both on purpose to confirm they fire.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.316. The docs page states no version of its own. The sample and matrix were run on 2026-10-22 with Python 3, re-run on 2026-11-02, and are in the repository.</p>
+
+**Next:** [Claude Code permissions, sandboxing](../permissions-and-sandboxing/)

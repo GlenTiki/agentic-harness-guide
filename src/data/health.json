@@ -1,0 +1,114 @@
+{
+  "generated_at": "2026-10-25T02:22:18Z",
+  "commit": "bcdcb98",
+  "rows": [
+    {
+      "id": "links",
+      "label": "Internal links resolve",
+      "covers": "Every internal link and anchor in the built site points at a real target.",
+      "status": "pass",
+      "source": "scripts/check-links.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "96 pages checked, 0 problems"
+    },
+    {
+      "id": "skill-coverage",
+      "label": "Skill coverage",
+      "covers": "Every rule in the sample skill is explained on the walkthrough page.",
+      "status": "pass",
+      "source": "scripts/check-skill-coverage.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "45 of 45 non-blank lines annotated (56 lines in the file)"
+    },
+    {
+      "id": "todos",
+      "label": "No unfinished markers",
+      "covers": "No placeholder markers or banned phrases remain in the pages.",
+      "status": "pass",
+      "source": "scripts/check-todos.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "0 files with 0 markers or banned phrases remaining"
+    },
+    {
+      "id": "examples",
+      "label": "Examples carry all five parts",
+      "covers": "Every Example has a valid label, a task, input, output, notice and shows, and an Observed example has evidence that resolves.",
+      "status": "pass",
+      "source": "scripts/check-examples.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "99 examples checked, 0 problems"
+    },
+    {
+      "id": "evidence",
+      "label": "Evidence page matches the test results",
+      "covers": "The evidence page equals the output of the generator run on examples/wrong-behaviour/results.json.",
+      "status": "pass",
+      "source": "scripts/make-evidence.mjs --check",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "src/content/docs/evidence/index.mdx: up to date with examples/wrong-behaviour/results.json"
+    },
+    {
+      "id": "llms",
+      "label": "Machine layer (llms.txt, twins, rules)",
+      "covers": "llms.txt, llms-full.txt, agent-rules.txt and every Markdown twin are present and consistent.",
+      "status": "pass",
+      "source": "scripts/check-llms.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "87 markdown twins checked, 2 data twins, 13 kits listed"
+    },
+    {
+      "id": "contrast",
+      "label": "Colour contrast of the design tokens",
+      "covers": "Every token pair meets WCAG AA in light and dark.",
+      "status": "pass",
+      "source": "scripts/check-contrast.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "src/styles/tokens.css: 96 pairs checked, lowest text ratio 5.01:1, 0 failures"
+    },
+    {
+      "id": "seo",
+      "label": "Search and sharing metadata",
+      "covers": "Titles, canonical links, social card, JSON-LD, sitemap and feed pass.",
+      "status": "pass",
+      "source": "scripts/check-seo.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "95 pages, 89 sitemap URLs, JSON-LD types: TechArticle x87, Person x89, BreadcrumbList x88, ListItem x223, WebSite x1, LearningResource x10, 0 problems"
+    },
+    {
+      "id": "og",
+      "label": "Social card matches its generator",
+      "covers": "public/og.png is byte-identical to the generator output.",
+      "status": "pass",
+      "source": "scripts/check-og.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "public/og.png matches scripts/make-og.mjs output"
+    },
+    {
+      "id": "orphans",
+      "label": "No orphan pages",
+      "covers": "Every page is linked from at least one other page.",
+      "status": "pass",
+      "source": "scripts/check-orphans.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "96 pages, 1 redirect, 0 orphans"
+    },
+    {
+      "id": "showcase",
+      "label": "Showcase data",
+      "covers": "Every artefact has alt text, a text version and a UTC preparation time.",
+      "status": "pass",
+      "source": "scripts/check-showcase.mjs",
+      "observed": "2026-10-25T02:22:18Z",
+      "detail": "src/data/showcase.json: 4 artefacts, 0 problems"
+    },
+    {
+      "id": "axe",
+      "label": "Accessibility scan (axe-core, 13 pages, light and dark)",
+      "covers": "No automated WCAG 2.2 AA violations on the audited pages.",
+      "status": "unknown",
+      "source": "not run by npm scripts",
+      "observed": null,
+      "detail": "No automated source feeds this row. Run the browser audit by hand and record the result."
+    }
+  ]
+}

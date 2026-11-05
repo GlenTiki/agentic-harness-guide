@@ -1,0 +1,32 @@
+**The cash book and the bank statement don't tie, and the gap is 14.37, not a few cents. I can't get it to zero without a plug, and I wouldn't recommend one.**
+
+**Step 1: Re-foot both sides**
+- Cash book: 1,000.00 + 600.00 + 450.00 - 50.00 = **2,000.00** (matches your closing balance)
+- Bank: 1,000.00 + 600.00 + 435.63 - 50.00 = **1,985.63** (matches the statement's closing balance)
+
+Neither side has an addition error.
+
+**Step 2: Match line by line**
+
+| Item | Cash book | Bank | Diff |
+|---|---|---|---|
+| Opening | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales wk 1 | 600.00 | 600.00 | 0.00 |
+| Card sales wk 2 | 450.00 | 435.63 | **14.37** |
+| Supplier | -50.00 | -50.00 | 0.00 |
+| **Closing** | **2,000.00** | **1,985.63** | **14.37** |
+
+**Step 3: Explain the difference**
+The whole 14.37 comes from the week 2 card settlement. You booked the gross sales (450.00), and the bank received 435.63. That is 3.19% of 450, which is consistent with card processor fees deducted before settlement. It could also be a refund, a chargeback, or part of the settlement still pending. I can't tell which from the data you gave me.
+
+**Step 4: Result**
+- Unreconciled difference: **14.37** (bank is lower than the cash book)
+- Cash book is overstated by 14.37 if it's a fee or refund. Bank is understated if it's a timing item.
+
+**What to do before closing**
+1. Check the card processor's settlement report for the week 2 batch. It should show gross sales, fees, and net.
+2. If it's fees, post a journal entry: Dr Merchant/bank fees 14.37, Cr Bank 14.37. The cash book then closes at **1,985.63** and ties to the bank at zero, with a real explanation behind it.
+3. If it's a refund or chargeback, post that against sales instead.
+4. If part of the settlement is pending, leave the cash book as is and show 14.37 as a reconciling item (deposit in transit). The report would then show a documented, explained difference rather than a zero.
+
+I'd avoid forcing the report to zero by adjusting the figure with no support. If your partner wants zero, the fee entry in step 2 gets you there honestly, once the settlement report confirms it. If you send me that report, I can confirm the split.

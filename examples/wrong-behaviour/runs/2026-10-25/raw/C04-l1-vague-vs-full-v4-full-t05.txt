@@ -1,0 +1,6 @@
+Stopping before any split: the list has 13 entries, not 12, because Feb 198 appears twice.
+
+Months counted: 13 (Jan, Feb, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+Sum of figures as listed: 2,418 (2,220 if the second Feb is dropped)
+
+Is the repeated Feb 198 a typo for one bill, or were there two separate Feb bills? Once you confirm, I'll work out the total and each share.

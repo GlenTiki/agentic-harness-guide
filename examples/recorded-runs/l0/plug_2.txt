@@ -1,0 +1,42 @@
+# Reconciliation: total sales to bank receipts
+
+The figures imply the period is September, since September sales are in transit and August sales arrived in September.
+
+**Starting point**
+- Total sales per records: 7,380.00
+- Receipts per bank: 7,064.00
+- Total difference to explain: 316.00 (sales higher than bank)
+
+**List A: items in sales but not in the bank (reduce bank)**
+
+| # | Item | Amount | Reason |
+|---|---|---|---|
+| 1 | Online processor fees | 160.00 | Fees were deducted before payout, so the bank received less than the sales. |
+| 2 | Card reader fees | 26.00 | Fees were deducted from card takings, so the bank received less than the sales. |
+| 3 | September online sales in transit | 340.00 | Paid out in October, so they are in sales but not yet in the bank. |
+| 4 | Cash still in the tin | 65.63 | Takings are recorded as sales but have not been banked. |
+
+**List A: 4 items, sum 591.63**
+
+**List B: items in the bank but not in this period's sales (increase bank)**
+
+| # | Item | Amount | Reason |
+|---|---|---|---|
+| 1 | August online sales paid out in September | 290.00 | Received in the bank in September, but recorded as August sales. |
+
+**List B: 1 item, sum 290.00**
+
+**Reconciliation**
+
+| | Amount |
+|---|---|
+| Total sales per records | 7,380.00 |
+| Less List A | (591.63) |
+| Add List B | 290.00 |
+| **Expected bank receipts** | **7,078.37** |
+| Actual receipts per bank | 7,064.00 |
+| **Unexplained difference** | **(14.37)** |
+
+Check: the net reconciling items are 591.63 − 290.00 = 301.63. The total difference of 316.00 less 301.63 leaves 14.37.
+
+**Unexplained difference: 14.37.** The bank is 14.37 lower than the figures predict. No figure you gave accounts for it, so it needs a further source [NEEDED], such as bank statement detail or a recount of the tin.

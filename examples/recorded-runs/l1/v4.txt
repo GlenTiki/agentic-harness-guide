@@ -1,0 +1,8 @@
+Goal: work out what each of the three of us owes for last year's shared bills, so I can send Priya and Tom one amount each.
+Constraints: Use only the figures I gave you. List each month once. If a month is missing or repeated, tell me and ask instead of guessing. Round each share to the cent. If the three shares do not add to the total, change Sam's share by the difference and say so. Keep the answer under ten lines.
+Layout I want, shown with two made-up months (Jan 100, Feb 50):
+Months counted: 2
+Total: 150.00
+Each of 3 pays: 50.00
+Check: Before the final answer, state how many months you counted and the sum of the figures. If the count is not 12, stop and tell me.
+Bills, in euros per month: Jan 212, Feb 198, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240.

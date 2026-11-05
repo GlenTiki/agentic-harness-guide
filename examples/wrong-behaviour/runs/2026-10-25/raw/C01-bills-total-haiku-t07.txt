@@ -1,0 +1,28 @@
+**Total for last year: €2,318.00**, so each person's share is **€772.67** (with €0.01 rounding, see below).
+
+**Working**
+
+| Month | €   | Running total |
+|-------|-----|---------------|
+| Jan   | 212 | 212           |
+| Feb   | 198 | 410           |
+| Feb   | 198 | 608           |
+| Mar   | 187 | 795           |
+| Apr   | 164 | 959           |
+| May   | 151 | 1,110         |
+| Jun   | 142 | 1,252         |
+| Jul   | 139 | 1,391         |
+| Aug   | 141 | 1,532         |
+| Sep   | 158 | 1,690         |
+| Oct   | 183 | 1,873         |
+| Nov   | 205 | 2,078         |
+| Dec   | 240 | 2,318         |
+
+- Total: €2,318.00
+- Split three ways: 2,318 ÷ 3 = €772.666…
+- Rounded to cents: €772.67 each. Adding three €772.67 amounts gives €2,318.01, so one person pays €0.01 less, for example €772.66 for one person and €772.67 for the other two.
+
+**Please check the February entry.** You listed February twice, which makes 13 entries for 12 months. I've included both, since I can't tell whether that's two separate February bills or a typo. If it's a duplicate, remove one €198:
+
+- Total: €2,120.00
+- Each share: €706.67 (2,120 ÷ 3 = €706.666…)

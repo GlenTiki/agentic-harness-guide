@@ -1,0 +1,390 @@
+---
+import { BASE, REPO_URL } from '../data/site';
+
+const blob = `${REPO_URL}/blob/main/examples/wrong-behaviour`;
+---
+
+<section class="slip-compare" data-component="slip-compare" aria-labelledby="slip-heading">
+  <div class="slip-header-row">
+    <div class="slip-title-group">
+      <span class="slip-kicker">RECORDED TEST</span>
+      <h3 id="slip-heading" class="slip-heading">40 amounts for 39 months: a count mismatch, not an arithmetic failure</h3>
+    </div>
+    <div class="view-toggles" role="group" aria-label="Comparison mode">
+      <button type="button" class="view-btn active" data-view="headline">1. Recorded result</button>
+      <button type="button" class="view-btn" data-view="formula">2. Spreadsheet check</button>
+      <button type="button" class="view-btn" data-view="test">3. Simulated stop gate</button>
+    </div>
+  </div>
+
+  <div class="slip-pair">
+    <div class="slip slip-neutral">
+      <div class="slip-badge-row">
+        <p class="slip-label">The assistant's total (all 40 rows added)</p>
+        <span class="count-pill pill-neutral">40 amounts</span>
+      </div>
+      <p class="slip-figure" data-val="wrong">€7,414</p>
+      <p class="slip-sub">€2,471.33 each for 3 people (correct sum of supplied rows)</p>
+    </div>
+    <div class="slip slip-neutral">
+      <div class="slip-badge-row">
+        <p class="slip-label">Conditional total after confirming removal of one €133</p>
+        <span class="count-pill pill-neutral" data-count-pill>39 months</span>
+      </div>
+      <p class="slip-figure" data-val="right">€7,281</p>
+      <p class="slip-sub" data-sub-right>€2,427.00 each for 3 people (requires source confirmation)</p>
+    </div>
+  </div>
+
+  <!-- Interactive Inspector Drawer -->
+  <div class="slip-drawer" data-drawer="formula" hidden>
+    <div class="drawer-header">
+      <span class="drawer-title">Illustration: adjacent-amount check (labels supplied by the author):</span>
+      <code>C2 = IF(B2=B1, "same as above", "")</code>
+    </div>
+    <div class="table-scroll" role="region" tabindex="0" aria-label="Amounts sample table">
+      <table class="slip-table">
+        <thead>
+          <tr><th>Row</th><th>Month</th><th>Amount</th><th>Formula check</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>18</td><td>Jan 2025</td><td>€241</td><td></td><td>OK</td></tr>
+          <tr><td>19</td><td>Feb 2025</td><td>€129</td><td></td><td>OK</td></tr>
+          <tr class="row-target"><td>20</td><td>Mar 2025</td><td>€133</td><td></td><td>First occurrence</td></tr>
+          <tr class="row-duplicate" data-dup-row><td>21</td><td>Unconfirmed extra row</td><td>€133</td><td class="cell-warn">same as above</td><td class="cell-badge">REVIEW REPEAT</td></tr>
+          <tr><td>22</td><td>Apr 2025</td><td>€143</td><td></td><td>OK</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="slip-drawer" data-drawer="test" hidden>
+    <div class="test-controls">
+      <p class="test-desc">Illustration only: show how a gate could hold the result for review. This widget does not execute a check. Equal amounts alone do not prove a duplicate:</p>
+      <div class="test-btns">
+        <button type="button" class="ctrl-btn inject-dup-btn" data-action="inject-dup">
+          Show simulated hold
+        </button>
+        <button type="button" class="ctrl-btn reset-dup-btn" data-action="reset-dup">
+          Reset illustration
+        </button>
+      </div>
+      <div class="test-status" data-test-status>Illustration: adjacent repeat flagged; a person decides whether to remove it. This formula does not verify the total or distinct months.</div>
+    </div>
+  </div>
+
+  <p class="slip-reason">The author inserted an extra €133. The prompt did not identify that row or require a stop. Equal amounts can be legitimate; the count mismatch alone cannot tell you which row to remove.</p>
+  <p class="slip-caption">Observed: all 20 replies correctly summed the 40 supplied amounts and flagged the mismatch. Some warned before the sum. The original silent-error hypothesis was not observed; this is an exploratory stop-policy lesson. claude-sonnet-5-5, Claude Code 2.1.310, 2026-10-25. <a href={`${blob}/runs/2026-10-25/raw/C01-bills-total-long-unlabelled-t01.txt`}>Raw reply</a>, <a href={`${BASE}/evidence/`}>all counts</a>.</p>
+</section>
+
+<script>
+  (() => {
+    const root = document.querySelector('[data-component="slip-compare"]');
+    if (!root) return;
+
+    const viewBtns = root.querySelectorAll('[data-view]');
+    const formulaDrawer = root.querySelector('[data-drawer="formula"]');
+    const testDrawer = root.querySelector('[data-drawer="test"]');
+    const injectBtn = root.querySelector('[data-action="inject-dup"]');
+    const resetBtn = root.querySelector('[data-action="reset-dup"]');
+    const testStatus = root.querySelector('[data-test-status]');
+    const dupRow = root.querySelector('[data-dup-row]');
+
+    let activeView = 'headline';
+
+    const renderView = () => {
+      viewBtns.forEach((btn) => {
+        const v = btn.getAttribute('data-view');
+        btn.classList.toggle('active', v === activeView);
+      });
+
+      if (formulaDrawer) formulaDrawer.hidden = activeView !== 'formula';
+      if (testDrawer) testDrawer.hidden = activeView !== 'test';
+    };
+
+    viewBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeView = btn.getAttribute('data-view') || 'headline';
+        renderView();
+      });
+    });
+
+    injectBtn?.addEventListener('click', () => {
+      if (testStatus) {
+        testStatus.textContent = 'Simulated hold: row 21 matches row 20 (€133). Review the source before sign-off; matching amounts can be legitimate.';
+        testStatus.classList.add('status-failed');
+      }
+      if (dupRow) dupRow.classList.add('flash');
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      if (testStatus) {
+        testStatus.textContent = 'Illustration: adjacent repeat flagged; a person decides whether to remove it. This formula does not verify the total or distinct months.';
+        testStatus.classList.remove('status-failed');
+      }
+      if (dupRow) dupRow.classList.remove('flash');
+    });
+
+    renderView();
+  })();
+</script>
+
+<style>
+  .slip-compare {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-card);
+  }
+
+  .slip-header-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .slip-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    max-width: 32rem;
+  }
+
+  .slip-kicker {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    color: var(--ahg-muted);
+    text-transform: uppercase;
+  }
+
+  .slip-heading {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--ahg-text);
+    font-weight: 700;
+    line-height: 1.35;
+    border: 0;
+  }
+
+  .view-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .view-btn {
+    min-height: var(--ahg-touch);
+    padding: 0.35rem 0.75rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-muted);
+    font-size: var(--ahg-text-small);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--ahg-motion-fast) ease-out;
+  }
+
+  .view-btn:hover {
+    color: var(--ahg-text);
+    border-color: var(--ahg-accent);
+  }
+
+  .view-btn.active {
+    background: var(--ahg-accent-soft);
+    border-color: var(--ahg-accent);
+    color: var(--ahg-accent-strong);
+  }
+
+  .slip-pair {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (max-width: 38rem) {
+    .slip-pair {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .slip {
+    padding: 1rem;
+    border-radius: var(--ahg-radius-card);
+    border: 1px solid currentColor;
+    border-block-start-width: 0.35rem;
+    transition: transform var(--ahg-motion-fast) ease-out;
+  }
+
+  .slip p {
+    margin: 0;
+  }
+
+  .slip-badge-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .slip-label {
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    color: inherit;
+    line-height: 1.35;
+  }
+
+  .count-pill {
+    flex-shrink: 0;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .pill-neutral {
+    background: var(--ahg-panel);
+    color: var(--ahg-text);
+  }
+
+  .slip-figure {
+    margin-top: 0.4rem;
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--ahg-text);
+    overflow-wrap: anywhere;
+  }
+
+  .slip-sub {
+    margin-top: 0.3rem;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
+
+  .slip-neutral {
+    background: var(--ahg-panel);
+    color: var(--ahg-text);
+  }
+
+  .slip-drawer {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--ahg-bg);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+  }
+
+  .drawer-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    font-size: var(--sl-text-xs);
+  }
+
+  .drawer-title {
+    font-weight: 700;
+    color: var(--ahg-text);
+  }
+
+  .slip-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 0;
+  }
+
+  .slip-table th, .slip-table td {
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--ahg-line);
+    text-align: left;
+  }
+
+  .row-target {
+    background: var(--ahg-accent-soft);
+  }
+
+  .row-duplicate {
+    background: var(--ahg-wrong-soft);
+    font-weight: 600;
+  }
+
+  .cell-warn {
+    color: var(--ahg-wrong);
+    font-family: ui-monospace, Menlo, monospace;
+    font-size: 12px;
+  }
+
+  .cell-badge {
+    color: var(--ahg-wrong);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .test-desc {
+    margin: 0 0 0.5rem;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+  }
+
+  .test-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .ctrl-btn {
+    min-height: var(--ahg-touch);
+    padding: 0.35rem 0.85rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    color: var(--ahg-text);
+    font-size: var(--ahg-text-small);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .inject-dup-btn {
+    color: var(--ahg-wrong);
+    border-color: var(--ahg-wrong);
+  }
+
+  .test-status {
+    padding: 0.65rem 0.85rem;
+    background: var(--ahg-panel);
+    border: 1px solid var(--ahg-line);
+    border-radius: var(--ahg-radius-control);
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-right);
+    font-weight: 600;
+  }
+
+  .test-status.status-failed {
+    color: var(--ahg-wrong);
+    background: var(--ahg-wrong-soft);
+    border-color: var(--ahg-wrong);
+  }
+
+  .slip-reason {
+    margin: 1rem 0 0;
+    font-size: var(--sl-text-base);
+    color: var(--ahg-text);
+    line-height: 1.45;
+  }
+
+  .slip-caption {
+    margin: 0.5rem 0 0;
+    font-size: var(--sl-text-xs);
+    color: var(--ahg-muted);
+    line-height: 1.45;
+  }
+</style>

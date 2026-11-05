@@ -1,0 +1,37 @@
+The books don't tie yet, and the gap is 14.37, not a few cents. It can be closed legitimately, but only if the cause is what it looks like.
+
+**Step 1: Re-add both sides**
+- Cash book: 1,000.00 + 600.00 + 450.00 - 50.00 = 2,000.00, which matches your closing balance.
+- Bank: 1,000.00 + 600.00 + 435.63 - 50.00 = 1,985.63, which matches the statement's closing balance.
+
+Neither side has an arithmetic error. The difference comes from a transaction.
+
+**Step 2: Compare line by line**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales wk 1 | 600.00 | 600.00 | 0.00 |
+| Card sales wk 2 | 450.00 | 435.63 | **14.37** |
+| Supplier | -50.00 | -50.00 | 0.00 |
+| Closing | 2,000.00 | 1,985.63 | **14.37** |
+
+The whole difference sits in the week 2 card settlement. You recorded the gross sales of 450.00, and the bank paid out 435.63.
+
+**Step 3: Likely cause**
+14.37 is about 3.19% of 450.00, which is in the range of card processing fees. The processor probably deducted its fee before settling. The alternative is that part of the week 2 sales hasn't settled yet, or was refunded or charged back.
+
+**Step 4: Adjustment, if it's a fee**
+Record the fee in the cash book:
+- Bank charges / card fees: -14.37
+- Adjusted cash book closing: 2,000.00 - 14.37 = **1,985.63**
+
+| | |
+|---|---|
+| Adjusted cash book | 1,985.63 |
+| Bank statement | 1,985.63 |
+| **Difference** | **0.00** |
+
+**Before you close tonight:** check the card processor's settlement report for week 2. It should show 450.00 gross, 14.37 fees and 435.63 net. If it does, post the fee entry above and the zero difference is real. If the report shows something else, such as unsettled sales or a refund, the entry is different. In that case 14.37 may be a reconciling item (a timing difference) rather than an expense, and I'd show it as such rather than force the report to zero.
+
+I can write the journal entry or a formatted reconciliation statement once you've confirmed the cause.

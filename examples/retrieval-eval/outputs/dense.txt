@@ -1,0 +1,82 @@
+date: 2026-10-25T01:52:27Z
+machine: Apple silicon (arm64), macOS 26.5
+python: 3.13.1
+packages: standard library only
+system: dense
+command: retrieval_eval.py dense
+model: nomic-embed-text via ollama 0.34.2, nomic-embed-text digest 0a109f422b47
+document text: context_text
+
+| system | precision@3 | hit@3 | MRR |
+| --- | --- | --- | --- |
+| dense | 0.333 | 0.941 | 0.905 |
+(44 memories, 34 queries, 32 queries with a correct note in the top 3)
+
+HIT  first_correct_rank=1 | How big should a pull request be before I split it?
+     top3=['pull-request-size', 'line-length', 'small-commits'] expected=['pull-request-size', 'small-commits']
+HIT  first_correct_rank=1 | Which spelling should the docs use, colour or color?
+     top3=['british-english', 'dark-mode-support', 'terminal-theme'] expected=['british-english']
+HIT  first_correct_rank=1 | What should the subject line of my commit look like?
+     top3=['small-commits', 'log-format', 'changelog-habit'] expected=['small-commits']
+HIT  first_correct_rank=1 | Is it okay to install a third party library for this?
+     top3=['standard-library', 'editor-choice', 'no-global-state'] expected=['standard-library']
+HIT  first_correct_rank=1 | Where do I keep API keys for the deploy script?
+     top3=['secrets-handling', 'api-versioning', 'editor-choice'] expected=['secrets-handling']
+HIT  first_correct_rank=1 | Should this function have annotations for its arguments?
+     top3=['type-hints', 'shell-aliases', 'standard-library'] expected=['type-hints']
+HIT  first_correct_rank=1 | How should a failed request be tried again?
+     top3=['retry-policy', 'tests-first', 'error-messages'] expected=['retry-policy']
+HIT  first_correct_rank=1 | What shape should the log lines have?
+     top3=['log-format', 'line-length', 'changelog-habit'] expected=['log-format']
+HIT  first_correct_rank=1 | How wide can a line of code be?
+     top3=['line-length', 'pull-request-size', 'tests-first'] expected=['line-length']
+HIT  first_correct_rank=1 | Which database should the new service use?
+     top3=['database-choice', 'plain-text-first', 'migration-safety'] expected=['database-choice']
+HIT  first_correct_rank=1 | How do I make a schema change that I can undo?
+     top3=['migration-safety', 'docs-with-code', 'no-global-state'] expected=['migration-safety']
+HIT  first_correct_rank=1 | How many results should a list endpoint return per page?
+     top3=['pagination-default', 'performance-budget', 'pull-request-size'] expected=['pagination-default']
+HIT  first_correct_rank=1 | How should dates be typed into the form?
+     top3=['date-input-format', 'utc-timestamps', 'meeting-notes-format'] expected=['date-input-format']
+MISS first_correct_rank=4 | How do I record when an event happened?
+     top3=['incident-review', 'changelog-habit', 'log-format'] expected=['utc-timestamps']
+HIT  first_correct_rank=1 | Can we make the interface readable for people with poor eyesight?
+     top3=['accessibility-basics', 'dark-mode-support', 'keyboard-layout'] expected=['accessibility-basics']
+HIT  first_correct_rank=1 | Do people who work at night get a darker theme?
+     top3=['dark-mode-support', 'terminal-theme', 'morning-focus'] expected=['dark-mode-support', 'terminal-theme']
+HIT  first_correct_rank=1 | The page feels slow, where do I start?
+     top3=['performance-budget', 'plain-text-first', 'review-checklist'] expected=['performance-budget']
+HIT  first_correct_rank=2 | How do we run a review after an outage?
+     top3=['review-checklist', 'incident-review', 'weekly-review-friday'] expected=['incident-review']
+HIT  first_correct_rank=2 | How long will this task take?
+     top3=['performance-budget', 'estimate-policy', 'commute-by-bike'] expected=['estimate-policy']
+HIT  first_correct_rank=1 | What should I check when reviewing someone's code?
+     top3=['review-checklist', 'tests-first', 'incident-review'] expected=['review-checklist']
+HIT  first_correct_rank=1 | How should I name a new branch?
+     top3=['branch-naming', 'database-choice', 'api-versioning'] expected=['branch-naming']
+HIT  first_correct_rank=1 | Where do the release notes go?
+     top3=['changelog-habit', 'meeting-notes-format', 'docs-with-code'] expected=['changelog-habit']
+HIT  first_correct_rank=1 | What format for the notes from a meeting?
+     top3=['meeting-notes-format', 'email-tone', 'log-format'] expected=['meeting-notes-format']
+HIT  first_correct_rank=1 | When do I look back over the week?
+     top3=['weekly-review-friday', 'incident-review', 'backup-routine'] expected=['weekly-review-friday']
+HIT  first_correct_rank=1 | How should I word a quick message to a colleague?
+     top3=['email-tone', 'error-messages', 'meeting-notes-format'] expected=['email-tone']
+HIT  first_correct_rank=1 | How do I protect my files if the laptop dies?
+     top3=['backup-routine', 'plain-text-first', 'secrets-handling'] expected=['backup-routine']
+HIT  first_correct_rank=1 | Which tool stores my logins?
+     top3=['password-manager', 'log-format', 'plain-text-first'] expected=['password-manager']
+HIT  first_correct_rank=1 | What do I take on a trip?
+     top3=['travel-packing-list', 'dietary-preference', 'database-choice'] expected=['travel-packing-list']
+HIT  first_correct_rank=1 | Where can the group eat lunch?
+     top3=['dietary-preference', 'commute-by-bike', 'email-tone'] expected=['dietary-preference']
+HIT  first_correct_rank=3 | How do I get to the office?
+     top3=['morning-focus', 'email-tone', 'commute-by-bike'] expected=['commute-by-bike']
+MISS first_correct_rank=5 | When should I schedule a call with the team?
+     top3=['retry-policy', 'incident-review', 'sleep-schedule'] expected=['morning-focus']
+HIT  first_correct_rank=1 | Write the failing check before the feature
+     top3=['tests-first', 'error-messages', 'review-checklist'] expected=['tests-first']
+HIT  first_correct_rank=1 | Which currency do prices use?
+     top3=['currency-eur', 'keyboard-layout', 'utc-timestamps'] expected=['currency-eur']
+HIT  first_correct_rank=1 | What should the message say when validation fails?
+     top3=['error-messages', 'tests-first', 'review-checklist'] expected=['error-messages']

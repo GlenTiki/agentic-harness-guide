@@ -1,0 +1,23 @@
+Each of you owes **€706.67** for the year, based on a total of **€2,120**.
+
+Your list has February twice (198 both times). I treated that as a typo and counted it once, since there are 12 months. If you were actually billed twice for February, the total is €2,318 and each share is €772.67.
+
+Three equal shares of €2,120 come to €2,120.01, so one person should pay €706.66 and the other two €706.67.
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+| **Total** | **2,120** |
+
+That works out to about €58.89 per person per month.

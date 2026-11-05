@@ -1,0 +1,27 @@
+This ask is already good.
+
+## Assumptions
+- "[notes pasted here]" is a placeholder where your real notes will go, so I left it as is.
+
+## Refined prompt
+```text
+Goal: Turn my meeting notes into a short update for my team.
+Context: The team could not attend. They know the project but not today's discussion.
+Inputs: My notes, pasted below.
+Constraints: No more than five bullets. Each action names one owner. Do not add anything that is not in the notes.
+Output format: A bulleted list, then one line saying what is still undecided.
+Definition of done: Every action in the notes appears once, with an owner, or is marked "owner unknown".
+What to do if unsure: Ask me. Do not guess an owner.
+
+[notes pasted here]
+```
+
+## What changed
+- Added: nothing.
+- Changed: nothing.
+- Left alone: everything. All seven sections are present, the constraints are checkable, and the fallback is clear.
+
+## Second pass
+Next I would check two things, if you want me to look again:
+- **Bullet cap versus actions:** if your notes hold more than five actions, "no more than five bullets" and "every action appears once" will conflict. You could say which wins, or allow grouping.
+- **Decisions:** the update covers actions and what is undecided, but not what was decided. Say so if the team should see decisions too.

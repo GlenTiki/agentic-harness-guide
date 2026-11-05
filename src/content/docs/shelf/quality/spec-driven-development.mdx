@@ -1,0 +1,147 @@
+---
+title: Spec-driven development
+description: Write a short spec before the agent writes code, and make the spec the contract for tests and review.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 5: Check the work](../../../journey/05-check-the-work/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** for any change larger than a few lines, write a one-page spec first. Put it in the repository, have a second agent or person challenge it, and trace every test and commit back to it. Skip the spec for trivial edits.
+
+## Why it matters
+
+[Level 5](../../../journey/05-check-the-work/) calls this the definition of done. An agent produces plausible code from whatever it is given. When the request is vague, the code is plausible and wrong in ways that are hard to see in a diff. A spec forces the decisions into text that you can review before any code exists, when changing your mind is cheap.
+
+## What to enable
+
+**1. A standard spec shape.** Keep it to one page:
+
+```markdown
+# <Change name>
+
+## Intent
+One paragraph: what changes for whom, and why.
+
+## Acceptance criteria
+- Given X, when Y, then Z. (Each one maps to a test.)
+
+## Out of scope
+- Things a reader might assume are included.
+
+## Failure behaviour
+- What happens on duplicate calls, retries, partial writes, a dependency being down.
+
+## Open questions
+- Each has an owner.
+```
+
+**2. Challenge the spec.** Ask a second agent, ideally from a different provider, to find missing criteria, ambiguous wording and unstated assumptions. Resolve each finding in the text. The [independent review](../independent-review/) page covers why a fresh context matters.
+
+**3. Write acceptance criteria that a test can check.** "Handles errors well" is not checkable. "Returns 503 with a retry-after header when the database is unreachable" is.
+
+**4. Include failure behaviour.** Name the edge cases up front: concurrent calls, duplicates and retries, stale state, cancellation, restart and resource exhaustion. For each, state the expected behaviour and the test that proves it. Keep the solution proportionate to measured load, and do not design for scale you have not measured.
+
+**5. Trace work to the spec.** Reference the spec in the branch name, the commit messages and the pull request. When scope shifts, update the spec first. The spec is the contract.
+
+**6. List rejected alternatives.** One line per option you considered and why you dropped it. This saves the next reader, human or agent, from re-proposing it.
+
+**7. Keep the spec where agents read it.** A path in the instruction file is enough: "Specs live in `docs/specs/`. Read the relevant one before changing code."
+
+## Community workflows worth knowing
+
+Use a workflow kit when you need help retaining decisions or repeating an engineering routine. Start with the coordination problem. You do not need four overlapping planning systems supervising one typo.
+
+| Tool | What it organises | When I would try it; what to watch |
+| --- | --- | --- |
+| [OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/docs/getting-started.md) | Current specifications plus proposed changes, design and implementation tasks; accepted changes feed back into lasting specs. | An existing system whose intended behaviour must survive sessions. Keep the specs current. Its validation command checks specification formatting, not software correctness. |
+| [GitHub Spec Kit](https://github.github.com/spec-kit/reference/agentic-sdd.html) | Project principles, requirements, plans and tasks, with optional clarification, consistency and requirements-checklist steps. | A team that needs visible agreements across stages. Artefact review adds work; request implementation tests explicitly. A requirements checklist is not a test of working software. |
+| [Superpowers](https://github.com/obra/superpowers/blob/main/README.md) | Skills for design, planning, test-first implementation, debugging and review. | A coding agent that needs a repeatable engineering routine. Its verification skill asks for fresh command output before completion claims. Instructions still depend on agent adherence; enforce critical gates separately. |
+| [BMAD Method](https://github.com/bmad-code-org/BMAD-METHOD/blob/main/README.md) | Product, architecture, UX, development and testing perspectives, with different depths of planning. | Work that needs discovery and delivery coordination. Choose the smallest useful workflow and match the documentation to your installed release; preview and stable instructions can differ. |
+
+These are recommendations from documented mechanisms, not measured comparisons. None makes a correct specification or an obedient agent automatic. Tool documentation fetched on 2026-11-04; no installation or trial is implied here.
+
+Two ways to apply the scientific method:
+
+1. **With OpenSpec:** write an expected behaviour and a failure scenario in a proposed change. Inspect the change, write a test for the scenario and confirm it fails for the expected reason. Implement the change and rerun the test. Revise the code or the agreed requirement when evidence exposes a mistake. Retain the accepted behaviour in the current spec.
+2. **With Superpowers:** turn a known requirement into a failing test. Inspect why it fails, make the smallest change, inspect fresh verification output and review the result. Then try the user's actual journey. A passing test covers only what it tests.
+
+For a small correction, a short brief and a failing test may be enough. Keep a fuller specification for decisions that must survive handovers or repeated changes. [The guide's position on specifications](../../foundations/principles/#where-i-take-a-position) explains how to reconcile intent, tests and code.
+
+## A sentence an agent will fill
+
+*Principle, not measured:* an agent may not stop at a gap. It can pick the most likely reading and write code for it. Each guess can be reasonable, so the diff can look fine.
+
+<Example
+  label="Constructed"
+  task="You read one spec sentence and list the choices an agent must make to code it."
+  evidence="Written to illustrate. The list is my reading of the sentence. No model was run."
+  env="Invented spec sentence. No tool or model."
+>
+
+<Fragment slot="input">
+
+```text
+Send a reminder to customers with overdue invoices.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Choice                 A plausible guess
+What is overdue        The due date has passed
+Which invoices         Every unpaid invoice, including disputed ones
+Who gets one           The customer's main email address
+How often              Every day until paid
+What the reminder says One template for all
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Each guess is sensible alone. Together they send a daily email to a customer who is disputing the invoice. The sentence did not forbid it.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+One short sentence hides five decisions. It does not show what a given agent would choose.
+
+</Fragment>
+
+</Example>
+
+Rewrite the sentence as criteria that a test can check, and name what is out of scope:
+
+```markdown
+- Given an invoice unpaid 7 days after its due date and not marked disputed,
+  when the daily job runs, then one reminder goes to the billing contact.
+- Given the same invoice the next day, then no second reminder goes out.
+- Given a disputed invoice, then no reminder goes out.
+
+Out of scope: a second reminder, a late fee.
+```
+
+The 7 days and the one-reminder rule are examples of decisions the owner must make. The spec forces them into view before code exists.
+
+## Update the spec with the change
+
+When scope moves, edit the spec in the same commit as the code. If the spec stays old, the next reader treats the new behaviour as a bug, and the next agent "fixes" it back. A behaviour file that changes with no spec change is a prompt to ask why. It is a flag for a reviewer, not a block, because many changes need no spec edit. *Principle, not measured.*
+
+## Failure modes it reduces
+
+- The agent solves a different problem from the one you meant.
+- Scope grows silently during implementation.
+- Tests assert whatever the code does, because nothing else defined correct.
+- A reviewer cannot tell whether a behaviour is a bug or a decision.
+
+## First step for the maintainer
+
+For the next non-trivial change, write only the Intent and Acceptance criteria sections, and ask the agent to turn each criterion into a failing test before it writes the implementation.
+
+**Next:** [Test-first and quality gates](../test-first-and-gates/)

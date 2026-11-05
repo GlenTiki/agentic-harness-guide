@@ -1,0 +1,9 @@
+Feb is listed twice (198 both times), so I counted 13 entries rather than 12 months. I'm stopping here instead of guessing.
+
+Entries counted: 13 (Jan, Feb, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)
+Sum of all 13 figures: 2,518
+
+Question: is the second Feb 198 an accidental duplicate, or did you mean a different figure for another month (or a separate bill)?
+
+- If it's a duplicate, the 12-month total is 2,320.00 and each of 3 pays 773.33, with Sam's share adjusted by the rounding difference if needed.
+- If it's a different bill or figure, tell me the correct value and I'll recompute.

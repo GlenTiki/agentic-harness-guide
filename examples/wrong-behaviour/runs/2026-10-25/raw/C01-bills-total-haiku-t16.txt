@@ -1,0 +1,42 @@
+Assuming the second February entry (198) is a duplicate and each month appears once, the annual total is **€2,120.00**, so each person pays **€706.67** (one person pays €706.66 so the amounts add up exactly).
+
+**Working**
+
+Monthly bills (12 months):
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+Running total:
+212 + 198 = 410
+410 + 187 = 597
+597 + 164 = 761
+761 + 151 = 912
+912 + 142 = 1,054
+1,054 + 139 = 1,193
+1,193 + 141 = 1,334
+1,334 + 158 = 1,492
+1,492 + 183 = 1,675
+1,675 + 205 = 1,880
+1,880 + 240 = **2,120**
+
+Split three ways:
+2,120 ÷ 3 = 706.666… → **€706.67** each.
+Rounded to the cent, 3 × 706.67 = 2,120.01, which is one cent over, so one person pays €706.66:
+- Sam: €706.67
+- Priya: €706.67
+- Tom: €706.66
+
+**Check the February entry:** your list has two February lines (198 and 198). If both are real bills (for example, a second February charge), the total is €2,318.00 and each share is €772.67, with one person paying €772.66. Tell me if that's the case and I'll redo the split.

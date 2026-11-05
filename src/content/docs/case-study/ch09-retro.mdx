@@ -1,0 +1,238 @@
+---
+title: Turn rambling feedback into fixes
+description: Build the praise-first retro form, a parser that sorts rough notes into it, and a proposals file you accept or reject, with tests on rambling input.
+status: built
+sidebar:
+  label: "Chapter 9: Retro"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch09-retro.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (9 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+The same mistake twice. Feedback in chat disappears. Feedback in a vague note is never acted on.
+
+## Goal
+
+Turn rough feedback into the four-part form and a reviewable list of proposed fixes.
+
+## What is in the kit
+
+- The retro format: what went well first, then each problem as what it was, what happened and what I preferred.
+- `retro.py` with a `parse` command, which sorts rough notes into the form and writes a proposals file, and a `check` command. `check --draft` allows open questions. A strict `check` does not.
+- A rule-based parser. It reads the cues in the table below. A line with no cue stays in a Raw words block and becomes a question.
+- A proposals file. Each proposal has a source issue, a status (proposed, accepted or rejected) and the check that would prove it works.
+
+| Cue at the start of a line | Meaning |
+| --- | --- |
+| `+ `, `good:`, `went well:`, `liked:`, `win:` | something that went well |
+| `- `, `bad:`, `problem:`, `issue:`, `went wrong:` | a new problem |
+| `what it was:`, `it was:`, `was:` | field "What it was" |
+| `what happened:`, `happened:` | field "What happened" |
+| `what i preferred:`, `preferred:`, `i wanted`, `next time:` | field "What I preferred" |
+
+Case does not matter.
+
+## Get the kit
+
+Download [ch09-retro.zip](/agentic-harness-guide/downloads/ch09-retro.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch09-retro.zip
+unzip ch09-retro.zip -d kit
+cd kit/ch09-retro
+```
+
+The hash must be `566f068ce30b19d7207890fb89c6f050b9d2c7747af4fdc16d976bc620d9efd4`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `example/rough-notes.txt`. It is how a person writes after a long day.
+3. Turn it into a draft with `retro.py parse`. The command writes `scratch/retro.md` and `scratch/proposals.md` and prints one open question.
+4. Check the draft with `--draft`. It passes.
+5. Check it strictly. It fails, because the question about issue 2 is open.
+6. Answer the question in the file and run the strict check again. It passes.
+7. Read `example/retro.md` and `example/proposals.md`. They are the finished version.
+8. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+9. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You turn rough notes into a draft retro and a proposals file under `scratch/`."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+mkdir -p scratch
+python3 -I retro.py parse example/rough-notes.txt --title "Search feature" --out scratch
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+1 open question(s):
+  - Issue 2: What happened? Say the events in order.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The parser keeps the words, finds the gap and asks one question: `Issue 2: What happened? Say the events in order.`
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The parser sorts by cues and asks when a field is empty. It does not understand what the notes mean.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You check the draft twice: once as a draft and once strictly."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I retro.py check scratch/retro.md --draft
+python3 -I retro.py check scratch/retro.md
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+retro: OK
+Open questions remain (NEEDS CLARIFICATION). Answer them first.
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The draft check prints `retro: OK`. The strict check prints `Open questions remain` and exits with code 1.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A draft may hold open questions and a final retro may not. The check does not judge whether the answers are good.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You answer the open question in the file, then run the strict check again. In your own retro you write the answer by hand."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I -c "from pathlib import Path; p = Path('scratch/retro.md'); p.write_text(p.read_text().replace('NEEDS CLARIFICATION: What happened? Say the events in order.', 'The word few passed review because no check looked for it.'))"
+python3 -I retro.py check scratch/retro.md
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+retro: OK
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The first command replaces the `NEEDS CLARIFICATION` text with an answer. The strict check now prints `retro: OK`.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Answering the question clears the gate. It does not show the answer is true.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on defective retro and proposals files."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+FAIL The first section must be 'What went well' (praise first).
+FAIL Issue 'Issue 1: the build broke': 'What happened' is missing or empty.
+FAIL Open questions remain (NEEDS CLARIFICATION). Answer them first.
+FAIL Proposal 1: 'From' must name an issue in the retro.
+FAIL Proposal 1: 'Status' must be proposed, accepted or rejected.
+FAIL Proposal 2: an accepted proposal needs a real check.
+validate: FAIL (6 problem(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Six `FAIL` lines appear, for example `The first section must be 'What went well' (praise first).`
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The format rules can fail. The praise-first rule does not judge whether the praise is sincere.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+The file `fixtures/bad/ramble.txt` holds three lines with no cue. The kit says the parser produces a draft with two questions, keeps every original word in the Raw words block and writes no proposals, and that the tests assert this. I did not run that file for this page. No language model is involved in this chapter. The parser is rule based. It does not understand meaning, so it cannot turn a real ramble into a good retro by itself. Its job is to be safe: it keeps the words, asks questions and invents nothing. In practice an [agent](../../glossary/#agent) that can reason would do the first pass, and these checks would be the gate. In my own setup there is no praise-first retro. This is a design built here.
+
+**Read the matching page:** [Retros](../../setup/retros/)
+
+**Next:** [A status board that goes red](../ch10-monitor/)

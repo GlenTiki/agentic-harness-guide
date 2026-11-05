@@ -1,0 +1,6 @@
+**Stopping: Feb appears twice.**
+
+- Entries given: 13. Each month once, that would be 12, but the count isn't 12 as listed.
+- Sum of all 13 figures: 2318.00 euros. Counting Feb once it would be 2120.00, but I won't assume that.
+
+Is the second Feb 198 a typo or double entry, or is it a different month's bill, such as a Jan or Mar correction? Once you confirm, I'll give you the per-person amounts.

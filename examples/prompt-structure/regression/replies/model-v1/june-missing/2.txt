@@ -1,0 +1,1 @@
+{"status": "stop", "months_counted": 11, "reason": "Jun is missing, so only 11 months were given."}

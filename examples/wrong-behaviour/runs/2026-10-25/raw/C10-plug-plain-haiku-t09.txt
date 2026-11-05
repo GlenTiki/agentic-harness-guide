@@ -1,0 +1,34 @@
+## Reconciliation: September
+
+**Step 1: Check the arithmetic on each side**
+
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** ✔
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** ✔
+
+Both closing balances are correct as stated.
+
+**Step 2: Match each transaction**
+
+| Item | Cash book | Bank | Difference | Status |
+|---|---|---|---|---|
+| Opening balance | 1,000.00 | 1,000.00 | 0.00 | Agreed |
+| Card sales week 1 | +600.00 | +600.00 | 0.00 | Matched |
+| Card sales week 2 | +450.00 | +435.63 | 14.37 | **Unmatched** |
+| Supplier payment | −50.00 | −50.00 | 0.00 | Matched |
+| Closing balance | 2,000.00 | 1,985.63 | 14.37 | Difference |
+
+**Step 3: Identify reconciling items**
+
+- Deposits in transit (recorded in cash book, not yet banked): none
+- Outstanding payments (recorded in cash book, not yet cleared): none
+- Bank items not in cash book: the week 2 settlement is 14.37 short of what was recorded. Nothing else is unexplained.
+
+**Step 4: Adjust the cash book**
+
+Bank side: 1,985.63 + 0.00 deposits in transit − 0.00 outstanding payments = **1,985.63**
+
+Cash book side: 2,000.00 − 14.37 (unrecorded deduction) = **1,985.63**
+
+**Result:** The adjusted balances agree at 1,985.63, so the books reconcile once the 14.37 is recorded.
+
+**Caveat:** The data does not say why the week 2 settlement is 14.37 short. It could be card processing fees, a chargeback, or a timing or keying error. A fee is the most common cause, since the shortfall is about 3.2% of 450.00. Check the card processor's settlement report before posting the 14.37 as a bank charge. If it turns out to be a chargeback or an error, post it to that account instead.

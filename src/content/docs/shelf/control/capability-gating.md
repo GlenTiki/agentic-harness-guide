@@ -1,0 +1,51 @@
+---
+title: Capability gating
+description: Give each power its own switch, default it to off, and gate every path that leaves your machine.
+---
+
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** model every power the agent can use as a named capability with its own on/off switch in one registry file. Default new capabilities to off. Require explicit consent per surface, and run redaction before anything leaves your machine.
+
+## Why it matters
+
+Permission rules answer "may this tool call run?". Capabilities answer a coarser question: "is the agent allowed to do this kind of thing at all?" Reading the calendar, sending email and calling a paid API are different risks. When they share one switch, enabling one enables all.
+
+## What to enable
+
+**1. A registry.** One declarative file lists each capability, its state and a reason. A reviewer can read it in a minute:
+
+```yaml
+capabilities:
+  calendar.read:   { status: enabled,  reason: "Daily planning" }
+  calendar.write:  { status: disabled, reason: "No approved use yet" }
+  email.send:      { status: disabled, reason: "Always drafted, never sent" }
+  web.fetch:       { status: enabled,  reason: "Docs lookup", domains: ["docs.example.com"] }
+```
+
+**2. Fail closed.** If the registry is missing, malformed or lacks an entry, the capability is off. A gate that fails open on a typo is not a gate.
+
+**3. Gate at the seam.** Check the capability in one place, where the call leaves your code, not in every caller. One check is easy to test and hard to forget. The gate covers only the paths that go through the seam. The agent's general shell is a second route out unless you deny it, so pair the gate with [permission rules and a sandbox](../permissions-and-sandboxing/).
+
+**4. Consent per surface.** Treat each surface as its own decision: each mailbox, each repository, each chat channel, each device. Granting access to one does not grant the next.
+
+**5. Redact before egress.** Strip personal data and secrets before text goes to a model provider, a search service or a log shipper. Replace values with stable placeholders and restore them locally after the response returns. Put the redaction step in the same seam as the capability check so no path skips it. Redaction is a filter with a miss rate. Measure recall on a labelled sample, and keep the capability gate as the primary control. The worked method, with a tested script, is in [Removing personal data before sharing](../removing-personal-data/).
+
+**6. Record the subprocessors.** Keep a list of every external service that can receive data, with what it receives. If a service is not on the list, the seam refuses the call.
+
+**7. Log changes.** A capability change is a security event. Write it to the audit log with the actor and a timestamp.
+
+## Failure modes it reduces
+
+- A new integration ships enabled and nobody notices it can send messages.
+- A fix for one connector accidentally enables access to another.
+- Customer data reaches a provider you never approved.
+- A registry typo silently turns a gate off.
+
+## First step for the maintainer
+
+Write the registry with every external action the agent can take today. Enable only capabilities already approved for a named system and purpose. Leave the rest `disabled`, including read-only access such as an unapproved `mailbox.read`. Add one test that proves a disabled capability makes the call fail.
+
+**Next:** [Removing personal data before sharing](../removing-personal-data/)

@@ -1,0 +1,43 @@
+# September reconciliation: cash book to bank statement
+
+## Step 1: Check each record adds up
+| | Calculation | Stated | Result |
+|---|---|---|---|
+| Cash book | 1,000.00 + 600.00 + 450.00 - 50.00 | 2,000.00 | Correct |
+| Bank | 1,000.00 + 600.00 + 435.63 - 50.00 | 1,985.63 | Correct |
+
+Both records are arithmetically sound, so the difference comes from a real discrepancy in an entry, not an addition error.
+
+## Step 2: Compare opening balances
+Both are 1,000.00, so there is no difference brought forward.
+
+## Step 3: Match the transactions
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Card sales, week 1 | +600.00 | +600.00 | 0.00 |
+| Card sales, week 2 | +450.00 | +435.63 | 14.37 |
+| Supplier payment | -50.00 | -50.00 | 0.00 |
+
+## Step 4: Compute the closing difference
+Cash book 2,000.00 - bank 1,985.63 = **14.37**, which equals the week 2 difference exactly. Nothing else is unmatched, and there are no unpresented items or timing differences.
+
+## Result
+The cash book is overstated by **14.37** relative to the bank. The week 2 card receipt was recorded at the gross sales figure (450.00), but the bank settled 435.63.
+
+## What the 14.37 is
+The statement doesn't say, so I can't confirm the cause. Likely candidates:
+- **Card processing fees** deducted from the week 2 settlement. This is the most common cause, but week 1 settled in full and 14.37 is about 3.19% of 450, which isn't a standard rate. Check the processor's settlement report for a fee breakdown.
+- A refund or chargeback netted off the settlement.
+- Part of the week 2 sales not yet settled. That would be a timing difference, and the bank would show it in October.
+
+## Adjustment
+Once you've confirmed the cause in the processor report, if it's fees or a refund, record the following in the cash book:
+
+| Entry | Amount |
+|---|---|
+| Dr Card processing fees (or Sales returns) | 14.37 |
+| Cr Bank / cash book | 14.37 |
+
+The cash book closing balance then becomes 2,000.00 - 14.37 = **1,985.63**, which agrees with the bank statement.
+
+If the cause is unsettled sales, make no adjustment. List the 14.37 as a reconciling item (receipt in transit) and expect it on the October statement.

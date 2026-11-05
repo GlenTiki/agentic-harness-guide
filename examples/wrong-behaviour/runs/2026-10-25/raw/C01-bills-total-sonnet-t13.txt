@@ -1,0 +1,34 @@
+One thing to check first: Feb 198 appears twice, which gives 13 entries for a 12-month year. I've treated the second one as a typo and counted it once. If February really was billed twice, see the alternative at the end.
+
+**Working**
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+Running total: 212 → 410 → 597 → 761 → 912 → 1,054 → 1,193 → 1,334 → 1,492 → 1,675 → 1,880 → **2,120**
+
+**Total for the year: €2,120**
+
+**Split three ways:** 2,120 ÷ 3 = 706.666…
+
+| Person | Share |
+|---|---|
+| Sam | €706.67 |
+| Priya | €706.67 |
+| Tom | €706.66 |
+
+The shares are rounded to the cent, so one person pays a cent less to make the total exactly €2,120.00. Each share is about €58.89 per month.
+
+**If February was counted twice:** the total would be €2,318, and each share would be €772.67 (with one person paying €772.66).

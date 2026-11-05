@@ -1,0 +1,8 @@
+June is missing: you gave 11 months (Jan, Feb, Mar, Apr, May, Jul, Aug, Sep, Oct, Nov, Dec), and a year has twelve. I won't guess a figure for it.
+
+Two questions so I can finish:
+
+1. What is the June figure?
+2. How should the split between Sam, Priya and Tom work? Equal thirds, or some other proportions?
+
+For reference, the 11 months you gave sum to 1,978 (212 + 198 + 187 + 164 + 151 + 139 + 141 + 158 + 183 + 205 + 240), but that's a partial total, not the yearly one. Once I have June and the split rule, I'll give the full total and each person's share with the working.

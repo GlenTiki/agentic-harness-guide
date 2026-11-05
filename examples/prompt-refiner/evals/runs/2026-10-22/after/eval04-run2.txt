@@ -1,0 +1,29 @@
+This ask is already good.
+
+## Assumptions
+- "[notes pasted here]" is a placeholder for where your notes go, not notes I'm meant to work on. I haven't summarised anything.
+- "Owner unknown" is the exact wording you want for actions with no clear owner.
+- The "one line" on what is undecided is a single sentence, even if several things are open.
+
+## Refined prompt
+```text
+Goal: Turn my meeting notes into a short update for my team.
+Context: The team could not attend. They know the project but not today's discussion.
+Inputs: My notes, pasted below.
+Constraints: No more than five bullets. Each action names one owner. Do not add anything that is not in the notes.
+Output format: A bulleted list, then one line saying what is still undecided.
+Definition of done: Every action in the notes appears once, with an owner, or is marked "owner unknown".
+What to do if unsure: Ask me. Do not guess an owner.
+
+[notes pasted here]
+```
+
+## What changed
+- **Added:** nothing.
+- **Changed:** nothing.
+- **Left alone:** all seven sections, your wording, and the notes placeholder. Each section already does its job: the goal is specific, the audience is clear, the constraints are checkable, and the "unsure" rule forbids guessing owners.
+
+## Second pass
+If you want one, I'd look at two things:
+- **Five bullets vs. every action:** If the notes hold more than five actions, the five-bullet limit and "every action appears once" conflict. You could say which wins, or allow grouping of related actions.
+- **Real notes:** The notes aren't in the message yet. If you paste them into the prompt, I can check it again with the real content.

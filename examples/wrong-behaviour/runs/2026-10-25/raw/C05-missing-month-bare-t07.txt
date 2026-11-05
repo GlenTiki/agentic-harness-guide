@@ -1,0 +1,29 @@
+**Note: June is missing from your figures.** Only 11 months were given, so this total excludes June.
+
+**Running total**
+
+| Month | Figure | Running total |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jul | 139 | 1,051 |
+| Aug | 141 | 1,192 |
+| Sep | 158 | 1,350 |
+| Oct | 183 | 1,533 |
+| Nov | 205 | 1,738 |
+| Dec | 240 | 1,978 |
+
+**Yearly total (11 months, excluding June): 1,978**
+
+**Shares**
+
+You didn't say how to divide it, so I assumed an equal three-way split:
+
+1,978 ÷ 3 = **659.33 each** for Sam, Priya and Tom (3 × 659.33 = 1,977.99, with the 0.01 difference due to rounding).
+
+**If you have the June figure (J):** the full-year total is 1,978 + J, and each share is (1,978 + J) ÷ 3. For example, if June was about 145, the total would be 2,123 and each share about 707.67.
+
+If the split isn't equal, tell me the proportions and I'll redo it.

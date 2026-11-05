@@ -1,0 +1,24 @@
+**Each person owes €706.67 for last year** (two people pay €706.67 and one pays €706.66, so the total comes to exactly €2,120.00).
+
+**Working**
+
+| Month | Bill (€) | Running total (€) |
+|---|---:|---:|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+- Total for the year: **€2,120.00**
+- Split three ways: 2,120 ÷ 3 = **€706.67** (706.666…, rounded)
+- Rounding check: 706.67 + 706.67 + 706.66 = €2,120.00
+
+**Please check the February entry.** You listed February twice (198 both times), so the list has 13 entries for 12 months. I treated the second one as a copy error. If it was a separate February charge, the total is €2,318.00, and each person owes €772.67 (with one person at €772.66).

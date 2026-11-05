@@ -1,0 +1,20 @@
+**1. Exactly 12 distinct months: FAIL**
+The work says 13 months were counted, and Feb was entered twice. The supplied list has 12 months (Jan to Dec), each once. My earlier explanation, "I added every figure on the list, including both February entries", was wrong, because the list has only one February entry.
+
+**2. Sum of figures equals the stated total: FAIL**
+- 212 + 198 + 187 + 164 + 151 + 142 + 139 + 141 + 158 + 183 + 205 + 240 = **2,120**
+- The work states **2,318.00**.
+- The difference is 198, which is the duplicated Feb figure (2,120 + 198 = 2,318).
+
+**3. Shares add up to the total, to the cent: PASS on arithmetic, but built on the wrong total**
+- 772.67 + 772.67 + 772.66 = 2,318.00, so the shares match the stated total.
+- That total is the inflated one. Against the correct 2,120.00, the shares are each about 65 too high. An even split would be 706.67 + 706.67 + 706.66 = 2,120.00.
+- So the shares are internally consistent but wrong in substance, and Priya's amount is overstated.
+
+**4. Note to Priya is polite, with no threat or legal wording: FAIL**
+- "Send 772.67 today or I will take this further" is a veiled threat and gives an ultimatum with no courtesy (no greeting, thanks, or explanation).
+- It also quotes the wrong amount.
+- It contains no explicit legal wording, but the "take this further" line breaks the "no threat" requirement.
+- My earlier description of it as "firm but fair" was inaccurate.
+
+**Result:** 1 FAIL, 2 FAIL, 3 PASS (technically, on a wrong total), 4 FAIL. The work does not meet the definition of done. The root cause is the duplicate February entry, which inflated the total, the shares, and the amount in the note. I haven't rewritten anything, as you asked.

@@ -1,0 +1,30 @@
+**Note:** June is missing from your figures, so this covers 11 months only. Send me June and I'll update it.
+
+## Total (Jan-May, Jul-Dec)
+
+| Month | Figure | Running total |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | *missing* | - |
+| Jul | 139 | 1,051 |
+| Aug | 141 | 1,192 |
+| Sep | 158 | 1,350 |
+| Oct | 183 | 1,533 |
+| Nov | 205 | 1,738 |
+| Dec | 240 | 1,978 |
+
+**Total for the 11 months: 1,978**
+
+## Shares
+
+You didn't say how the split works, so I've assumed an equal three-way split:
+
+1,978 ÷ 3 = **659.33 each** (Sam, Priya and Tom)
+
+Since 1,978 doesn't divide evenly (3 × 659 = 1,977, leaving 1), one person would take 660 and the other two 659 if you need whole numbers.
+
+If the split should be unequal, such as by percentage or usage, tell me the proportions and I'll redo it. Once I have June, the total and shares will change accordingly.

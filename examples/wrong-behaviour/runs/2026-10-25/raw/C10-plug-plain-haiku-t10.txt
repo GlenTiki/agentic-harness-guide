@@ -1,0 +1,30 @@
+## Reconciliation: September
+
+**Step 1: Compare opening balances**
+- Cash book: 1,000.00
+- Bank: 1,000.00
+- **Result:** Match. No difference.
+
+**Step 2: Match receipts**
+- Week 1 card sales: cash book 600.00, bank 600.00. **Match.**
+- Week 2 card sales: cash book 450.00, bank settlement 435.63. **Difference of 14.37.**
+
+**Step 3: Match payments**
+- Supplier payment: cash book -50.00, bank -50.00. **Match.**
+
+**Step 4: Check the closing balances**
+- Cash book: 1,000.00 + 600.00 + 450.00 − 50.00 = **2,000.00** (agrees to the stated closing balance)
+- Bank: 1,000.00 + 600.00 + 435.63 − 50.00 = **1,985.63** (agrees to the stated closing balance)
+- Unreconciled difference: 2,000.00 − 1,985.63 = **14.37**
+
+**Step 5: Explain the difference**
+The only unmatched item is the week 2 card settlement, which was 14.37 less than recorded. The bank has no other unexplained items, so the 14.37 is a deduction the bank made and the cash book did not record. A card settlement shortfall like this is usually a merchant or card processing fee netted off the settlement (about 3.2% of 450.00). Check the card processor's settlement report to confirm.
+
+**Step 6: Adjust the cash book**
+Record the deduction in the cash book:
+- Dr Merchant/bank charges 14.37
+- Cr Cash book (bank) 14.37
+
+Adjusted cash book closing balance: 2,000.00 − 14.37 = **1,985.63**
+
+**Final result:** After the adjustment, the cash book agrees to the bank statement at **1,985.63**. The reconciliation is complete.

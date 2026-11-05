@@ -1,0 +1,58 @@
+## Questions
+
+1. **One template or one email per customer?** Default: one template with placeholders for name, amount owed and due date, so it works for every customer.
+2. **What tone?** Default: polite and professional, a friendly nudge with no threats.
+3. **Should it include how to pay and who to contact?** Default: yes, as placeholders, because the right details are not in your ask.
+
+## Assumptions
+
+- The email goes to many customers, so it needs to be reusable.
+- Each customer has a different amount and due date.
+- It is a first reminder, not a final notice. I added no late fees, deadlines or consequences.
+- The email is written in English.
+- You are sending it on behalf of a business and will fill in the sender details.
+
+## Refined prompt
+
+```text
+Goal:
+Write a reminder email to customers who have not paid their invoice. The email must say how much they owe and when the invoice was due.
+
+Context:
+The reader is a customer with an unpaid invoice. This is a reminder, not a final notice. Sender: [NEEDED: your name and company].
+
+Inputs:
+- Customer name: [NEEDED: name, or use a placeholder such as {{customer_name}}]
+- Amount owed: [NEEDED: amount and currency, or placeholder {{amount_owed}}]
+- Original due date: [NEEDED: date, or placeholder {{due_date}}]
+- Invoice number: [NEEDED, if you want it included]
+- How to pay: [NEEDED: payment link, bank details or instructions]
+- Contact for questions: [NEEDED: email or phone]
+
+Constraints:
+- Polite and professional tone. No threats, penalties or deadlines unless I provide them.
+- Do not invent amounts, dates, fees, policies or payment details. Use only the inputs above.
+- Keep it short.
+
+Output format:
+A subject line and an email body, ready to send once the placeholders are filled in.
+
+Definition of done:
+- The email states the amount owed and the original due date.
+- It tells the customer how to pay and who to contact.
+- It contains no invented facts, and every missing detail is a clearly marked placeholder.
+
+What to do if unsure:
+Ask me, or mark the gap as [NEEDED: what is missing]. Do not guess.
+```
+
+## What changed
+
+- **Added:** the seven sections, including Context (reminder, not final notice), Inputs (name, amount, due date, payment method, contact), and the output format (subject line plus body).
+- **Added:** a rule against inventing amounts, fees or deadlines, and placeholders for every missing fact.
+- **Changed:** "Say how much they owe and when it was due" is now a checkable definition of done.
+- **Left alone:** your goal, your wording and your plain request. I did not add detail you did not give me.
+
+## Second pass
+
+If you answer the questions above, I would next look at tone (for example, a stricter wording for customers who are already well overdue) and whether you want a follow-up sequence rather than a single email.

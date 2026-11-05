@@ -1,0 +1,50 @@
+## Questions
+
+1. **Who reads the update?** Default: a manager or sponsor who wants the headline first.
+2. **What is "late" measured against?** Default: the current approved deadline, not the original plan.
+3. **How long should the update be?** Default: under 200 words, in plain prose with a short status line at the top.
+
+## Assumptions
+
+- "The project" is one specific project that you will name, and I don't know which.
+- The update is a written status update, not a slide or meeting talk.
+- You want a clear verdict (late, at risk, or on track) with the reason, not a hedge.
+- You will supply the facts. The assistant should not pull them from anywhere else.
+- Today's date is 2026-10-22, so "late" is judged as of that date unless you say otherwise.
+
+## Refined prompt
+
+```text
+Goal: Write a project update and tell me whether the project is late.
+
+Context: The update is for [NEEDED: audience, e.g. manager, sponsor, team]. The project is [NEEDED: project name and one-line description]. "Late" means behind [NEEDED: the deadline or baseline schedule to compare against]. Today's date is 2026-10-22.
+
+Inputs: I will provide, or the assistant should ask for:
+- Project name and deadline or baseline schedule: [NEEDED]
+- Work completed so far: [NEEDED]
+- Work remaining and any estimates: [NEEDED]
+- Blockers, risks or changes in scope: [NEEDED]
+
+Constraints:
+- Use only the facts I provide. Do not invent dates, figures, names or progress.
+- State the verdict plainly as one of: late, at risk, or on track, and give the reason.
+- If the verdict depends on an assumption, name the assumption.
+- Keep it under 200 words.
+
+Output format: A one-line status at the top (verdict plus the key date), followed by short prose covering progress, what remains, and risks or blockers. End with next steps and any decision needed from the reader.
+
+Definition of done: The update gives a clear verdict on lateness, backs it with the facts I supplied, and flags anything uncertain. A reader could act on it without asking follow-up questions.
+
+What to do if unsure: If any [NEEDED] input is missing, ask me for it or mark the gap in the update. Do not guess or fill it in. If the facts don't support a firm verdict, say so and state what would settle it.
+```
+
+## What changed
+
+- **Added:** audience, the baseline for "late", the date, the list of inputs you must supply, a length cap, a layout, a definition of done, and a rule against guessing. The original ask had none of these, and the assistant could not judge lateness without a baseline.
+- **Changed:** "tell me whether the project is late" now requires a plain verdict (late, at risk, or on track) with a reason, so the answer can't be vague.
+- **Left alone:** your two core requests (an update and a lateness verdict) and your short, direct wording.
+- **Marked as gaps:** the project name, audience, baseline, progress, remaining work and blockers. I did not make any of these up.
+
+## Second pass
+
+Once you answer the three questions and fill in the [NEEDED] items, I would look at whether the verdict needs a threshold (for example, "late" means more than a week behind) and whether the update should include a revised completion date.

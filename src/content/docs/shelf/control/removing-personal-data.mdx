@@ -1,0 +1,90 @@
+---
+title: Removing personal data before sharing
+description: Alias each personal item with a stable token, keep the map local, restore on output and test the round trip, with a script you can run.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/) and the [professional guardrails](../../../journey/professional-guardrails/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** replace each personal item with a token before text leaves your machine. Keep the map from token to value on your machine. Restore the values in the reply. Test that restoring gives back the original. Treat the recogniser as a filter with a miss rate, and keep the [capability gate](../capability-gating/) as the main control.
+
+## Why it matters
+
+A model provider, a search service or a log shipper does not need the real name or case number to do most jobs. A token such as `[CASE_1]` keeps the structure of the text. The reply can still say which case it means. You restore the real value locally.
+
+## What to enable
+
+**1. One token per value, stable inside one document.** The same value gets the same token each time it appears. Two different values never share a token. The token carries a kind and a number: `[EMAIL_1]`, `[CASE_1]`. A stable token lets the reply refer to "the second email" without the real address.
+
+**2. Keep the map local.** The map from token to value stays on your machine. Do not send it, log it with the masked text, or put it in the chat. Delete it when the job ends unless you need to restore later.
+
+**3. Use a new map per document.** A token that means one value in one document and another value in the next causes wrong restores. If you must link documents, that is a separate, deliberate design.
+
+**4. Refuse a document that already contains token-shaped text.** If the input contains `[EMAIL_1]` as written text, restoring would swap in a value that was never there. The sketch below raises an error instead.
+
+**5. Restore on output and report what did not resolve.** The reply may drop the brackets or invent a token. List every token in the reply that is not in the map, and show it to the reader instead of hiding it.
+
+**6. Test the round trip.** For every document in a sample, `restore(alias(text))` must equal `text`. This tests the mapping. It does not test whether the recogniser found everything.
+
+**7. Add recognisers for your own identifiers.** A general-purpose recogniser looks for shapes it was built for, such as emails and phone numbers. Your case numbers, account references and ticket codes have shapes it was never given. They pass through unmasked. The sketch shows this with two invented identifier formats. No claim is made here about how any real recogniser performs.
+
+<Example
+  label="Computed"
+  task="A maintainer aliases one synthetic document twice: once with a small baseline recogniser, once with the same recogniser plus two patterns for internal identifiers."
+  evidence="python3 -I examples/alias-redaction/alias.py"
+  env="Python 3.13.1, macOS 26.5, 2026-10-26"
+>
+
+<Fragment slot="input">
+
+```bash
+python3 -I examples/alias-redaction/alias.py
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+--- baseline: 3 tokens, round trip ok
+Case CX-48213-ALPHA was opened by [EMAIL_1] ([PHONE_1]).
+Refund goes to account ACC/2291/004417. Chase CX-48213-ALPHA again if the account ACC/2291/004417 is still unpaid, and copy [EMAIL_2].
+internal identifiers still visible: ['CX-48213-ALPHA', 'ACC/2291/004417']
+--- baseline plus internal: 5 tokens, round trip ok
+Case [CASE_1] was opened by [EMAIL_1] ([PHONE_1]).
+Refund goes to account [ACCOUNT_1]. Chase [CASE_1] again if the account [ACCOUNT_1] is still unpaid, and copy [EMAIL_2].
+internal identifiers still visible: []
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The round trip passes in both runs, and the baseline run still leaks both internal identifiers. A passing round trip says nothing about coverage. In the second run `[CASE_1]` appears twice, because the same value gets the same token. Names are not covered by either recogniser.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the mechanism and the blind spot on one invented document with four kinds of item. It does not show how often a real recogniser misses anything, or how fast it runs. The test file `examples/alias-redaction/test_alias.py` also checks the restore report and the refusal in step 4.
+
+</Fragment>
+
+</Example>
+
+## Failure modes it reduces
+
+- A reply that names a real person because the name went out unmasked.
+- A wrong restore because two documents shared one map.
+- A silent miss because the round trip passed and nobody measured coverage.
+
+## First step for the maintainer
+
+List the identifier formats your own work uses. Write one pattern for each. Run them over ten real documents you may handle, and read the masked output yourself. Measure recall on a labelled sample before you rely on it.
+
+<p class="verified">Not checked against current docs. The script is a teaching sketch written for this page. It is not a product and it is not a compliance control.</p>
+
+**Next:** [Untrusted input and prompt injection](../untrusted-input/)

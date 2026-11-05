@@ -1,0 +1,25 @@
+**Total of all 40 amounts: €7,414, which is €2,471.33 each.** There is a problem with the data, though: you said 39 months (Aug 2023 to Oct 2026), but the list has **40 amounts**. One is extra or a month is duplicated. Please check before sending this to Priya.
+
+**Working (subtotals of 10 lines)**
+
+| Lines | Sum |
+|---|---|
+| 1-10 | 226 + 215 + 175 + 168 + 231 + 136 + 222 + 211 + 154 + 152 = **1,890** |
+| 11-20 | 131 + 204 + 230 + 217 + 137 + 209 + 139 + 241 + 129 + 133 = **1,770** |
+| 21-30 | 133 + 143 + 126 + 183 + 225 + 238 + 173 + 244 + 128 + 123 = **1,716** |
+| 31-40 | 201 + 176 + 217 + 257 + 236 + 187 + 200 + 175 + 152 + 237 = **2,038** |
+
+Total = 1,890 + 1,770 + 1,716 + 2,038 = **€7,414**
+
+**Split three ways**
+
+7,414 ÷ 3 = 2,471.33 (remainder €0.01)
+
+| Person | Share |
+|---|---|
+| Sam | €2,471.34 (takes the spare cent) |
+| Priya | €2,471.33 |
+| Tom | €2,471.33 |
+| **Sum** | **€7,414.00** |
+
+**If one line is a mistake:** the total drops by that amount. For example, if the last line (237) is the extra, the total is €7,177 and each share is about €2,392.33. Tell me which line to drop and I'll redo it.

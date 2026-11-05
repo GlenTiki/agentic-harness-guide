@@ -1,0 +1,17 @@
+I can't check these against a live database from here, so the DOIs come from memory. I'm confident both studies exist, but resolve the DOIs at doi.org before you cite them.
+
+**1. Call center productivity after a standing desk intervention**
+- **Authors:** Gregory Garrett, Mark Benden, Ranjana Mehta, Adam Pickens, Camilla Peres, Hongwei Zhao
+- **Year:** 2016
+- **Journal:** *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195
+- **DOI:** 10.1080/21577323.2016.1183739
+- **Relevance:** This is a direct productivity study. It followed call center employees for six months after they received standing desks and compared output with that of seated colleagues.
+
+**2. The SMArT Work trial**
+- **Authors:** Charlotte L. Edwardson, Joe Hamer, Thomas Yates, and colleagues (Stand More AT Work)
+- **Year:** 2018
+- **Journal:** *BMJ*, 363, k3870
+- **DOI:** 10.1136/bmj.k3870
+- **Relevance:** This is a cluster randomized trial of a desk-based sit-stand intervention in NHS office workers. Productivity was not its main outcome, since the study focused on sitting time. It did include work-related outcomes such as job performance and engagement as secondary measures.
+
+I'm less sure of the full author list for the second study than of the first, so confirm it on the publisher page. The first study is the closer match to your question. The second is a stronger design but only touches productivity indirectly.

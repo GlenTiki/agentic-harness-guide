@@ -1,0 +1,29 @@
+The bills total **€2,120.00** for the year, so each person owes **€706.67**. Feb appears twice in your list, and I treated the second entry as a duplicate, which gives 12 months. If both Feb bills were real, the total is €2,318.00 (see the note at the end).
+
+**Monthly bills (€)**
+
+| Month | Amount | Running total |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+**Split**
+
+- Total: €2,120.00
+- Per person: €2,120 ÷ 3 = €706.666…
+- Rounded to cents: €706.67 each, which adds up to €2,120.01. To make it exact, one person pays €706.66. Sam and Priya pay €706.67 and Tom pays €706.66. Tell me if you'd rather round differently.
+
+**If both Feb bills are real**
+
+- Total: €2,318.00
+- Per person: €772.67 (Sam and Priya), €772.66 (Tom)

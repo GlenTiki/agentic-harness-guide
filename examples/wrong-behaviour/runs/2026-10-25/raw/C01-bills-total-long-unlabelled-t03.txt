@@ -1,0 +1,30 @@
+**Each person pays €2,471.33** (total €7,414 ÷ 3).
+
+**One thing Priya will spot:** you said 39 months (Aug 2023 to Oct 2026), but the list has **40 amounts**. I used all 40. If one is a duplicate or doesn't belong, the total changes, so check that first.
+
+**Working (sums in blocks of 10)**
+
+| Entries | Amounts | Subtotal |
+|---|---|---|
+| 1-10 | 226, 215, 175, 168, 231, 136, 222, 211, 154, 152 | €1,890 |
+| 11-20 | 131, 204, 230, 217, 137, 209, 139, 241, 129, 133 | €1,770 |
+| 21-30 | 133, 143, 126, 183, 225, 238, 173, 244, 128, 123 | €1,716 |
+| 31-40 | 201, 176, 217, 257, 236, 187, 200, 175, 152, 237 | €2,038 |
+| **Total** | | **€7,414** |
+
+Check: 1,890 + 1,770 + 1,716 + 2,038 = 7,414.
+
+**Split**
+
+7,414 ÷ 3 = 2,471.33 (repeating), and 3 × 2,471.33 = 7,413.99, so one cent is left over.
+
+| Person | Pays |
+|---|---|
+| Sam | €2,471.34 |
+| Priya | €2,471.33 |
+| Tom | €2,471.33 |
+| **Total** | **€7,414.00** |
+
+The extra cent is assigned to Sam, but any of you can take it.
+
+If the real count is 39 and you tell me which entry to drop, I'll redo the figures.

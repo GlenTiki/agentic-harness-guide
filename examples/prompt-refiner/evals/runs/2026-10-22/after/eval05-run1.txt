@@ -1,0 +1,57 @@
+## Questions
+
+1. **What stage is this reminder?** Recommended default: a polite first reminder, not a final notice or a threat of action.
+2. **One template or one email per customer?** Recommended default: one template with merge fields like {customer_name}, {amount_owed} and {due_date}, since you haven't given me customer data.
+3. **How should customers pay, and who is the sender?** Recommended default: leave both as [NEEDED] placeholders rather than guessing.
+
+## Assumptions
+
+- The email goes to business customers, and the relationship is ongoing, so the tone should be courteous.
+- Each customer has one overdue invoice. If some have several, the prompt would need to list them.
+- The email is written in English.
+- No late fees, deadlines or consequences are to be mentioned unless you supply them.
+- The email is a draft for you to review, not something sent automatically.
+
+## Refined prompt
+
+```text
+Goal:
+Write a reminder email to customers who have not paid their invoice. It must state how much they owe and when the payment was due.
+
+Context:
+The recipients are customers with an overdue invoice. This is a [NEEDED: first reminder / follow-up / final notice; assume a polite first reminder if not stated]. The sender is [NEEDED: sender name, role and company].
+
+Inputs:
+- Amount owed: [NEEDED: amount and currency, or use the merge field {amount_owed}]
+- Original due date: [NEEDED: date, or use the merge field {due_date}]
+- Customer name: [NEEDED: or use the merge field {customer_name}]
+- Invoice number: [NEEDED: optional, or use {invoice_number}]
+- How to pay: [NEEDED: payment link, bank details or contact]
+- Sender contact details: [NEEDED]
+
+Constraints:
+- Keep a courteous, professional tone. Do not accuse or threaten.
+- Do not mention late fees, deadlines for action or consequences unless I provide them.
+- Do not invent amounts, dates, invoice numbers or payment details. Use the placeholders above.
+- Keep it short enough to read at a glance.
+
+Output format:
+One email with a subject line and a body. Use merge fields wherever customer-specific details are needed.
+
+Definition of done:
+The email clearly states the amount owed and the original due date, tells the customer how to pay or whom to contact, and contains no invented facts. Every missing detail is a visible placeholder.
+
+What to do if unsure:
+Ask me, or mark the gap as [NEEDED]. Do not guess.
+```
+
+## What changed
+
+- **Added:** the seven sections, a stated tone (polite, non-threatening), a ban on invented figures, and an input list covering what the email needs (amount, due date, name, payment method, sender).
+- **Changed:** "the customers who have not paid" became a template with merge fields, because the prompt has no customer data to work from.
+- **Left alone:** your core ask, including the two required details (how much they owe, when it was due), and your plain wording.
+- **Why:** the original didn't say who sends it, how to pay, or how firm to be. Those gaps would have led the assistant to guess.
+
+## Second pass
+
+If you answer the three questions, I can tighten the prompt. Next I'd check whether you need different versions for different stages (first reminder, second, final), and whether customers with several overdue invoices need their own format.

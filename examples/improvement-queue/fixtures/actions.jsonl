@@ -1,0 +1,48 @@
+{"time":"2026-10-01T09:05:00Z","session":"s1","seq":5,"phase":"pre","tool":"Bash","id":"t5","target":"sort bank-export.csv by date"}
+{"time":"2026-10-01T09:05:00Z","session":"s1","seq":5,"phase":"post","tool":"Bash","id":"t5","target":"sort bank-export.csv by date","minutes":4}
+{"time":"2026-10-01T09:10:00Z","session":"s1","seq":10,"phase":"pre","tool":"Bash","id":"t10","target":"rename receipt photos"}
+{"time":"2026-10-01T09:10:00Z","session":"s1","seq":10,"phase":"post","tool":"Bash","id":"t10","target":"rename receipt photos","minutes":3}
+{"time":"2026-10-01T09:15:00Z","session":"s1","seq":15,"phase":"pre","tool":"Bash","id":"t15","target":"open notes for Mina"}
+{"time":"2026-10-01T09:15:00Z","session":"s1","seq":15,"phase":"post","tool":"Bash","id":"t15","target":"open notes for Mina","minutes":1}
+{"time":"2026-10-01T09:20:00Z","session":"s1","seq":20,"phase":"pre","tool":"Bash","id":"t20","target":"open notes for Mina"}
+{"time":"2026-10-01T09:20:00Z","session":"s1","seq":20,"phase":"post","tool":"Bash","id":"t20","target":"open notes for Mina","minutes":1}
+{"time":"2026-10-02T09:01:00Z","session":"s2","seq":1,"phase":"pre","tool":"Bash","id":"t1","target":"sort bank-export.csv by date"}
+{"time":"2026-10-02T09:01:00Z","session":"s2","seq":1,"phase":"post","tool":"Bash","id":"t1","target":"sort bank-export.csv by date","minutes":4}
+{"time":"2026-10-02T09:06:00Z","session":"s2","seq":6,"phase":"pre","tool":"Bash","id":"t6","target":"sort bank-export.csv by date"}
+{"time":"2026-10-02T09:06:00Z","session":"s2","seq":6,"phase":"post","tool":"Bash","id":"t6","target":"sort bank-export.csv by date","minutes":4}
+{"time":"2026-10-02T09:11:00Z","session":"s2","seq":11,"phase":"pre","tool":"Bash","id":"t11","target":"rename receipt photos"}
+{"time":"2026-10-02T09:11:00Z","session":"s2","seq":11,"phase":"post","tool":"Bash","id":"t11","target":"rename receipt photos","minutes":3}
+{"time":"2026-10-02T09:16:00Z","session":"s2","seq":16,"phase":"pre","tool":"Bash","id":"t16","target":"open notes for Mina"}
+{"time":"2026-10-02T09:16:00Z","session":"s2","seq":16,"phase":"post","tool":"Bash","id":"t16","target":"open notes for Mina","minutes":1}
+{"time":"2026-10-02T09:21:00Z","session":"s2","seq":21,"phase":"pre","tool":"Bash","id":"t21","target":"open notes for Mina"}
+{"time":"2026-10-02T09:21:00Z","session":"s2","seq":21,"phase":"post","tool":"Bash","id":"t21","target":"open notes for Mina","minutes":1}
+{"time":"2026-10-03T09:02:00Z","session":"s3","seq":2,"phase":"pre","tool":"Bash","id":"t2","target":"sort bank-export.csv by date"}
+{"time":"2026-10-03T09:02:00Z","session":"s3","seq":2,"phase":"post","tool":"Bash","id":"t2","target":"sort bank-export.csv by date","minutes":4}
+{"time":"2026-10-03T09:07:00Z","session":"s3","seq":7,"phase":"pre","tool":"Bash","id":"t7","target":"copy totals into summary.md"}
+{"time":"2026-10-03T09:07:00Z","session":"s3","seq":7,"phase":"post","tool":"Bash","id":"t7","target":"copy totals into summary.md","minutes":6}
+{"time":"2026-10-03T09:12:00Z","session":"s3","seq":12,"phase":"pre","tool":"Bash","id":"t12","target":"rename receipt photos"}
+{"time":"2026-10-03T09:12:00Z","session":"s3","seq":12,"phase":"post","tool":"Bash","id":"t12","target":"rename receipt photos","minutes":3}
+{"time":"2026-10-03T09:17:00Z","session":"s3","seq":17,"phase":"pre","tool":"Bash","id":"t17","target":"open notes for Mina"}
+{"time":"2026-10-03T09:17:00Z","session":"s3","seq":17,"phase":"post","tool":"Bash","id":"t17","target":"open notes for Mina","minutes":1}
+{"time":"2026-10-03T09:22:00Z","session":"s3","seq":22,"phase":"pre","tool":"Bash","id":"t22","target":"fix February header"}
+{"time":"2026-10-03T09:22:00Z","session":"s3","seq":22,"phase":"post","tool":"Bash","id":"t22","target":"fix February header","minutes":2}
+{"time":"2026-10-04T09:03:00Z","session":"s4","seq":3,"phase":"pre","tool":"Bash","id":"t3","target":"sort bank-export.csv by date"}
+{"time":"2026-10-04T09:03:00Z","session":"s4","seq":3,"phase":"post","tool":"Bash","id":"t3","target":"sort bank-export.csv by date","minutes":4}
+{"time":"2026-10-04T09:08:00Z","session":"s4","seq":8,"phase":"pre","tool":"Bash","id":"t8","target":"copy totals into summary.md"}
+{"time":"2026-10-04T09:08:00Z","session":"s4","seq":8,"phase":"post","tool":"Bash","id":"t8","target":"copy totals into summary.md","minutes":6}
+{"time":"2026-10-04T09:13:00Z","session":"s4","seq":13,"phase":"pre","tool":"Bash","id":"t13","target":"rename receipt photos"}
+{"time":"2026-10-04T09:13:00Z","session":"s4","seq":13,"phase":"post","tool":"Bash","id":"t13","target":"rename receipt photos","minutes":3}
+{"time":"2026-10-04T09:18:00Z","session":"s4","seq":18,"phase":"pre","tool":"Bash","id":"t18","target":"open notes for Mina"}
+{"time":"2026-10-04T09:18:00Z","session":"s4","seq":18,"phase":"post","tool":"Bash","id":"t18","target":"open notes for Mina","minutes":1}
+{"time":"2026-10-04T09:23:00Z","session":"s4","seq":23,"phase":"pre","tool":"Bash","id":"t23","target":"fix February header"}
+{"time":"2026-10-04T09:23:00Z","session":"s4","seq":23,"phase":"post","tool":"Bash","id":"t23","target":"fix February header","minutes":2}
+{"time":"2026-10-05T09:04:00Z","session":"s5","seq":4,"phase":"pre","tool":"Bash","id":"t4","target":"sort bank-export.csv by date"}
+{"time":"2026-10-05T09:04:00Z","session":"s5","seq":4,"phase":"post","tool":"Bash","id":"t4","target":"sort bank-export.csv by date","minutes":4}
+{"time":"2026-10-05T09:09:00Z","session":"s5","seq":9,"phase":"pre","tool":"Bash","id":"t9","target":"copy totals into summary.md"}
+{"time":"2026-10-05T09:09:00Z","session":"s5","seq":9,"phase":"post","tool":"Bash","id":"t9","target":"copy totals into summary.md","minutes":6}
+{"time":"2026-10-05T09:14:00Z","session":"s5","seq":14,"phase":"pre","tool":"Bash","id":"t14","target":"rename receipt photos"}
+{"time":"2026-10-05T09:14:00Z","session":"s5","seq":14,"phase":"post","tool":"Bash","id":"t14","target":"rename receipt photos","minutes":3}
+{"time":"2026-10-05T09:19:00Z","session":"s5","seq":19,"phase":"pre","tool":"Bash","id":"t19","target":"open notes for Mina"}
+{"time":"2026-10-05T09:19:00Z","session":"s5","seq":19,"phase":"post","tool":"Bash","id":"t19","target":"open notes for Mina","minutes":1}
+{"time":"2026-10-05T09:24:00Z","session":"s5","seq":24,"phase":"pre","tool":"Bash","id":"t24","target":"print summary"}
+{"time":"2026-10-05T09:24:00Z","session":"s5","seq":24,"phase":"post","tool":"Bash","id":"t24","target":"print summary","minutes":1}

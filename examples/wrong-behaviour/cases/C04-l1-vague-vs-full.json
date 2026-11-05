@@ -1,0 +1,33 @@
+{
+  "id": "C04-l1-vague-vs-full",
+  "title": "Level 1: starting ask against the full ask",
+  "status": "ready",
+  "pages": [
+    "journey/01-say-it-properly"
+  ],
+  "claim": "The starting ask totals 13 figures; the full ask (goal, constraints, layout, check) stops and asks.",
+  "falsified_if": "the starting ask does not total 2,318 in any trial: relabel the 5-of-5 table row.",
+  "harness": "H1 no tools, one prompt",
+  "grader": "bills",
+  "arms": [
+    {
+      "id": "v0-starting",
+      "model": "claude-sonnet-5-5",
+      "prompt": "Here are our shared bills for last year, in euros per month: Jan 212, Feb 198, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Split the total between the three of us (Sam, Priya and Tom).",
+      "n": 20
+    },
+    {
+      "id": "v4-full",
+      "model": "claude-sonnet-5-5",
+      "prompt": "Goal: work out what each of the three of us owes for last year's shared bills, so I can send Priya and Tom one amount each.\nConstraints: Use only the figures I gave you. List each month once. If a month is missing or repeated, tell me and ask instead of guessing. Round each share to the cent. If the three shares do not add to the total, change Sam's share by the difference and say so. Keep the answer under ten lines.\nLayout I want, shown with two made-up months (Jan 100, Feb 50):\nMonths counted: 2\nTotal: 150.00\nEach of 3 pays: 50.00\nCheck: Before the final answer, state how many months you counted and the sum of the figures. If the count is not 12, stop and tell me.\nBills, in euros per month: Jan 212, Feb 198, Feb 198, Mar 187, Apr 164, May 151, Jun 142, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240.",
+      "n": 20,
+      "grader": "bills_stop"
+    }
+  ],
+  "notes": "The v4-full arm tells the assistant to stop when the count is not 12, so it is graded by bills_stop: 2,318 (sum of the 13 listed figures) and 2,120 are correct there. Reported separately: counted 13, asked before totalling, mis-add (any stated sum or share that is not 2,318, 2,120 or a third of either).",
+  "schema": 1,
+  "definitions": {
+    "wrong_headline": "Arms that ask for a split (C01 all arms, C04 v0): the first total stated outside an 'if' or alternative line differs from the page's right answer (the total with the repeat counted once; 7,281 for the long list), whether or not the reply goes on to flag the problem. Not applicable to the v4-full arm.",
+    "wrong_behaviour": "v0: the wrong headline total with no mention of the repeat. v4-full: mis-add."
+  }
+}

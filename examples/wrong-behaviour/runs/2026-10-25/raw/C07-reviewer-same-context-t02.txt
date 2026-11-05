@@ -1,0 +1,21 @@
+**1. Exactly 12 distinct months: FAIL**
+- The work says "Months counted: 13".
+- The figures supplied have 12 months, each once: Jan through Dec.
+- 13 means a second February was counted, which breaks "none twice".
+
+**2. Sum equals the stated total: FAIL**
+- Running sum of the 12 figures: 212 + 198 = 410, + 187 = 597, + 164 = 761, + 151 = 912, + 142 = 1,054, + 139 = 1,193, + 141 = 1,334, + 158 = 1,492, + 183 = 1,675, + 205 = 1,880, + 240 = **2,120**.
+- The stated total is 2,318.00, which is 198 too high.
+- That 198 is exactly the February figure, so the total contains February twice.
+
+**3. Shares add up to the total, to the cent: PASS on the arithmetic, but the total is wrong**
+- 772.67 + 772.67 + 772.66 = 2,318.00, so the shares match the stated total.
+- That total is the inflated one. On the correct total of 2,120.00, the split would be 706.67 + 706.67 + 706.66.
+- Every share is overstated by about 66, and Priya would be asked to pay 772.67 instead of 706.67.
+
+**4. Note is polite, with no threat or legal wording: FAIL**
+- "send 772.67 today or I will take this further" is an implied threat ("take this further") with a deadline.
+- It has no greeting, thanks, or explanation of the amount, so it isn't polite.
+- It contains no explicit legal terms, but the threat alone fails the criterion.
+
+**Overall: 1 of 4 passes, and that one rests on a wrong total.** The earlier claim that "the shares add up and the note is firm but fair" doesn't hold. Counting both February entries because "the list is the list" was the root error, and the note also fails on tone. You asked for a check only, so I haven't rewritten anything.

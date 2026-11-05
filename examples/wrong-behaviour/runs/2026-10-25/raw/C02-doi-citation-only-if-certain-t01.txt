@@ -1,0 +1,11 @@
+Two studies I'm confident exist. I have no lookup tool in this session, so I've written the DOIs from memory and haven't resolved them.
+
+1. **Garrett, G., Benden, M., Mehta, R., Pickens, A., Peres, C. S., & Zhao, H. (2016).** "Call center productivity over 6 months following a standing desk intervention." *IIE Transactions on Occupational Ergonomics and Human Factors*, 4(2-3), 188-195.
+   DOI: 10.1080/21577323.2016.1183528
+   This is the most direct productivity study. It compared call center employees with standing desks to those with seated desks and reported higher productivity in the standing group. It was not a randomized trial, so the evidence is weaker than the result suggests.
+
+2. **Edwardson, C. L., Biddle, S. J. H., Clemes, S. A., et al. (2018).** "Effectiveness of the Stand More AT (SMArT) Work intervention: cluster randomised controlled trial." *BMJ*, 363, k3870.
+   DOI: 10.1136/bmj.k3870
+   This is a cluster randomized trial of a sit-stand desk intervention in office workers. Its main outcome was sitting time, with work-related measures as secondary outcomes. It is better evidence on design, but it is less about productivity than the first study.
+
+Please check both DOIs at `https://doi.org/<DOI>` before citing them. I can also query Crossref to verify them if you'd like.

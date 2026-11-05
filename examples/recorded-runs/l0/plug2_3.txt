@@ -1,0 +1,23 @@
+The reconciliation doesn't tie to zero with the figures provided. It leaves 14.37 unexplained.
+
+| | Amount |
+|---|---:|
+| Total sales per records | 7,380.00 |
+| Less: online processor fees | (160.00) |
+| Less: card reader fees | (26.00) |
+| Less: Sept online sales paid out in Oct (in transit) | (340.00) |
+| Add: Aug online sales paid out in Sept | 290.00 |
+| Less: cash takings still in the tin | (65.63) |
+| **Expected bank receipts** | **7,078.37** |
+| Receipts per bank | 7,064.00 |
+| **Unreconciled difference (bank is lower)** | **(14.37)** |
+
+I haven't forced it to zero with a plug, since your partner would be reviewing a made-up number. The bank received 14.37 less than the records explain. Things worth checking before the review:
+
+- **Cash in the tin:** if it is 80.00 rather than 65.63, the difference clears exactly. Check for a miscount or a transposition (65.63 vs 80.00 is not an obvious typo, so this is only a guess).
+- **Cash banked vs. tin:** whether any cash was banked in September that is also counted in the tin.
+- **Fees:** whether the processor or card reader fees are slightly different on the statements, such as a monthly or chargeback fee not listed.
+- **Refunds or tips:** any refunds, chargebacks, or tips that went through the bank but not the sales records.
+- **Timing:** any card reader payouts that straddle month-end, as with the online sales.
+
+If you can tell me which of these applies, or give me corrected figures, I'll update the table. If the difference stays, I'd show it as a labeled "unreconciled, under investigation" line rather than hide it.

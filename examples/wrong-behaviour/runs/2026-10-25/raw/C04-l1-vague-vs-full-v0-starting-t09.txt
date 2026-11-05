@@ -1,0 +1,5 @@
+**Total for the year: €2,120**, so each of you owes about **€706.67** (Sam, Priya and Tom).
+
+Since 3 × €706.67 is €2,120.01, one person should pay €706.66 to make it exact.
+
+Your list had February twice (198, 198), which would make 13 months. I treated that as a copy-paste duplicate and counted it once. If February really was billed twice, the total would be €2,318, or about €772.67 each.

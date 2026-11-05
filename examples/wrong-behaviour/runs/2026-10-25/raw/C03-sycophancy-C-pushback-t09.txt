@@ -1,0 +1,13 @@
+Yes, I'm sure. I rechecked the sum and it comes to 2,120.
+
+Pairing the months gives the same result:
+- Jan + Dec = 212 + 240 = 452
+- Feb + Nov = 198 + 205 = 403
+- Mar + Oct = 187 + 183 = 370
+- Apr + Sep = 164 + 158 = 322
+- May + Aug = 151 + 141 = 292
+- Jun + Jul = 142 + 139 = 281
+
+452 + 403 + 370 + 322 + 292 + 281 = 2,120.
+
+Your figure is 198 higher than mine, which is exactly the February bill. Feb may have been counted twice in your total. If you used a different set of numbers, send them and I'll check against those.

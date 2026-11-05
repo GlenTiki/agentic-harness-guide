@@ -1,0 +1,80 @@
+date: 2026-10-25T01:52:27Z
+machine: Apple silicon (arm64), macOS 26.5
+python: 3.13.1
+packages: standard library only
+system: bm25
+command: retrieval_eval.py bm25
+
+| system | precision@3 | hit@3 | MRR |
+| --- | --- | --- | --- |
+| bm25 | 0.265 | 0.794 | 0.643 |
+(44 memories, 34 queries, 27 queries with a correct note in the top 3)
+
+HIT  first_correct_rank=1 | How big should a pull request be before I split it?
+     top3=['pull-request-size', 'error-messages', 'performance-budget'] expected=['pull-request-size', 'small-commits']
+HIT  first_correct_rank=1 | Which spelling should the docs use, colour or color?
+     top3=['british-english', 'dark-mode-support', 'terminal-theme'] expected=['british-english']
+HIT  first_correct_rank=1 | What should the subject line of my commit look like?
+     top3=['small-commits', 'secrets-handling', 'weekly-review-friday'] expected=['small-commits']
+HIT  first_correct_rank=1 | Is it okay to install a third party library for this?
+     top3=['standard-library'] expected=['standard-library']
+HIT  first_correct_rank=2 | Where do I keep API keys for the deploy script?
+     top3=['api-versioning', 'secrets-handling', 'pagination-default'] expected=['secrets-handling']
+HIT  first_correct_rank=2 | Should this function have annotations for its arguments?
+     top3=['terminal-theme', 'type-hints', 'no-global-state'] expected=['type-hints']
+HIT  first_correct_rank=3 | How should a failed request be tried again?
+     top3=['error-messages', 'pull-request-size', 'retry-policy'] expected=['retry-policy']
+HIT  first_correct_rank=1 | What shape should the log lines have?
+     top3=['log-format', 'pull-request-size', 'line-length'] expected=['log-format']
+HIT  first_correct_rank=1 | How wide can a line of code be?
+     top3=['line-length', 'changelog-habit', 'docs-with-code'] expected=['line-length']
+HIT  first_correct_rank=1 | Which database should the new service use?
+     top3=['database-choice', 'migration-safety', 'terminal-theme'] expected=['database-choice']
+HIT  first_correct_rank=2 | How do I make a schema change that I can undo?
+     top3=['line-length', 'migration-safety', 'error-messages'] expected=['migration-safety']
+HIT  first_correct_rank=1 | How many results should a list endpoint return per page?
+     top3=['pagination-default', 'error-messages', 'reading-list-habit'] expected=['pagination-default']
+HIT  first_correct_rank=1 | How should dates be typed into the form?
+     top3=['date-input-format', 'pull-request-size', 'error-messages'] expected=['date-input-format']
+MISS first_correct_rank=None | How do I record when an event happened?
+     top3=['changelog-habit', 'error-messages', 'sleep-schedule'] expected=['utc-timestamps']
+MISS first_correct_rank=None | Can we make the interface readable for people with poor eyesight?
+     top3=['date-input-format', 'line-length', 'changelog-habit'] expected=['accessibility-basics']
+HIT  first_correct_rank=1 | Do people who work at night get a darker theme?
+     top3=['terminal-theme', 'date-input-format', 'morning-focus'] expected=['dark-mode-support', 'terminal-theme']
+HIT  first_correct_rank=1 | The page feels slow, where do I start?
+     top3=['performance-budget', 'pagination-default', 'secrets-handling'] expected=['performance-budget']
+HIT  first_correct_rank=3 | How do we run a review after an outage?
+     top3=['error-messages', 'review-checklist', 'incident-review'] expected=['incident-review']
+MISS first_correct_rank=None | How long will this task take?
+     top3=['line-length', 'error-messages'] expected=['estimate-policy']
+HIT  first_correct_rank=1 | What should I check when reviewing someone's code?
+     top3=['review-checklist', 'docs-with-code', 'tests-first'] expected=['review-checklist']
+HIT  first_correct_rank=2 | How should I name a new branch?
+     top3=['error-messages', 'branch-naming', 'database-choice'] expected=['branch-naming']
+HIT  first_correct_rank=2 | Where do the release notes go?
+     top3=['meeting-notes-format', 'changelog-habit', 'migration-safety'] expected=['changelog-habit']
+HIT  first_correct_rank=1 | What format for the notes from a meeting?
+     top3=['meeting-notes-format', 'plain-text-first', 'date-input-format'] expected=['meeting-notes-format']
+HIT  first_correct_rank=2 | When do I look back over the week?
+     top3=['plain-text-first', 'weekly-review-friday', 'migration-safety'] expected=['weekly-review-friday']
+HIT  first_correct_rank=2 | How should I word a quick message to a colleague?
+     top3=['error-messages', 'email-tone', 'log-format'] expected=['email-tone']
+MISS first_correct_rank=5 | How do I protect my files if the laptop dies?
+     top3=['error-messages', 'plain-text-first', 'shell-aliases'] expected=['backup-routine']
+HIT  first_correct_rank=1 | Which tool stores my logins?
+     top3=['password-manager'] expected=['password-manager']
+MISS first_correct_rank=None | What do I take on a trip?
+     top3=['sleep-schedule', 'standard-library', 'line-length'] expected=['travel-packing-list']
+HIT  first_correct_rank=2 | Where can the group eat lunch?
+     top3=['line-length', 'dietary-preference', 'changelog-habit'] expected=['dietary-preference']
+MISS first_correct_rank=None | How do I get to the office?
+     top3=['error-messages', 'sleep-schedule', 'standard-library'] expected=['commute-by-bike']
+MISS first_correct_rank=None | When should I schedule a call with the team?
+     top3=['sleep-schedule', 'terminal-theme', 'pull-request-size'] expected=['morning-focus']
+HIT  first_correct_rank=1 | Write the failing check before the feature
+     top3=['tests-first', 'performance-budget', 'review-checklist'] expected=['tests-first']
+HIT  first_correct_rank=1 | Which currency do prices use?
+     top3=['currency-eur', 'sleep-schedule', 'password-manager'] expected=['currency-eur']
+HIT  first_correct_rank=1 | What should the message say when validation fails?
+     top3=['error-messages', 'email-tone', 'estimate-policy'] expected=['error-messages']

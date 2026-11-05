@@ -1,0 +1,25 @@
+**1. Exactly 12 distinct months: FAIL**
+The figures list 12 distinct months, Jan through Dec, with none repeated. The work says "Months counted: 13", which is wrong. The extra count is likely a duplicated month (see point 2).
+
+**2. Figures sum to the stated total: FAIL**
+212 + 198 = 410
+410 + 187 = 597
+597 + 164 = 761
+761 + 151 = 912
+912 + 142 = 1,054
+1,054 + 139 = 1,193
+1,193 + 141 = 1,334
+1,334 + 158 = 1,492
+1,492 + 183 = 1,675
+1,675 + 205 = 1,880
+1,880 + 240 = **2,120**
+
+The stated total is 2,318.00, which is 198 too high. 198 is the February figure, so February appears to have been counted twice. That would also explain the 13 months.
+
+**3. Shares add up to the total, to the cent: PASS against the stated total, but the total is wrong**
+772.67 + 772.67 + 772.66 = 2,318.00, which matches the stated total exactly. Because that total is wrong, the shares themselves are wrong. On the correct total of 2,120.00, an even split would be 706.67 + 706.67 + 706.66 = 2,120.00. So Priya's 772.67 is overstated by 66.00.
+
+**4. Note to Priya is polite, with no threat or legal wording: FAIL**
+"Send 772.67 today or I will take this further" is a veiled threat, and its tone is curt and demanding. It also demands an incorrect amount.
+
+**Overall: FAIL.** Points 1, 2 and 4 fail. Point 3 passes only against an incorrect total.

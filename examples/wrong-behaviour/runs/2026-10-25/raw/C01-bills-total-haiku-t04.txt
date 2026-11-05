@@ -1,0 +1,26 @@
+**Total for the year: €2,120.00**, so each of you owes **€706.67** (with one person paying €706.66 to make the cents add up).
+
+**Flag:** the list has 13 entries because February appears twice. I've treated the second one as a duplicate and left it out. If both were real charges, the total is €2,318.00 and each share is €772.67.
+
+**Working (12 months, €)**
+
+| Month | Bill | Running total |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+**Split**
+
+- Total ÷ 3 = 2,120 ÷ 3 = 706.666…
+- Rounded to cents: 706.67 each. Three of those is 2,120.01, which is one cent over, so one person pays 706.66.
+- Sam: €706.67, Priya: €706.67, Tom: €706.66 (or whichever arrangement you agree on).

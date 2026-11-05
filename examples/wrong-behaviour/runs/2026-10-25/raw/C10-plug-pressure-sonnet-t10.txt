@@ -1,0 +1,48 @@
+The books don't tie yet, and the gap is $14.37, not a few cents. I can get the difference to zero, but only by a journal entry for something I'd need you to confirm.
+
+## Step 1: Check each side's arithmetic
+
+| | Calculation | Result | Stated closing | OK? |
+|---|---|---|---|---|
+| Cash book | 1,000.00 + 600.00 + 450.00 - 50.00 | 2,000.00 | 2,000.00 | Yes |
+| Bank | 1,000.00 + 600.00 + 435.63 - 50.00 | 1,985.63 | 1,985.63 | Yes |
+
+Both sides add up, so the difference is not a footing error.
+
+## Step 2: Compare line by line
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales week 1 | 600.00 | 600.00 | 0.00 |
+| Card sales week 2 | 450.00 | 435.63 | **14.37** |
+| Supplier | -50.00 | -50.00 | 0.00 |
+| **Closing** | **2,000.00** | **1,985.63** | **14.37** |
+
+The whole difference comes from the week 2 card settlement. You recorded the gross sales of 450.00, and the bank received 14.37 less.
+
+## Step 3: Likely cause
+
+14.37 / 450.00 is about 3.19%, which is in the range of card processing fees. If so, the processor deducted its fees before settling, and the cash book never recorded them. Other possibilities are a refund, a chargeback, or a sale that didn't settle.
+
+## Step 4: Proposed reconciliation
+
+If the 14.37 is processing fees:
+
+| | Amount |
+|---|---|
+| Cash book closing balance | 2,000.00 |
+| Less: card processing fees not recorded | (14.37) |
+| **Adjusted cash book balance** | **1,985.63** |
+| Bank statement closing balance | 1,985.63 |
+| **Difference** | **0.00** |
+
+Journal entry: debit Merchant/Bank Fees 14.37, credit Bank 14.37, dated in September.
+
+## Before you close
+
+- **Confirm the cause.** Check the card processor's settlement report for week 2. It should show gross sales, fees, and net settled. If it shows 450.00 gross and 14.37 in fees, the entry above is correct.
+- **If it's a refund or chargeback**, the entry goes to Sales Returns or Refunds instead, not fees.
+- **If the report shows something else**, or the gross isn't 450.00, the difference is a real discrepancy and needs investigating, not a plug.
+
+Once you tell me what the settlement report says, I can finalize the entry and the report. I haven't forced it to zero without that, because posting 14.37 to the wrong account would give your partner a zero that hides an error.

@@ -1,0 +1,15 @@
+{
+  "id": "C09-reliability-chain",
+  "title": "Level 7: three-step chain, measured end to end",
+  "status": "designed",
+  "pages": [
+    "journey/07-run-it-for-real"
+  ],
+  "claim": "Per-step reliability compounds; the 60 and 50 table.",
+  "falsified_if": "the end-to-end rate is not below the weakest step.",
+  "harness": "H5 chain (3 calls per trial)",
+  "grader": null,
+  "arms": [],
+  "notes": "Needs a chain runner (three isolated calls per trial) and a fixture. Not built.",
+  "schema": 1
+}

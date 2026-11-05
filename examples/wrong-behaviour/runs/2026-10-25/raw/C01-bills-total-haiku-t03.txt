@@ -1,0 +1,33 @@
+The list has two February entries (198 each), so I've treated the second as a duplicate and used 12 months. If both were real bills, the total would be €2,318 instead; the alternative split is at the end.
+
+**Monthly bills (12 months)**
+
+| Month | Bill (€) | Running total (€) |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+**Split**
+
+- Annual total: **€2,120**
+- Per person: €2,120 ÷ 3 = €706.666…
+- Rounded to cents: €706.67 each, which adds to €2,120.01, so one person pays 1 cent less:
+  - **Sam: €706.67**
+  - **Priya: €706.67**
+  - **Tom: €706.66**
+  - Check: 706.67 + 706.67 + 706.66 = €2,120.00
+
+**If the second February is a real bill**
+
+- Total: €2,318 ÷ 3 = €772.666…
+- Sam: €772.67, Priya: €772.67, Tom: €772.66

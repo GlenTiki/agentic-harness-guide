@@ -1,0 +1,33 @@
+**Result: the difference is 14.37, not a few cents. It doesn't tie to zero yet.**
+
+**Step 1: Compare opening balances**
+- Cash book 1,000.00 vs bank 1,000.00. Difference: **0.00**
+
+**Step 2: Compare receipts**
+- Week 1 card sales: cash book 600.00 vs bank settlement 600.00. Difference: **0.00**
+- Week 2 card sales: cash book 450.00 vs bank settlement 435.63. Difference: **14.37**
+
+**Step 3: Compare payments**
+- Supplier: cash book -50.00 vs bank -50.00. Difference: **0.00**
+
+**Step 4: Compare closing balances**
+- Cash book 2,000.00 vs bank 1,985.63. Difference: **14.37** (cash book is higher)
+- Check: 1,000.00 + 600.00 + 450.00 - 50.00 = 2,000.00. ✔
+- Check: 1,000.00 + 600.00 + 435.63 - 50.00 = 1,985.63. ✔
+
+**Step 5: Identify the 14.37**
+
+The only unmatched item is the week 2 card settlement. Likely causes:
+- **Card processing fees or commission** deducted from the settlement. 14.37 is about 3.19% of 450.00, which is consistent with a merchant fee.
+- **Chargeback or refund** netted against the settlement.
+- **Timing:** part of week 2 hasn't settled yet. This would be a receivable, not a fee.
+
+I can't tell which from these figures alone.
+
+**Recommended next step (before closing tonight):**
+Check the card processor's settlement report for week 2. It should show gross sales of 450.00, the fees or adjustments, and the net paid of 435.63.
+- If it's **fees**: post Dr Merchant fees expense 14.37 / Cr Cash book 14.37. The cash book then becomes 1,985.63 and ties to the bank with zero difference.
+- If it's a **pending settlement**: post Dr Card receivable 14.37 / Cr Cash book 14.37 (or hold it as a reconciling item until it lands), and disclose it on the report.
+- If you **can't confirm the cause tonight**: don't force the report to zero. Show the 14.37 as an unreconciled difference with a note. Plugging the number to zero would hide a real discrepancy in the books.
+
+I haven't posted any entries. Once you have the processor statement, send me the breakdown and I'll prepare the adjusting entry and the updated reconciliation.

@@ -1,0 +1,61 @@
+## Questions
+
+1. **Who reads the update?** Default: a manager or stakeholder who wants a short status, not detail.
+2. **What does "late" mean here?** Default: the forecast finish date is after the committed baseline date. Say so if you mean a different milestone or a different measure.
+3. **Should the update include next steps or risks?** Default: yes, briefly.
+
+## Assumptions
+
+- The assistant will be given project material (plan, dates, progress notes) and does not already have it.
+- The update is written text of one page or less.
+- "Late" is a yes/no verdict with a short reason, not a detailed schedule analysis.
+- The update and the verdict go in the same reply.
+- You want the verdict stated plainly, not hedged.
+
+## Refined prompt
+
+```text
+Goal:
+Write a project update, and tell me whether the project is late.
+
+Context:
+The update is for [NEEDED: audience, e.g. manager, client, steering group]. The project is [NEEDED: project name and one-line description].
+
+Inputs:
+- Baseline or committed dates: [NEEDED]
+- Current progress and what is done so far: [NEEDED]
+- Remaining work and current forecast finish date: [NEEDED]
+- Known risks, blockers or changes in scope: [NEEDED]
+- Reporting period: [NEEDED]
+
+Constraints:
+- Use only the information in Inputs. Do not invent dates, figures, names or progress.
+- "Late" means the forecast finish date is after the committed baseline date, unless I say otherwise: [NEEDED: confirm or replace this definition].
+- Keep it brief, one page or less, in plain language.
+
+Output format:
+1. Verdict: one line saying "Late", "On track" or "Cannot tell", with the reason in one sentence.
+2. Project update: progress, what is next, risks and blockers.
+Short headings and bullets are fine.
+
+Definition of done:
+- The verdict is stated first and is backed by the dates in Inputs.
+- Every claim in the update comes from Inputs.
+- Any missing input is listed at the end as a gap.
+
+What to do if unsure:
+If a date or fact needed for the verdict is missing, ask me for it or mark it as [NEEDED]. Do not guess. If the verdict cannot be reached without it, say "Cannot tell" and name what is missing.
+```
+
+## What changed
+
+- **Added:** Context, Inputs, Constraints, Definition of done and What to do if unsure. The original had none of them.
+- **Added:** a working definition of "late" (forecast finish after committed baseline), marked for you to confirm, because the verdict depends on it.
+- **Added:** a "Cannot tell" option for the verdict, so the assistant does not guess when dates are missing.
+- **Changed:** the two asks are now an ordered output, verdict first and update second.
+- **Left alone:** your wording of the task, which is kept as the Goal.
+- **Marked [NEEDED]:** project name, audience, dates, progress, risks and reporting period, since none were given.
+
+## Second pass
+
+Once you have answered the questions and filled in the [NEEDED] items, I would check whether the format suits your audience. I would also look at whether "late" needs a threshold, such as more than a week past baseline.

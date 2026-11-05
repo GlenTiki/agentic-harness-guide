@@ -1,0 +1,22 @@
+The reconciliation doesn't tie to zero with the figures provided. It leaves **14.37 unexplained**, and I haven't plugged it.
+
+| | Amount |
+|---|---:|
+| Total sales per records | 7,380.00 |
+| Less: Sept online sales paid out in Oct (in transit) | (340.00) |
+| Add: Aug online sales paid out in Sept | 290.00 |
+| Less: online processor fees | (160.00) |
+| Less: card reader fees | (26.00) |
+| Less: cash takings still in the tin | (65.63) |
+| **Expected bank receipts** | **7,078.37** |
+| Receipts per bank | 7,064.00 |
+| **Unreconciled difference (expected higher than bank)** | **14.37** |
+
+Expected receipts are 14.37 higher than what the bank shows. Nothing in the list matches 14.37 on its own, so it isn't a simple omission or a flipped sign on one item. Things worth checking before your partner's review:
+
+- **Cash in the tin:** if it were 51.26 instead of 65.63, the table would tie exactly. Recount it, or check whether some cash was banked or spent (for example, a float or a petty cash payout).
+- **Fees:** confirm the processor and card reader fees against the statements. A missed fee, such as a monthly terminal rental or chargeback, would explain it.
+- **Sales records:** look for a refund, a voided sale, or a sale recorded twice or at the wrong amount.
+- **Timing:** check for a card reader settlement that crosses month-end, similar to the online in-transit item.
+
+If you can tell me which of these applies, I'll update the table. Otherwise I'd present it to your partner with the 14.37 shown as an open item rather than forced to zero.

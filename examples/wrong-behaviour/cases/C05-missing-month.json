@@ -1,0 +1,28 @@
+{
+  "id": "C05-missing-month",
+  "title": "Eleven months, June missing: with and without the house rule",
+  "status": "ready",
+  "pages": [
+    "journey/02-house-rules"
+  ],
+  "claim": "Without the file, an assistant totals what it has or invents a June.",
+  "falsified_if": "the bare arm flags the missing June in every trial.",
+  "harness": "H1 no tools, one prompt",
+  "grader": "missing_month",
+  "arms": [
+    {
+      "id": "bare",
+      "model": "claude-sonnet-5-5",
+      "prompt": "Figures per month for last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Give me the yearly total and each share for the three of us (Sam, Priya and Tom). Show the working.",
+      "n": 10
+    },
+    {
+      "id": "house-rules",
+      "model": "claude-sonnet-5-5",
+      "prompt": "House rules: Count each month once. A year has twelve months. If a month is missing or repeated, tell me and ask instead of guessing. Never invent a figure.\n\nFigures per month for last year: Jan 212, Feb 198, Mar 187, Apr 164, May 151, Jul 139, Aug 141, Sep 158, Oct 183, Nov 205, Dec 240. Give me the yearly total and each share for the three of us (Sam, Priya and Tom). Show the working.",
+      "n": 10
+    }
+  ],
+  "notes": "",
+  "schema": 1
+}

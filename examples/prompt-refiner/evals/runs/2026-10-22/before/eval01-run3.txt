@@ -1,0 +1,63 @@
+## Questions
+
+1. **Whose budget is this?** (personal, household, small business, project/event)
+   *Default: personal or household monthly budget.*
+2. **What do you want from it?** (track spending, save for a goal, pay down debt, cut costs)
+   *Default: get a clear picture of income vs. spending and set a savings target.*
+3. **What format do you want back?** (step-by-step guide, spreadsheet layout, or a worked template)
+   *Default: a spreadsheet-style template plus a short walkthrough.*
+
+## Assumptions
+
+- The budget is personal or household, not business.
+- The period is monthly.
+- You want a method and structure, not a lecture on personal finance.
+- You will supply your own income and expense figures.
+- No specific currency, country, or tax rules apply unless you say so.
+- You are a beginner and want plain language.
+
+## Refined prompt
+
+```text
+Goal:
+Help me make a monthly budget I can actually follow. Main aim: [NEEDED: e.g. track spending, save for a goal, pay down debt].
+
+Context:
+This is for [NEEDED: personal / household / small business / project]. My experience with budgeting is [NEEDED: beginner / some / experienced]. Country and currency: [NEEDED].
+
+Inputs:
+- Monthly income after tax: [NEEDED]
+- Fixed expenses (rent or mortgage, utilities, insurance, subscriptions, loan payments): [NEEDED]
+- Variable expenses (food, transport, leisure, other): [NEEDED]
+- Debts, with balances and interest rates, if relevant: [NEEDED]
+- Savings goals, with target amounts and dates, if any: [NEEDED]
+- Preferred budgeting method, if any (e.g. 50/30/20, zero-based): [NEEDED or "no preference"]
+
+Constraints:
+- Use only the figures I give you. Do not invent or assume amounts.
+- Use plain language and avoid jargon.
+- Do not give investment, tax, or legal advice.
+
+Output format:
+A simple budget template (table or spreadsheet-style layout) filled in with my figures, followed by a short step-by-step explanation of how to use and maintain it each month.
+
+Definition of done:
+- Income, fixed costs, variable costs, and savings are all accounted for.
+- The totals balance, and any shortfall or surplus is stated clearly.
+- I know what to do next month to keep it up to date.
+
+What to do if unsure:
+If any input is missing or unclear, ask me or mark it as [NEEDED]. Do not guess.
+```
+
+## What changed
+
+- **Added:** all seven sections, which were absent. The original had only a goal. Inputs are listed as [NEEDED] placeholders because I can't know your figures.
+- **Added:** constraints against inventing numbers and against giving investment, tax, or legal advice. These guard against likely risks.
+- **Added:** an output format and a definition of done, so it's clear what a finished budget looks like.
+- **Changed:** "Help me make a budget" became a goal with a purpose and a monthly period. The monthly period is an assumption.
+- **Left alone:** your direct, casual tone and the core intent of getting help making a budget.
+
+## Second pass
+
+Once you answer the three questions, I can fill in the [NEEDED] fields and trim any sections that don't apply. Next I'd check whether the prompt needs a stronger constraint on method (e.g. 50/30/20 vs. zero-based) and whether the output format suits the tool you'll use, such as Excel, Sheets, or paper.

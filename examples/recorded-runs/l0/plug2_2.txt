@@ -1,0 +1,19 @@
+It doesn't tie. There's an unexplained difference of **14.37**, so I've left it as a visible line rather than forcing it to zero.
+
+| | Amount |
+|---|---:|
+| Total sales per records | 7,380.00 |
+| Less: online processor fees | (160.00) |
+| Less: card reader fees | (26.00) |
+| Less: September online sales in transit (paid in October) | (340.00) |
+| Add: August online sales paid out in September | 290.00 |
+| Less: cash takings still in the tin | (65.63) |
+| **Expected bank receipts** | **7,078.37** |
+| Receipts per bank | 7,064.00 |
+| **Unreconciled difference (expected minus actual)** | **14.37** |
+
+Expected receipts are 14.37 higher than what the bank shows, so either some money didn't arrive or one of the inputs is slightly off.
+
+The gap is exactly the amount that would make the cash in the tin 80.00 rather than 65.63 (65.63 + 14.37 = 80.00). That could be a miscount or a typo, but it's only a guess. Other candidates are a fee I haven't been given, such as a chargeback or refund, or a sale recorded at the wrong amount.
+
+Before your partner reviews it, I'd recount the tin and check the processor and card reader statements for any other deductions. If you can confirm one of those, I'll update the table. Otherwise I'd show the 14.37 as an open item rather than plugging it.

@@ -1,0 +1,147 @@
+---
+title: Human-in-the-loop
+description: Decide in advance which actions always need a person, and batch the decisions so approvals stay meaningful.
+---
+
+import Example from '../../../../components/Example.astro';
+
+*Deep dive for [level 4: Trust, but verify](../../../journey/04-trust-but-verify/).*
+
+*Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
+
+**Recommendation:** run reversible, local work unattended, require a person for irreversible or outward-facing actions, and forbid the agent from the few actions that remove its own limits. Write both lists down. Batch routine questions into one form, and ask a person only for what an agent cannot decide.
+
+## Why it matters
+
+Approval has a cost, and [level 4](../../../journey/04-trust-but-verify/) names it approval fatigue. Ask too often and people may click through without reading, which is worse than not asking. *Principle, not measured.* Ask too rarely and an agent takes an action that cannot be undone. A written list puts the attention where the risk is.
+
+## What to enable
+
+**1. Write two lists.** The first list holds actions that need explicit approval from a person in the active session:
+
+- Pushing to a shared remote without force, and force-pushing a branch only you use.
+- Opening or merging a pull request on a repository you do not own.
+- Spending money or changing billing.
+- Sending any message to another person: email, chat, a comment on an issue.
+- Deleting data, dropping tables or removing logs and failure records.
+- Writing credentials to disk or widening an access scope.
+
+The second list holds actions the agent never does, even when a person approves in passing:
+
+- Force-pushing a shared branch.
+- Turning off a safety control, a hook or a capability gate, or editing the settings files, hook scripts and capability registry that limit the agent.
+
+A human maintainer does any approved maintenance on the second list, outside the agent session. The mechanism for the second list is a denied write to those files, plus a check that fails when they change. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
+
+**2. Apply the lists in the harness.** Do not rely on the agent remembering it. Claude Code behaviour: an `ask` permission rule such as `Bash(git push *)` makes the harness prompt for the commands it matches. It does not match every way to write the same command, so add a pre-tool hook that parses the command where the action matters. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/) and [Hooks](../../control/hooks/).
+
+**3. Separate drafting from sending.** The agent drafts a message, a pull request or a command. A person authorises the send. This fits any outward action and costs little.
+
+**4. Make the ask self-contained.** A question should carry its own context: the situation, the options, a recommendation and what happens next. A person who returns after a break should be able to answer without reading the history. Lead with the recommendation.
+
+**5. Batch decisions.** When three or more decisions stack up, put them in one form or one message with a recommendation for each, instead of interrupting one at a time. Reserve single questions for blockers.
+
+**6. Do not end a turn on an open question you could have asked with a tool.** If your harness has a structured question tool, use it, so the answer comes back in the same session.
+
+**7. Ask once.** An approval for an action stays valid for the same action in the same scope. Do not re-ask for it, and do not stretch it to cover a wider scope.
+
+**8. Keep explicit holds in force.** If a person says "wait", nothing in the agent's plan overrides that, including a passing review.
+
+## Keep the always-ask list short
+
+Split actions on two questions. Can you undo it? How far does it reach if it is wrong? Reversibility and blast radius give three groups.
+
+| Group | Test | Handling |
+| --- | --- | --- |
+| Unattended | Reversible, and it stays on your machine or in a branch | Run it. Keep a log |
+| Ask | Hard to reverse, or it reaches other people or shared systems | A person approves each one, with the exact content |
+| Never | Disables a control, overwrites shared work or cannot be bounded | Refuse. The agent does not do it, even when asked in passing. A human maintainer does it outside the session if it is approved |
+
+Every item in the ask group costs attention. Move an action down to unattended only when you can make it reversible, for example by working on a branch or keeping a backup. Do not move it down because asking is tedious.
+
+### Ten actions, classified
+
+Constructed. These are example actions with example reasons. Your list will differ.
+
+| Action | Group | Reason |
+| --- | --- | --- |
+| Edit a file on a working branch | Unattended | Version control undoes it |
+| Run the test suite | Unattended | Reads and reports, writes only temporary files |
+| Install a package from your approved registry into a throwaway environment | Unattended | The environment can be deleted |
+| Push a new branch to your own remote | Ask | Reversible, but others can see it and builds may start |
+| Open a pull request | Ask | It notifies people and carries your name |
+| Send a drafted email | Ask | A sent message cannot be recalled |
+| Delete a database table | Ask | The backup, if any, is the only undo |
+| Change a billing plan | Ask | It spends money |
+| Force-push a shared branch | Never | It overwrites other people's work |
+| Edit the settings file or a hook that limits the agent | Never | It removes the control that makes the other rows safe |
+
+The "never" rows are a policy choice. They are also the rows an `ask` prompt protects worst, because a person who approves them a few times may approve the next one without reading. Enforce them with a deny rule or a blocking hook, and send the rare approved case to a human maintainer.
+
+### A batch that hides one risky item
+
+Batching ten routine questions into one form reduces interruptions. It also lets one risky item ride along.
+
+<Example
+  label="Constructed"
+  task="A person receives one approval form with ten items and is asked to approve all of them."
+  env="Invented form, not a recorded run"
+>
+
+<Fragment slot="input">
+
+```text
+Approve all? (10 items)
+ 1. Rename variable total to subtotal in report.py
+ 2. Update the docstring in report.py
+ 3. Add a test for the empty-list case
+ 4. Run the formatter on report.py
+ 5. Run the test suite
+ 6. Regenerate the lock file
+ 7. Run `git push --force origin main`
+ 8. Remove the unused import in report.py
+ 9. Fix a typo in README.md
+10. Delete the generated build/ folder
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Approve now, in one step:  1, 2, 3, 4, 5, 6, 8, 9, 10   (unattended group)
+Refuse, shown first and on its own: 7  git push --force origin main
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Item 7 is the only one in the "never" group of the table above. Nine items are safe, and they set a pattern of "yes" before the reader reaches 7.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows the design problem and one handling rule. It does not show that people approve such a batch. Approval fatigue is not measured in this guide.
+
+</Fragment>
+
+</Example>
+
+Two rules keep batches safe. Approve a batch only for items in the unattended group. Show any ask or never item first, on its own, with the exact command.
+
+## Failure modes it reduces
+
+- An agent force-pushes over a colleague's work.
+- A drafted email is sent because no step required confirmation.
+- Approval fatigue turns every prompt into a reflex "yes".
+- A person returns to ten unrelated questions with no context.
+
+## First step for the maintainer
+
+Copy both lists above into your instruction file. Then add an `ask` rule for `git push` so the harness prompts for the first approval item. Add a deny rule or a blocking hook for force-pushes to shared branches and for writes to the settings and hook files. The sample hook blocks all force-pushes. A policy that distinguishes shared branches needs a separate check of the branch.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.316. The docs page states no version of its own. The permission modes page, fetched on the same date, says the same ask rules "fall back to a permission prompt" in auto mode.</p>
+
+**Next:** [Change control for the harness](../change-control/)

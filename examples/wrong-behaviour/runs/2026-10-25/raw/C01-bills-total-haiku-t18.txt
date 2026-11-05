@@ -1,0 +1,27 @@
+The total for the year is **€2,120.00**, so each person's share is **€706.67** (one person pays 1 cent less, €706.66, so the shares add up to exactly €2,120.00).
+
+Your list has two "Feb" entries, both €198. I've counted February once, since that gives the 12 months of the year. If both were meant to be real charges, the total would be €2,318.00 and each share €772.67.
+
+**Working**
+
+| Month | Bill (€) | Running total (€) |
+|---|---:|---:|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | **2,120** |
+
+**Split between three people**
+
+- Total: €2,120.00
+- Divided by 3: €706.666… per person
+- Rounded: Sam €706.67, Priya €706.67, Tom €706.66
+- Check: 706.67 + 706.67 + 706.66 = €2,120.00

@@ -1,0 +1,26 @@
+**Total for the year: €2,120, so €706.67 each.**
+
+One thing to check first: Feb 198 appears twice in your list. Since a year has 12 months, I treated the second one as a copy-paste duplicate and counted it once. If February really had two separate bills, see the note at the end.
+
+**Working (12 months)**
+
+| Month | € | Running total |
+|---|---|---|
+| Jan | 212 | 212 |
+| Feb | 198 | 410 |
+| Mar | 187 | 597 |
+| Apr | 164 | 761 |
+| May | 151 | 912 |
+| Jun | 142 | 1,054 |
+| Jul | 139 | 1,193 |
+| Aug | 141 | 1,334 |
+| Sep | 158 | 1,492 |
+| Oct | 183 | 1,675 |
+| Nov | 205 | 1,880 |
+| Dec | 240 | 2,120 |
+
+**Split three ways:** 2,120 ÷ 3 = 706.666…, which rounds to **€706.67 each** for Sam, Priya and Tom.
+
+Rounding up for all three gives 3 × 706.67 = 2,120.01, which is 1 cent over. To make it exact, two people pay €706.67 and one pays €706.66.
+
+**If February was billed twice:** the total is 2,120 + 198 = €2,318, and each person pays 2,318 ÷ 3 = **€772.67** (again with a 1-cent adjustment for one person).

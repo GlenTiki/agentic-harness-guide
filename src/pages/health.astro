@@ -1,0 +1,61 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import health from '../data/health.json';
+import limit from '../data/health-limit.json';
+import { healthRows } from '../data/twins';
+
+const rows = healthRows(Date.now());
+const labels = { pass: 'Pass', fail: 'Fail', unknown: 'Unknown', stale: 'Stale' } as const;
+const glyphs = { pass: '✓', fail: '✗', unknown: '?', stale: '⌛' } as const;
+const counts = (s: keyof typeof labels) => rows.filter((r) => r.state === s).length;
+---
+
+<StarlightPage
+  frontmatter={{
+    title: 'Guide health',
+    description: 'The results of the guide\'s own checks, each with its source and the time it was observed.',
+    template: 'splash',
+    editUrl: false,
+    pagefind: false,
+  }}
+>
+  <p>
+    This page shows what the guide's own checks found. Each row names its source and the time it was observed. A row with no source of measurement says Unknown. It never says Pass.
+  </p>
+  <p>
+    Results were recorded at <time datetime={health.generated_at}>{health.generated_at}</time> on commit <code>{health.commit}</code>.
+    A result older than {limit.maxAgeHours} hours shows as Stale. Now: {counts('pass')} pass, {counts('fail')} fail, {counts('unknown')} unknown, {counts('stale')} stale.
+  </p>
+  <ul class="health-list">
+    {rows.map((row) => (
+      <li class={`health-row state-${row.state}`}>
+        <h2>{row.label} <span class={`badge badge-${row.state}`}><span aria-hidden="true">{glyphs[row.state]}</span> {labels[row.state]}</span></h2>
+        <p>{row.covers}</p>
+        <dl>
+          <div><dt>Source</dt><dd><code>{row.source}</code></dd></div>
+          <div><dt>Observed (UTC)</dt><dd>{row.observed ? <time datetime={row.observed}>{row.observed}</time> : 'Never observed'}</dd></div>
+          <div><dt>Result</dt><dd>{row.detail}</dd></div>
+        </dl>
+      </li>
+    ))}
+  </ul>
+  <p>The page covers the checks named above. It does not cover wording quality, factual accuracy of tool settings, or real-device behaviour.</p>
+</StarlightPage>
+
+<style>
+  .health-list { list-style: none; padding: 0; display: grid; gap: 1rem; }
+  .health-row { padding: 0.75rem 1rem; border: 1px solid var(--ahg-line); border-radius: var(--ahg-radius-card); background: var(--ahg-panel); }
+  .health-row h2 { margin: 0 0 0.25rem; font-size: var(--sl-text-lg); display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+  .health-row p { margin: 0 0 0.5rem; }
+  dl { margin: 0; display: grid; gap: 0.25rem; font-size: var(--sl-text-sm); }
+  dl div { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .health-row dl > div > * { margin: 0; padding: 0; }
+  .health-row > h2 { margin-top: 0 !important; }
+  dt { color: var(--ahg-muted); min-width: 8rem; }
+  dd { margin: 0; overflow-wrap: anywhere; }
+  .badge { font-size: var(--sl-text-sm); font-weight: 700; padding: 0.1rem 0.6rem; border-radius: 999px; border: 2px solid currentColor; }
+  .badge-pass { color: var(--ahg-right); background: var(--ahg-right-soft); }
+  .badge-fail { color: var(--ahg-wrong); background: var(--ahg-wrong-soft); }
+  .badge-unknown { color: var(--ahg-muted); border-style: dashed; background: var(--ahg-panel); }
+  .badge-stale { color: var(--ahg-expert); background: var(--ahg-expert-soft); border-style: dotted; }
+</style>

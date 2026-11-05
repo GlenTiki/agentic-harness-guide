@@ -1,0 +1,185 @@
+---
+title: Resolve every link in a document
+description: Build a Markdown linter that checks every relative path, file link and heading anchor, with failing fixtures that prove it can go red.
+status: built
+sidebar:
+  label: "Chapter 3: Link resolver"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch03-link-resolver.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (6 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+Documents drift from reality. A pointer to a renamed file or heading stays in the text and the document lies.
+
+## Goal
+
+Catch every broken relative link, file path and heading anchor at commit time.
+
+## What is in the kit
+
+- `linkcheck.py`, a Markdown link linter. It checks every relative path, file link, heading anchor and image path.
+- `example/`, a small folder of good files with one external link that the linter does not fetch.
+- `validate.py`, which checks `example/` and the Markdown files at the top of the kit (`README.md`, `CHAPTER.md` and `SPEC.md`).
+- `fixtures/bad/broken.md`, a failing fixture.
+
+## Get the kit
+
+Download [ch03-link-resolver.zip](/agentic-harness-guide/downloads/ch03-link-resolver.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch03-link-resolver.zip
+unzip ch03-link-resolver.zip -d kit
+cd kit/ch03-link-resolver
+```
+
+The hash must be `4e9f6f4fdab1f59cc0e27d0ce0e5b2dc656d5476a57a29be6b171698e9dd2c4d`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `linkcheck.py`.
+3. Run it on the good example: `python3 -I linkcheck.py example`.
+4. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+5. Rename a heading in a copy and check the copy. The second Example shows the commands.
+6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You check the good example folder for broken links."
+  evidence="python3 -I linkcheck.py example (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I linkcheck.py example
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+linkcheck: 0 finding(s); 1 external link(s) not fetched
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The line says `0 finding(s)` and `1 external link(s) not fetched`. The linter reads local files only.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The example has no broken local link. It does not show that links to other sites still work.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You copy the example into `scratch/`, rename one heading in the copy, and check the copy. The link to that heading must go red."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+mkdir -p scratch
+python3 -I -c "import shutil; shutil.copytree('example', 'scratch/example', dirs_exist_ok=True)"
+python3 -I -c "from pathlib import Path; p = Path('scratch/example/sub/other.md'); p.write_text(p.read_text().replace('Second heading', 'Renamed heading'))"
+python3 -I linkcheck.py scratch/example
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+scratch/example/good.md:3: [missing-anchor] 'sub/other.md' has no heading for '#second-heading'.
+linkcheck: 1 finding(s); 1 external link(s) not fetched
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The finding is `[missing-anchor] 'sub/other.md' has no heading for '#second-heading'.` The exit code is 1.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+A renamed heading breaks the link and the check sees it. It does not show how the check treats heading rules unlike the ones it knows.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on a file with a missing file, two missing anchors and a missing image."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+<kit>/fixtures/bad/broken.md:3: [missing-file] 'nowhere.md' does not exist.
+<kit>/fixtures/bad/broken.md:4: [missing-anchor] No heading makes the anchor '#no-such-heading'.
+<kit>/fixtures/bad/broken.md:5: [missing-anchor] '../../example/good.md' has no heading for '#no-such-heading'.
+<kit>/fixtures/bad/broken.md:6: [missing-image] 'gone.png' does not exist.
+validate: FAIL (4 finding(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Four findings appear, one for each defect.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+Each link rule can fail. It does not show the check finds every kind of broken link.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+The linter does not fetch links to other sites. The rules that turn a heading into an anchor follow my reading of the GitHub rules. They were not compared with github.com. Markdownlint rule MD051 checks anchors inside one document only, and this linter also covers links to other files. A pre-commit entry for the linter is not built.
+
+**Read the matching page:** [Link and reference checks](../../setup/link-and-reference-checks/)
+
+**Next:** [Walk references with limits](../ch04-reference-walker/)

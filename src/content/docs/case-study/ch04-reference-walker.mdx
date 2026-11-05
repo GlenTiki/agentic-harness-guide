@@ -1,0 +1,231 @@
+---
+title: Walk references with limits
+description: Build a reference walker with a depth limit, a path-length limit, a visited set and cycle detection, with a plug-in point for a model to judge a claim.
+status: built
+sidebar:
+  label: "Chapter 4: Reference walker"
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a reader who wants to build along. An agent must not run any command on this page unless the user asks for it in the current session.*
+
+**Status.** Built in the case study. Every command and output below was run on 2026-10-25 from a fresh unzip of `ch04-reference-walker.zip`, with Python 3.13.1.
+
+**Time.** Running the steps takes about 10 minutes (6 steps, [counted like this](../#how-to-use-a-chapter)). Reading the code takes longer: about 20 to 30 minutes more.
+
+## The weak spot
+
+Deep references rot. A claim cites a document that cites another, and a link check cannot tell whether the text still supports the claim.
+
+## Goal
+
+Follow references from a root document for a bounded number of hops and report where a cited text no longer supports the claim.
+
+## What is in the kit
+
+- `refwalk.py`. The function `walk` is the whole algorithm: a queue, a visited set and a depth for each document.
+- `example/refwalk.json`, a config that sets `max_depth` to 2, `max_path_length` to 80 and `max_files` to 50.
+- Cycle detection. A document that is an ancestor on the current chain is not followed again.
+- A judge plug-in point. The built-in `lexical` judge counts shared words. You can pass your own program with `--judge-command`.
+
+## Get the kit
+
+Download [ch04-reference-walker.zip](/agentic-harness-guide/downloads/ch04-reference-walker.zip). Then run these commands in the folder that holds it:
+
+```text
+shasum -a 256 ch04-reference-walker.zip
+unzip ch04-reference-walker.zip -d kit
+cd kit/ch04-reference-walker
+```
+
+The hash must be `06015117901a179dd81175588985c7283fb58a755ffc3881058c17094eff2595`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `refwalk.py` and `example/refwalk.json`.
+3. Walk the example with the lexical judge: `python3 -I refwalk.py example/root.md --config example/refwalk.json --judge lexical`.
+4. Walk again with `max_depth` 1, then with `max_depth` 5. The kit writes each config under `scratch/`. The second and third Examples show the commands.
+5. Optional idea: plug in your own judge with `--judge-command`. The program reads `{"claim": ..., "source": ...}` on stdin and prints `{"supported": true, "reason": "..."}`. I did not run a custom judge for this page.
+6. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+## What you should see
+
+`[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+<Example
+  label="Computed"
+  task="You walk the example from its root document with `max_depth` 2 and the word-overlap judge."
+  evidence="python3 -I refwalk.py example/root.md --config example/refwalk.json --judge lexical (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I refwalk.py example/root.md --config example/refwalk.json --judge lexical
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+b.md:3: [cycle] note: 'a.md' is an ancestor on the current chain; not followed again.
+d.md:3: [depth-limit] note: 'e.md' is beyond max_depth and was not followed.
+refwalk: opened 5 document(s); 0 error(s); 2 note(s)
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The walk opens 5 documents. One note is a cycle (`b.md` points back to `a.md`). One note is the depth limit (`e.md` is beyond `max_depth`).
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The walk stops at a cycle and at the depth limit. It does not show how a language model judge would score the same claims.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You lower `max_depth` to 1 in a config under `scratch/` and walk again."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+mkdir -p scratch
+python3 -I -c "import json, pathlib; pathlib.Path('scratch/depth1.json').write_text(json.dumps({'max_depth': 1, 'max_path_length': 80, 'max_files': 50}))"
+python3 -I refwalk.py example/root.md --config scratch/depth1.json --judge lexical
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+a.md:11: [depth-limit] note: 'b.md' is beyond max_depth and was not followed.
+c.md:3: [depth-limit] note: 'd.md' is beyond max_depth and was not followed.
+refwalk: opened 3 document(s); 0 error(s); 2 note(s)
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The walk opens 3 documents, not 5. Two depth notes show where it stopped.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The depth limit works. It does not show what depth suits your documents.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You raise `max_depth` to 5 and walk again. The depth notes go away."
+  evidence="the commands shown, run from the kit root"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I -c "import json, pathlib; pathlib.Path('scratch/depth5.json').write_text(json.dumps({'max_depth': 5, 'max_path_length': 80, 'max_files': 50}))"
+python3 -I refwalk.py example/root.md --config scratch/depth5.json --judge lexical
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+b.md:3: [cycle] note: 'a.md' is an ancestor on the current chain; not followed again.
+d.md:3: [unsupported-claim] error: 'e.md' does not support: Deeper still: page E. (1 of 3 content words found.)
+refwalk: opened 6 document(s); 1 error(s); 1 note(s)
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The walk now reaches `e.md`. The judge reports `[unsupported-claim]` with `1 of 3 content words found`. The sentence is true, so this is a false alarm. Exit code 1.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The word-overlap judge can raise a false alarm. This is why the judge is a plug-in point.
+
+</Fragment>
+
+</Example>
+
+<Example
+  label="Computed"
+  task="You run the validator on a root document with a missing file, a missing anchor and claims the judge rejects."
+  evidence="python3 -I validate.py --bad (from the kit root)"
+  env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
+>
+
+<Fragment slot="input">
+
+```text
+python3 -I validate.py --bad
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+python: 3.13.1
+root.md:3: [unsupported-claim] error: 'present.md' does not support: The format is a tab separated line. (1 of 3 content words found.)
+root.md:4: [missing-file] error: 'gone.md' does not exist.
+root.md:5: [unsupported-claim] error: 'present.md' does not support: The notes are encrypted with a quantum key, as the format section says. (0 of 6 content words found.)
+root.md:6: [unsupported-claim] error: 'present.md' does not support: Go on: next and deep. (0 of 2 content words found.)
+deep1.md:3: [missing-anchor] error: 'present.md' has no heading for '#nothing-here'.
+deep1.md:3: [cycle] note: 'deep1.md' is an ancestor on the current chain; not followed again.
+opened 3 document(s)
+validate: FAIL (5 error(s))
+[exit code 1]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Five errors appear. The line `root.md:3` is a false alarm: the sentence is true and the judge counts words.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+The walker reports each kind of defect. It does not show that the judge is right.
+
+</Fragment>
+
+</Example>
+
+## What is not tested
+
+No language model is involved in this chapter. The built-in judge is a word-overlap counter. It is a stand-in so that the tests are repeatable. A model judge is the intended use, and nothing here tests one. The walker follows only local Markdown links and calls no network service.
+
+**Read the matching page:** [Link and reference checks](../../setup/link-and-reference-checks/)
+
+**Next:** [Load a few notes, not all of them](../ch05-memory/)

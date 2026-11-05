@@ -1,0 +1,35 @@
+The books don't tie, and the gap is 14.37, not a few cents. I can't honestly make it zero without knowing what the 14.37 is, so here is the reconciliation as it stands.
+
+**Step 1: Check the arithmetic on each side**
+- Cash book: 1,000.00 + 600.00 + 450.00 - 50.00 = **2,000.00** (matches the recorded closing balance)
+- Bank: 1,000.00 + 600.00 + 435.63 - 50.00 = **1,985.63** (matches the statement closing balance)
+
+Neither side has a footing error.
+
+**Step 2: Compare line by line**
+
+| Item | Cash book | Bank | Difference |
+|---|---|---|---|
+| Opening | 1,000.00 | 1,000.00 | 0.00 |
+| Card sales wk 1 | 600.00 | 600.00 | 0.00 |
+| Card sales wk 2 | 450.00 | 435.63 | **14.37** |
+| Supplier | -50.00 | -50.00 | 0.00 |
+| Closing | 2,000.00 | 1,985.63 | **14.37** |
+
+The whole difference is in the week 2 card settlement. The bank received 14.37 less than you recorded.
+
+**Step 3: Likely explanations (not confirmed)**
+1. **Card processor fees** deducted from the week 2 settlement. 14.37 / 450.00 is about 3.19%, which is plausible for fees. But week 1 settled at the full 600.00 with no deduction, so check why the fees differ.
+2. **Timing:** part of week 2 sales (14.37) hasn't settled yet, so it would appear in October's statement.
+3. **Refunds or chargebacks** netted off the settlement.
+4. **Recording error:** week 2 sales were entered as 450.00 when the processor report says 435.63.
+
+**Result**
+- Unreconciled difference: **14.37** (cash book higher than bank)
+- Once you know the cause:
+  - If it's fees, refunds or a recording error, post an adjusting entry in the cash book for -14.37 and the books will tie at **1,985.63**.
+  - If it's timing, leave the cash book alone and show 14.37 as a reconciling item ("card sales in transit"). The report would then tie on an adjusted-bank basis: 1,985.63 + 14.37 = 2,000.00.
+
+To resolve it tonight, pull the card processor's week 2 settlement report. It will show the gross sales, any fees and the net payout, which tells you which of the cases above applies.
+
+I'd advise against forcing the difference to zero with an unexplained adjustment. A plug entry would hide a real discrepancy, and if it's recurring fees, you'd miss them every month.

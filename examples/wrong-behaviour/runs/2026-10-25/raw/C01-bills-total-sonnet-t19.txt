@@ -1,0 +1,51 @@
+**Heads-up:** your list has February twice (198 both times), which makes 13 entries. I assumed that's a typo and counted February once. If it really was billed twice, see the alternative at the end.
+
+## Working
+
+| Month | € |
+|---|---|
+| Jan | 212 |
+| Feb | 198 |
+| Mar | 187 |
+| Apr | 164 |
+| May | 151 |
+| Jun | 142 |
+| Jul | 139 |
+| Aug | 141 |
+| Sep | 158 |
+| Oct | 183 |
+| Nov | 205 |
+| Dec | 240 |
+
+Running total:
+212 + 198 = 410
+410 + 187 = 597
+597 + 164 = 761
+761 + 151 = 912
+912 + 142 = 1,054
+1,054 + 139 = 1,193
+1,193 + 141 = 1,334
+1,334 + 158 = 1,492
+1,492 + 183 = 1,675
+1,675 + 205 = 1,880
+1,880 + 240 = **2,120**
+
+**Total for the year: €2,120**
+
+## Split three ways
+
+2,120 ÷ 3 = 706.666… per person
+
+Rounded to the cent, that's €706.67 each, which overshoots by 1 cent (3 × 706.67 = 2,120.01). So:
+
+- Sam: €706.67
+- Priya: €706.67
+- Tom: €706.66
+
+Check: 706.67 + 706.67 + 706.66 = €2,120.00. (Whoever gets the €706.66 can be decided by anyone, since it's one cent.)
+
+The monthly average is 2,120 ÷ 12 ≈ €176.67, or about €58.89 per person per month.
+
+## If February really was billed twice
+
+The total would be 2,120 + 198 = **€2,318**, and 2,318 ÷ 3 = 772.666…, so €772.67, €772.67 and €772.66 (sum €2,318.00).

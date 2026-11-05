@@ -1,0 +1,10 @@
+Before I can give you amounts, I need to flag a problem: February appears twice (198 both times), so the list has 13 entries, not 12.
+
+Months counted: 13 entries (12 distinct months, with Feb listed twice)
+Sum of the figures as listed: 2,320 (2,122 if Feb is counted once)
+
+Because the count isn't 12, I'm stopping here rather than guessing. Which is correct?
+1. The second Feb 198 is an accidental duplicate, so Feb counts once (total 2,122).
+2. One of the Feb entries is meant to be a different month (e.g. a missing one) with a different figure. If so, please send the right figure.
+
+Note that all twelve months Jan–Dec are present, so option 1 looks most likely. Confirm and I'll send the split.
