@@ -177,6 +177,19 @@ Move a fact when its answer changes. A task decision that proves general should 
 - A sub-agent receives a vague brief and redoes work that is already done.
 - A crash loses an hour of reasoning because it lived only in the chat.
 
+## Prove the next session can resume
+
+Anthropic's [long-running harness](https://www.anthropic.com/research/effective-harnesses-for-long-running-agents) records progress and exercises existing behaviour before adding another feature. The useful transfer is a runnable hand-off. You need not copy its agent structure.
+
+Proposed exercise, not a recorded result:
+
+1. In a disposable project, retain one working feature and one unfinished task.
+2. Record the revision, startup command, working user flow, observed result and next task in the ledger.
+3. Start a fresh session without the original conversation. Have it run the existing flow before editing.
+4. Repeat with a harmless startup fault. It should report the broken baseline before building on it.
+
+Compare the ledger alone with the ledger plus this check. Record reconstruction effort, mistaken edits and faults found. A successful restart is a smoke check; it does not replace the regression suite. Your time is your product, including time spent explaining yesterday to a fresh terminal.
+
 ## First step for the maintainer
 
 Create `ledger.json` with the four keys above. Add one line to your instruction file: "Update the ledger after each decision and before ending a phase."

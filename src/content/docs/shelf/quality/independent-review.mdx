@@ -18,6 +18,14 @@ Principle, not measured: the author of a change shares its assumptions. A fresh 
 
 <ReviewGate />
 
+## Test the reviewer's restraint
+
+OpenAI's [Codex review-rule guidance](https://developers.openai.com/blog/custom-code-review-rules-for-codex) makes a useful distinction: teach the reviewer a specific contract and an acceptable alternative. A rule that flags everything creates work rather than confidence.
+
+Proposed exercise: an older client depends on a response field. Prepare a patch that removes it, one that retains it while adding a replacement, and an unrelated help-text edit. Prepare a fourth patch containing an ordinary defect outside the rule's scope. Review the patches with and without one scoped instruction, keeping the model and brief fixed.
+
+The reviewer should catch the compatibility break and ordinary defect, explain the affected behaviour, and leave the safe changes alone. Record missed defects, false alarms and human review effort. Repeat with fresh cases before claiming improvement. A reviewer that finds your planted bug but rejects harmless work has only passed half the exercise.
+
 ## What to enable
 
 **1. A bounded, read-only brief.** Give the reviewer the spec, the diff and the callers of changed code, and ask for findings only:

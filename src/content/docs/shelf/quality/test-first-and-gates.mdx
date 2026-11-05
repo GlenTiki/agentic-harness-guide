@@ -1,6 +1,6 @@
 ---
 title: Test-first and quality gates
-description: Write the failing test first, and run the same automated gates locally and in CI on every change.
+description: Choose static checks and behaviour tests, get fast local feedback, and require complete verification before merge.
 ---
 
 import Example from '../../../../components/Example.astro';
@@ -9,7 +9,7 @@ import Example from '../../../../components/Example.astro';
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
-**Recommendation:** have the agent write a failing test before it writes the code, and run one fixed set of gates on every change: types, lint, formatting, complexity and the full test suite. Run them in a pre-commit hook and again in CI. Never skip a hook to get a commit through.
+**Recommendation:** write a failing test for the behaviour you need. Keep one documented check contract, with quick local feedback and complete verification before merge. Reuse the same rules and configuration at both stages. Never skip a required check to get a change through.
 
 ## Why it matters
 
@@ -19,7 +19,7 @@ import Example from '../../../../components/Example.astro';
 
 **1. Red, green, refactor.** Instruct the agent to write the test, run it, and confirm it fails for the right reason before implementing. A test that has never failed has not proved anything.
 
-**2. One command for all gates.** Give the project a single entry point, so the agent, the hook and CI all run the same thing:
+**2. Name the complete check.** Give the agent and CI a project-owned entry point. This example assumes a Python project with these tools configured:
 
 ```make
 check:
@@ -29,11 +29,11 @@ check:
 	pytest -q
 ```
 
-Substitute your own tools. The principle is the same set everywhere.
+Add a quick command for formatting, lint and affected behaviour tests. Document what it leaves out. A quick pass cannot stand in for the complete check; CI can also cover supported platforms and dependency versions.
 
-**3. Pick gates that are deterministic.** A gate does not read the agent's argument. Static types, a linter, a formatter, a cyclomatic complexity limit and the full suite all give the same verdict for the same input. Set a complexity ceiling per function so a large change is harder to hide in one dense routine.
+**3. Make the checks reproducible.** Pin tool versions and record the revision, configuration and relevant environment. Static checks inspect the selected inputs. Tests can also depend on clocks, seeds, networks and execution order. A complexity threshold can flag a dense function; it cannot establish a good design.
 
-**4. Run them at three points.** In the agent loop, through a post-edit hook for the quick ones and a stop hook for the full suite. In pre-commit, so a red commit is rejected where the hook runs. In CI, so a red push fails the required check. See [Hooks](../../control/hooks/).
+**4. Put each check where it pays.** Use quick checks after edits and at commit. Run the required complete checks before merge, with CI on a clean checkout. Configure repository rules to require the relevant CI jobs, and control who can bypass them. A workflow file alone does not enforce that policy. See [Hooks](../../control/hooks/).
 
 **5. Never skip hooks.** Do not use flags that bypass pre-commit. If a hook fails, fix the cause. If the hook is wrong, fix the hook in its own change. Tell the agent this in the instruction file. If you want the harness to refuse it, add a pre-tool hook that blocks a command containing the bypass flag. The hook covers only commands it sees, as the [hooks page](../../control/hooks/) explains.
 
@@ -42,6 +42,34 @@ Substitute your own tools. The principle is the same set everywhere.
 **7. Inject dependencies instead of patching.** Pass the clock, the client and the file path as parameters with production defaults. Tests then pass fakes without reaching into other modules. When a test needs to patch an internal name, the code is missing a seam.
 
 **8. Watch for gate gaming.** Review test diffs as closely as code diffs. Flag deleted assertions, widened tolerances, new skip markers and new lint suppressions.
+
+## Borrow checks from working projects
+
+FastAPI's [lint script](https://github.com/fastapi/fastapi/blob/1ca09c13584ca45aa0921e5e40b31d49c5e3135a/scripts/lint.sh) combines Python type checks, Ruff lint and formatting. Its [test workflow](https://github.com/fastapi/fastapi/blob/1ca09c13584ca45aa0921e5e40b31d49c5e3135a/.github/workflows/test.yml) adds compatibility coverage. Copy the separation of concerns; adopting two type checkers needs a reason.
+
+Ruff's own [hooks](https://github.com/astral-sh/ruff/blob/d017c82cf34810209d5bb402aa0118f4ee2e7a45/.pre-commit-config.yaml) include workflow checks, with actionlint assigned to a manual stage locally. Its [CI](https://github.com/astral-sh/ruff/blob/d017c82cf34810209d5bb402aa0118f4ee2e7a45/.github/workflows/ci.yaml) also checks Rust code, documentation and dependency policy. Astro's [scripts](https://github.com/withastro/astro/blob/7a1255f1e6149f9542f083681cf1654414606e41/package.json) distinguish types, unused code, package validation and browser tests; its [CI](https://github.com/withastro/astro/blob/7a1255f1e6149f9542f083681cf1654414606e41/.github/workflows/ci.yml) selects jobs and matrices.
+
+These configurations were inspected on 2026-11-05. They establish declared practice, not measured quality gains or proof that every job ran. A repository's popularity does not validate your configuration.
+
+### Choose a check for a named fault
+
+Start with the row that matches a failure you have seen. Commands assume the tools are already installed and configured for your project.
+
+| Need | Tools or check commands | What a pass leaves unanswered |
+| --- | --- | --- |
+| Python style and types | `ruff check .`, `ruff format --check .`; mypy or ty | Selected rules and declared types cannot establish business behaviour. |
+| TypeScript style and types | Project ESLint/formatter scripts and `tsc --noEmit` | Excluded files and runtime data still need checks. Use the project's build-mode command where required. |
+| Rust style and types | `cargo fmt --check`; configured Clippy checks | Only selected targets and features are covered. |
+| GitHub workflow files | actionlint; Zizmor | Recognised syntax and security patterns do not prove deployed permissions are correct. |
+| Unused code and package validity | Knip; publint after the package build | Entry points, generated files and dynamic imports need configuration. Consumers still need integration tests. |
+| Documentation | A strict docs build; Markdown and link checks | A valid document can still be false. Check its claims against sources. |
+| Secrets and dependencies | [Gitleaks](https://github.com/gitleaks/gitleaks#usage); [pip-audit](https://github.com/pypa/pip-audit#usage) for Python dependencies | Recognised patterns and known advisories only. State scan scope and exclusions; keep reports private and redact secrets. |
+
+Name the files, rules, exclusions and failure action for each gate. Give it an owner and a harmless example that must fail. For an architecture rule, name a forbidden dependency and test that violation; a complexity count is not a substitute. Measure runtime and false alarms before making a new check block everyone.
+
+Coverage tells you which code ran, not whether the assertions were useful. Complexity counts aspects of structure. Neither is a general quality score. Keep these measurements beside observed defects, accepted user outcomes and human review effort. **Hope is not an engineering principle. A green badge needs a definition too.**
+
+[OpenSpec's validation](https://github.com/Fission-AI/OpenSpec/blob/main/docs/cli.md) checks specification structure and requirement changes. [Superpowers' verification skill](https://github.com/obra/superpowers/blob/main/skills/verification-before-completion/SKILL.md) asks for fresh command evidence. Both can support the workflow; neither replaces the implementation checks or the user's journey.
 
 ## A test that cannot fail
 
@@ -190,7 +218,7 @@ One cause of flakiness, reproduced. It does not give a rate for your suite.
 | Pre-commit | At commit, on the staged files | A delay on every commit | A bypass flag skips it |
 | CI | On push, on a clean checkout | Minutes per push, and the feedback is late | Slowest to tell the agent |
 
-Put the fastest checks earliest and the full suite last. Make CI the one that cannot be skipped from the agent's machine.
+Put the fastest checks earliest and the complete required checks before merge. Inspect the CI result for the exact revision: a skipped job, missing matrix entry or successful wrapper around a failed command supplies no pass for the missing check.
 
 ## Classify review findings
 
@@ -213,7 +241,7 @@ A review that blocks on every finding teaches people to bypass the review. Sort 
 
 ## First step for the maintainer
 
-Create the single `check` command. Wire it to a pre-commit hook and to your CI workflow. Add one line to your instruction file: "Run `make check` before declaring any task done."
+Create the complete `check` command and document the quicker local subset. Wire appropriate checks to a pre-commit hook and to your CI workflow. Add one line to your instruction file: "Run `make check` before declaring any task done."
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 

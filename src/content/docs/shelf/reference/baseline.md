@@ -34,8 +34,8 @@ description: The minimum viable harness as one checklist.
 
 ### Quality
 
-- [ ] **BL-13** One `check` command runs types, lint, format, complexity and tests. [Test-first and quality gates](../../quality/test-first-and-gates/)
-- [ ] **BL-14** The same command runs in pre-commit and CI, and nobody skips hooks.
+- [ ] **BL-13** One `check` command covers the project’s complete required checks. Document the quick subset and any chosen complexity rule. [Test-first and quality gates](../../quality/test-first-and-gates/)
+- [ ] **BL-14** Local hooks run the documented subset; required CI checks cover the complete verification contract. Nobody bypasses required checks.
 - [ ] **BL-15** Non-trivial changes start from a one-page spec. [Spec-driven development](../../quality/spec-driven-development/)
 - [ ] **BL-16** Each change is reviewed by a fresh-context reviewer, with the verdict bound to the diff digest. [Independent review](../../quality/independent-review/)
 - [ ] **BL-17** Each model-driven step has an eval. [Evals](../../quality/evals/)
