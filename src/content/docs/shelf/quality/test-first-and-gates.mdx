@@ -55,15 +55,88 @@ These configurations were inspected on 2026-11-05. They establish declared pract
 
 Start with the row that matches a failure you have seen. Commands assume the tools are already installed and configured for your project.
 
-| Need | Tools or check commands | What a pass leaves unanswered |
+| Failure | Tools or check commands | What a pass leaves unanswered |
 | --- | --- | --- |
-| Python style and types | `ruff check .`, `ruff format --check .`; mypy or ty | Selected rules and declared types cannot establish business behaviour. |
-| TypeScript style and types | Project ESLint/formatter scripts and `tsc --noEmit` | Excluded files and runtime data still need checks. Use the project's build-mode command where required. |
-| Rust style and types | `cargo fmt --check`; configured Clippy checks | Only selected targets and features are covered. |
-| GitHub workflow files | actionlint; Zizmor | Recognised syntax and security patterns do not prove deployed permissions are correct. |
-| Unused code and package validity | Knip; publint after the package build | Entry points, generated files and dynamic imports need configuration. Consumers still need integration tests. |
-| Documentation | A strict docs build; Markdown and link checks | A valid document can still be false. Check its claims against sources. |
-| Secrets and dependencies | [Gitleaks](https://github.com/gitleaks/gitleaks#usage); [pip-audit](https://github.com/pypa/pip-audit#usage) for Python dependencies | Recognised patterns and known advisories only. State scan scope and exclusions; keep reports private and redact secrets. |
+| An undefined Python name or incompatible declared type | `ruff check .`, `ruff format --check .`; mypy or ty | Selected rules and declared types cannot establish business behaviour. |
+| A TypeScript function returns a string where a number is declared | Project ESLint/formatter scripts and `tsc --noEmit` | Excluded files and runtime data still need checks. Use the project's build-mode command where required. |
+| A configured Rust lint flags a suspect operation | `cargo fmt --check`; configured Clippy checks | Only selected targets and features are covered. |
+| A malformed workflow expression or unsafe workflow pattern | actionlint; Zizmor | Recognised syntax and security patterns do not prove deployed permissions are correct. |
+| An unused export or a package export pointing at a missing file | Knip; publint after the package build | Entry points, generated files and dynamic imports need configuration. Consumers still need integration tests. |
+| A missing heading target or malformed Markdown | A strict docs build; Markdown and link checks | A valid document can still be false. Check its claims against sources. |
+| A credential-shaped value or dependency with a known advisory | [Gitleaks](https://github.com/gitleaks/gitleaks#usage); [pip-audit](https://github.com/pypa/pip-audit#usage) for Python dependencies | Recognised patterns and known advisories only. State scan scope and exclusions; keep reports private and redact secrets. |
+
+### More failures than a linter can name
+
+Choose by the defect, then by your stack. These are tool capabilities checked against the linked primary documentation on 2026-11-06, not benchmark results. A static check inspects source or configuration without exercising the application. The second table needs running code or a rendered page.
+
+| Concrete failure | Static check to consider | What a pass leaves unanswered |
+| --- | --- | --- |
+| A request value is joined into SQL, changing the query's meaning. | [CodeQL's SQL-injection query](https://codeql.github.com/codeql-query-help/python/py-sql-injection/); [Ruff S608](https://docs.astral.sh/ruff/rules/hardcoded-sql-expression/) for suspicious string construction. | CodeQL needs recognised data sources and database calls. A string-pattern rule alone does not trace the full data flow. |
+| `shop.domain` imports `shop.http`, against the agreed dependency direction. | [Import Linter forbidden contracts](https://import-linter.readthedocs.io/en/latest/contract_types/forbidden/). | Declare the boundary first. A clean import graph cannot tell you whether the boundary was sensible. |
+| `cp $source "$dest"` splits `annual report.txt` into two arguments. | [ShellCheck SC2086](https://www.shellcheck.net/wiki/SC2086). | Quoting fixes splitting; still test the intended source, destination and error path. |
+| Terraform allows SSH from `0.0.0.0/0`. | [Checkov's CKV_AWS_24 policy](https://www.checkov.io/5.Policy%20Index/terraform.html). | Check the actual deployed network too. A scan covers the supplied configuration or plan. |
+| Two API operations have the same `operationId`. | [Spectral's OpenAPI rules](https://github.com/stoplightio/spectral/blob/develop/docs/reference/openapi-rules.md). | A valid contract can still describe the wrong behaviour. |
+| An optional request field becomes required, rejecting existing clients. | [oasdiff breaking-change checks](https://github.com/oasdiff/oasdiff/blob/main/docs/BREAKING-CHANGES.md). | Compare the right old and new schemas; plan a migration for intentional breaks. This does not inspect the server. |
+
+| Concrete failure | Check that needs execution | What a pass leaves unanswered |
+| --- | --- | --- |
+| The API promises integer `id` but returns `"42"`. | [Schemathesis response-schema checks](https://schemathesis.readthedocs.io/en/stable/reference/checks/), against a disposable test service. | Only exercised operations and declared constraints are checked. Generated requests can write data. A valid integer can still be the wrong customer's ID. |
+| A test still passes when `age > 18` changes to `age >= 18`. | [Stryker mutation testing](https://stryker-mutator.io/docs/mutation-testing-elements/mutant-states-and-metrics/) for JS/TS, C# or Scala changes the implementation and reruns tests. | Test age 18 against the actual requirement. Some mutations are equivalent; a score is not correctness. |
+| A sort uses `sorted(set(values))` and loses duplicates. | [Hypothesis](https://hypothesis.readthedocs.io/en/latest/quickstart.html) generates Python inputs for properties you write. | Check both retained values and order. A weak property can accept the wrong function. |
+| An icon button has no accessible name. | [axe-core's button-name rule](https://dequeuniversity.com/rules/axe/4.12/button-name?application=playwright), after rendering the relevant state. | A present name can still be unhelpful. Test keyboard navigation and the real task with people too. |
+| Native code reads freed memory, or threads write shared data without synchronisation. | [AddressSanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) and [ThreadSanitizer](https://clang.llvm.org/docs/ThreadSanitizer.html), in separate instrumented test builds. | Run the faulty paths; compilation alone checks nothing at runtime. A data-race detector does not catch every concurrency bug. |
+| A lookup scans the whole dataset for each item; answers stay correct but slow down. | [pytest-benchmark baseline comparisons](https://pytest-benchmark.readthedocs.io/en/latest/comparing.html) for Python. | Fix the workload and environment; measure noise before choosing a failure threshold. A microbenchmark does not measure the whole service. |
+
+Spectral checks one contract's rules. oasdiff compares contracts for compatibility. Schemathesis exercises the implementation against a contract. Those are three different questions, even when all three checks use the same API description.
+
+### Read the defect before running the tool
+
+*Constructed teaching examples. The snippets expose the defect and correction; no scanner output is claimed here.*
+
+This SQLite lookup puts the name into the SQL syntax. Even an ordinary apostrophe can break it:
+
+```python
+def find_customer(db, name):
+    return db.execute(f"SELECT id FROM customer WHERE name = '{name}'")
+```
+
+For a file named `lookup.py`, a configured Ruff installation can inspect that construction with `ruff check --select S608 lookup.py`. The correction passes the value separately, using SQLite's placeholder syntax:
+
+```python
+def find_customer(db, name):
+    return db.execute("SELECT id FROM customer WHERE name = ?", (name,))
+```
+
+The behaviour test should create a temporary database, insert a customer named `O'Neil`, then assert `find_customer(db, "O'Neil").fetchone() == (7,)` for a fixture customer whose ID is 7. A scanner finding explains the suspect pattern; that test checks the lookup you intended.
+
+For the shell case, save the faulty version as `copy.sh`:
+
+```sh
+#!/bin/sh
+source='annual report.txt'
+dest='archive/'
+cp $source "$dest"
+```
+
+`shellcheck copy.sh` checks the unquoted expansion. The corrected call is `cp "$source" "$dest"`. A copy test still needs temporary source and destination directories; a lint pass does not demonstrate a successful copy.
+
+For duplicate loss, the function and its property fit on the page:
+
+```python
+from collections import Counter
+from hypothesis import given, strategies as st
+
+
+def sorted_values(values):
+    return sorted(set(values))
+
+
+@given(st.lists(st.integers()))
+def test_sort_preserves_values(values):
+    assert Counter(sorted_values(values)) == Counter(values)
+```
+
+The concrete input `[2, 2]` violates that assertion: the function returns only one `2`. Save this as `test_sort.py` and run `pytest test_sort.py` with Hypothesis installed. Hypothesis may report a different minimal input. Replace the body with `return sorted(values)`, then add an ordering assertion. Preserving the multiset alone would also accept a function that returns the input unchanged.
 
 Name the files, rules, exclusions and failure action for each gate. Give it an owner and a harmless example that must fail. For an architecture rule, name a forbidden dependency and test that violation; a complexity count is not a substitute. Measure runtime and false alarms before making a new check block everyone.
 
@@ -74,6 +147,38 @@ Coverage tells you which code ran, not whether the assertions were useful. Compl
 ## A test that cannot fail
 
 A gate checks an exit code. It does not check that the test asserts anything. The script below runs two tests against three versions of a price function. The function should add a percentage to a price in cents, so 10000 at 23 should give 12300. The `buggy` version adds the rate as cents. The `stub` version returns 0. The `vacuous` test only checks that the result is not `None`.
+
+These are the three function bodies in [the runner](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/gate-gaming/gates.py). Each is written separately as `price.py`; they are alternatives, not three definitions to paste into one module.
+
+Correct:
+
+```python
+def vat_inclusive(net_cents, rate_percent):
+    return net_cents + net_cents * rate_percent // 100
+```
+
+Buggy:
+
+```python
+def vat_inclusive(net_cents, rate_percent):
+    return net_cents + rate_percent
+```
+
+Stub:
+
+```python
+def vat_inclusive(net_cents, rate_percent):
+    return 0
+```
+
+Each test imports that function. The two `unittest` assertions are:
+
+```python
+self.assertIsNotNone(vat_inclusive(10000, 23))
+self.assertEqual(12300, vat_inclusive(10000, 23))
+```
+
+The first accepts `12300`, `10023` and `0`. The second accepts only `12300` for this input. The runner tries each assertion against each implementation in a temporary folder. The printed exit codes belong to those child test processes; the demonstration runner itself normally exits 0. Use the test suite's result as your gate, not the runner's printed table.
 
 <Example
   label="Computed"
@@ -118,11 +223,11 @@ A green gate with a vacuous test proves nothing. It does not show how often an a
 
 </Example>
 
-The matrix is also the check. Replace the code under test with a stub and rerun: a test that stays green guards nothing.
+The matrix probes these tests' strength; it is not itself the merge gate. Replacing this price calculation with a zero-return stub shows whether an assertion can detect that defect.
 
 ## See the test fail first
 
-Run the new test before the code exists, and read why it fails. A test that fails with `NotImplementedError` or an import error is red for the wrong reason. A test that fails with the wrong value is red for the right one.
+Run the assertion against the zero-return stub shown above, then against the correct body. Keep `self.assertEqual(12300, vat_inclusive(10000, 23))` unchanged. This example starts with a callable stub, not an absent function: you can see the wrong value before the fix. An import failure would not exercise that assertion.
 
 <Example
   label="Computed"
@@ -165,6 +270,28 @@ The order is red, then green. It does not show that the code is right for inputs
 ## A test that sometimes fails
 
 A flaky test passes and fails on the same code. The usual cause is an input the test does not control: the clock, random numbers, a network call or the order of a set. The intended ordering is alphabetical: `first_tag` returns the tag that sorts first, so for `red`, `green` and `blue` the answer is `blue`. The first version takes the first item of the set. Python picks the set order from a hash seed that changes every run, so the script sets the seed to ten fixed values to reproduce ten runs. The second version sorts the tags. Both versions run the same test file, with the same input and the same expected value.
+
+The first implementation:
+
+```python
+def first_tag(tags):
+    return next(iter(tags))
+```
+
+The corrected implementation:
+
+```python
+def first_tag(tags):
+    return sorted(tags)[0]
+```
+
+The unchanged assertion in `test_tags.py`:
+
+```python
+self.assertEqual('blue', first_tag({'red', 'green', 'blue'}))
+```
+
+The runner starts a fresh Python child for each `PYTHONHASHSEED` from 0 to 9. It records that child's test status. The test covers this non-empty set; neither function defines a useful result for an empty one.
 
 <Example
   label="Computed"
@@ -235,7 +362,7 @@ A review that blocks on every finding teaches people to bypass the review. Sort 
 ## Failure modes it reduces
 
 - A "fix" turns the suite green by deleting the failing assertion.
-- Code lands that passes locally and fails in CI because the commands differ.
+- Code lands that passes locally and fails in CI because the rules or configuration differ.
 - A hook failure leads to `--no-verify`, and the next bug ships.
 - A test passes before the fix exists, so it never guarded anything.
 

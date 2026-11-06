@@ -89,6 +89,26 @@ Record each gap as a note: the written step, what was done, the cue. Each note i
 
 **6. Test the table, not the prose.** For each row, write at least one case that must fire it. Add a case for each cue, with that cue missing, because a payment row must need every prerequisite cue. A missing cue must lead to "ask, do not pay", never to a payment. Give the table a last row that fires when nothing else does, and make that row the safe one. Then check which row fired, separately from whether the answer text sounds right. The script below does the check for a table in a file.
 
+These functions from [fire_check.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/decision-table/fire_check.py) select the row. `table["rows"]` preserves the expert's order; `cues` holds the extracted values for one case.
+
+```python
+def matching_rows(table, cues):
+    return [row["id"] for row in table["rows"]
+            if not row.get("fallback")
+            and all(cues.get(cue) == value
+                    for cue, value in row["when"].items())]
+
+
+def first_row(table, cues):
+    matches = matching_rows(table, cues)
+    if matches:
+        return matches[0]
+    return next((row["id"] for row in table["rows"]
+                 if row.get("fallback")), None)
+```
+
+For the missing-order-status case, `cues` contains `bank_details_changed="no"`, `number_seen_before="no"` and `supplier_known="yes"`, but no `total_vs_order`. `cues.get("total_vs_order")` is `None`, so neither payment row matches. The expected result is `first_row(table, cues) == "R8"`. The checker compares that result with each case's `expect` field and exits 1 if any differ.
+
 <Example
   label="Computed"
   task="A maintainer checks that thirteen cases fire the rows an expert chose, including five cases where a cue is missing or invalid."

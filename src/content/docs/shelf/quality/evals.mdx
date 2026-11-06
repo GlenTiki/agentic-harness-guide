@@ -79,6 +79,18 @@ Raw agreement is the share of cases where the two labels match. It flatters a ju
 
 Also count the failures the judge caught, because a judge is there to catch failures. Write the pass criterion before you look at the numbers. The two values below are starting points to set for your own stakes, not standards.
 
+Here is the calculation for the constructed 20-case fixture, in executable Python. It is the arithmetic used by [the general CSV checker](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/judge-calibration/calibrate.py), with the counts made visible:
+
+```python
+agree = 16 / 20
+chance = (12 / 20) * (12 / 20) + (8 / 20) * (8 / 20)
+kappa = (agree - chance) / (1 - chance)
+failures_caught = 6 / 8
+accepted = kappa >= 0.6 and failures_caught >= 0.8
+```
+
+Both raters label twelve cases pass and eight fail; they disagree on four cases. Two of the human-labelled failures were missed. The checker reads each `(human, judge)` pair, derives those counts and exits 1 when `accepted` is false. The command arguments below are the CSV path, minimum kappa and minimum failure recall. This fixture uses valid pass/fail labels and includes human-labelled failures; the demonstration is not a general-purpose calibration library.
+
 <Example
   label="Computed"
   task="A maintainer compares a model judge with human labels on 20 outputs and applies a criterion written in advance: kappa at least 0.6 and at least 0.8 of the human-labelled failures caught."
@@ -155,6 +167,27 @@ The rule of three bounds what a clean run proves. The opposite case is just as c
 
 Compute it before you claim it. Two exact calculations need no statistics library. The first asks how often a step whose rate had not changed would show 2 or fewer failures in 20 runs. The second, Fisher's exact test, compares the two sets of counts directly.
 
+These are the calculation bodies from [binomial.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/judge-calibration/binomial.py), with docstrings omitted:
+
+```python
+from math import comb
+
+
+def at_most(k, n, p):
+    return sum(comb(n, i) * p**i * (1 - p)**(n - i)
+               for i in range(k + 1))
+
+
+def fisher_one_sided(old_failures, old_runs, new_failures, new_runs):
+    failures = old_failures + new_failures
+    runs = old_runs + new_runs
+    total = comb(runs, failures)
+    return sum(comb(new_runs, i) * comb(old_runs, failures - i)
+               for i in range(new_failures + 1)) / total
+```
+
+For the first comparison, `k=2`, `n=20` and `p=3/20`. `comb(n, i)` counts the ways to place `i` failures among `n` trials. The first sum treats the old rate as known. The second distributes the combined failures between the two groups while keeping that total fixed. These small demonstration functions assume the valid counts used here; they are not a general statistics API. CLI order is old failures, old runs, new failures, new runs.
+
 <Example
   label="Computed"
   task="A maintainer checks whether 2 failures in 20 runs is evidence of improvement over 3 in 20, and whether 0 in 20 is."
@@ -188,7 +221,7 @@ Fisher exact, one-sided: 0.115
 
 <Fragment slot="notice">
 
-A step that did not change would show 2 or fewer failures about 4 times in 10 (0.405). One fewer failure is no evidence. Even 0 failures in 20 gives 0.115 against the old counts, so it is suggestive and not settled. The first calculation treats the old rate as known, which is generous to the new prompt.
+A step that did not change would show 2 or fewer failures about 4 times in 10 (0.405). One fewer failure does not establish an improvement in this comparison. Even 0 failures in 20 gives 0.115 against the old counts, so it is suggestive and not settled. The first calculation treats the old rate as known, which is generous to the new prompt.
 
 </Fragment>
 

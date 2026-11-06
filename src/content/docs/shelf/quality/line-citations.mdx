@@ -31,6 +31,44 @@ A citation such as `src/pricing.py:3` is true on the day you write it. The next 
 
 The fixture has a spec that cites two functions in `src/pricing.py`, and a snapshot note with a citation that is long out of date. In the `after` copy, the only change is that `vat_inclusive` moved from line 3 to line 8 and `round_to_cent` moved up. The spec text is identical.
 
+The spec contains these two claims at lines 3 and 5 (line numbers below are display annotations):
+
+```text
+3  Gross prices come from `src/pricing.py:3` defines `vat_inclusive`.
+5  The rounding rule is at `src/pricing.py:7-8` defines `round_to_cent`.
+```
+
+The relevant source lines are shown below. Numbers are display annotations, not Python syntax; the omitted lines are blank or the module docstring.
+
+```text
+Before, src/pricing.py:
+3  def vat_inclusive(net_cents, rate_percent):
+4      return net_cents + net_cents * rate_percent // 100
+7  def round_to_cent(value):
+8      return round(value)
+
+After, src/pricing.py:
+4  def round_to_cent(value):
+5      return round(value)
+8  def vat_inclusive(net_cents, rate_percent):
+9      return net_cents + net_cents * rate_percent // 100
+```
+
+This simplified pseudocode shows the rule in [check_citations.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/line-citations/check_citations.py). The full script also parses the citation form and formats the report.
+
+```text
+for each document:
+    if its first line is a snapshot marker: count exemption; skip
+    for each citation:
+        fail if the target file is missing
+        fail if the requested line range is outside the file
+        if the citation names a symbol:
+            fail if the last dotted part of the symbol is absent from the start line
+exit 1 if any citation failed, otherwise 0
+```
+
+For `pricing.vat_inclusive`, the last dotted part is `vat_inclusive`. The clean run below establishes a matching location; the limits of substring matching are explained after the examples.
+
 <Example
   label="Computed"
   task="You run the checker on the fixture before the function moves."
@@ -97,7 +135,7 @@ exit=1
 
 <Fragment slot="notice">
 
-Both lines exist in the file, so a check for "line within the file" would pass. The check fails because the named function is no longer on that line. The exit code is 1, which stops a commit.
+Both lines exist in the file, so a check for "line within the file" would pass. The check fails because the named function is no longer on that line. The exit code is 1, which can stop a commit when this checker is wired into a required hook.
 
 </Fragment>
 
