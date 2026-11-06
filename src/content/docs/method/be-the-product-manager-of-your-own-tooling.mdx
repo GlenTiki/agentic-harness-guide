@@ -121,7 +121,23 @@ This script ranks opportunities to automate work, not items waiting for your att
 
 The log may also carry a `minutes` field on a line, the time one run of the step took. The observability format does not have this field. Without it, a step counts as 1 minute. The script ignores `pre` lines, because a `pre` line is an attempt and not a finished step.
 
-To run the example, use the command in the evidence line. To run its tests, run `python3 -I -m unittest discover -s examples/improvement-queue`. Eleven tests pass on 2026-10-26 with Python 3.13.1. They cover the ranking, the rare and cheap step, the empty log and the malformed line.
+The ranking function in [improvement_queue.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/improvement-queue/improvement_queue.py) receives groups keyed by `(tool, target)`, each with a list of recorded durations:
+
+```python
+MINIMUM_REPEATS = 2
+TOP = 3
+
+
+def rank(steps):
+    repeated = [(key, runs) for key, runs in steps.items()
+                if len(runs) >= MINIMUM_REPEATS]
+    repeated.sort(key=lambda item: (-sum(item[1]), item[0]))
+    return repeated[:TOP]
+```
+
+For example, six four-minute runs become `[4, 4, 4, 4, 4, 4]` and rank above three six-minute runs. Ties use the `(tool, target)` key. The parser includes only `post` records and rejects invalid durations. It cannot prove that a recorded completion was successful or manual; that depends on how the log was captured. A missing duration is an assumed minute, not measured time.
+
+The reproduction command is `python3 -I examples/improvement-queue/improvement_queue.py examples/improvement-queue/fixtures/actions.jsonl`. To run its tests, run `python3 -I -m unittest discover -s examples/improvement-queue`. Eleven tests pass on 2026-10-26 with Python 3.13.1. They cover the ranking, the rare and cheap step, the empty log and the malformed line.
 
 <Example
   label="Computed"
