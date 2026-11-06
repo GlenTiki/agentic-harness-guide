@@ -40,18 +40,26 @@ cd kit/ch00-baseline
 
 The hash must be `c7135ce6e57d41e131c4fffb697d22b7d9d569e76ddf56177dfde2cef16e8edb`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `notes.py`. It has no dependencies.
-3. Run the tests: `python3 -I -m unittest discover -s tests -t .`.
-4. Run the validator: `python3 -I validate.py`.
-5. Add a note and list it. The first command makes the `scratch` folder: `mkdir -p scratch`, then `python3 -I notes.py --file scratch/notes.txt add "buy milk"`, then `python3 -I notes.py --file scratch/notes.txt list`.
-6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The three runs below exercise the same small tool. In the archive, `notes.py` writes a tab-separated record; `tests/test_notes.py` fixes the clock so that it can compare the whole value. These are source excerpts, with the test setup and file handling omitted:
+
+```python
+def utc_stamp(now=None):
+    now = now or datetime.now(timezone.utc)
+    return now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+FIXED = datetime(2026, 1, 2, 3, 4, 5, tzinfo=timezone.utc)
+
+# Two assertions from tests/test_notes.py:
+self.assertEqual(notes.utc_stamp(FIXED), "2026-01-02T03:04:05Z")
+notes.add_note(self.file, "buy milk", now=FIXED)
+self.assertEqual(notes.list_notes(self.file), [("2026-01-02T03:04:05Z", "buy milk")])
+```
+
+The bad copy changes the format string to `%Y-%m-%dT%H:%M`. With that same clock, it returns `2026-01-02T03:04`, so both assertions must fail. Restoring seconds and `Z` fixes this defect. The interactive add/list example uses the real clock instead: expect the text `buy milk` and a complete UTC time stamp, not the fixed test time stamp. `add_note` also rejects blank text, tabs and newlines; those guards are omitted here.
 
 <Example
   label="Computed"
@@ -180,6 +188,15 @@ The check can fail on one defect. It does not show that the check finds every de
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `notes.py`. It has no dependencies.
+3. Run the tests: `python3 -I -m unittest discover -s tests -t .`.
+4. Run the validator: `python3 -I validate.py`.
+5. Add a note and list it. The first command makes the `scratch` folder: `mkdir -p scratch`, then `python3 -I notes.py --file scratch/notes.txt add "buy milk"`, then `python3 -I notes.py --file scratch/notes.txt list`.
+6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

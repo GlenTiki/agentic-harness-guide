@@ -41,20 +41,24 @@ cd kit/ch08-personas
 
 The hash must be `184f902c450a037b8f6ac124a0cd6d087d24e58705e949f1cf7d5383d76d169c`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read the five files in `example/personas/`. Each has a role, a phase and a checklist.
-3. Read one memory file in `example/personas/memory/`. Each line is a time, a hash and a note.
-4. Check the folder: `python3 -I personas.py check`. It prints `personas: OK`.
-5. Print what the tester would load: `python3 -I personas.py context tester`.
-6. Copy the personas into `scratch/`, record a new interaction, and check the copy. Then edit an old note in the copy and check again. The second Example below shows the commands.
-7. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
-8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The first command requests persona `tester` from `example/personas/`. Its front matter names `memory/tester.md`, which contains two notes. This simplified pseudocode follows `personas.py:persona_context`; front-matter and memory-line parsing details are omitted:
+
+```text
+for each persona Markdown file in sorted order:
+    parse its front matter and body
+    if front-matter name matches the requested name:
+        read its named memory file
+        keep the last 5 note texts, without timestamps or hashes
+        make one bullet per note, or a single (nothing yet) bullet
+        return the persona body, then ## What you remember and those bullets
+if no persona matched: raise KeyError
+```
+
+Expect the tester's checklist and voice followed by both stored notes: the empty-search crash and the accepted tab. This command assembles context; it does not run a persona or verify the hash chain. The later `check` command performs that verification.
 
 <Example
   label="Computed"
@@ -110,6 +114,25 @@ A persona is a text file plus a memory file. It does not show that a persona fin
 
 </Example>
 
+The context example above shows the tester's role and remembered notes. The next run tests whether a stored note can change unnoticed. In `example/personas/memory/tester.md`, the first note is `An empty search word crashed the first version.` The command changes `empty search word` to `EMPTY SEARCH WORD` while leaving its saved hash unchanged.
+
+These source excerpts from `personas.py` show the chain calculation and comparison; entry parsing, timestamp checks and the append guard are omitted:
+
+```python
+def chain_hash(previous, time, note):
+    return hashlib.sha256(f"{previous}|{time}|{note}".encode("utf-8")).hexdigest()[:12]
+
+# verify_memory starts with previous = "genesis".
+for number, (time, chain, note) in enumerate(entries, start=1):
+    expected = chain_hash(previous, time, note)
+    if chain != expected:
+        problems.append(f"{path}:{number}: the chain hash does not match. An earlier line changed, or this one did.")
+        break
+    previous = chain
+```
+
+Expect appending through `record` to preserve the chain, then the manual text edit to fail. Restoring the original note repairs this example. Anyone able to rewrite the whole file can recompute every hash; removing its final lines also leaves the remaining prefix internally valid. This is an internal consistency check, not an independently anchored audit log.
+
 <Example
   label="Computed"
   task="You copy the personas into `scratch/`, record a new note for the tester, check, change one old note by hand, and check again."
@@ -152,6 +175,16 @@ An edit to an old line shows. A full rewrite of the file would not.
 </Fragment>
 
 </Example>
+
+The failing persona folder also tests definition structure. Its `fixtures/bad/personas/builder.md` has just one checklist item:
+
+```markdown
+## Checklist
+
+- Did you write a failing test first and watch it fail?
+```
+
+`personas.py:check_folder` requires at least three items, a recognised phase, unique names, and each persona's memory path inside the `memory/` folder. It checks referenced memory files and reports memory files with no persona. Expect this builder to fail the item-count condition; supply the missing useful checks rather than three filler bullets. The same folder includes a missing tester memory, an unreferenced `ghost.md`, and other malformed definitions or memory entries, which produce the remaining findings below.
 
 <Example
   label="Computed"
@@ -198,9 +231,20 @@ The scaffold catches six format defects. It does not catch a bad persona.
 
 </Example>
 
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read the five files in `example/personas/`. Each has a role, a phase and a checklist.
+3. Read one memory file in `example/personas/memory/`. Each line is a time, a hash and a note.
+4. Check the folder: `python3 -I personas.py check`. It prints `personas: OK`.
+5. Print what the tester would load: `python3 -I personas.py context tester`.
+6. Copy the personas into `scratch/`, record a new interaction, and check the copy. Then edit an old note in the copy and check again. The second Example above shows the commands.
+7. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
 ## What is not tested
 
-This chapter is Design only, with a small working scaffold. The tests verify the file format, the chain check, the refusal to append to a broken memory, the context function and the six defects in the failing folder. They do not verify that personas catch more defects, that persona memory improves later work, or how a team lead should choose which persona runs. There is no evidence in this case study that personas help. The chain detects partial edits. It does not stop a full rewrite of a file. In my own setup, roles do not keep memories of their own.
+This chapter is Design only, with a small working scaffold. The tests verify the file format, the chain check, the refusal to append to a broken memory, the context function and the six defects in the failing folder. They do not verify that personas catch more defects, that persona memory improves later work, or how a team lead should choose which persona runs. There is no evidence in this case study that personas help. With the saved hashes left unchanged, the chain detects an altered note or removal of an earlier line that still has a successor. It does not detect removal of trailing lines or a full rewrite with recomputed hashes. In my own setup, roles do not keep memories of their own.
 
 **Read the matching page:** [Personas](../../setup/personas/)
 

@@ -41,18 +41,37 @@ cd kit/ch03-link-resolver
 
 The hash must be `4e9f6f4fdab1f59cc0e27d0ce0e5b2dc656d5476a57a29be6b171698e9dd2c4d`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `linkcheck.py`.
-3. Run it on the good example: `python3 -I linkcheck.py example`.
-4. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
-5. Rename a heading in a copy and check the copy. The second Example shows the commands.
-6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The heading-rename run changes the target while leaving its link intact. These are the relevant inputs from `example/good.md` and `example/sub/other.md`:
+
+```markdown
+<!-- example/good.md, excerpt -->
+See [the other page](sub/other.md) and [its second heading](sub/other.md#second-heading).
+
+<!-- example/sub/other.md, before -->
+## Second heading
+
+<!-- scratch copy, after the edit below -->
+## Renamed heading
+```
+
+`linkcheck.py:check_file` checks fragment-only links against the source file's anchors. For links with a path, it resolves the target and checks any Markdown fragment against `anchors_of(target_text)`. This simplified pseudocode omits Markdown extraction, duplicate-heading handling and caches:
+
+```text
+for each extracted local link outside code:
+    if the link has no path part:
+        if its fragment is absent from this file's anchors: report missing-anchor
+        continue with the next link
+    resolve path relative to the source file (or configured root)
+    if path is missing: report missing-file or missing-image
+    if target is Markdown and has a fragment:
+        if fragment is absent from target's anchors: report missing-anchor
+```
+
+Before the edit, `Second heading` supplies `second-heading`. Afterwards, `Renamed heading` supplies `renamed-heading`, so the unchanged link must fail. Update the link to the new fragment, or restore the heading, to repair that relationship. The bad fixture adds four concrete failures: `nowhere.md`, `#no-such-heading`, `../../example/good.md#no-such-heading` and image `gone.png`. External URLs are counted without fetching them.
 
 <Example
   label="Computed"
@@ -175,6 +194,15 @@ Each link rule can fail. It does not show the check finds every kind of broken l
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `linkcheck.py`.
+3. Run it on the good example: `python3 -I linkcheck.py example`.
+4. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+5. Rename a heading in a copy and check the copy. The second Example above shows the commands.
+6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

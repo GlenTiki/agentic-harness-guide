@@ -42,21 +42,40 @@ cd kit/ch02-hooks
 
 The hash must be `f9af645321bd40c9010d56228f6c011fb47bbc3c3e97aa0e9e9f987088f72ce2`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `dispatch.py` and the five scripts in `hooks/`.
-3. Read `hooks.json`. It maps each event and tool name to a script.
-4. Run the matrix: `python3 -I validate.py`. It also installs the kit into a scratch project and follows the commands in `claude-settings.example.json`.
-5. Pipe one event into the dispatcher by hand and read the exit code. The second Example shows the command.
-6. Point the dispatcher at a config that does not exist. It still blocks.
-7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
-To use the hooks in Claude Code, copy `dispatch.py`, `hooks.json` and the `hooks/` folder into `.claude/harness-hooks/` in your project. Then merge `claude-settings.example.json` into `.claude/settings.json`. The commands in it name `${CLAUDE_PROJECT_DIR}/.claude/harness-hooks/dispatch.py`. If you put the files elsewhere, change that path. A path that does not exist makes the hook fail on every call, and the validator checks the sample path for that reason.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The following runs test an exit-code contract. `matrix.json` supplies events and expected codes; `hooks/block_destructive_bash.py` supplies the decision. Here are representative matrix inputs, shortened to the command or malformed payload:
+
+```text
+PreToolUse / Bash / "rm -rf build"  -> expect 2
+PreToolUse / Bash / "ls -la"        -> expect 0
+PreToolUse / Bash / "rm old.txt"    -> expect 0
+PreToolUse / Bash / no command     -> expect 2
+raw event: {not json               -> expect 2
+raw event: [1, 2]                  -> expect 2
+```
+
+This is simplified pseudocode for `dispatch.py` and the Bash hook. Matching, logging, message text and the other four hooks are omitted:
+
+```text
+if event is not a JSON object: return 2
+if config cannot be read or parsed: return 2
+for each hook matching this event and tool:
+    run hook with the event on stdin
+    if hook times out: continue
+    if hook exits 2: return 2
+    if hook exits another non-zero code: continue
+return 0
+
+Bash hook:
+    if tool_input.command cannot be read: exit 2
+    if command matches one of DANGEROUS's regexes: exit 2
+    otherwise: exit 0
+```
+
+The manual `rm -rf x` event must block; `ls -la` must pass; the missing-config run must block before any hook runs. The bad fixture returns 1 instead of 2 both when it cannot read the command and when a destructive-command regex matches. The dispatcher treats 1 as a non-blocking error. That lets four matrix cases through: `rm -rf`, force push, hard reset and the event with no command. Restoring exit 2 in both branches repairs those refusals. This is a regex demonstration, not a complete shell-command policy. A non-string command, such as JSON `{"command": 5}` inside `tool_input`, is read successfully but crashes the regex check with exit 1. The dispatcher allows that result; the matrix does not test this input.
 
 <Example
   label="Computed"
@@ -253,6 +272,18 @@ Exit code 1 looks like a block and does not block, and the matrix catches it. It
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `dispatch.py` and the five scripts in `hooks/`.
+3. Read `hooks.json`. It maps each event and tool name to a script.
+4. Run the matrix: `python3 -I validate.py`. It also installs the kit into a scratch project and follows the commands in `claude-settings.example.json`.
+5. Pipe one event into the dispatcher by hand and read the exit code. The second Example above shows the command.
+6. Point the dispatcher at a config that does not exist. It still blocks.
+7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
+
+To use the hooks in Claude Code, copy `dispatch.py`, `hooks.json` and the `hooks/` folder into `.claude/harness-hooks/` in your project. Then merge `claude-settings.example.json` into `.claude/settings.json`. The commands in it name `${CLAUDE_PROJECT_DIR}/.claude/harness-hooks/dispatch.py`. If you put the files elsewhere, change that path. A path that does not exist makes the hook fail on every call, and the validator checks the sample path for that reason.
 
 ## What is not tested
 
