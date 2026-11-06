@@ -29,6 +29,21 @@ Memory and search results are text that goes into the context ([context manageme
 
 A re-ranker cannot help a retrieved-wrong miss, because it only reorders what the pool holds. This is why you classify before you buy one. The count below uses BM25 with a pool of 10 and k = 3.
 
+Source for these excerpts: [diagnose.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-diagnosis/diagnose.py), [vector_index.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-diagnosis/vector_index.py).
+
+Each query has a human-labelled `relevant` list. The ranker returns note names in order; this function compares that order with the labels. In this script `K = 3` and `POOL = 10`.
+
+```python
+def failure_kind(names, expected):
+    """ok: a correct note is in the top K. ranked wrong: it is in the pool but below K. retrieved wrong: it is not in the pool."""
+    positions = [names.index(n) for n in expected if n in names]
+    if positions and min(positions) < K:
+        return "ok"
+    return "ranked wrong" if positions and min(positions) < POOL else "retrieved wrong"
+```
+
+A correct note below position 10 counts as retrieved wrong for this candidate pool, even if it appears later in the full ranking.
+
 <Example
   label="Computed"
   task="A maintainer classifies each of 34 queries as ok, ranked wrong or retrieved wrong for BM25 search."
@@ -71,6 +86,20 @@ For this search on this set, a re-ranker could fix at most 1 of the 7 misses. Th
 
 **2. Know which retriever suits which query.** A keyword search matches the words in the query. It finds an exact identifier, such as a code, a name or a standard number, because that token appears in few notes. An embedding search matches meaning. It finds a paraphrase that shares no word with the note.
 
+This is the identifier probe itself. `tokenize` is the same tokeniser used by BM25; `bm25_names` returns the ranked note names.
+
+```python
+def section_identifier():
+    memories, _ = load_eval()
+    query = "8601"
+    holders = [m.name for m in memories if query in tokenize(m.search_text)]
+    print(f"query {query!r}: notes that contain the token = {holders}")
+    print(f"query {query!r}: BM25 top 3 = {bm25_names(memories, query)[:3]}")
+    return 0
+```
+
+The probe asks which notes contain the exact token and compares them with the first three ranked results. It does not call an embedding model.
+
 <Example
   label="Computed"
   task="A maintainer searches for an exact identifier, the number 8601, with BM25."
@@ -108,6 +137,21 @@ Keyword search finds an exact token that appears in one note. I did not embed th
 </Fragment>
 
 </Example>
+
+This probe gets the expected note from the labelled query set. It computes BM25 now and reads the dense result from a stored file.
+
+```python
+def section_paraphrase():
+    memories, queries = load_eval()
+    query = "What do I take on a trip?"
+    expected = next(q["relevant"] for q in queries if q["query"] == query)
+    print(f"query {query!r}, correct note {expected}")
+    print(f"  BM25, run now:           top 3 = {bm25_names(memories, query)[:3]}")
+    print(f"  dense, stored output:    top 3 = {stored_top3('dense')[query]}")
+    return 0
+```
+
+The `dense` line below is a replay of an earlier result, not a new embedding run.
 
 <Example
   label="Computed"
@@ -149,6 +193,19 @@ On this query the embedding search finds what the keyword search cannot. The set
 </Example>
 
 **3. Fuse two lists with care.** Reciprocal rank fusion (RRF) gives a note `1 / (k + rank)` in each list and adds the scores. It rewards agreement between the lists. Use k = 60, as the kit does, and give both lists equal weight, unless you measure otherwise. The example fuses the live BM25 list with the stored dense top three.
+
+This is the fusion rule from the script. `Counter` comes from `collections` and `RRF_K = 60`. Each input is an ordered list of note names.
+
+```python
+def reciprocal_rank_fusion(rankings, k=RRF_K):
+    scores = Counter()
+    for ranking in rankings:
+        for rank, name in enumerate(ranking, start=1):
+            scores[name] += 1 / (k + rank)
+    return sorted(scores.items(), key=lambda pair: (-pair[1], pair[0]))
+```
+
+The demo passes the full BM25 ranking and only the three stored dense results. Tied scores sort by note name. It then checks where the labelled `backup-routine` note appears.
 
 <Example
   label="Computed"
@@ -195,6 +252,17 @@ Fusion can put a note that both lists half like above the note that one list is 
 
 **4. Add a similarity floor, and tune it.** Without a floor, the search returns the best of a bad lot, and an off-topic question still gets notes. A floor drops results whose similarity is too low. Every value is a starting value to tune on your own data, because the right value depends on the scorer and the notes. Sweep it with a set of off-topic queries as well as your normal ones, and count both kinds of error. The sweep below uses a bounded lexical similarity (tf-idf cosine, 0 to 1), because no embedding model was installed here. An embedder's cosine has another scale, so repeat the sweep with yours.
 
+The threshold calculation is source-derived pseudocode for `section_floor`. Each on-topic query has a best `(score, note)` from tf-idf cosine and a list of relevant notes:
+
+```text
+for floor in [0.05, 0.10, 0.15, 0.20]:
+    correct kept = count(score >= floor and note is relevant)
+    correct dropped = count(score < floor and note is relevant)
+    off-topic still answered = count(off-topic best score >= floor)
+```
+
+These columns do not count all wrong on-topic answers. They measure retained correct answers and unwanted answers to the eight off-topic fixtures.
+
 <Example
   label="Computed"
   task="A maintainer sweeps four floor values over 34 normal queries and 8 off-topic queries, using tf-idf cosine as the similarity."
@@ -239,6 +307,19 @@ No floor value here removes every off-topic answer and keeps every correct one, 
 </Example>
 
 **5. Store the embedder with the index, and refuse a mismatch.** Vectors from two embedders cannot be compared, even when they have the same length. Vectors of different lengths cannot be compared at all, and some code compares them without an error. Write the embedder name and the vector length into the index file. On load, compare both with the embedder you are about to use, and raise an error if either differs. `examples/retrieval-diagnosis/vector_index.py` does this in about 30 lines and has tests for a wrong name, a wrong length, a damaged vector and a missing field.
+
+The fixture index names `embedder-one` and stores two vectors of length 3: `[0.1, 0.2, 0.3]` and `[0.3, 0.2, 0.1]`. This is source-derived pseudocode for `load_index`:
+
+```text
+read the index JSON
+require embedder, dimension, ids and vectors fields
+refuse if stored embedder != requested embedder
+refuse if stored dimension != requested dimension
+refuse if any vector length != stored dimension
+return ids and vectors
+```
+
+Each refusal raises `IndexMismatch`. The demo catches that exception to print the refusal before trying the next load.
 
 <Example
   label="Computed"

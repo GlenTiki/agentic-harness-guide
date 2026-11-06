@@ -49,6 +49,32 @@ A memory search ranks notes by how well they match the prompt. Age plays no part
 
 The demo below uses that loader on three invented notes. Two of them disagree about where staging runs. The script finds the pair, repairs the older note in place, deletes the duplicate and ranks again. It works on a temporary copy, so the stored notes never change.
 
+Source for these excerpts: [staleness_demo.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/memory-staleness/staleness_demo.py).
+
+The fixture supplies two conflicting facts:
+
+```text
+staging-host, updated 2026-03-02T09:00:00Z:
+Staging is deployed to the old-cluster host. Deploy with the cluster script.
+
+staging-moved, updated 2026-10-01T09:00:00Z:
+Staging runs on the new platform. The old-cluster host was switched off. Deploy with the platform command.
+```
+
+This source excerpt finds candidate conflicts by type and shared tags. `combinations` comes from `itertools`; matching tags do not prove a contradiction.
+
+```python
+def shared_topic_pairs(memories):
+    """Return pairs of notes with the same type and at least two shared tags. A heuristic: it finds candidates, not proof."""
+    return [
+        (a, b)
+        for a, b in combinations(memories, 2)
+        if a.type == b.type and len(set(a.tags) & set(b.tags)) >= 2
+    ]
+```
+
+The demo ranks with BM25, which has no recency term. It copies the fixture notes into a temporary directory, rewrites `staging-host` with the newer fact, removes the duplicate there and ranks again. The repair is specified by the example; the heuristic does not decide which fact is true.
+
 <Example
   label="Computed"
   task="A maintainer asks where staging is deployed, with an old note and a newer note that contradict each other, then repairs the notes in place."

@@ -58,6 +58,52 @@ The summary below is also written by hand. It reads well. It is what a summary o
 
 Keep the constraints in the ledger too, each with the phrases that must survive. A small script compares such a ledger with the summary. It counts a constraint as kept when the summary mentions every phrase you listed for it.
 
+Source for these excerpts: [compaction_audit.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/context-tools/compaction_audit.py), [compaction_point.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/context-tools/compaction_point.py).
+
+The audit uses literal phrases, not a semantic judgement. This is the `constraints` field in `fixtures/ledger.json`; its separate intent field is omitted:
+
+```json
+{
+  "constraints": [
+    {
+      "id": "C1",
+      "text": "Do not change the public function signature of sync()",
+      "keep_if_mentions": [
+        "signature",
+        "sync()"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "Cap retries at 5 because the upstream limit resets in 60 seconds",
+      "keep_if_mentions": [
+        "5",
+        "60"
+      ]
+    },
+    {
+      "id": "C3",
+      "text": "Tests first: write the failing test before the change",
+      "keep_if_mentions": [
+        "test"
+      ]
+    }
+  ]
+}
+```
+
+This is the checker from `examples/context-tools/compaction_audit.py`. It returns separate kept and lost lists; the command exits 1 when the lost list is non-empty. Matching is by substring, so `"5"` also matches `"250"`; this is a deliberately weak teaching check.
+
+```python
+def lost_constraints(ledger, summary):
+    text = summary.lower()
+    kept, lost = [], []
+    for constraint in ledger["constraints"]:
+        present = all(phrase.lower() in text for phrase in constraint["keep_if_mentions"])
+        (kept if present else lost).append(constraint)
+    return kept, lost
+```
+
 <Example
   label="Computed"
   task="A maintainer checks which of three ledger constraints a hand-written post-compaction summary still mentions."
@@ -110,6 +156,29 @@ Compaction happens at a point in the window. The earlier turns have then used so
 2. Note whether a constraint was dropped after that point. You find out by running the audit above, or by watching for a rule the assistant now breaks.
 3. Write the rows to a CSV: session, boundary, tokens used, window, dropped (0 or 1).
 4. Find the lowest fraction of the window at which you saw a drop. Compact at the last phase boundary below it.
+
+The CSV has `session`, `boundary`, `tokens_used`, `window` and `constraint_dropped` columns. Selected rows from the fixture (the other six rows are omitted here):
+
+```csv
+session,boundary,tokens_used,window,constraint_dropped
+s1,implementation,121000,200000,0
+s1,review,164000,200000,1
+s2,implementation,138000,200000,1
+s3,implementation,109000,200000,0
+```
+
+The loader divides tokens used by window size. This function selects the clean fractions below the first observed drop.
+
+```python
+def compaction_point(rows):
+    """Return (lowest fraction with a drop or None, fractions of clean boundaries below it)."""
+    drops = [r["fraction"] for r in rows if r["dropped"]]
+    lowest_drop = min(drops) if drops else None
+    clean = sorted(r["fraction"] for r in rows if not r["dropped"] and (lowest_drop is None or r["fraction"] < lowest_drop))
+    return lowest_drop, clean
+```
+
+The runner prints the highest returned clean fraction. It exits 1 if no drop was observed or no clean fraction precedes it.
 
 <Example
   label="Computed"

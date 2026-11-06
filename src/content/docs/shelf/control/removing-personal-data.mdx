@@ -31,6 +31,37 @@ A model provider, a search service or a log shipper does not need the real name 
 
 **7. Add recognisers for your own identifiers.** A general-purpose recogniser looks for shapes it was built for, such as emails and phone numbers. Your case numbers, account references and ticket codes have shapes it was never given. They pass through unmasked. The sketch shows this with two invented identifier formats. No claim is made here about how any real recogniser performs.
 
+Source for these excerpts: [alias.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/alias-redaction/alias.py).
+
+The source document is invented. Here are its two lines, with the synthetic contact values replaced by display placeholders. The [full fixture](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/alias-redaction/alias.py) contains the email and phone strings that the runner actually recognises; do not substitute this shortened display as its input.
+
+```text
+Case CX-48213-ALPHA was opened by <synthetic email 1> (<synthetic phone>).
+Refund goes to account ACC/2291/004417. Chase CX-48213-ALPHA again if the account ACC/2291/004417 is still unpaid, and copy <synthetic email 2>.
+```
+
+Both internal identifiers occur twice. The extra recognisers are exactly:
+
+```python
+INTERNAL = {
+    "CASE": re.compile(r"\bCX-\d{5}-[A-Z]+\b"),
+    "ACCOUNT": re.compile(r"\bACC/\d{4}/\d{6}\b"),
+}
+```
+
+Source-derived pseudocode for the comparison:
+
+```text
+for recognisers in [baseline, baseline plus internal patterns]:
+    refuse input that already contains token-shaped text
+    replace recognised values with tokens; reuse a token for repeated values
+    keep the token-to-value map local
+    restore the masked document and compare it with the original
+    separately check whether either internal identifier remains visible
+```
+
+The baseline recognises email and phone patterns only. A round-trip pass cannot establish that all personal data was recognised.
+
 <Example
   label="Computed"
   task="A maintainer aliases one synthetic document twice: once with a small baseline recogniser, once with the same recogniser plus two patterns for internal identifiers."

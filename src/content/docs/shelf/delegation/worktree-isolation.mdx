@@ -48,6 +48,21 @@ git merge-base --is-ancestor <base-commit> <agent-branch> && echo "based on the 
 
 The script builds two throwaway repositories, `outer` and `inner`, each with one commit. It sets one variable at a time and runs git against the other repository.
 
+Source for these excerpts: [git_env_roles.sh](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/worktree-collisions/git_env_roles.sh), [port_and_base.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/worktree-collisions/port_and_base.py), [shared_checkout.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/worktree-collisions/shared_checkout.py).
+
+The runner creates two temporary repositories with distinct commits and files. This source-derived pseudocode names the three independent probes:
+
+```text
+with GIT_DIR set to outer/.git:
+    ask git -C inner for the last commit
+with GIT_WORK_TREE set to inner:
+    ask git -C outer for its metadata path and status
+with GIT_INDEX_FILE set to a new empty-index path:
+    ask git -C outer for status
+```
+
+Each variable is set only for its probe. A repository directory, working tree and index are different inputs; `-C` alone does not select all three.
+
 <Example
   label="Computed"
   task="You set GIT_DIR, GIT_WORK_TREE and GIT_INDEX_FILE one at a time and look at what git reports."
@@ -96,6 +111,22 @@ Each variable overrides one part of the repository, and `-C` does not undo any o
 
 The script builds throwaway repositories in a temporary folder and removes them when it ends. Writer A changes the `owner` line of one file. Writer B changes the `status` line of the same file. Each writer reads the file before the other writes, which is what two agents do when they start together.
 
+Here is the simulated interleaving from `shared_checkout.py`. `edit` replaces one named line, such as `owner: nobody`; `git` runs Git in the temporary repository.
+
+```python
+def one_checkout(repo):
+    path = repo / "notes.txt"
+    seen_by_a = path.read_text()
+    seen_by_b = path.read_text()
+    path.write_text(edit(seen_by_a, "owner", "writer A"))
+    path.write_text(edit(seen_by_b, "status", "writer B"))
+    print("-- one checkout, both writers read before either wrote --")
+    print(path.read_text(), end="")
+    print("git status:", git(repo, "status", "--short").stdout.strip())
+```
+
+Both writers read before either writes. Writer B then saves its old copy with a different field changed, overwriting A’s new owner. No simultaneous processes are required to reproduce this lost update.
+
 <Example
   label="Computed"
   task="Two writers edit one file in one checkout. You look for A's change."
@@ -141,6 +172,18 @@ Last writer wins silently in one checkout. It does not show how often agents rea
 </Example>
 
 Give each writer a worktree and the picture changes. When the writers touch different lines, the merge of both branches exits 0 and keeps both edits (the `status: writer B` and `owner: writer A` lines both appear in the same run). When they touch the same line, git refuses:
+
+The second experiment uses the same initial file, but each writer commits in its own worktree. Source-derived pseudocode for `two_worktrees`:
+
+```text
+create branches agent/a and agent/b from main
+writer A changes owner in worktree A and commits
+writer B changes a selected field in worktree B and commits
+merge agent/a into main
+try to merge agent/b; retain and print the merge exit code
+```
+
+The runner tries both different fields and the same `owner` field. The same-field case exposes the conflict at merge instead of silently overwriting a saved file.
 
 <Example
   label="Computed"
@@ -190,6 +233,20 @@ A worktree turns a silent overwrite into a loud conflict. It does not remove the
 ## A port survives separate folders
 
 A worktree is a folder. A port belongs to the machine. The script starts a process in the first folder and lets the operating system choose its port. It then starts a process in the second folder on that same port. In the second part, each folder asks the operating system for a free port. Every wait has a ten-second limit, and the script stops all child processes when it ends.
+
+The child process binds a TCP socket to loopback. This is the source-derived sequence in `port_collision`:
+
+```text
+start process A in folder A; bind 127.0.0.1 with port 0
+read the free port assigned by the operating system
+start process B in folder B; try to bind that same port
+report its address-in-use error
+start two more processes, each requesting port 0
+check that their assigned ports differ
+stop all children in a finally block
+```
+
+The folders differ, but the network address space is shared. Port 0 asks the operating system to choose a free port.
 
 <Example
   label="Computed"
@@ -254,6 +311,18 @@ Derived numbers do not reserve a port: a port that is free now can be taken befo
 4. Merge one branch. Run the full gates. Only then take the next branch, and check its base again, because the first merge moved the base.
 5. Remove each worktree with `git worktree remove`, then delete its branch. Keep a failed branch until you know why it failed.
 
+This is source-derived pseudocode for `descends_from_base`:
+
+```text
+create agent/late from main in a worktree
+commit a new change on main
+check: git merge-base --is-ancestor main agent/late
+rebase agent/late onto main
+repeat the same ancestry check
+```
+
+Exit 1 means the current main commit is not an ancestor of the agent branch; exit 0 after the rebase means it is. This checks ancestry, not whether the feature tests pass.
+
 <Example
   label="Computed"
   task="The base branch moves after a worktree was made. You check the agent branch before you merge it."
@@ -298,6 +367,17 @@ The check finds a stale base. It does not say whether the rebase left the agent'
 ## When an outer worktree omits the inner repository
 
 A repository can hold another repository inside it that the outer repository ignores. A worktree of the outer repository contains only tracked files, so the inner repository is not there.
+
+This is source-derived pseudocode for `nested_ignored_repository`:
+
+```text
+commit a .gitignore containing inner/ in the outer repository
+create inner/ and initialise a separate repository there
+create a worktree from the outer repository’s main branch
+check whether inner/ exists in the original and the new worktree
+```
+
+The nested repository is ignored and untracked by the outer repository. An outer worktree therefore does not reproduce its files.
 
 <Example
   label="Computed"

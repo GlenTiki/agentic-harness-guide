@@ -114,6 +114,20 @@ You can reproduce the first two rows from the [chapter 6 kit](../../case-study/c
 
 The full table adds the other systems. Every row has a stored output in [examples/retrieval-eval/outputs](https://github.com/GlenTiki/agentic-harness-guide/tree/main/examples/retrieval-eval/outputs), with its date, versions and command in the file header ([README](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/README.md)). Rows 3 to 7 need Ollama or an optional package.
 
+Source for these excerpts: [retrieval_eval.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/retrieval_eval.py).
+
+The command below reads saved reports; it does not run the retrieval systems. The reports compare each ranked result with human-labelled relevant notes. Source-derived pseudocode for the metrics:
+
+```text
+for each labelled query:
+    precision@3 = relevant notes among the first 3 / 3
+    hit@3 = 1 if any relevant note appears among the first 3, otherwise 0
+    reciprocal rank = 1 / the first relevant note’s rank, or 0 if absent
+average each value across the queries
+```
+
+A ranking can score a hit with one correct note and still have low precision because its other two notes are irrelevant.
+
 <Example
   label="Computed"
   task="You read the stored score line of every system in the table below. Each file was written by one run of `retrieval_eval.py`."
