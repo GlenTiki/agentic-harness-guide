@@ -41,20 +41,32 @@ cd kit/ch11-surfaces
 
 The hash must be `321c244b9169bf4ea3e5f27698b66b162bdd53ad088677dbceffddba118072eb`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `example/project/AGENTS.md`, `CLAUDE.md` and `.gemini/settings.json`.
-3. Check the layout: `python3 -I layout.py example/project`.
-4. Read the two messages in `example/exchange/`. The reply names the first message in its `re` line.
-5. List an inbox: `python3 -I exchange.py --root example/exchange inbox claude`.
-6. Post a message into a scratch folder, then check that folder.
-7. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
-8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The checker reads configuration files, not a live agent session. These are the relevant excerpts from the archive's `example/project/`:
+
+```text
+CLAUDE.md:
+@AGENTS.md
+
+.gemini/settings.json:
+{"context": {"fileName": ["AGENTS.md", "GEMINI.md"]}}
+```
+
+This is simplified pseudocode for `layout.py:check_project`; file errors and the length check are omitted:
+
+```text
+require a non-empty AGENTS.md
+if CLAUDE.md exists:
+    require a whole line whose stripped value is @AGENTS.md
+    report copied AGENTS.md lines of at least 30 characters
+if Gemini settings exist:
+    require context.fileName to include AGENTS.md
+```
+
+Expect this layout to pass those file checks. In the bad fixture, `CLAUDE.md` copies rules without the import and Gemini lists only `GEMINI.md`. Restoring the import and shared filename repairs those defects. The check cannot prove a host loaded the files, and it does not detect every paraphrased copy.
 
 <Example
   label="Computed"
@@ -81,7 +93,7 @@ layout: OK
 
 <Fragment slot="notice">
 
-The output is `layout: OK`. The check also fails if `CLAUDE.md` copies lines from `AGENTS.md`, so the rules cannot fork.
+The output is `layout: OK`. The check catches exact copied lines of at least 30 characters from `AGENTS.md` in `CLAUDE.md`. It does not catch reworded copies.
 
 </Fragment>
 
@@ -92,6 +104,29 @@ The three files agree. It does not show any real tool reads them this way.
 </Fragment>
 
 </Example>
+
+The inbox reads files such as `example/exchange/to-claude/20261024T091500Z-codex-7c9c.md`. Its header is:
+
+```yaml
+from: codex
+to: claude
+time: 2026-10-24T09:15:00Z
+subject: Review done: two gaps
+status: new
+re: 20261024T090000Z-claude-f8e3.md
+```
+
+`exchange.py:list_inbox` reads sorted `*.md` files under `to-<recipient>/` and optionally filters by status. Expect the Claude inbox to contain this reply. The following post example creates another message with sender `claude`, recipient `codex`, subject `Please review` and body `Read notes.py.`. This is simplified pseudocode for its publication step; input checks and header construction are omitted:
+
+```text
+write the complete message to a temporary file in to-codex/
+close the temporary file
+hard-link it to the final timestamp-sender-hash filename
+if the destination already exists: fail instead of overwriting
+remove the temporary name
+```
+
+A subsequent `check` validates header, filename and folder consistency. `re` is optional; when present, it must name an existing message. These are local files, not proof that a named agent has received or read a message.
 
 <Example
   label="Computed"
@@ -132,7 +167,7 @@ An inbox is a folder listing. It is not a live channel.
 
 <Example
   label="Computed"
-  task="You post a message from one agent to another into a scratch folder, then check the folder."
+  task="You post a message from one agent to another into a scratch folder, check the folder, then run the kit validator."
   evidence="the commands shown, run from the kit root"
   env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
 >
@@ -160,7 +195,7 @@ validate: PASS
 
 <Fragment slot="notice">
 
-The post prints the name of the file it wrote. The name holds a UTC time, the sender and a short hash, so it changes on each run. The check prints `exchange: OK`.
+The post prints the name of the file it wrote. The name holds a UTC time, the sender and a short hash, so it changes on each run. The exchange check prints `exchange: OK`. The final command runs the kit validator and prints `validate: PASS`.
 
 </Fragment>
 
@@ -171,6 +206,18 @@ A message is one plain file that anyone can read. It does not show that an agent
 </Fragment>
 
 </Example>
+
+Alongside the layout defects above, the exchange fixtures break routing and header constraints. One concrete input is `fixtures/bad/exchange/to-codex/20261024T090600Z-claude-ed88.md`:
+
+```yaml
+from: claude
+to: codex
+time: 2026-10-24T09:06:00Z
+subject: Bad status
+status: maybe
+```
+
+`exchange.py:check_exchange` accepts only `new`, `read` or `done`, so this status must fail. It also compares the recipient with the folder, the sender and time with the filename, and any reply reference with existing filenames. Correcting `maybe` to the message's actual state repairs this field; it does not establish that its body is true or that the declared sender wrote it.
 
 <Example
   label="Computed"
@@ -218,6 +265,17 @@ Both conventions can fail. They do not show the tools honour them.
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `example/project/AGENTS.md`, `CLAUDE.md` and `.gemini/settings.json`.
+3. Check the layout: `python3 -I layout.py example/project`.
+4. Read the two messages in `example/exchange/`. The reply names the first message in its `re` line.
+5. List an inbox: `python3 -I exchange.py --root example/exchange inbox claude`.
+6. Post a message into a scratch folder, then check that folder.
+7. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

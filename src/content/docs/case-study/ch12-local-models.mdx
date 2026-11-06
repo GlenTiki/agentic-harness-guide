@@ -44,20 +44,31 @@ cd kit/ch12-local-models
 
 The hash must be `40f3e586970f77188ddab30a6020b712e5fe0c7394d970e17de7305fa83bd898`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Run the evaluation with the hashing stand-in: `python3 -I dense_eval.py`.
-3. Build the index for the example documents, then run the same command again. The second run embeds 0 files.
-4. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
-5. Optional: install Ollama, run `ollama pull nomic-embed-text`, then `nice -n 10 python3 -I dense_eval.py --ollama`. Add `--nomic-prefixes` for the prefix variants.
-6. Optional: run the live test with `RUN_LIVE_OLLAMA=1 python3 -I -m unittest discover -s tests -t . -k Live`.
-7. Optional: build the index with the real model at low priority, with `--embedder ollama --nice 10`.
-8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+This reuses chapter 6's labelled queries and metric definitions. For `Which spelling should the docs use, colour or color?`, the expected relevant memory is still `british-english`. What changes here is how the ranked list is built.
+
+This is simplified pseudocode for `embed.py:HashEmbedder`, `dense_rank`, `rrf` and `dense_eval.py:compare`. Hash-byte arithmetic, vector validation and deterministic tie-breaking are omitted:
+
+```text
+hash_vector(text):
+    start 256 counters at zero
+    for each token: hash it to a counter and add +1 or -1
+    normalise the counters to unit length, unless all are zero
+
+embed each memory's context text once
+for each query:
+    rank memories by cosine(query vector, memory vector)
+    obtain the separate BM25 ranking (positive scores only)
+    for each ranking and each memory at position r (starting at 1):
+        fusion_score[memory] += 1 / (60 + r)
+    rank by fusion score
+score all three lists against the same relevant-memory labels
+```
+
+The default command uses hashing, not a model. Hash collisions can make unrelated tokens share a bucket; these vectors do not encode learned meaning. Expect a reproducible comparison on the fixed set, not an automatic improvement over BM25. The later stored model scores come from the separate guide-repository script [examples/retrieval-eval/retrieval_eval.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/retrieval-eval/retrieval_eval.py), scored on the same labelled evaluation set. Its dense ranking and fusion code are separate from this kit; the file-reading command only displays its recorded results.
 
 <Example
   label="Computed"
@@ -100,6 +111,27 @@ The stand-in is a test double. It does not show how a real embedding model score
 </Fragment>
 
 </Example>
+
+The two index runs and the stale-index fixture share one comparison: file bytes versus the saved SHA-256 digest. This is simplified pseudocode for `indexer.py:run_once` and `verify_index`; locking, batching, model changes, status writes and exception handling are omitted:
+
+```text
+files = current Markdown paths
+entries = saved index entries
+remove entries whose file no longer exists
+for each current file:
+    current_hash = SHA-256(file bytes)
+    if no entry exists or entry.sha256 != current_hash:
+        embed the file text
+        save its vector and current_hash
+write index to a temporary file; replace the old index
+
+verify:
+    report current files missing from entries
+    report entries whose file is gone
+    report files whose saved hash differs from current bytes
+```
+
+Starting with no `scratch/index.json`, expect the first run to embed the three example documents and the unchanged second run to embed zero. The bad fixture has `new.md` without an entry, a saved `reviews.md` entry without a file, and edited `dates.md` with its old hash. Those produce the three findings below. Rebuilding against the current files repairs index freshness; matching hashes do not establish useful retrieval or correct vector contents.
 
 <Example
   label="Computed"
@@ -185,7 +217,7 @@ The stale-index check can fail. It does not show the index is good.
 
 ### Measured results with a real model
 
-These numbers come from a run of the optional steps on 2026-10-25. The stored outputs are in [examples/retrieval-eval/outputs](https://github.com/GlenTiki/agentic-harness-guide/tree/main/examples/retrieval-eval/outputs). The set is the one from [chapter 6](../ch06-rerank/): 44 memories and 34 queries that a person labelled. The model is `nomic-embed-text` (137M parameters, 768 dimensions, as `ollama show` reported), run through Ollama on one laptop. Two dense runs gave identical output.
+These numbers come from the separate `examples/retrieval-eval/retrieval_eval.py` runs on 2026-10-25, using its `dense`, `dense-prefixes`, `hybrid` and `hybrid-prefixes` modes. The stored outputs are in [examples/retrieval-eval/outputs](https://github.com/GlenTiki/agentic-harness-guide/tree/main/examples/retrieval-eval/outputs). The set is the one from [chapter 6](../ch06-rerank/): 44 memories and 34 queries that a person labelled. The model is `nomic-embed-text` (137M parameters, 768 dimensions, as `ollama show` reported), run through Ollama on one laptop.
 
 | system | precision@3 | hit@3 | MRR |
 | --- | --- | --- | --- |
@@ -242,6 +274,17 @@ For comparison, chapter 6 measured a cross-encoder on the same set: precision@3 
 2. The fusion with BM25 scored lower than dense alone. I did not investigate why.
 3. The prefix variant is one query better on hit@3. That is within noise on 34 queries.
 4. The set is small, written by one person and built to use other words than the memories. It does not show that dense retrieval is better in general. Measure on your own memories.
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Run the evaluation with the hashing stand-in: `python3 -I dense_eval.py`.
+3. Build the index for the example documents, then run the same command again. The second run embeds 0 files.
+4. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+5. Optional: install Ollama, run `ollama pull nomic-embed-text`, then `nice -n 10 python3 -I dense_eval.py --ollama`. Add `--nomic-prefixes` for the prefix variants.
+6. Optional: run the live test with `RUN_LIVE_OLLAMA=1 python3 -I -m unittest discover -s tests -t . -k Live`.
+7. Optional: build the index with the real model at low priority, with `--embedder ollama --nice 10`.
+8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

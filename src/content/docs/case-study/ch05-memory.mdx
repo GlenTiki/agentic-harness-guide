@@ -41,19 +41,28 @@ cd kit/ch05-memory
 
 The hash must be `502f98061b46dd5811bc10fa61108ecb21573b9317d976fe72e329c6727b6bc4`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read the eight files in `example/memories/`. You can edit each one by hand.
-3. Read `bm25.py`.
-4. Recall for a prompt. The log goes to `scratch/`: `mkdir -p scratch`, then `python3 -I memory.py "Write the commit message for this change" --dir example/memories --log scratch/recall.jsonl`.
-5. Read the log line it wrote.
-6. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
-7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The selection input is the prompt below plus eight memory files. For example, `example/memories/small-commits.md` says: "Each commit holds one logical change. The message says what changed and why." `example/golden.json` expects that memory first for `Write the commit message for this change`.
+
+This is simplified pseudocode for `memory.py:select` and `log_recall`; file parsing, BM25 arithmetic and serialisation are omitted:
+
+```text
+rank memories with BM25 over name, description, tags and body
+keep only positive BM25 scores, highest first
+chosen = []; used = 0
+for each ranked memory:
+    cost = ceil(length(memory.context_text) / 4)
+    if already chose 5, or used + cost > 400: skip this memory
+    otherwise: append memory and add cost to used
+if --log is given, append a log record containing:
+    current UTC time, SHA-256(prompt), chosen names and scores,
+    tokens used and budget
+```
+
+The recall and log-read commands below share that operation: expect `small-commits` first and the chosen context within the estimated budget. A skipped long memory does not end the loop; a later short one may fit. The `timestamp` run demonstrates a different input to the same ranker. Its tokenizer makes `timestamp`, `timestamps`, `time` and `stamp` distinct tokens, so the relevant memory's wording and plural name do not match that query term. The log records selection, not usefulness.
 
 <Example
   label="Computed"
@@ -90,7 +99,7 @@ Use British spelling: colour, organise, behaviour. Dates are written day first. 
 
 <Fragment slot="notice">
 
-Three memories print, best first: `small-commits`, `tests-first`, `british-english`. The line `-- 3 memories, about 149 of 400 tokens` is the budget use.
+Three memories print, best first: `small-commits`, `tests-first`, `british-english`. The line `-- 3 memories, about 149 of 400 tokens` is the budget use. The program writes the context to stdout, then the budget to stderr; this captured output shows the budget first, so its position is not an ordering guarantee.
 
 </Fragment>
 
@@ -182,6 +191,19 @@ BM25 matches words, not meaning. It does not show how often this happens; chapte
 
 </Example>
 
+The bad run checks file structure before retrieval. This actual fixture, `fixtures/bad/memories/missing-type.md`, omits one required field:
+
+```markdown
+---
+name: missing-type
+description: no type key
+updated: 2026-09-01T09:00:00Z
+---
+B
+```
+
+`memory.py:parse_memory` requires non-empty `name`, `description`, `type` and `updated` fields. It checks the time stamp against a UTC-seconds pattern. `validate.py:check_files` collects parsing failures and checks duplicate names across files. Expect this input to report missing `type`; adding the correct type repairs this structural defect. The other bad files omit front matter, omit a colon, use a different time stamp shape, or repeat the name `dup`. These checks do not validate the meaning of body `B`, and the time stamp regex alone does not validate calendar dates.
+
 <Example
   label="Computed"
   task="You run the validator on memory files with five kinds of defect. The check must go red."
@@ -225,6 +247,16 @@ The file checks can fail. They do not show the notes are true.
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read the eight files in `example/memories/`. You can edit each one by hand.
+3. Read `bm25.py`.
+4. Recall for a prompt. The log goes to `scratch/`: `mkdir -p scratch`, then `python3 -I memory.py "Write the commit message for this change" --dir example/memories --log scratch/recall.jsonl`.
+5. Read the log line it wrote.
+6. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

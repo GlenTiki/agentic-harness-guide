@@ -25,7 +25,7 @@ Have specs in simple English that a rule-based linter can check, and know exactl
 ## What is in the kit
 
 - `example/TEMPLATE.md` and a worked example, `example/notes-add.md`.
-- `plainlint.py`, a linter with four rules: sentence length (25 words in a description, 20 in a numbered step), passive voice, a list of banned vague words, and a readability grade (Flesch-Kincaid, limit 9).
+- `plainlint.py`, a linter with five rules: sentence length (25 words in a description, 20 in a numbered step), passive voice, a list of banned vague words, en/em dashes, and a readability grade (Flesch-Kincaid, limit 9).
 - `validate.py`, which lints everything in `example/` and `SPEC.md`.
 - Optional rules in the Vale format, in `vale/`. The tests do not need Vale.
 
@@ -41,18 +41,37 @@ cd kit/ch01-plain-spec
 
 The hash must be `37ebb74ea24195721c63fc28ed6dafc1119f1feecda1b591127824bd0c4fca62`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `example/TEMPLATE.md` and the worked example `example/notes-add.md`.
-3. Lint one file: `python3 -I plainlint.py example/notes-add.md`.
-4. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
-5. Run the unit tests: `python3 -I -m unittest discover -s tests -t .`. The last line is `OK`.
-6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The linter reads prose, not a test script. These excerpts show the actual inputs in `example/notes-add.md` and `fixtures/bad/vague.md`:
+
+```text
+Good spec:
+1. The tool trims the spaces around the text.
+2. The tool refuses the text if it is empty.
+3. The tool refuses the text if it holds a new line or a tab.
+
+Bad fixture:
+The note adding feature is designed to robustly handle various kinds of input and other things, and it was built so that it can be easily extended by whoever happens to be maintaining the code in the future, etc.
+
+1. The text is checked and then the tool is made to write the line to the file as needed.
+```
+
+`plainlint.py:lint_text` applies the following checks. This is simplified pseudocode; Markdown parsing, the word list and the grade formula are omitted.
+
+```text
+for each prose sentence:
+    limit = 20 for a numbered step, otherwise 25
+    report sentence-length when word_count > limit
+    report passive-heuristic when the passive regex matches
+    report vague-word for each banned word or phrase found
+report dash for an en dash or em dash in a prose unit
+report readability when the document's estimated grade > 9
+```
+
+The good spec should have no findings. The bad fixture should fail the length, passive, vague-word and readability checks. It contains no en dash or em dash, so these two sentences do not exercise the fifth rule. A repair would name the actor, replace vague terms with the intended behaviour, and split the long sentence; no rewritten-fixture run is recorded below.
 
 <Example
   label="Computed"
@@ -85,7 +104,7 @@ The line says `0 finding(s)`. The linter prints one line for each finding, and n
 
 <Fragment slot="shows">
 
-The example follows the four rules a script can test. It does not show the spec is clear to a reader.
+The example passes the five mechanical rules in this linter. It does not show the spec is clear to a reader.
 
 </Fragment>
 
@@ -93,7 +112,7 @@ The example follows the four rules a script can test. It does not show the spec 
 
 <Example
   label="Computed"
-  task="You run the validator on a file of two sentences that break every rule. The check must go red."
+  task="You run the validator on two sentences that break four of the five rules. The check must go red."
   evidence="python3 -I validate.py --bad (from the kit root)"
   env="Python 3.13.1, macOS, kit zip from this site, 2026-10-25"
 >
@@ -133,11 +152,20 @@ Nine findings appear, one rule name in brackets on each line, for example `[vagu
 
 <Fragment slot="shows">
 
-Each rule can fail. It does not show that the rules find every unclear sentence.
+Four rules fail on this fixture. This run does not exercise the dash rule or show that the linter finds every unclear sentence.
 
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `example/TEMPLATE.md` and the worked example `example/notes-add.md`.
+3. Lint one file: `python3 -I plainlint.py example/notes-add.md`.
+4. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+5. Run the unit tests: `python3 -I -m unittest discover -s tests -t .`. The last line is `OK`.
+6. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

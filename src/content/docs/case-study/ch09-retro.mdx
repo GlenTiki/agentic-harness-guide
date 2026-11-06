@@ -26,7 +26,7 @@ Turn rough feedback into the four-part form and a reviewable list of proposed fi
 
 - The retro format: what went well first, then each problem as what it was, what happened and what I preferred.
 - `retro.py` with a `parse` command, which sorts rough notes into the form and writes a proposals file, and a `check` command. `check --draft` allows open questions. A strict `check` does not.
-- A rule-based parser. It reads the cues in the table below. A line with no cue stays in a Raw words block and becomes a question.
+- A rule-based parser. It reads the cues in the table below. Every original line is kept in a Raw words block. Lines the parser cannot place, including field cues with no open problem or a second value for an already filled field, add one shared question: "Where do these lines belong? They matched no cue."
 - A proposals file. Each proposal has a source issue, a status (proposed, accepted or rejected) and the check that would prove it works.
 
 | Cue at the start of a line | Meaning |
@@ -35,7 +35,7 @@ Turn rough feedback into the four-part form and a reviewable list of proposed fi
 | `- `, `bad:`, `problem:`, `issue:`, `went wrong:` | a new problem |
 | `what it was:`, `it was:`, `was:` | field "What it was" |
 | `what happened:`, `happened:` | field "What happened" |
-| `what i preferred:`, `preferred:`, `i wanted`, `next time:` | field "What I preferred" |
+| `what i preferred:`, `preferred:`, `i would have preferred`, `i preferred`, `i wanted`, `next time:` | field "What I preferred" |
 
 Case does not matter.
 
@@ -51,21 +51,30 @@ cd kit/ch09-retro
 
 The hash must be `566f068ce30b19d7207890fb89c6f050b9d2c7747af4fdc16d976bc620d9efd4`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `example/rough-notes.txt`. It is how a person writes after a long day.
-3. Turn it into a draft with `retro.py parse`. The command writes `scratch/retro.md` and `scratch/proposals.md` and prints one open question.
-4. Check the draft with `--draft`. It passes.
-5. Check it strictly. It fails, because the question about issue 2 is open.
-6. Answer the question in the file and run the strict check again. It passes.
-7. Read `example/retro.md` and `example/proposals.md`. They are the finished version.
-8. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
-9. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The cue table above needs actual input to make the draft/strict distinction visible. These are the final three lines of `example/rough-notes.txt`:
+
+```text
+- the spec used the word few
+  it was: a vague word in a spec
+  next time: the linter should reject vague words
+```
+
+There is no `what happened:` line. `retro.py:parse_notes` associates field cues with the nearest preceding problem and fills missing fields with a question. This is simplified pseudocode; praise, original-word preservation and proposal rendering are omitted:
+
+```text
+on a problem cue: start a new issue
+on a field cue: store it on the latest issue if that field is empty
+for each issue and each of what / happened / preferred:
+    if the field is missing: insert NEEDS CLARIFICATION + its question
+check(retro, draft=True): allow those question markers
+check(retro, draft=False): reject markers before the Raw words section
+```
+
+Expect issue 2's missing event sequence to remain a question. The next three runs parse, allow the draft, refuse it strictly, then replace that question with a concrete answer. The final strict pass checks structural completeness; it cannot verify that the supplied answer is true.
 
 <Example
   label="Computed"
@@ -184,6 +193,19 @@ Answering the question clears the gate. It does not show the answer is true.
 
 </Example>
 
+The aggregate failure adds proposal validation. This excerpt from `fixtures/bad/proposals.md` declares a change accepted while its proof remains unanswered:
+
+```markdown
+## Proposal 2
+
+- From: Issue 1
+- Change: add a check
+- Status: accepted
+- Check that would prove it works: NEEDS CLARIFICATION: Name the test, hook or lint rule that would catch this next time.
+```
+
+`retro.py:check_proposals` checks that `From` names an issue in the retro and that status is `proposed`, `accepted` or `rejected`. For `accepted`, the proof field must be non-empty and contain no clarification marker. Expect this proposal to fail that last condition. The other proposal refers to nonexistent Issue 7 and uses status `maybe`; the bad retro puts praise second and leaves fields unanswered. These checks require a written proof plan, not evidence that the proof has run.
+
 <Example
   label="Computed"
   task="You run the validator on defective retro and proposals files."
@@ -228,6 +250,18 @@ The format rules can fail. The praise-first rule does not judge whether the prai
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `example/rough-notes.txt`. It is how a person writes after a long day.
+3. Turn it into a draft with `retro.py parse`. The command writes `scratch/retro.md` and `scratch/proposals.md` and prints one open question.
+4. Check the draft with `--draft`. It passes.
+5. Check it strictly. It fails, because the question about issue 2 is open.
+6. Answer the question in the file and run the strict check again. It passes.
+7. Read `example/retro.md` and `example/proposals.md`. They are the finished version.
+8. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+9. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

@@ -41,19 +41,40 @@ cd kit/ch04-reference-walker
 
 The hash must be `06015117901a179dd81175588985c7283fb58a755ffc3881058c17094eff2595`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `refwalk.py` and `example/refwalk.json`.
-3. Walk the example with the lexical judge: `python3 -I refwalk.py example/root.md --config example/refwalk.json --judge lexical`.
-4. Walk again with `max_depth` 1, then with `max_depth` 5. The kit writes each config under `scratch/`. The second and third Examples show the commands.
-5. Optional idea: plug in your own judge with `--judge-command`. The program reads `{"claim": ..., "source": ...}` on stdin and prints `{"supported": true, "reason": "..."}`. I did not run a custom judge for this page.
-6. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
-7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The depth experiments use this graph from the archive's `example/*.md` files. The root is depth 0; the second link to `a.md` targets another section of the same file.
+
+```text
+root.md -> a.md#format, a.md#search, c.md
+ a.md   -> b.md
+ b.md   -> a.md              (back to an ancestor)
+ c.md   -> d.md
+ d.md   -> e.md
+```
+
+This is simplified pseudocode for `refwalk.py:walk` and `LexicalJudge.judge`. Path-length, file-count and error formatting details are omitted:
+
+```text
+queue = [root]; depth[root] = 0
+while queue is not empty:
+    source = pop first queued document
+    for each local Markdown target:
+        check the target file and anchor; read its text
+        if target is new and depth[source] >= max_depth:
+            report a depth-limit note; continue
+        if a judge is set (these runs use the lexical judge):
+            compare claim content words with target section content words
+            reject when fewer than half occur in the target section
+        if target already has a depth:
+            if target is an ancestor of source: report a cycle note
+            do not queue it again
+        otherwise: record depth[source] + 1 and queue target
+```
+
+Expect `max_depth=1` to process the root, `a.md` and `c.md`; depth 2 also processes `b.md` and `d.md`; depth 5 reaches `e.md`. The cycle never queues `a.md` twice. The depth limit stops further traversal, not all reads: this implementation reads the target before it checks depth.
 
 <Example
   label="Computed"
@@ -176,6 +197,20 @@ The word-overlap judge can raise a false alarm. This is why the judge is a plug-
 
 </Example>
 
+The bad graph adds a different failure: the cited section exists, but its words do not support the claim. These excerpts are from `fixtures/bad/root.md` and `fixtures/bad/present.md`:
+
+```markdown
+<!-- Claim in root.md -->
+The notes are encrypted with a quantum key, as [the format section](present.md#format) says.
+
+<!-- Cited section in present.md -->
+## Format
+
+Each note is one line. The line holds a time stamp, a tab and the note text.
+```
+
+The lexical judge above should reject that pair. The same fixture also points to missing `gone.md`; `deep1.md` points to `present.md#nothing-here`. Removing an unsupported encryption claim or supplying evidence would repair the claim; merely making the link resolve would not. Word overlap still cannot establish truth or detect every contradiction.
+
 <Example
   label="Computed"
   task="You run the validator on a root document with a missing file, a missing anchor and claims the judge rejects."
@@ -221,6 +256,16 @@ The walker reports each kind of defect. It does not show that the judge is right
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `refwalk.py` and `example/refwalk.json`.
+3. Walk the example with the lexical judge: `python3 -I refwalk.py example/root.md --config example/refwalk.json --judge lexical`.
+4. Walk again with `max_depth` 1, then with `max_depth` 5. The example commands write each config under `scratch/`. The second and third Examples above show the commands.
+5. Optional idea: plug in your own judge with `--judge-command`. The program reads `{"claim": ..., "source": ...}` on stdin and prints `{"supported": true, "reason": "..."}`. I did not run a custom judge for this page.
+6. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`.
+7. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

@@ -27,7 +27,7 @@ Write briefs from templates and catch any helper brief that is missing the share
 - `templates/orchestrator-brief.md`: outcomes in plain English, expected behaviour, acceptance checks and a next step. A worked example is in `example/briefs/orchestrator-notes-search.md`.
 - `templates/subagent-brief.md` and `shared-rules.md`, a block of six rules.
 - `briefs.py`, which renders a helper brief with the shared rules block and checks every brief in a folder.
-- `settings-for-subagents.example.json` and `hooks/subagent_must_quote_check.py`. The hook blocks a helper's first attempt to finish unless its last message contains the text `ALL CHECKS PASSED`. It blocks once: when the harness sets `stop_hook_active`, the hook exits 0 so that it cannot loop. It checks the text only. It does not run the check, and a helper can repeat the text without running anything.
+- `settings-for-subagents.example.json` and `hooks/subagent_must_quote_check.py`. The hook blocks a helper's first attempt to finish unless its last message contains the text `ALL CHECKS PASSED`. It blocks once: when the harness sets `stop_hook_active`, the hook exits 0 so that it cannot loop. It checks the text only. It does not run the check, and a helper can repeat the text without running anything. Malformed JSON makes this hook exit 1, a non-blocking error under the contract illustrated in chapter 2.
 - `agents/reviewer.example.md`, an example agent definition.
 
 ## Get the kit
@@ -42,20 +42,24 @@ cd kit/ch07-orchestrator
 
 The hash must be `6af24dfca0a9c7392c5a932064cf3b0e65e5f9a5f3cedd43bdae29a954a93d99`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `templates/orchestrator-brief.md` and the worked example `example/briefs/orchestrator-notes-search.md`. This is what the product manager writes.
-3. Read `shared-rules.md`.
-4. Render a helper brief. The first Example below shows the command.
-5. Check the example briefs: `python3 -I briefs.py example/briefs`.
-6. Change one rule in a copy of an example brief and check again. The check fails.
-7. Read `settings-for-subagents.example.json` and `hooks/subagent_must_quote_check.py`. To use them, copy the `hooks/` folder to `.claude/harness-subagent/hooks/` in your project and merge the settings. The validator installs the kit that way in a scratch project and follows the command in the settings.
-8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The first command calls `briefs.py:render_subagent_brief` with title `T`, task `Do it.`, scope `a.py`, check `tests pass` and report instruction `Say what changed.` This simplified pseudocode shows how those values become a brief; file I/O errors and optional rule overrides are omitted:
+
+```text
+read templates/subagent-brief.md
+read and strip shared-rules.md
+fill the template's title and task
+turn scope entries into bullet lines under Files in scope
+turn check entries into bullet lines under Acceptance checks
+fill Report format with the report instruction
+insert the shared rules between BEGIN SHARED RULES and END SHARED RULES
+return the completed text
+```
+
+Expect all five supplied values and the canonical six-rule block in the result. This function renders text; it neither runs `tests pass` as a check nor starts a helper. The checks in the next examples validate the resulting brief's structure and shared-rule content.
 
 <Example
   label="Computed"
@@ -120,6 +124,21 @@ The renderer adds the rules block. It does not make a helper obey the rules.
 </Fragment>
 
 </Example>
+
+The rendered brief above already shows the input format. The next two runs check whether that text still contains the canonical rules. These are source excerpts from `briefs.py`; section parsing, marker validation and the 60-line limit are omitted:
+
+```python
+BEGIN, END = "<!-- BEGIN SHARED RULES -->", "<!-- END SHARED RULES -->"
+
+# shared_block extracts text between the markers, then strips outer whitespace.
+block = shared_block(text)
+if block is None:
+    problems.append("The shared rules block is missing.")
+elif block != (rules or canonical_rules()).strip():
+    problems.append("The shared rules block differs from shared-rules.md.")
+```
+
+The input change replaces `Do not push` with `Push freely` inside the copied rule block. Expect the untouched brief to pass and that edit to fail equality. Restoring the canonical rule repairs this mismatch. The checker does not evaluate whether "Do it." is a useful task or whether a helper obeys its brief.
 
 <Example
   label="Computed"
@@ -200,6 +219,20 @@ A changed rule is caught. It does not show that a helper follows the rules that 
 
 </Example>
 
+The aggregate bad run also checks installation wiring. `briefs.py:check_settings` creates a scratch project, copies `hooks/` into `.claude/harness-subagent/hooks/`, and follows the settings command. This is simplified pseudocode; command parsing, temporary-directory cleanup and error formatting are omitted:
+
+```text
+for each configured hook command:
+    replace ${CLAUDE_PROJECT_DIR} with the scratch project path
+    if the named script does not exist: report the path mismatch
+    otherwise, for SubagentStop:
+        send {"hook_event_name": "SubagentStop",
+              "last_assistant_message": "I am done."}
+        require exit code 2
+```
+
+The bad settings point at `chapters/07-orchestrator/hooks/subagent_must_quote_check.py`, where the scratch installation has no file. Expect the missing-path finding below. The five brief fixtures separately remove required sections or shared rules. Fixing the command path repairs wiring; the hook's text check still does not prove a helper actually ran a check.
+
 <Example
   label="Computed"
   task="You run the validator on five broken briefs and one settings sample with a bad hook path."
@@ -244,6 +277,17 @@ Each brief defect can fail. It does not show the hook runs inside Claude Code.
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `templates/orchestrator-brief.md` and the worked example `example/briefs/orchestrator-notes-search.md`. This is what the product manager writes.
+3. Read `shared-rules.md`.
+4. Render a helper brief. The first Example above shows the command.
+5. Check the example briefs: `python3 -I briefs.py example/briefs`.
+6. Change one rule in a copy of an example brief and check again. The check fails.
+7. Read `settings-for-subagents.example.json` and `hooks/subagent_must_quote_check.py`. To use them, copy the `hooks/` folder to `.claude/harness-subagent/hooks/` in your project and merge the settings. The validator installs the kit that way in a scratch project and follows the command in the settings.
+8. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 

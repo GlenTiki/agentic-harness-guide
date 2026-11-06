@@ -41,21 +41,29 @@ cd kit/ch10-monitor
 
 The hash must be `25cdabbadc776da78de9823975468d3d12a68888d082833beffb46f277c84122`. If it differs, stop. On Linux use `sha256sum`. This folder is the kit root. Run every command from it. [How the kits work](../#how-to-use-a-chapter).
 
-## Steps
-
-1. Compare the checksum, then unzip (see above).
-2. Read `example/events.jsonl` and `example/board.json`.
-3. Build the board for a fixed time. The `Backup` row shows `UNKNOWN`.
-4. Build an HTML page into `scratch/` and open the file: add `--out scratch/board.html` to the board command.
-5. Run the freshness check at the fixed time. It prints `freshness: GREEN`.
-6. Run it without `--now`. The example events are old by now, so it prints `RED` lines and exits with code 1.
-7. Record an event: `python3 -I monitor.py record --log scratch/e.jsonl check.sh check ok "ALL CHECKS PASSED"`. It prints nothing and adds one line to the log.
-8. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`. The validator fixes the clock at 2026-10-24T09:30:00Z.
-9. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
-
 ## What you should see
 
 `[exit code N]` is my addition, not program output. `<kit>` stands for the full path of the kit root.
+
+The board and freshness runs use the same event-to-state function. `example/events.jsonl` records a successful hook at `2026-10-24T09:10:00Z`; `example/board.json` gives that hook a maximum age of 3600 seconds. No backup event exists, and the backup signal has `required: false`.
+
+This is simplified pseudocode for `monitor.py:build_rows` and `red_reasons`. JSON validation, timestamp parsing and rendering are omitted:
+
+```text
+for each configured signal:
+    find events with the same source and kind
+    if none: state = unknown
+    otherwise select the event with the latest timestamp
+    age = now - event.time
+    if age < 0: state = unknown
+    else if event.status == fail: state = fail
+    else if age > signal.max_age_seconds: state = stale
+    else: state = ok
+freshness fails for each required signal whose state is not ok
+also fail if the newest log event exceeds --max-log-age
+```
+
+At the fixed clock `2026-10-24T09:30:00Z`, the hook event is 1200 seconds old, so expect OK. The missing optional backup shows UNKNOWN without failing freshness. Moving the clock past the hook's age limit makes its old success stale. A recorded failure stays FAIL even when old; staleness does not hide it.
 
 <Example
   label="Computed"
@@ -144,6 +152,16 @@ The check goes red when the log is stale. It does not show that the events recor
 
 </Example>
 
+The bad log contains only these two events; this display selects fields from `fixtures/bad/events.jsonl` and omits `detail`:
+
+```text
+time                  source    kind   status
+2026-10-01T08:00:00Z  check.sh  check  ok
+2026-10-24T09:10:00Z  dispatch  hook   fail
+```
+
+At the validator's fixed clock, expect `Checks pass` to be STALE, `Hooks ran` to be FAIL, and required `Memory recall` to be UNKNOWN because there is no recall event. These are three different reasons to refuse a green verdict. Recording fresh successful events after the corresponding work succeeds can change those states; merely rebuilding the board cannot.
+
 <Example
   label="Computed"
   task="You run the validator on a stale log, a failed hook and a signal with no event."
@@ -185,6 +203,18 @@ A stale, failed or missing signal turns the board red. It does not show the boar
 </Fragment>
 
 </Example>
+
+## Steps
+
+1. Compare the checksum, then unzip (see above).
+2. Read `example/events.jsonl` and `example/board.json`.
+3. Build the board for a fixed time. The `Backup` row shows `UNKNOWN`.
+4. Run `mkdir -p scratch`, then build an HTML page and open it: add `--out scratch/board.html` to the board command.
+5. Run the freshness check at the fixed time. It prints `freshness: GREEN`.
+6. Run it without `--now`. The example events are old by now, so it prints `RED` lines and exits with code 1.
+7. Record an event: `python3 -I monitor.py record --log scratch/e.jsonl check.sh check ok "ALL CHECKS PASSED"`. It prints nothing and adds one line to the log.
+8. Run the validator: `python3 -I validate.py`. It prints `validate: PASS`. The validator fixes the clock at 2026-10-24T09:30:00Z.
+9. Prove the check can fail: `python3 -I validate.py --bad`. The exit code is 1.
 
 ## What is not tested
 
