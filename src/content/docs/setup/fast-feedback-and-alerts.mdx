@@ -101,6 +101,41 @@ The folder `examples/fast-feedback/` in this repository holds two scripts and th
 
 ### A watch loop that goes red in seconds
 
+Source for these excerpts: [heartbeat_check.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/fast-feedback/heartbeat_check.py), [check.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/fast-feedback/watch-demo/check.py), [watch.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/fast-feedback/watch.py).
+
+The watched folder begins with `notes.txt` containing `total: 2120`. Here is the body of `check.py` that the watcher runs inside that folder:
+
+```python
+import sys
+from pathlib import Path
+
+EXPECTED = "2120"
+
+text = Path("notes.txt").read_text().strip()
+found = text.removeprefix("total:").strip()
+if found != EXPECTED:
+    print(f"notes.txt: found {found}, expected {EXPECTED}")
+    sys.exit(1)
+```
+
+A wrong value prints the mismatch and exits 1. Restoring 2120 exits 0 without a message; the watcher reports the command’s status.
+
+The watcher itself follows this source-derived pseudocode. Its default poll interval is 0.2 seconds and debounce is 0.3 seconds:
+
+```text
+snapshot the watched files' modification times
+run the check once immediately; count that as run 1
+while run count < max_runs (or no limit was supplied):
+    sleep for the poll interval
+    if the file snapshot has not changed: continue
+    wait for the debounce interval; take a new snapshot
+    run the check; increment the run count
+for each check: print PASS or FAIL and its exit code
+print the child's captured output only when that check fails
+```
+
+With `--max-runs 3`, the initial check plus two saved changes exhausts the limit. The watch command returns normally after those runs even if a check failed; its printed statuses are feedback, not a merge gate.
+
 <Example
   label="Computed"
   task="You run the watch loop on a folder, then save a wrong total and then the right one, to see how soon each result appears."
@@ -152,6 +187,24 @@ In this run the red result appeared within the one-second resolution of the time
 </Example>
 
 ### A stale-log check that cannot stay silent
+
+Each non-empty log line must be a JSON event with a UTC `t` timestamp. The loader finds the newest timestamp and rejects malformed, missing or empty logs. This is the actual age check; `OK = 0`, `STALE = 1`, `BROKEN = 2`.
+
+```python
+def check(log: Path, limit_seconds: int, now: datetime, out=sys.stdout, err=sys.stderr) -> int:
+    try:
+        newest = newest_event_time(log)
+    except (OSError, ValueError) as error:
+        print(f"BROKEN: {log}: {error}", file=err)
+        return BROKEN
+    if (now - parse_time(newest)).total_seconds() > limit_seconds:
+        print(f"STALE: last event {newest}, limit {limit_seconds}s", file=out)
+        return STALE
+    print(f"OK: last event {newest}, limit {limit_seconds}s", file=out)
+    return OK
+```
+
+The comparison is strictly greater than the limit: an event exactly 120 seconds old still passes a 120-second limit.
 
 <Example
   label="Computed"

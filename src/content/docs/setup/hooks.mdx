@@ -28,6 +28,21 @@ A new author writes a hook that exits 1 to mean "stop". Without `onFailure`, exi
 
 The kit's dispatcher blocks a forbidden command with the reason on stderr and exit code 2; [chapter 2](../../case-study/ch02-hooks/) shows that run. A gate should also fail closed on input it cannot read:
 
+The runner’s input is a hook event on standard input. This is source-derived pseudocode for the kit’s `dispatch.py` entry point:
+
+```text
+read standard input
+try to parse it as JSON
+if JSON parsing fails:
+    print "Blocked: the hook event is not valid JSON (...)" to stderr
+    exit 2
+if the parsed value is not an object: print the error and exit 2
+read the hook configuration; if unreadable or invalid: exit 2
+run the hook scripts matching the event
+```
+
+The test below exercises the parse-error branch before any hook command can run.
+
 <Example
   label="Computed"
   task="You send the dispatcher input that is not valid JSON. A gate should fail closed."

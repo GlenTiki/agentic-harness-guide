@@ -48,6 +48,21 @@ Approval prompts do not scale. *Principle, not measured:* a person who is asked 
 
 The page above says a rule matches the command text as written. The matcher below makes that visible. It is a teaching sketch, not Claude Code's matcher. It tests a text rule, `Bash(rm -rf *)`, as a glob over the command string. A second check, written the way the [hooks page](../hooks/) suggests, splits the command into words first.
 
+Source for these excerpts: [matcher.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/deny-rule-bypass/matcher.py).
+
+Here is the teaching text matcher. It uses Python’s `fnmatch` module; `DENY_RULES` contains `Bash(rm -rf *)` and `Read(./.env)`.
+
+```python
+def text_rule_denies(command, tool, rules=DENY_RULES):
+    for rule in rules:
+        rule_tool, pattern = rule[:-1].split("(", 1)
+        if rule_tool.lower() == tool and fnmatch.fnmatchcase(command, pattern):
+            return True
+    return False
+```
+
+The comparison checker uses `shlex.split`, looks for a program whose basename is `rm`, combines its short flags and requires both `r` and `f`. It also examines space-containing arguments, which catches this fixture’s shell wrapper. This is a limited sketch, not a shell interpreter or Claude Code’s implementation. The command strings are inspected, not executed.
+
 <Example
   label="Computed"
   task="A maintainer runs eight commands past a text deny rule and past a check that splits the command into words."

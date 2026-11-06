@@ -52,6 +52,23 @@ def classify(text, client):
 
 The function checks the reply against the allowed labels. A tier that answers in a sentence fails loudly instead of passing a sentence downstream.
 
+Source for these excerpts: [seam.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/model-seam/seam.py).
+
+The six fixtures label three requests urgent and three routine. For example, “Fridge alarm is sounding” is urgent; “Invoice 114 attached” is routine. Here is the actual scoring loop that calls `classify` above.
+
+```python
+def score(client, cases):
+    right, bad_replies = 0, 0
+    for text, expected in cases:
+        try:
+            right += classify(text, client) == expected
+        except ValueError:
+            bad_replies += 1
+    return {"right": right, "bad_replies": bad_replies, "total": len(cases)}
+```
+
+`small-fake` knows only the fridge case and defaults to routine, so it gets that case and all three routine cases right. `large-fake` uses all six labels. `chatty-fake` always returns a sentence, so every reply raises `ValueError`.
+
 <Example
   label="Computed"
   task="A maintainer runs the same six cases through three scripted fake clients, to show that the seam scores any client and separates a wrong answer from an unusable reply."

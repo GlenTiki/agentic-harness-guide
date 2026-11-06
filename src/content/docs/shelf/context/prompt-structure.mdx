@@ -79,6 +79,26 @@ The anchoring cost is the one people miss. An example carries its values, its le
 
 Run the script on stored replies first, so that you see it accept and reject.
 
+Source for these excerpts: [reply_check.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/prompt-structure/reply_check.py).
+
+The script receives the reply text and the source `(month, amount)` pairs. Here is its actual dispatch function; `MONTHS` is January to December using the three-letter labels.
+
+```python
+def validate(text, figures):
+    """Return a list of reasons to reject the reply. An empty list means accept."""
+    try:
+        reply = json.loads(text)
+    except json.JSONDecodeError as error:
+        return [f"not JSON: {error.msg}"]
+    if not isinstance(reply, dict):
+        return ["reply is not a JSON object"]
+    names = [m for m, _ in figures]
+    complete = len(names) == 12 and set(names) == set(MONTHS)
+    return check_ok(reply, figures) if complete else check_stop(reply, figures)
+```
+
+`check_ok` requires the exact fields and recomputes the total and rounded shares from the source amounts. `check_stop` requires a stop response and a reason naming each repeated, missing or unrecognised month. Both return rejection reasons, so an empty list is a pass. A JSON object with a wrong total can therefore pass `syntax_only` and fail `validate`.
+
 <Example
   label="Computed"
   task="A maintainer runs the validator and a syntax-only check on eight stored replies to the same ask, to see which replies each one accepts."
@@ -136,6 +156,19 @@ The validator checks form and re-computable values. It cannot check a judgement,
 3. Pin the model. Use the exact model identifier. If your tool offers a name that always points at the newest version, that name can change the model without any change in your files. Record the identifier with the results.
 4. Store the raw replies of each run, with the model identifier, the date and the prompt text.
 5. Change the pinned model or the prompt only after the new one passes the same cases.
+
+The regression runner replays files; it makes no model calls. This is source-derived pseudocode for `run_regression`:
+
+```text
+load the cases and the recorded pinned model name
+for each case:
+    read every stored reply for the named model and case
+    validate each reply against that case
+    fail the case if any reply fails or no replies exist
+exit 1 if any case fails; otherwise exit 0
+```
+
+A missing reply set is a failure, not an empty successful run.
 
 <Example
   label="Computed"

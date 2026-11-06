@@ -1,6 +1,6 @@
 ---
 title: "Workflow: build a kitchen assistant"
-description: Build four small, tested scripts that catalogue recipes, track stock, make a shopping list and suggest a dish. Needs Python 3 and a terminal.
+description: Use one tested script with four commands to catalogue recipes, track stock, make a shopping list and suggest a dish. Needs Python 3 and a terminal.
 next:
   link: /agentic-harness-guide/start-here/what-the-time-is-for/
   label: "What the time is for"
@@ -35,15 +35,34 @@ The assistant writes the script. You read it, run the tests and decide what the 
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-*Needs a laptop.* You need Python 3 and a terminal. The guide ships the finished script at `examples/kitchen-assistant/kitchen_assistant.py`, with a test file and fixtures. This takes about 10 steps: read the script, run the tests, run each command on the fixtures, then replace the fixtures with your own recipes.
+*Needs a laptop.* You need Python 3 and a terminal. The guide ships the finished script at `examples/kitchen-assistant/kitchen_assistant.py`, with a test file and fixtures. This takes about 10 steps: read the script, run the tests, run each command on scratch copies, then try your own recipes there.
 
-The recipes, stock and cooking log are invented (Constructed). The outputs are real runs of the script (Computed). Run the tests first:
+Source for these excerpts: [kitchen_assistant.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/kitchen-assistant/kitchen_assistant.py).
+
+The recipes, stock and cooking log are invented (Constructed). The outputs are real runs of the script (Computed). The tests copy fixtures into a temporary folder. For example, this test starts with six eggs, requests seven and checks both the refusal and the unchanged file:
+
+```python
+def test_stock_never_goes_below_zero_and_file_is_unchanged(self):
+    before = (self.work / "stock.json").read_text()
+    code, lines = self.call("stock", self.work / "stock.json", "used 7 eggs")
+    self.assertEqual((code, lines), (1, ["refused: only 6 eggs in stock, cannot use 7"]))
+    self.assertEqual((self.work / "stock.json").read_text(), before)
+```
+
+This is an excerpt from `test_kitchen_assistant.py`. Its `self.call` helper calls the script and captures the exit code and output lines. Run the tests first:
 
 ```text
 python3 -I -m unittest discover -s examples/kitchen-assistant -t examples/kitchen-assistant
 ```
 
-Twelve tests pass. To build your own version, paste this into a coding assistant, then read what it returns before you run it:
+Twelve tests pass. The recorded outputs below depend on running Parts 1 to 4 in order. Keep the shipped fixtures unchanged so that tests stay reproducible. From the repository root, use a fresh directory; if `mkdir` reports that it already exists, stop and choose a new scratch name before copying.
+
+```sh
+mkdir scratch-kitchen
+cp -R examples/kitchen-assistant/fixtures/. scratch-kitchen/
+```
+
+Use the same directory for every part. Part 2 changes its stock; Parts 3 and 4 read that changed stock. The commands below reproduce the recorded outputs on these copies. To build your own version, paste this into a coding assistant, then read what it returns before you run it:
 
 ```text
 Write one dependency-free Python 3 script with four commands: recipe, stock, list, suggest. Parse only the line shapes I give you. If a line does not parse, refuse and change nothing. Keep stock in grams, millilitres and counts. Never let stock go below zero. Write a unit test for every refusal. Do not invent nutrition figures.
@@ -53,10 +72,35 @@ Write one dependency-free Python 3 script with four commands: recipe, stock, lis
 
 Sam dictates into a phone note. The text arrives as plain lines: a title, an optional "serves" line, then one ingredient per line. The command reads the file and saves an entry only if every line parses.
 
+The input is the plain recipe text shown below. This is the actual parser. `SERVES_LINE` recognises `serves` plus a number; `parse_quantity` accepts numeric quantities and the supported units, and `KitchenError` is the script’s refusal exception.
+
+```python
+def parse_recipe(text):
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if not lines:
+        raise KitchenError("empty recipe")
+    recipe = {"title": lines[0], "serves": None, "ingredients": []}
+    for number, line in enumerate(lines[1:], start=2):
+        serves = SERVES_LINE.match(line)
+        if serves:
+            recipe["serves"] = int(serves["count"])
+            continue
+        try:
+            name, quantity, unit = parse_quantity(line)
+        except KitchenError as error:
+            raise KitchenError(f"line {number}: {error}") from None
+        recipe["ingredients"].append({"name": name, "qty": str(quantity), "unit": unit})
+    if not recipe["ingredients"]:
+        raise KitchenError("no ingredients")
+    return recipe
+```
+
+The command writes the catalogue only after this function returns. The same parser produces the refusal in the next example.
+
 <Example
   label="Computed"
   task="Sam saves a dictated pancake recipe to the catalogue, so each ingredient has a name, a number and a unit."
-  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe examples/kitchen-assistant/fixtures/pancakes.txt catalogue.json"
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe scratch-kitchen/pancakes.txt scratch-kitchen/catalogue.json"
   env="Python 3, 2026-10-26. The recipe is invented."
 >
 
@@ -102,7 +146,7 @@ Dictation is the weak link, so the script must not guess. A line it cannot read 
 <Example
   label="Computed"
   task="Sam dictates a recipe that has a line the script cannot read, to see that the entry is rejected and nothing is saved."
-  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe examples/kitchen-assistant/fixtures/bad-recipe.txt other.json"
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe scratch-kitchen/bad-recipe.txt scratch-kitchen/other.json"
   env="Python 3, 2026-10-26. Exit status 1. The recipe is invented."
 >
 
@@ -128,7 +172,7 @@ refused: line 5: cannot parse: 'a pinch of salt'
 
 <Fragment slot="notice">
 
-The message names the line number and the text. The file other.json was not created, and the test checks that.
+The message names the line number and the text. The file scratch-kitchen/other.json was not created, and the test checks that.
 
 </Fragment>
 
@@ -144,19 +188,34 @@ It shows a loud refusal in place of a silent skip; the cost is that Sam must rew
 
 Stock is a JSON file. Each command is a short sentence. "Used" subtracts, "bought" adds. Kilograms and litres convert to grams and millilitres on the way in, so the file keeps one unit per item.
 
+This is source-derived pseudocode for `apply_stock_command(stock, command)`:
+
+```text
+parse “used” or “bought”, the quantity, unit and ingredient
+if buying:
+    refuse a unit mismatch; otherwise add to the recorded quantity
+if using:
+    refuse if the ingredient is absent or its unit differs
+    subtract the quantity
+    refuse if the remainder is negative
+return a new stock mapping
+```
+
+The command writes that returned mapping only after the function succeeds. A refusal leaves the stock file unchanged.
+
 <Example
   label="Computed"
   task="Sam records a meal and a shop, then tries to use more eggs than the file holds, to see the third command refused."
-  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py stock examples/kitchen-assistant/fixtures/stock.json 'used 2 eggs'"
+  evidence="Run the three stock commands in the input, in order, on scratch-kitchen/stock.json."
   env="Python 3, 2026-10-26. Start stock: 6 eggs, 1500 g flour, 200 ml milk, 250 g butter. Third command exits 1."
 >
 
 <Fragment slot="input">
 
-```text
-used 2 eggs
-bought 1 kg flour
-used 9 eggs
+```sh
+python3 -I examples/kitchen-assistant/kitchen_assistant.py stock scratch-kitchen/stock.json 'used 2 eggs'
+python3 -I examples/kitchen-assistant/kitchen_assistant.py stock scratch-kitchen/stock.json 'bought 1 kg flour'
+python3 -I examples/kitchen-assistant/kitchen_assistant.py stock scratch-kitchen/stock.json 'used 9 eggs'
 ```
 
 </Fragment>
@@ -190,13 +249,37 @@ It shows the no-negative-stock rule; it does not show how the script copes with 
 Sam picks two recipes for the week. The script adds the quantities each one needs, subtracts stock and prints what is short. Flour is held in grams, so a recipe in grams and a bag in kilograms still compare. Add the omelette to the catalogue from part 1 before asking for both recipes:
 
 ```sh
-python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe examples/kitchen-assistant/fixtures/omelette.txt catalogue.json
+python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe scratch-kitchen/omelette.txt scratch-kitchen/catalogue.json
 ```
+
+This is the actual shopping-list calculation. Recipe and stock quantities are stored as strings and converted to `Decimal` for arithmetic.
+
+```python
+def shortfalls(recipes, stock):
+    needed = {}
+    for recipe in recipes:
+        for item in recipe["ingredients"]:
+            entry = needed.setdefault(item["name"], {"qty": Decimal(0), "unit": item["unit"]})
+            if entry["unit"] != item["unit"]:
+                raise KitchenError(f"{item['name']} is needed in both {entry['unit']} and {item['unit']}")
+            entry["qty"] += Decimal(item["qty"])
+    result = {}
+    for name, entry in sorted(needed.items()):
+        held = stock.get(name, {"qty": "0", "unit": entry["unit"]})
+        if held["unit"] != entry["unit"]:
+            raise KitchenError(f"{name} is needed in {entry['unit']} but kept in {held['unit']}")
+        missing = entry["qty"] - Decimal(held["qty"])
+        if missing > 0:
+            result[name] = {"qty": missing, "unit": entry["unit"]}
+    return result
+```
+
+An absent stock item is assumed to have quantity zero. This example has no representation for an unknown quantity, so it does not implement the Method brief's requirement to ask about unknown milk stock instead of assuming it is empty. The function reads stock but does not reduce it. Its unit checks also produce the refusal in the next example.
 
 <Example
   label="Computed"
   task="Sam asks for the list for pancakes and an omelette, using the stock left after part 2."
-  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py list catalogue.json examples/kitchen-assistant/fixtures/stock.json Pancakes Omelette"
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py list scratch-kitchen/catalogue.json scratch-kitchen/stock.json Pancakes Omelette"
   env="Python 3, 2026-10-26. The omelette is 3 eggs, 20 g butter and 50 g cheese. Stock is 4 eggs, 2500 g flour, 200 ml milk, 250 g butter."
 >
 
@@ -236,7 +319,7 @@ It shows set subtraction across two recipes; it ignores pack sizes, so Sam still
 Now the failing case. Save the fried rice recipe in its own catalogue first:
 
 ```sh
-python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe examples/kitchen-assistant/fixtures/fried-rice.txt rice.json
+python3 -I examples/kitchen-assistant/kitchen_assistant.py recipe scratch-kitchen/fried-rice.txt scratch-kitchen/rice.json
 ```
 
 The stock file keeps oil in millilitres and the recipe asks for it in grams. Converting would need the oil's density, which the script does not know, so it stops.
@@ -244,7 +327,7 @@ The stock file keeps oil in millilitres and the recipe asks for it in grams. Con
 <Example
   label="Computed"
   task="Sam lists a fried rice recipe that asks for oil in grams, against stock that keeps oil in millilitres."
-  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py list rice.json examples/kitchen-assistant/fixtures/stock-oil.json 'Fried rice'"
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py list scratch-kitchen/rice.json scratch-kitchen/stock-oil.json 'Fried rice'"
   env="Python 3, 2026-10-26. Exit status 1. The recipe is invented."
 >
 
@@ -286,10 +369,25 @@ It shows that mass and volume are never mixed; it does not say which unit is rig
 
 The suggestion is a sum, not a model. For each recipe, the score is the ingredients in stock, minus the ingredients missing, plus the number of times Sam cooked it (counted up to 3). The script prints every score, so a surprising choice has a visible cause.
 
+This is the actual score for one recipe; `MAX_RECENT_CREDIT = 3`. The cooking log supplies `times_cooked` by counting that recipe’s title.
+
+```python
+def score_recipe(recipe, stock, times_cooked):
+    covered, missing = [], []
+    for item in recipe["ingredients"]:
+        held = stock.get(item["name"])
+        enough = held and held["unit"] == item["unit"] and Decimal(held["qty"]) >= Decimal(item["qty"])
+        (covered if enough else missing).append(item["name"])
+    habit = min(times_cooked, MAX_RECENT_CREDIT)
+    return len(covered) - len(missing) + habit, covered, missing, habit
+```
+
+Each fully covered ingredient adds one; each missing ingredient subtracts one; cooking history adds at most three. `suggest` sorts by descending score, then title, and prints the covered and missing lists. It does not choose with a model or check nutrition.
+
 <Example
   label="Computed"
   task="Sam asks what to cook, with a log in which pancakes appear twice and the omelette once."
-  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py suggest catalogue.json examples/kitchen-assistant/fixtures/stock.json examples/kitchen-assistant/fixtures/cooked.json"
+  evidence="python3 -I examples/kitchen-assistant/kitchen_assistant.py suggest scratch-kitchen/catalogue.json scratch-kitchen/stock.json scratch-kitchen/cooked.json"
   env="Python 3, 2026-10-26. Log: Pancakes, Pancakes, Omelette. Stock as in part 3."
 >
 

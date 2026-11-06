@@ -422,6 +422,21 @@ It shows the status of a pipeline in `sh`. It does not show how any harness read
 
 A stop hook that blocks every time keeps sending the agent back to work. By default, Claude Code permits eight consecutive continuations and overrides the next block. A tool call resets the count, and CLAUDE_CODE_STOP_HOOK_BLOCK_CAP can raise the cap, so this is not a total-run limit. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
 
+Source for these excerpts: [gated_stop.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/hook-traps/gated_stop.py), [nested_repo_trap.sh](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/hook-traps/nested_repo_trap.sh), [one_shot_stop.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/hook-traps/one_shot_stop.py).
+
+The fixture sends `{"session_id":"s1"}` three times and `{"session_id":"s2"}` twice. This is source-derived pseudocode for `examples/hook-traps/one_shot_stop.py`:
+
+```text
+parse and validate session_id
+marker = STOP_STATE_DIR / (session_id + ".done")
+if the marker exists: exit 0
+create the marker
+print the reminder and exit 2
+on an input or filesystem error: print the error and exit 2
+```
+
+There is no test command in this function. Its marker records that a reminder was issued, not that the work passed.
+
 <Example
   label="Computed"
   task="A maintainer sends five stop events from two sessions through the one-shot reminder."
@@ -467,7 +482,24 @@ It shows the script's logic with made-up session names. It does not show a real 
 
 ### A stop gate that checks the result
 
-A real gate runs the tests at every stop and reads the result. If the tests fail, it blocks and returns the failure text to the agent. It counts the failed attempts for the session. After three, it lets the agent stop and writes an escalation file that holds the last failure output, so a person reviews the session. The limit of three is a starting value: it bounds the cost of a loop, so tune it on your own sessions. The script reads the test command from `TEST_COMMAND`. A timeout counts as a failed attempt. Missing or corrupt state and invalid session identifiers block with exit code 2. Set `STOP_STATE_DIR` to an existing directory. Use `exec` before the command to replace its shell; this sample does not manage descendant processes.
+A real gate runs the tests at every stop and reads the result. If the tests fail, it blocks and returns the failure text to the agent. It counts the failed attempts for the session. After three, it lets the agent stop and writes an escalation file that holds the last failure output, so a person reviews the session. The limit of three is a starting value: it bounds the cost of a loop, so tune it on your own sessions. The script reads the test command from `TEST_COMMAND`. A timeout counts as a failed attempt. A missing state directory, a corrupt attempt count or an invalid session identifier blocks with exit code 2. A missing attempt-count file starts at zero. Set `STOP_STATE_DIR` to an existing directory. Use `exec` before the command to replace its shell; this sample does not manage descendant processes.
+
+The test driver supplies `true` and `false` as `TEST_COMMAND`, rather than a real suite. This is source-derived pseudocode for `examples/hook-traps/gated_stop.py`:
+
+```text
+parse session_id and validate the existing state directory
+read this session’s failed-attempt count, defaulting to zero
+run TEST_COMMAND; count a timeout as failure
+if the command passes:
+    remove the attempt-count file and exit 0
+increment and save the failed-attempt count
+if the count is at least 3:
+    save the failure output in session_id.escalate and exit 0
+print the failure and exit 2
+on invalid input or unreadable state: exit 2
+```
+
+The third failure permits stopping but preserves evidence for review. It does not turn the test result into a pass.
 
 <Example
   label="Computed"
@@ -526,6 +558,15 @@ A block with no way round gets disabled the first time it is wrong. Give each bl
 ### The wrong repository
 
 A hook that asks git about a repository can answer about another one. Git reads `GIT_DIR`, `GIT_WORK_TREE` and `GIT_INDEX_FILE` from the environment, and `git -C` does not override them. If a session started inside a nested repository, the hook inspects that one.
+
+The script creates `outer` and `inner`, each with a distinguishable commit. These are its two actual inspection calls; `$tmp` is the temporary directory created by the script:
+
+```sh
+GIT_DIR="$tmp/inner/.git" git -C "$tmp/outer" log -1 --format='  last commit: %s'
+env -u GIT_DIR -u GIT_WORK_TREE -u GIT_INDEX_FILE git -C "$tmp/outer" log -1 --format='  last commit: %s'
+```
+
+The first call inherits the metadata location despite `-C`; the second removes the three overrides before Git chooses the repository.
 
 <Example
   label="Computed"
