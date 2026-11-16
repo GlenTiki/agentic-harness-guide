@@ -1,0 +1,123 @@
+---
+title: A second brain the assistant can read
+description: Keep your own notes and the agent's memory in one plain-text store, sorted by how soon you need them, so one capture serves many later tasks.
+status: mixed
+---
+
+import Example from '../../../components/Example.astro';
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: a folder of raw captures, folders of curated notes, and a search index that agents query through an [MCP server (a connector)](../../glossary/#connector-mcp). Design only: the PARA folders, the propose-then-approve flow below and one shared local search service. The shared service waits on a fix, because my indexer still picks up private files.
+
+## The weak spot it targets
+
+**Your notes and the agent's memory live apart.** On Monday you write meeting notes in a notes app. On Tuesday you ask the [agent](../../glossary/#agent) to draft the follow-up email. It knows nothing about the meeting, so you paste the notes. On Friday another session needs the same decision, and you paste them again. Each paste is a manual copy, and each copy can go stale.
+
+## How it works
+
+People who manage their own notes call the store a [second brain](../../glossary/#second-brain). They solved most of this before agents existed, and two of their ideas carry over almost unchanged.
+
+Tiago Forte's CODE method is "a proven process for consistently turning the information you consume into creative output and concrete results", in his words on the [Building a Second Brain overview](https://fortelabs.com/blog/basboverview/). The letters stand for Capture, Organise, Distil and Express. His [PARA](https://fortelabs.com/blog/para/) method sorts every note into Projects, Areas, Resources and Archives. He calls this "organize by actionability": you file a note by when you will use it, not by its subject.
+
+<p class="verified">Docs page fetched on 2026-11-16: https://fortelabs.com/blog/basboverview/. Quoted line: "CODE is a proven process for consistently turning the information you consume into creative output and concrete results."</p>
+
+<p class="verified">Docs page fetched on 2026-11-16: https://fortelabs.com/blog/para/. Quoted line: "This is what it means to “organize by actionability,” a mantra I will return to again and again throughout this book."</p>
+
+The table maps each step to a part of an agent setup. It is the design. My setup runs only the raw folder, the curated folders and the index.
+
+| Step | For you | For the agent |
+| --- | --- | --- |
+| Capture | Write it down fast, unsorted. | A raw folder: journal entries, ideas, drafts. The agent appends here and never edits. |
+| Organise | File by when you act on it. | Projects: one folder per active project, with its spec. Areas: lasting facts about people, tools and preferences. Resources: reference material. Archives: finished work. |
+| Distil | Keep the part that matters. | One fact per note, with a one-line description. The [memory page](../memory/) gives the note rules. |
+| Express | Make something with it. | The agent reads the notes to draft the email, the spec or the status update. |
+
+The last row is the point. You capture a fact once, and every later task can use it. I call this "capture once, use many times".
+
+### Two readers, one store
+
+The store has two readers, so it needs two kinds of help.
+
+1. For you, each note links to related notes. The [Zettelkasten introduction](https://zettelkasten.de/introduction/) describes this as "a personal tool for thinking and writing" with "hypertextual features to make a web of thoughts possible".
+2. For the agent, a search index finds the few notes that match a prompt. The [relevance page](../relevance-and-reranking/) shows how the search works and where it misses.
+
+<p class="verified">Docs page fetched on 2026-11-16: https://zettelkasten.de/introduction/. Quoted line: "A Zettelkasten is a personal tool for thinking and writing. It has hypertextual features to make a web of thoughts possible."</p>
+
+Both readers need plain text. A notes app that keeps notes in its own database forces an export step. Markdown files in a folder serve both readers with no export.
+
+Andy Matuschak's [Evergreen notes](https://notes.andymatuschak.org/Evergreen_notes) "are written and organized to evolve, contribute, and accumulate over time, across projects". For an agent, that means one of the [note rules](../memory/#rules-for-the-notes-themselves): edit the old note when a fact changes.
+
+<p class="verified">Docs page fetched on 2026-11-16: https://notes.andymatuschak.org/Evergreen_notes. Quoted line: "Evergreen notes are written and organized to evolve, contribute, and accumulate over time, across projects."</p>
+
+<Example
+  label="Constructed"
+  task="A person captures one fact in a meeting, and three later tasks use it without a paste."
+  env="Written to illustrate. No recorded runs. The file names are examples."
+>
+
+<Fragment slot="input">
+
+```text
+raw/journal/2026-11-16.md
+- Mina: invoices go out on the 3rd, not the 1st, from December.
+
+projects/month-end/notes.md  (distilled by the agent, after your yes)
+- Invoice run date: the 3rd of each month, from December 2026. Source: journal 2026-11-16.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+Task 1, "draft the December reminder email": the search finds the project note. The email says the 3rd.
+Task 2, "update the month-end checklist": the same note. The checklist moves the invoice step.
+Task 3, "what changed this month?": the journal line and the note both match. The summary cites the journal date.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+The fact was typed once, in the journal. The distilled note names its source, so a reader can trace the claim back to the capture.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It does not show that keyword search finds these notes. Tasks 2 and 3 share few words with the note, and the [relevance page](../relevance-and-reranking/) shows where that kind of search misses.
+
+</Fragment>
+
+</Example>
+
+## End-to-end flow
+
+1. During the day, you and the agent append captures to the raw folder.
+2. At the end of a session, the agent proposes distilled notes: one fact each, with a source line.
+3. You accept or reject each note. Accepted notes go into the right PARA folder.
+4. The index rebuilds from the folders. It must leave out private files. My indexer does not do this yet.
+5. The next prompt searches the index. The best few notes reach the agent as hints.
+6. When a session proves a note wrong, the agent proposes an edit to that note.
+
+## What this does not do
+
+- It does not decide what matters. In the design, you approve every distilled note.
+- It does not keep notes fresh. A stale note can outrank a fresh one, as the [memory shelf page](../../shelf/context/memory/) explains.
+- It does not protect private data on its own. A test must prove that the indexer skips private files.
+- I have not measured whether it saves time. The case for it is the repeated paste, which you can count in your own week.
+
+## When to skip it
+
+A second brain costs a capture habit and a weekly tidy. Ask three questions before you build one.
+
+- **Will a later task read the notes?** If the work is a one-off, the capture is wasted.
+- **Are the notes still few?** A few dozen notes fit in one instruction file. Search adds a part that can miss, so skip the index until you need it.
+- **Did you paste the same context twice?** Then build it. The second paste shows that a fact has more than one use.
+
+## Build it
+
+This page has no kit of its own. Start with [case-study chapter 5: Memory](../../case-study/ch05-memory/), which builds the notes, the loader and the recall log.
+
+**Next:** [Keyword search before re-ranking](../relevance-and-reranking/)
