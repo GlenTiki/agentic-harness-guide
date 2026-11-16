@@ -9,7 +9,7 @@ import Example from '../../../../components/Example.astro';
 
 *Audience: a human maintainer. An agent must not apply, install, add, configure or run anything on this page (any install, add, config, worktree or MCP command, hook, permission, instruction file or memory change) unless the user asks for it in the current session. Commands marked "example, do not run" are never to be run.*
 
-**Recommendation:** run each write-capable agent in its own git worktree on its own branch. Read-only agents can share the main checkout. Name the base branch explicitly and check it before you merge.
+**Recommendation:** run each write-capable agent in its own git worktree on its own branch. Read-only agents can share the main checkout. An agent that runs a build or tests writes files, so give it a worktree too. Name the base branch explicitly and check it before you merge. To run several worktrees from one place, see [One workspace per task](../../../setup/one-workspace-per-task/).
 
 ## Why it matters
 
