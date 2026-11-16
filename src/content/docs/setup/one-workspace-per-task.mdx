@@ -6,7 +6,7 @@ status: mixed
 
 *Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
 
-**Status.** Runs in my setup: an agent development environment that creates one worktree per task, runs a checked-in setup script in each new worktree, and lists every helper's workspace in one place. A reviewer from a second provider reads the work before it merges. In progress: moving my old dashboard chat into the environment, and running a written plan step by step with [human checkpoints](../../glossary/#human-checkpoint). Treat those two as design until they land.
+**Status.** Runs in my setup: an agent development environment that creates one worktree per task, runs a checked-in setup script in each new worktree, and lists every helper's workspace in one place. My rule is that a reviewer from a second provider reads the work before it merges. When that reviewer is unavailable, a reviewer from the same provider stands in, and the pull request says so. In progress: moving my old dashboard chat into the environment, and running a written plan step by step with [human checkpoints](../../glossary/#human-checkpoint). Treat those two as design until they land.
 
 ## The weak spot it targets
 
@@ -36,16 +36,16 @@ I am moving my own setup into it. The plan gives the environment the agent sessi
 
 1. You describe a task. The lead agent creates a worktree for it, and the setup script runs.
 2. The lead starts a helper in that worktree with a [bounded brief](../../glossary/#bounded-brief).
-3. You start a second task in a second worktree. Neither can touch the other's files.
+3. You start a second task in a second worktree. Neither agent's checkout or branch change lands in the other's folder. A worktree prevents these collisions, but an agent with file access can still edit another folder. To block that, use [permissions or a sandbox](../../shelf/control/permissions-and-sandboxing/).
 4. One helper is unsure about a choice. It asks, and you answer. In my setup, this step is still in progress.
-5. The helper finishes and reports. A reviewer from a second provider reads the change and returns findings.
+5. The helper finishes and reports. A reviewer reads the change and returns findings, from a second provider when one is available.
 6. The lead fixes the findings, the checks pass, and the change goes up for merge.
 7. You remove the worktree after the merge.
 
 ## What this does not do
 
 - It does not review the work. The reviewer and the checks do that.
-- It does not enforce your rules. In my setup, the environment's own hooks can block only Claude Code, one of the agents I use. Keep the safety checks in each agent's own hooks and in CI.
+- It does not enforce your rules. My setup's agent configuration records that the environment's own hooks can block only Claude Code, one of the agents I use. Keep the safety checks in each agent's own hooks and in CI.
 - It does not make the machine bigger. More helpers share the same memory.
 - I have not measured whether it makes me faster.
 
@@ -69,5 +69,7 @@ scripts:
 ```
 
 In my setup, the environment runs the `setup` script in each new worktree of this repository. The script stops at the first error. It installs the exact dependency versions from the lockfile, at low priority. A new worktree can then run `npm run check` with no other step. Orca's own repository uses the same `scripts` and `setup` keys in its `orca.yaml`.
+
+<p class="verified">Docs page fetched on 2026-11-16: https://github.com/stablyai/orca/blob/main/orca.yaml. Quoted lines: "scripts:" and "setup: |". Orca CLI on that date: 1.4.258.</p>
 
 **Next:** [Personas are review lenses](../personas/)
