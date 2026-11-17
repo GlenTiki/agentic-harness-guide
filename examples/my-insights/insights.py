@@ -6,6 +6,7 @@ Usage: python3 insights.py <transcript folder> [--out <report.md>]
 The script only reads the transcripts. It never changes them, and it sends nothing anywhere.
 """
 import argparse
+import hashlib
 import json
 import pathlib
 import re
@@ -24,6 +25,8 @@ CLAUDE_CODE_INTERRUPTION = "[Request interrupted by user"
 CLAUDE_CODE_TOOL_USE_INTERRUPTION = "[Request interrupted by user for tool use]"
 
 SECRET_NAME = r"\w*(?:password|passwd|secret|token|api_?key)\w*"
+# A value in escaped quotes (\"...\", as inside a JSON string), in quotes with escapes inside, or up to a space.
+QUOTED_OR_BARE_VALUE = r"""(\\".*?(?<!\\)\\"|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|\S+)"""
 REDACTIONS = [
     (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?(-----END [A-Z ]*PRIVATE KEY-----|$)", re.S), "<private key>"),
     (re.compile(r"(?<![A-Za-z0-9])(?:sk|pk|rk)[-_][A-Za-z0-9_-]{8,}"), "<secret>"),
@@ -33,7 +36,7 @@ REDACTIONS = [
     (re.compile(r"(?<![A-Za-z0-9])AIza[0-9A-Za-z_-]{20,}"), "<secret>"),
     (re.compile(r"(?<![A-Za-z0-9])eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}(?:\.[A-Za-z0-9_-]*)?"), "<secret>"),
     (re.compile(r"\bBearer\s+[A-Za-z0-9._~+/=-]{8,}", re.I), "Bearer <secret>"),
-    (re.compile(r"((?:^|[^A-Za-z0-9])" + SECRET_NAME + r"[\"']?\s*[:=]\s*)(\"[^\"]*\"|'[^']*'|\S+)", re.I), r"\1<secret>"),
+    (re.compile(r"((?:^|[^A-Za-z0-9])" + SECRET_NAME + r"\\?[\"']?\s*[:=]\s*)" + QUOTED_OR_BARE_VALUE, re.I), r"\1<secret>"),
     (re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), "<email>"),
     (re.compile(r"/(?:Users|home)/[^/\s\"']+"), "<home>"),
 ]
@@ -46,7 +49,6 @@ class Session:
     counts: dict = field(default_factory=lambda: {s: 0 for s in SIGNALS})
     excerpts: list = field(default_factory=list)
     awaiting_redirect: bool = False
-    previous_kind: str = ""
 
     @property
     def friction(self) -> int:
@@ -66,6 +68,14 @@ def redact(text: str) -> str:
     for pattern, replacement in REDACTIONS:
         text = pattern.sub(replacement, text)
     return text
+
+
+def label(name: str) -> str:
+    """A session name as the report shows it: redacted, with a short fingerprint if redaction changed it."""
+    shown = redact(name).replace("|", "/")
+    if shown == name:
+        return shown
+    return f"{shown} ({hashlib.sha256(name.encode()).hexdigest()[:6]})"
 
 
 def excerpt(text: str) -> str:
@@ -132,42 +142,62 @@ def events_in_line(line: str, default_session: str) -> list | None:
     return []
 
 
-def analyse(folder: pathlib.Path) -> dict:
-    sessions, seen = {}, set()
-    stats = {"files": 0, "lines": 0, "duplicates": 0, "unreadable": 0}
+def read_lines(folder: pathlib.Path, stats: dict | None = None):
+    """Yield (file, events) for each line that holds events, in a stable order. Count lines when given stats."""
     for path in sorted(folder.rglob("*.jsonl")):
-        stats["files"] += 1
+        if stats is not None:
+            stats["files"] += 1
         with path.open(encoding="utf-8", errors="replace") as handle:
             for line in handle:
                 if not line.strip():
                     continue
-                stats["lines"] += 1
+                if stats is not None:
+                    stats["lines"] += 1
                 try:
                     events = events_in_line(line, path.stem)
                 except (json.JSONDecodeError, KeyError, TypeError, AttributeError):
                     events = None
-                if events is None:
+                if events is None and stats is not None:
                     stats["unreadable"] += 1
+                if events:
+                    yield path, events
+
+
+def refusal_follow_ons(folder: pathlib.Path) -> set:
+    """Message ids of tool use interruptions that directly follow a refusal in any file.
+
+    Claude Code writes such a line as part of the refusal. Pairing reads every copy in file order before
+    any de-duplication, so a fork that copies only one half of the pair cannot split it into two signals."""
+    follow_ons, previous = set(), {}
+    for path, events in read_lines(folder):
+        if events[0].kind == "tool_use_interruption" and previous.get(path) == "refusal":
+            follow_ons.add((events[0].scope, events[0].message_id))
+        previous[path] = events[-1].kind
+    return follow_ons
+
+
+def analyse(folder: pathlib.Path) -> dict:
+    sessions, seen = {}, set()
+    stats = {"files": 0, "lines": 0, "duplicates": 0, "unreadable": 0}
+    follow_ons = refusal_follow_ons(folder)
+    for _, events in read_lines(folder, stats):
+        key = (events[0].scope, events[0].message_id)
+        if events[0].message_id and key in seen:
+            stats["duplicates"] += 1
+            continue
+        seen.add(key)
+        for event in events:
+            session = sessions.setdefault(event.session, Session(event.session))
+            if event.kind == "tool_use_interruption":
+                if key in follow_ons:
+                    session.awaiting_redirect = True
                     continue
-                if not events:
-                    continue
-                key = (events[0].scope, events[0].message_id)
-                if events[0].message_id and key in seen:
-                    stats["duplicates"] += 1
-                    continue
-                seen.add(key)
-                for event in events:
-                    record_event(sessions.setdefault(event.session, Session(event.session)), event)
+                event = Event(event.session, event.message_id, "interruption", event.text, event.scope)
+            record_event(session, event)
     return {"sessions": sessions, "stats": stats}
 
 
 def record_event(session: Session, event: Event) -> None:
-    previous, session.previous_kind = session.previous_kind, event.kind
-    if event.kind == "tool_use_interruption":
-        if previous == "refusal":
-            session.awaiting_redirect = True
-            return
-        event = Event(event.session, event.message_id, "interruption", event.text, event.scope)
     if event.kind not in SIGNALS:
         session.messages += 1
         if session.awaiting_redirect and event.text.strip():
@@ -207,13 +237,13 @@ def report(result: dict) -> str:
     lines += ["| --- | --- | --- | --- | --- | --- |"]
     for s in sessions:
         c = s.counts
-        lines.append(f"| {s.name} | {s.messages} | {c['interruption']} | {c['tool_error']} | {c['refusal']} | {s.friction} |")
+        lines.append(f"| {label(s.name)} | {s.messages} | {c['interruption']} | {c['tool_error']} | {c['refusal']} | {s.friction} |")
     lines += ["", "## Top sessions by friction", ""]
     top = [s for s in sessions if s.friction][:TOP_SESSIONS]
     if not top:
         lines += ["No friction signals found.", ""]
     for rank, s in enumerate(top, 1):
-        lines += [f"### {rank}. {s.name} (friction {s.friction})", ""]
+        lines += [f"### {rank}. {label(s.name)} (friction {s.friction})", ""]
         lines += [f"- {label}: \"{text}\"" for label, text in s.excerpts]
         lines.append("")
     lines += [

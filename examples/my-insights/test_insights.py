@@ -102,9 +102,73 @@ class ClaudeCodeShapesSeenInProbes(unittest.TestCase):
         self.assertEqual(result["sessions"]["s2"].friction, 0)
 
 
+class ForkOrder(unittest.TestCase):
+    """A fork copies lines under a new session id. The refusal pair must count once whichever file is read first."""
+
+    start = claude_code_line("s1", "u1", "Write a.txt")
+    refusal = ClaudeCodeShapesSeenInProbes.refusal
+    follow_on = ClaudeCodeShapesSeenInProbes.tool_use_interruption
+
+    def total(self, files: dict) -> dict:
+        result = analyse_files(files)
+        return {s: sum(session.counts[s] for session in result["sessions"].values()) for s in insights.SIGNALS}
+
+    def assert_one_refusal(self, files: dict):
+        self.assertEqual(self.total(files), {"interruption": 0, "tool_error": 0, "refusal": 1})
+
+    def fork(self, *lines: str) -> list:
+        return [line.replace('"s1"', '"s2"') for line in lines]
+
+    def test_full_copy_with_the_original_read_first(self):
+        self.assert_one_refusal({"a.jsonl": [self.start, self.refusal, self.follow_on],
+                                 "b.jsonl": self.fork(self.start, self.refusal, self.follow_on)})
+
+    def test_full_copy_with_the_fork_read_first(self):
+        self.assert_one_refusal({"b.jsonl": [self.start, self.refusal, self.follow_on],
+                                 "a.jsonl": self.fork(self.start, self.refusal, self.follow_on)})
+
+    def test_fork_read_first_that_copies_only_the_refusal(self):
+        self.assert_one_refusal({"b.jsonl": [self.start, self.refusal, self.follow_on],
+                                 "a.jsonl": self.fork(self.start, self.refusal)})
+
+    def test_fork_read_first_that_copies_only_the_follow_on_line(self):
+        self.assert_one_refusal({"b.jsonl": [self.start, self.refusal, self.follow_on],
+                                 "a.jsonl": self.fork(self.start, self.follow_on)})
+
+
+class RenderedNames(unittest.TestCase):
+    def report_for(self, files: dict) -> str:
+        with tempfile.TemporaryDirectory() as folder:
+            for name, lines in files.items():
+                (pathlib.Path(folder) / name).write_text("\n".join(json.dumps(line) for line in lines) + "\n")
+            return insights.report(insights.analyse(pathlib.Path(folder)))
+
+    def test_redacts_an_explicit_session_name(self):
+        text = self.report_for({"x.jsonl": [{"session": "deploy sk_live_FAKE1234567890abcd for sam@example.com",
+                                             "id": "1", "event": "tool_error", "text": "failed"}]})
+        self.assertNotIn("FAKE1234567890abcd", text)
+        self.assertNotIn("sam@example.com", text)
+        self.assertIn("deploy <secret> for <email> (", text)
+
+    def test_redacts_a_session_name_taken_from_the_file_name(self):
+        text = self.report_for({"sam@example.com.jsonl": [{"id": "1", "event": "refusal", "text": "no"}]})
+        self.assertNotIn("sam@example.com", text)
+
+    def test_keeps_two_redacted_names_apart(self):
+        text = self.report_for({"a@example.com.jsonl": [{"id": "1", "event": "refusal", "text": "no"}],
+                                "b@example.com.jsonl": [{"id": "1", "event": "refusal", "text": "no"}]})
+        rows = [line for line in text.splitlines() if line.startswith("| <email>")]
+        self.assertEqual(len(rows), 2)
+        self.assertNotEqual(rows[0], rows[1])
+
+
 REDACTION_CASES = {
+    "json_escaped_quote_inside": ('{"password": "abc\\"def leakedtail"}', "leakedtail"),
+    "escaped_json_value_with_space": ('{\\"password\\": \\"abc def\\\\\\"leakedtail end\\"}', "leakedtail"),
+    "single_quote_escape_inside": ("secret = 'one two\\'three leakedtail'", "leakedtail"),
     "sk_dash": ("error: key sk-test-FAKE1234567890abcd rejected", "sk-test-FAKE"),
     "sk_live_underscore": ("key sk_live_FAKE1234567890abcd", "FAKE1234567890abcd"),
+    "slack_token": ("post with xoxb-FAKE1234567890-abcdef failed", "xoxb-FAKE"),
     "github_token": ("push with ghp_FAKE1234567890abcdefghij failed", "ghp_FAKE"),
     "aws_access_key": ("AKIAFAKEFAKEFAKEFAKE is the key", "AKIAFAKE"),
     "bearer": ("Authorization: Bearer FAKEfake.1234567890", "FAKEfake"),
