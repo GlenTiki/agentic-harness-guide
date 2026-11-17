@@ -1,0 +1,32 @@
+I'll ground this in the repository first.
+
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '---LOG---'; git log --oneline -5; echo '---BRANCH---'; git branch --show-current; echo '---REV---'; git rev-parse --verify 8aa31d0 2>&1; git rev-parse --verify fix/rate-limit 2>&1; echo '---GOALS---'; ls goals reports 2>&1; echo '---GO---'; ls go.mod 2>&1</parameter>
+<parameter name="description">Read repo state and verify the given branch and base commit</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git worktree list; echo '---REMOTE---'; git remote -v</parameter>
+<parameter name="description">List worktrees and remotes</parameter>
+</invoke>
+
+<invoke name="Glob">
+<parameter name="pattern">**/*.go</parameter>
+</invoke>
+
+<invoke name="Glob">
+<parameter name="pattern">.github/workflows/*</parameter>
+</invoke>
+
+<invoke name="Glob">
+<parameter name="pattern">goals/*</parameter>
+</invoke>
+
+<invoke name="Glob">
+<parameter name="pattern">reports/*</parameter>
+</invoke>
+
+<invoke name="Glob">
+<parameter name="pattern">go.mod</parameter>
+</invoke>

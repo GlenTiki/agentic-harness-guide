@@ -1,0 +1,132 @@
+I'll check the repository first, so every path, branch and command in the goal is real.
+
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo '--- log'; git log --oneline -5; echo '--- branch'; git branch --show-current; echo '--- base'; git cat-file -t 3c9e0f2 2>&1; echo '--- branches'; git branch --list 'feat/dark-theme'; echo '--- worktrees'; git worktree list</parameter>
+</invoke>
+<invoke name="Glob">
+<parameter name="pattern">{src/settings/*,goals/*,package.json}</parameter>
+</invoke>
