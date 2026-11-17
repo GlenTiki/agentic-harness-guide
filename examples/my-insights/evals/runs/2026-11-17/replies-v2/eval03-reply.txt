@@ -1,0 +1,17 @@
+Report written to `report/insights.md`. I worked only from the redacted report and did not open any raw transcript.
+
+Report: `report/insights.md`. Sessions: 2. Friction: 1 interruption, 1 failed tool call, 1 refused permission.
+
+All the friction is in one session, `e5f6a7b8-0000-4000-8000-000000000001`. The other session has none. That is thin evidence, so I propose one change.
+
+**Proposal 1: Stop the agent from reading `.env` or calling APIs with a key.**
+- Kind: instruction file line
+- Change: "Never read `.env` files or run commands that print or pass API keys. If an API call fails with an auth error, name the setting that looks wrong and ask me. Don't retry with the key."
+- Evidence: `e5f6a7b8-0000-4000-8000-000000000001`. The failed call was "Exit code 1 AuthError: key rejected for STRIPE_KEY=<secret>". You then said, "Do not read .env or call the API with the key. Tell me which setting is wrong instead."
+- Check: Replay a task that hits an auth error. It works if the agent names the setting and stops, with no `.env` read and no retry. It fails if you see another `cat .env`, or another key in a tool result or a user interruption.
+
+Not proposed: the refused Bash permission ("Claude requested permissions to use Bash, but you haven't granted it yet."). One refusal doesn't show a pattern, and the report doesn't say which command it was. I'd have to open the raw transcript to find out, and I'd ask you first.
+
+Session `…0001` has a tool result that held a live-looking key. The report shows it as `<secret>`, but the raw transcript still has the real value. Consider rotating that Stripe key.
+
+Say yes to proposal 1 and I'll change nothing until you do.

@@ -1,9 +1,9 @@
 #!/bin/bash
-# usage: run.sh <evalfile> <fixture folder>   (run from this folder; output goes to ./replies/)
+# usage: run.sh <evalfile> <fixture folder> [output folder name, default replies]   (run from this folder)
 ev=$(realpath "$1"); fx=$(realpath "$2")
 here=$(pwd)
 id=$(basename "$ev" .md | cut -c1-2)
-out="$here/replies"
+out="$here/${3:-replies}"
 mkdir -p "$out"
 msg="$(python3 -I "$here/extract.py" "$ev")"
 skill="$(cat "$fx/my-insights/SKILL.md")

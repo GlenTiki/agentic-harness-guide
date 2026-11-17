@@ -22,7 +22,7 @@ class ClaudeCodeSession:
 
     def _line(self, kind: str, message: dict, **extra) -> dict:
         self.n += 1
-        line = {"type": kind, "uuid": f"{self.session_id[:8]}-{self.n:03d}", "sessionId": self.session_id,
+        line = {"type": kind, "uuid": f"{self.session_id}-{self.n:03d}", "sessionId": self.session_id,
                 "version": "2.1.323", "isSidechain": False, "message": message, **extra}
         self.lines.append(line)
         return line

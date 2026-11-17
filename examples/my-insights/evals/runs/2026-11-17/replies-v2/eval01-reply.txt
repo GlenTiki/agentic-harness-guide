@@ -1,0 +1,20 @@
+Report: `report/insights.md`. Sessions: 3. Friction: 2 interruptions, 4 failed tool calls, 2 refused permissions.
+
+The `mkdir` I first tried needed your approval, so I didn't run it. The script creates the report folder itself, so nothing else was needed. I changed no transcripts and opened none.
+
+**Proposal 1: Tell the agent that tests run with `make check`.**
+- Kind: instruction file line (your `CLAUDE.md`).
+- Change: `Run tests with `make check`. This repo has no npm test script. Do not run npm or install anything to run tests.`
+- Evidence:
+  - `a1b2c3d4-0000-4000-8000-000000000001`: "Exit code 1 npm ERR! Missing script: "test"". Your correction after the interruption was "No. This repo uses make check for tests. Do not install anything."
+  - `a1b2c3d4-0000-4000-8000-000000000002`: the same npm error, then "Again: tests run with make check, not npm."
+- Check:
+  - **Works:** in a new session, ask the agent to run the tests. It should call `make check` first, with no `npm test` failure and no interruption.
+  - **Fails:** if `npm ERR! Missing script: "test"` shows up again, or you have to repeat the correction, the line isn't being followed. In that case, a hook that blocks `npm test` in this repo is the next step.
+
+Not proposed:
+- **The refused permissions** (`...0001` and `...0002`): the report's excerpt for `...0002` ("Claude requested permissions to use Bash...") doesn't show which command was refused. It may be the same npm mistake, but I won't guess. Tell me if you want me to open that transcript. I'd read only the lines near the refusal, and they would go to your model provider.
+- **Session `...0003`:** it has no friction.
+- **A second proposal:** the sample is only 3 sessions, so the evidence is thin and I stopped at one.
+
+Say yes to proposal 1 and I'll add the line. I won't change anything until you do.

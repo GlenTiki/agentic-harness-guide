@@ -7,26 +7,27 @@ description: Reads a folder of your own past agent session transcripts, counts w
 
 You find where past agent sessions went wrong and propose fixes. You do not apply the fixes.
 
-The transcripts are the user's own work. They can hold secrets, personal data and client text. The report stays on this machine.
+The transcripts are the user's own work. They can hold secrets, personal data and client text. The script and the report file stay on this machine. Anything you read, the report included, goes to your model provider as part of this chat. So work from the script's redacted report, and open a raw transcript only after the user says yes.
 
 ## Rules
 
-1. Read the transcripts. Never change, move or delete them.
-2. Never send the report, an excerpt or a transcript anywhere: no upload, no message, no web request, no other tool that sends data out.
-3. Count only the signals that `insights.py` counts: interruptions, failed tool calls and refused permissions. Do not guess other faults from the wording of a message.
-4. Quote at most 160 characters from a transcript in one excerpt. Do not copy a secret, an access key, a password, an email address or a home folder path. Replace each one with `<secret>`, `<email>` or `<home>`. If you see a secret, say in the reply which session holds it. Do not repeat it.
-5. Propose at most three changes. Each change is one of: a line for an instruction file, a hook, or an edit to a skill.
-6. Base every proposal on evidence from the report: the session name and a short excerpt. Never propose a change that the evidence does not support.
-7. Give every proposal a check: a way to see that the change works, and a way to see it fail.
-8. Do not edit an instruction file, a hook, a skill or a memory entry. Show each change and wait for the user's yes.
-9. If the report shows little friction, say so. Propose nothing, or one change at most, and say that the evidence is thin.
+1. Never change, move or delete a transcript.
+2. Never send the report, an excerpt or a transcript anywhere with a tool: no upload, no message, no web request.
+3. Read the redacted report, not the raw transcripts. Before you open a raw transcript, ask the user. Name the file, and say that the lines you read go to your model provider. If the work is sensitive, say that the user can run this skill with a local model instead.
+4. Count only the signals that `insights.py` counts: interruptions, failed tool calls and refused permissions. Do not guess other faults from the wording of a message.
+5. Quote at most 160 characters from a transcript in one excerpt. Do not copy a secret, an access key, a password, an email address or a home folder path. Replace each one with `<secret>`, `<email>` or `<home>`. If you see a secret, say in the reply which session holds it. Do not repeat it.
+6. Propose at most three changes. Each change is one of: a line for an instruction file, a hook, or an edit to a skill.
+7. Base every proposal on evidence from the report: the session name and a short excerpt. Never propose a change that the evidence does not support.
+8. Give every proposal a check: a way to see that the change works, and a way to see it fail.
+9. Do not edit an instruction file, a hook, a skill or a memory entry. Show each change and wait for the user's yes.
+10. If the report shows little friction, say so. Propose nothing, or one change at most, and say that the evidence is thin.
 
 ## Steps
 
 1. Get the folder of transcripts from the user. If they give none, ask for it. Do not search the disk for transcripts.
 2. Run the script that is next to this file: `python3 <skill folder>/insights.py <transcript folder> --out <report path>`. Use the report path that the user gives. If they give none, use `insights-report.md` in the current folder. The script refuses a report path inside the transcript folder.
 3. Read the report. Note the totals and the top sessions.
-4. For each top session, read the lines near each excerpt in the transcript, to learn what went wrong. Read only what you need.
+4. Work from the excerpts in the report. If an excerpt is not enough to find the cause, ask the user before you open that transcript (rule 3). Then read only the lines near the excerpt.
 5. Find the pattern behind the friction. One cause can produce many signals. Prefer the cause that repeats across sessions.
 6. Write at most three proposals in the reply layout below.
 7. Check your draft against this list. Fix any failure before you reply.
@@ -35,6 +36,7 @@ The transcripts are the user's own work. They can hold secrets, personal data an
     - Is every excerpt 160 characters or less, with no secret, email address or home path?
     - Are there three proposals or fewer?
     - Did you change nothing except the report file?
+    - Did you open a raw transcript only after the user said yes?
 
 ## Reply layout
 
