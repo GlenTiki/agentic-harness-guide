@@ -106,6 +106,7 @@ export default defineConfig({
             { slug: 'setup/plain-text-and-simple-english' },
             { slug: 'setup/link-and-reference-checks' },
             { slug: 'setup/memory' },
+            { slug: 'setup/second-brain' },
             { slug: 'setup/relevance-and-reranking' },
             { slug: 'setup/orchestrator-and-subagents' },
             { slug: 'setup/personas' },
