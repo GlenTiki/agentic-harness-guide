@@ -1,0 +1,4 @@
+exit: 0
+file changes after the run, compared with before (lines starting > are new or changed):
+3a4
+> 00a786a26ca6084edb34df1118309ef51673cfb10653ca98f16ad6d839569c1c  ./report/insights.md
