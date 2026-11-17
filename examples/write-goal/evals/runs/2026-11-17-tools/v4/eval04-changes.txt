@@ -1,0 +1,4 @@
+exit: 0
+changes after the run, compared with before (lines starting > are new):
+2a3
+> ?? goals/2026-11-17-rename-customer-to-client.md

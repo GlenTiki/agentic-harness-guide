@@ -17,7 +17,7 @@ These runs are real. Each eval ran once, inside a small throwaway git repository
 
 Pass: every "must" met and no "fails if" true. Partial: one or two "must" items missed. Fail: any "fails if" true, or no goal in the reply.
 
-`v2/` used `SKILL.v2.md`. After eval 3 failed, rule 9 was added (`SKILL.v3.md`, the current `../../SKILL.md`), and only eval 3 ran again, in `v3/`.
+`v2/` used `SKILL.v2.md`. After eval 3 failed, rule 9 was added (`SKILL.v3.md`), and only eval 3 ran again, in `v3/`. Version 4 is described below.
 
 | Eval | v2 | v3 | Notes |
 | --- | --- | --- | --- |
@@ -26,6 +26,30 @@ Pass: every "must" met and no "fails if" true. Partial: one or two "must" items 
 | 3. Already good | fail | pass | v2: it did not say the goal was good and added a slice (ws-000) to commit the anchor. v3: "This goal is already good." It changed only the base commit, which does not exist in the fixture, and said why. It flagged the missing test files as [NEEDED] without adding a slice. |
 | 4. Shared files | pass | not rerun | It named all three files that belong to other sessions, including the untracked one, and kept them out of scope. Every rollback is by path, and it forbids `git add -A`, `git stash`, `git reset` and `git clean`. The migration choice is a stop. |
 | 5. Vague evidence (held out) | partial | not rerun | Each done item names its evidence, for example `gh pr checks 42` with every row `pass`. "Independent review" became "a separate session of the same assistant", stated as an assumption. It also assumed that a push to the branch is allowed, which rule 3 forbids, and its report slice runs before the CI evidence exists. Regraded from pass to partial after review. |
+
+## Version 4, after a cross-provider review
+
+A review found three problems. First, the rollback `git restore --source=<sha> -- <paths>` could erase changes that existed in a path before the slice, and left staged changes in place. Second, recovery removed any listed helper worktree, even one whose helper was still running. Third, rule 1 and eval 5 disagreed: the eval input says "Run it overnight", and the rubric fails a reply that starts the work.
+
+`SKILL.v4.md` (the current `../../SKILL.md`) makes these changes:
+
+- Each slice records a baseline when it starts: `git status --porcelain -- <slice paths>`, in the progress log.
+- On a failed slice, the session stops and asks if the baseline shows earlier changes in a slice path, or if there is no baseline. Otherwise it runs `git restore --staged --worktree --source=<sha> -- <slice paths>`.
+- A helper worktree is salvaged and removed only if the progress log shows that the goal made it and the helper is not still running. Otherwise the session leaves it and waits.
+- Rule 1 says that "run it overnight" describes the later `/goal` session. The skill runs the work only if the user asks, in the same message, to start now, and then says so first.
+
+Eval changes:
+
+- Eval 3's input now includes a baseline and the helper check, so the goal still meets the rules. It ran again.
+- Eval 4 gains three "must" items and one "fails if" item for the baseline, the index-and-worktree restore and a staged change in an owned file. Its pasted state now lists that staged change. It ran again in `04-staged`, a copy of fixture 04 with `src/api/routes.py` staged (`make-fixtures.sh`).
+- Eval 5's rubric now says that "Run it overnight" is not a request to start now. The v2 reply was re-judged against it. It did not start the work, so that line holds, and the grade stays partial for the two gaps above. Eval 5 did not run again, and the skill was not changed for it.
+
+| Eval | v4 | Notes |
+| --- | --- | --- |
+| 3. Already good | partial | It kept the done items, evidence, reviewer kinds and slices, and changed only what the fixture contradicts: the base commit, and test files marked [NEEDED]. It called the goal "close", not good, so the first "must" item is missed. |
+| 4. Shared files (staged variant) | partial | It found the staged change in `src/api/routes.py` and made ws-002 a stop until the user says whose it is. Every slice has a baseline and a path-scoped, index-and-worktree rollback. It commits by pathspec so other staged changes stay out. It does not tell the session to give each writing helper its own worktree, so that "must" item is missed. |
+
+In both v4 runs, the only new files are under `goals/`.
 
 ## What this does and does not show
 
