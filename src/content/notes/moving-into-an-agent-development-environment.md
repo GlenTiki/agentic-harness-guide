@@ -1,8 +1,8 @@
 ---
-title: Moving my harness into an agent development environment
+title: Moving my harness into an agent environment
 description: What changed, what broke on the first night, and what I would do again after moving my agent sessions into an agent development environment.
-publishedAt: "2026-11-16T22:20:16Z"
-draft: true
+publishedAt: "2026-11-17T23:32:16Z"
+draft: false
 ---
 
 On 12 and 13 November I decided to stop hosting my own agent sessions. My setup had grown a dashboard chat that resumed agent sessions, and hooks that kept each agent in its own worktree. An [agent development environment](../../setup/one-workspace-per-task/) hosts any agent that runs in a terminal, each in its own worktree. So the plan gives the environment the agent hosting, and my hooks stay where they are. My own code shrinks to the parts that are specific to me: the [memory](../../setup/second-brain/) and the preferences. That move is still in progress.
