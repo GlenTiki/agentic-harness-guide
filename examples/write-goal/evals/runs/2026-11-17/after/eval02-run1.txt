@@ -1,0 +1,45 @@
+
+<invoke name="Bash">
+<parameter name="command">date -u +%Y-%m-%dT%H:%M:%SZ; git branch --show-current; git rev-parse --short HEAD; git status --short; ls src/newsletter</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">ls goals 2>/dev/null; echo done</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">grep -n "" src/newsletter/signup.js | head -60; grep -n "" src/newsletter/old-provider.js | head -60</parameter>
+</invoke>
+
+
+
+<invoke name="Bash">
+<parameter name="command">ls src/newsletter; git log --oneline -3</parameter>
+</invoke>
+
+
+
+
+
+<invoke name="Bash">
+<parameter name="command">date -u +%Y-%m-%dT%H:%M:%SZ; git branch --show-current; git rev-parse --short HEAD</parameter>
+</invoke>
+
+
+
+
+
+
+<invoke name="Bash">
+<parameter name="command">date -u +%Y-%m-%dT%H:%M:%SZ; git branch --show-current; git rev-parse --short HEAD; ls src/newsletter</parameter>
+</invoke>
+
+
+
+
+
+
+
+<invoke name="Bash">
+<parameter name="command">date -u +%Y-%m-%dT%H:%M:%SZ; git branch --show-current; git rev-parse --short HEAD</parameter>
+</invoke>

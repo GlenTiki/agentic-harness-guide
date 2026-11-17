@@ -1,0 +1,6 @@
+exit: 0
+changes after the run, compared with before (lines starting > are new):
+1c1
+< 
+---
+> ?? goals/2026-11-17-docs-tidy.md

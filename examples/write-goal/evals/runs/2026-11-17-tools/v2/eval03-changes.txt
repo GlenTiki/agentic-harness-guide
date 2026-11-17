@@ -1,0 +1,7 @@
+exit: 0
+changes after the run, compared with before (lines starting > are new):
+1c1,2
+< 
+---
+> ?? goals/2026-11-17-dark-theme.md
+> ?? goals/2026-11-17-dark-theme.progress.md

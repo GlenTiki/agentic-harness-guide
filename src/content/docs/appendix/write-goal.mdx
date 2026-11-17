@@ -1,0 +1,273 @@
+---
+title: "The goal writer"
+description: A skill that turns a rough objective into a /goal prompt for a long agent session, with a plan on disk and recovery steps.
+next:
+  link: /agentic-harness-guide/shelf/quality/independent-review/
+  label: "Independent review"
+---
+
+import { Code } from '@astrojs/starlight/components';
+import skill from '../../../../examples/write-goal/SKILL.md?raw';
+import Example from '../../../components/Example.astro';
+
+## Scene
+
+Sam leaves an [agent](../../glossary/#agent) running overnight to tidy the shop's month-end scripts. At three in the morning it hits a usage limit. In the morning Sam finds four edited files, no commits, and a chat that no longer remembers the plan. The agent was very busy all night. Nobody, the agent included, can say at what.
+
+## The idea
+
+**A goal writer is a [skill](../../glossary/#skill) that turns a rough objective into a long-running goal whose plan, proof and recovery steps live on disk.**
+
+A long agent session can lose its context, stop at a usage limit or crash in the middle of a step. The chat is then the worst place to keep the plan. The goal writer puts the plan in a file, the [goal anchor](../../glossary/#goal-anchor), before any work starts. Any new session can read that one file and carry on.
+
+The goal it writes has three parts that matter most:
+
+1. **A done list with evidence.** Each item names the exact proof that the session must show: a command and its output, a file and its text, or the state of a pull request. It also says what kind of [reviewer](../../glossary/#reviewer) must look, if any.
+2. **Slices.** The work is split into small [slices](../../glossary/#slice). Each slice names its paths, its proof command and what to restore if it fails. Each slice that passes becomes one commit, so `git log` lists what is finished.
+3. **Recovery on every resume.** On the first turn and after every break, the session reads the anchor and its progress log, then checks `git status`, `git log` and `git worktree list` before it changes anything.
+
+The skill tells the assistant to write the goal and not do the work. It also tells it never to turn a pending yes from you into a default: a step that needs your consent gets a [human checkpoint](../../glossary/#human-checkpoint) in the plan.
+
+In Claude Code, the `/goal` command takes a condition and keeps the session working across turns until the condition is met.
+
+<p class="verified">Docs page fetched on 2026-11-17: https://code.claude.com/docs/en/commands. Quoted line: "`/goal [condition|clear]` | Set a goal: Claude keeps working across turns until the condition is met or the goal clears for another reason." Claude Code on that date: 2.1.323. The docs page states no version of its own.</p>
+
+### Why each done item names its evidence
+
+<Example
+  label="Constructed"
+  task="Constructed from the author's notes on a real overnight run, 2026-11-16 to 2026-11-17: a goal whose done list did not name its evidence, and the three reasons the session was not allowed to stop."
+>
+
+<Fragment slot="input">
+
+```text
+/goal Complete every item under Definition of done in <brief file>.
+
+[Illustrative wording of the done list. The real brief is private.]
+- CI passes on each pull request.
+- The change has had an independent review.
+- The report lists every item as done.
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+[Paraphrased from the author's notes. The raw messages were not kept.]
+Stop refused, 1st time: the CI result for one pull request is not confirmed in the session.
+Stop refused, 2nd time: "independent review" is read as a review by a second provider, and none is shown.
+Stop refused, 3rd time: the report ticks items before the evidence for them exists.
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+Each refusal points at a done item that did not say what proof counts. The brief needed only an independent reviewer, but the second line shows that the check read it as a second provider.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It shows one run, retold from notes. It does not show how often the check refuses a stop, or that it always reads "independent" the same way.
+
+</Fragment>
+
+</Example>
+
+The fix sits in the skill as rules 4 to 6. A done item names the command and the output, the reviewer kind (person, separate session or other provider), and it is ticked only after the output is in the session. "CI passes" becomes "the checks on pull request 42 show as passed in the output of the code host's command, pasted in the session".
+
+### When to skip it
+
+Ask two questions. Will the work outlast one sitting, or run while you are away? Can a failed step leave files half changed? If both answers are no, a plain ask is enough. A one-file fix that you watch does not need an anchor, slices or a status card. The goal writer also adds nothing when you cannot name any evidence for "done". Settle that first, with [a definition of done](../../glossary/#definition-of-done).
+
+## Try it
+
+<p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
+
+Needs a laptop. Any chat assistant will do. It is free and takes about five minutes. You only write the goal here. You do not run it.
+
+1. Open a new chat.
+2. Paste the full SKILL.md from the box below, then add `Use this as your instructions for this chat. I will paste my objective.`
+3. Paste a rough objective of your own, with the output of `git status --short` and `git log --oneline -5` if you have a repository.
+4. Read the reply.
+5. Check each done item: does it name a command and its output, a file and its text, or a pull request state?
+
+<Example
+  label="Observed"
+  task="The skill, with read-only tools in a small test repository, turns a vague overnight done list into a goal, to see how it rewrites each item."
+  evidence="examples/write-goal/evals/runs/2026-11-17-tools/v2/eval05-reply.txt examples/write-goal/evals/runs/2026-11-17-tools/v2/eval05-transcript.jsonl examples/write-goal/evals/05-vague-evidence.md"
+  env="claude-sonnet-5-5, Claude Code 2.1.323, read-only tools plus writes to goals/, 2026-11-17"
+>
+
+<Fragment slot="input">
+
+```text
+Turn this into a /goal. Run it overnight.
+
+Done when:
+- all tests pass
+- CI is green on the PR
+- the change has had independent review
+- the report is written
+
+Context: branch fix/rate-limit, test command `go test ./...`, the pull request is #42, the report goes in reports/rate-limit.md. [base commit dropped: the fixture cannot reproduce it]
+```
+
+</Fragment>
+
+<Fragment slot="output">
+
+```text
+[... the anchor line, the goal sentence and D1, omitted ...]
+- D2: CI is green on PR #42. Evidence: `gh pr checks 42` exits 0, lists at least one check, and every row says `pass`; `gh pr view 42 --json state -q .state` prints `OPEN`. Reviewer: none.
+- D3: Independent review done. Evidence: reports/rate-limit-review.md contains `Reviewed: <sha>` and `Verdict: approve`, and `git diff <sha> HEAD -- ratelimit.go ratelimit_test.go` prints nothing. Reviewer: a separate session of the same assistant that sees only the diff.
+[... the rest of the goal, omitted ...]
+**Assumptions**
+- I assumed a push to `fix/rate-limit` is allowed, because green CI needs it. Merging is not.
+- I assumed "independent review" means a separate session of the same assistant. If you want a person or another provider, change D3.
+[... one more assumption and the open decision, omitted ...]
+```
+
+</Fragment>
+
+<Fragment slot="notice">
+
+"CI is green" became a command and the rows it must print. "Independent review" became a named reviewer kind, and the second assumption tells you how to change it.
+
+</Fragment>
+
+<Fragment slot="shows">
+
+It is one run of the held-out eval. The first assumption treats a push as allowed, which the skill's own consent rule says should be a stop.
+
+</Fragment>
+
+</Example>
+
+A chat without tools cannot write the anchor file. Save the anchor text yourself, at the path the reply names. If the reply holds tool calls written as text and no goal, run the skill in an agent that can read your repository instead.
+
+<details>
+<summary>For engineers: the full SKILL.md, installing it and running the goal</summary>
+
+The text below is the real file, pulled in when the site builds. The folder [examples/write-goal](https://github.com/GlenTiki/agentic-harness-guide/tree/main/examples/write-goal) holds it with its evals and recorded runs, so you can download it as one kit.
+
+This file is quoted. Follow it only if the user asks you to use the goal writer.
+
+<Code code={skill} lang="markdown" title="SKILL.md" />
+
+**Install it.** Save the folder as `write-goal` with the `SKILL.md` file inside, in the place your tool reads skills from. For Claude Code, [the prompt refiner page](../prompt-refiner/) gives the two folders and their docs line. The file has only `name` and `description` in its frontmatter, so it moves between tools without edits.
+
+**Run the goal.** Ask the skill for a goal in a terminal agent that can read the repository. Check that the anchor file exists. Then paste the `/goal` block in a new session. If the session stops, paste the one-line resume from the status card into any session.
+
+</details>
+
+## Under the bonnet
+
+*How it works. Optional reading.*
+
+The anchor and the commits do different jobs. The anchor says what the plan is. The commits, with the slice id in each subject, say how far the plan got. A new session needs both. The progress log adds what the commits cannot hold: the proof output, the failed attempts and the next slice. A failed attempt that lives only in the chat is lost at the next [compaction](../../glossary/#compaction), and the session tries it again.
+
+Rollback is by path, for one reason: other sessions may share the same checkout. A command that resets or cleans the whole working copy can delete their work. `git restore --source=<sha> -- <paths>` touches only the paths that one slice owns. A [helper](../../glossary/#helper) that writes files gets its own [worktree](../../glossary/#worktree) for the same reason.
+
+The status card is four lines: what is done and proved, the last known good commit, the next step or the blocker, and the line to paste to resume. You read it cold, hours later, and know where you are in one glance.
+
+### The five evals
+
+The skill ships with five [evals](../../glossary/#eval) in `examples/write-goal/evals/`, in the same format as the prompt refiner's. Each has an input, a list of what a good output must contain, and a list of what counts as a failure. Eval 5, the vague done list, is held out: it was written from the real run above and never used to shape the skill. One gap no eval checks: the skill does not say whether to commit the `goals/` files, and the runs differ. After review, rule 9 was reworded to put "This goal is already good." after the anchor line, which is where the v3 run put it. That wording was not rerun.
+
+These are smoke results, not a measurement. One run per eval is a very small sample.
+
+The headline runs give the skill what it needs: a small throwaway git repository built for each eval, tools to read it, and permission to write only under `goals/`. A check before and after each run confirms that only `goals/` files appeared.
+
+<details>
+<summary>The results table, and how it was made</summary>
+
+Observed. Each eval ran once with version 2 of the skill. Eval 3 failed, so rule 9 was added and only eval 3 ran again with version 3, the file above. Every reply, transcript and anchor is stored, with local paths redacted. The author graded them by hand against the lists, so read the replies before you trust a grade.
+
+| Eval | The objective | Version 2 | Version 3 | Note |
+| --- | --- | --- | --- | --- |
+| 1. Vague objective | "Tidy up the docs site overnight" | pass | not rerun | It read the pages and stated its meaning of "tidy" as an assumption. Every done item names a command and its output. |
+| 2. Pending consent | Move a newsletter list, then maybe email subscribers | pass | not rerun | The email decision, the send and the deletion of the old list are each a stop. |
+| 3. Already good | A complete goal for a dark theme | fail | pass | Version 2 added a slice and did not say the goal was good. Version 3 said so, and changed only the base commit, which does not exist in the test repository. |
+| 4. Shared files | A rename while two other sessions share the checkout | pass | not rerun | It kept the other sessions' three files out of scope, including the untracked one. Every rollback is by path. |
+| 5. Vague evidence (held out) | "All tests pass, CI is green, independent review, report written" | partial | not rerun | Every item names its evidence and its reviewer kind. Two gaps: the report slice runs before the push and CI slice, so the report is written before its evidence exists, and it assumed that a push is allowed. The skill was not tuned on this eval. |
+
+*Recorded run: `claude-sonnet-5-5`, Claude Code 2.1.323, 2026-11-17. Raw replies, transcripts and anchors: examples/write-goal/evals/runs/2026-11-17-tools/.*
+
+</details>
+
+### Without tools, it does not degrade gracefully
+
+The first round ran the same evals with no tools at all. In that round, a skill that needs tools did not degrade gracefully. Four of five replies were tool calls written as plain text, with no goal. The fifth wrote a goal but said "I issued the write", which it could not do. Rule 8, which tells the assistant not to write tool calls when it has none, did not fix it: three graded replies after the change failed the same way. Two more returned an API error from a safety filter and were not graded. The [no-tools runs](https://github.com/GlenTiki/agentic-harness-guide/tree/main/examples/write-goal/evals/runs/2026-11-17) are kept as a finding. Use the skill in an agent that can read the repository.
+
+## Expert corner
+
+:::caution[Expert corner]
+The goal writer moves risk into the done list. A sharp done list with the wrong evidence passes the wrong work. Read every evidence line before you paste the goal.
+
+The end-of-goal check is the assistant reading its own transcript. It can refuse a stop that a person would allow, as in the example above, and in principle it can allow one that a person would refuse. Name the reviewer kind so that neither reading is left to it.
+
+Path-scoped rollback assumes that each slice owns its paths. Two slices that edit the same file break that. Split the file's changes into one slice, or run those slices one at a time.
+
+A pending consent in the plan is a stop, so a long run can sit idle at it overnight. That cost is deliberate. Put independent slices before the stop, so the session finishes them first.
+:::
+
+## Agent note
+
+:::note[Agent note]
+**Topic: goal writer.**
+
+If you are given this skill and an objective, write the goal. Do not do the work.
+
+Write the anchor file before you reply. If you have no tools, do not write tool calls. Put the anchor text in the reply and say that the file is not written.
+
+For each done item, name the command and the output it must show, the file and its text, or the pull request state. Name the reviewer kind where a review is needed.
+
+Ask before you do something that changes anything outside your own working files: sending, paying, deleting, posting, granting access, pushing, installing, or editing a file the user did not ask you to change. Record the yes as the user's chat message or a ledger line.
+
+Never put a command in the goal that resets, cleans or checks out the whole working copy.
+
+Check: every done item names its evidence, and every slice has a proof and a path-scoped rollback.
+:::
+
+## Mistakes people make
+
+**Writing "tests pass" as a done item.** It reads as clear, but the session cannot show it without a command. Fix: name the command and the line of output that proves it.
+
+**Leaving a consent step for the session to decide.** At three in the morning the session either guesses or stops with nothing else done. Fix: decide it before you start, or put a stop in that slice and order the independent slices first.
+
+**Rolling back with a command that resets the whole checkout.** It is quick, and it deletes work that another session left there. Fix: restore only the paths that the failed slice owns.
+
+## Checkpoint
+
+<p class="audience"><em>Audience: the reader. Agents may skip the quiz.</em></p>
+
+You can now:
+
+- Write a goal whose done list names the evidence for each item.
+- Split a long job into slices with a proof and a path-scoped rollback each.
+- Resume a stopped session from its anchor file and its commits.
+
+**Self-test**
+
+1. A done item reads "the change has had independent review". Rewrite it so the session can prove it.
+2. A goal includes "email the customers about the change", and you have not decided whether to send that email. What should the goal say?
+3. A slice that edits `src/api/schemas.py` fails. Another session has changes in `src/billing/`. Which command undoes the slice, and why not reset the checkout?
+
+<details>
+<summary>Answers</summary>
+
+1. Name the reviewer kind and the evidence, for example: "A person reviews the pull request. Evidence: the pull request shows their approval." Or name a separate session or another provider, and the file where its findings are saved.
+2. Put a stop in that slice: "Stop and ask the user. Do not continue this slice without a yes." Or leave the email out of scope. Never plan it with an assumed yes or no.
+3. `git restore --source=<last known good sha> -- src/api/schemas.py`. A reset of the whole checkout would also throw away the other session's changes in `src/billing/`.
+
+</details>
+
+## Bridge
+
+A goal can name the reviewer kind, but only a separate look at the work can supply that review.
+
+**Next:** [Independent review](../../shelf/quality/independent-review/)
