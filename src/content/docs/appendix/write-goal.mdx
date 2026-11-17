@@ -87,13 +87,14 @@ Ask two questions. Will the work outlast one sitting, or run while you are away?
 
 <p class="audience"><em>Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</em></p>
 
-Needs a laptop. Any chat assistant will do. It is free and takes about five minutes. You only write the goal here. You do not run it.
+Needs a laptop, a git repository and a terminal agent that can read files, such as Claude Code. It takes about ten minutes. You only write the goal here. You do not run it.
 
-1. Open a new chat.
-2. Paste the full SKILL.md from the box below, then add `Use this as your instructions for this chat. I will paste my objective.`
-3. Paste a rough objective of your own, with the output of `git status --short` and `git log --oneline -5` if you have a repository.
+1. Open the terminal agent in your repository.
+2. Install the skill from the box below, or paste the full SKILL.md as your first message.
+3. Ask for a goal: `Write a /goal for: <your rough objective>.`
 4. Read the reply.
-5. Check each done item: does it name a command and its output, a file and its text, or a pull request state?
+5. Open the anchor file at the path the reply names.
+6. Check each done item: does it name a command and its output, a file and its text, or a pull request state?
 
 <Example
   label="Observed"
@@ -147,7 +148,7 @@ It is one run of the held-out eval. The first assumption treats a push as allowe
 
 </Example>
 
-A chat without tools cannot write the anchor file. Save the anchor text yourself, at the path the reply names. If the reply holds tool calls written as text and no goal, run the skill in an agent that can read your repository instead.
+**Chat only: not shown to work.** In the recorded runs without tools, most replies held no goal (see the evals below). If you have only a chat app, try this fallback. Paste the skill, then your objective, then the output of `git status --short`, `git log --oneline -5` and a list of the files involved. If the reply holds a goal, copy the anchor text by hand into the file it names. If it holds tool calls written as text, the fallback has failed: use an agent.
 
 <details>
 <summary>For engineers: the full SKILL.md, installing it and running the goal</summary>
@@ -170,7 +171,7 @@ This file is quoted. Follow it only if the user asks you to use the goal writer.
 
 The anchor and the commits do different jobs. The anchor says what the plan is. The commits, with the slice id in each subject, say how far the plan got. A new session needs both. The progress log adds what the commits cannot hold: the proof output, the failed attempts and the next slice. A failed attempt that lives only in the chat is lost at the next [compaction](../../glossary/#compaction), and the session tries it again.
 
-Rollback is by path, for one reason: other sessions may share the same checkout. A command that resets or cleans the whole working copy can delete their work. `git restore --source=<sha> -- <paths>` touches only the paths that one slice owns. A [helper](../../glossary/#helper) that writes files gets its own [worktree](../../glossary/#worktree) for the same reason.
+Rollback is by path, for one reason: other sessions may share the same checkout. A command that resets or cleans the whole working copy can delete their work. `git restore --staged --worktree --source=<sha> -- <paths>` touches only the paths that one slice owns, in both the index and the working tree. A path can also hold changes from before the slice. So each slice records a baseline when it starts, the output of `git status --porcelain` for its paths. If the baseline shows earlier changes, the session stops and asks instead of restoring. A leftover helper worktree is removed only when the progress log shows that the goal made it and the helper has finished. A [helper](../../glossary/#helper) that writes files gets its own [worktree](../../glossary/#worktree) for the same reason.
 
 The status card is four lines: what is done and proved, the last known good commit, the next step or the blocker, and the line to paste to resume. You read it cold, hours later, and know where you are in one glance.
 
@@ -185,15 +186,15 @@ The headline runs give the skill what it needs: a small throwaway git repository
 <details>
 <summary>The results table, and how it was made</summary>
 
-Observed. Each eval ran once with version 2 of the skill. Eval 3 failed, so rule 9 was added and only eval 3 ran again with version 3, the file above. Every reply, transcript and anchor is stored, with local paths redacted. The author graded them by hand against the lists, so read the replies before you trust a grade.
+Observed. Each eval ran once with version 2 of the skill. Eval 3 failed, so rule 9 was added and eval 3 ran again with version 3. A review then found two gaps in recovery: a rollback could erase changes made before the slice, and a helper worktree could be removed while the helper still ran. Version 4, the file above, adds a slice baseline, a restore of both the index and the working tree, and ownership and running checks for helper worktrees. Evals 3 and 4 ran again with version 4. Eval 4 ran in a copy of its repository with a staged change, from before the goal, in a file that the rename owns. Every reply, transcript and anchor is stored, with local paths redacted. The author graded them by hand against the lists, so read the replies before you trust a grade.
 
-| Eval | The objective | Version 2 | Version 3 | Note |
-| --- | --- | --- | --- | --- |
-| 1. Vague objective | "Tidy up the docs site overnight" | pass | not rerun | It read the pages and stated its meaning of "tidy" as an assumption. Every done item names a command and its output. |
-| 2. Pending consent | Move a newsletter list, then maybe email subscribers | pass | not rerun | The email decision, the send and the deletion of the old list are each a stop. |
-| 3. Already good | A complete goal for a dark theme | fail | pass | Version 2 added a slice and did not say the goal was good. Version 3 said so, and changed only the base commit, which does not exist in the test repository. |
-| 4. Shared files | A rename while two other sessions share the checkout | pass | not rerun | It kept the other sessions' three files out of scope, including the untracked one. Every rollback is by path. |
-| 5. Vague evidence (held out) | "All tests pass, CI is green, independent review, report written" | partial | not rerun | Every item names its evidence and its reviewer kind. Two gaps: the report slice runs before the push and CI slice, so the report is written before its evidence exists, and it assumed that a push is allowed. The skill was not tuned on this eval. |
+| Eval | The objective | Version 2 | Version 3 | Version 4 | Note |
+| --- | --- | --- | --- | --- | --- |
+| 1. Vague objective | "Tidy up the docs site overnight" | pass | not rerun | not rerun | It read the pages and stated its meaning of "tidy" as an assumption. Every done item names a command and its output. |
+| 2. Pending consent | Move a newsletter list, then maybe email subscribers | pass | not rerun | not rerun | The email decision, the send and the deletion of the old list are each a stop. |
+| 3. Already good | A complete goal for a dark theme | fail | pass | partial | Version 2 added a slice. Version 3 said the goal was good and changed only the base commit. Version 4 changed only what the repository contradicts, but called the goal "close" and not good. The eval input now includes a baseline, so the goal still meets the rules. |
+| 4. Shared files | A rename while two other sessions share the checkout | pass | not rerun | partial | Version 4 found the staged change in `src/api/routes.py`, made that slice a stop, and used baselines and index-and-worktree restores. It did not tell the session to give each writing helper its own worktree. |
+| 5. Vague evidence (held out) | "All tests pass, CI is green, independent review, report written" | partial | not rerun | not rerun | Every item names its evidence and its reviewer kind. Two gaps: the report slice runs before the push and CI slice, and it assumed that a push is allowed. The grade was re-judged against the clarified rubric: "run it overnight" is not a request to start now, and the reply did not start. The grade stays partial. The skill was not tuned on this eval. |
 
 *Recorded run: `claude-sonnet-5-5`, Claude Code 2.1.323, 2026-11-17. Raw replies, transcripts and anchors: examples/write-goal/evals/runs/2026-11-17-tools/.*
 
@@ -262,7 +263,7 @@ You can now:
 
 1. Name the reviewer kind and the evidence, for example: "A person reviews the pull request. Evidence: the pull request shows their approval." Or name a separate session or another provider, and the file where its findings are saved.
 2. Put a stop in that slice: "Stop and ask the user. Do not continue this slice without a yes." Or leave the email out of scope. Never plan it with an assumed yes or no.
-3. `git restore --source=<last known good sha> -- src/api/schemas.py`. A reset of the whole checkout would also throw away the other session's changes in `src/billing/`.
+3. `git restore --staged --worktree --source=<last known good sha> -- src/api/schemas.py`, if the slice baseline shows that the file had no changes before the slice. If it had, stop and ask. A reset of the whole checkout would also throw away the other session's changes in `src/billing/`.
 
 </details>
 
