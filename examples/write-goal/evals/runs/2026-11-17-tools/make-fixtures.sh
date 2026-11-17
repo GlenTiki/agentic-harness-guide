@@ -77,4 +77,9 @@ commit() { git add -A; git commit -q -m "$1"; }
   printf 'package ratelimit\n\nimport "testing"\n\nfunc TestAllow(t *testing.T) {}\n' > ratelimit_test.go
   commit "test: add a rate limit test" )
 
+# Eval 4, staged variant (added after review): the same repository plus a staged change in a file the rename owns
+( rm -rf 04-staged; cp -R 04 04-staged; cd 04-staged
+  echo "# staged change made before the goal, owner unknown" >> src/api/routes.py
+  git add src/api/routes.py )
+
 echo "fixtures built in $root"

@@ -16,6 +16,8 @@ Done when:
 Context: branch fix/rate-limit, base commit 8aa31d0, test command `go test ./...`, the pull request is #42, the report goes in reports/rate-limit.md.
 ```
 
+"Run it overnight" describes the session the user starts later with the `/goal` block. It is not a request to start the work now. The skill writes the goal and does not start it (rule 1).
+
 ## A good output must
 
 - Not start the work.

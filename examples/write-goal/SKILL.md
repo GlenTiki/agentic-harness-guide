@@ -11,13 +11,13 @@ A long session can lose its context, hit a usage limit, crash mid-step or leave 
 
 ## Rules
 
-1. Write the goal. Do not start the work in it unless the user asks you to.
+1. Write the goal. Do not start the work in it. Run the work yourself only if the user asks you, in the same message, to start it now. Then say first that you will run it. "Run it overnight" and similar words describe the session that the user starts later with the `/goal` block. They are not a request to start now.
 2. Never invent a path, branch, command or fact. Read it from the repository, or mark it as [NEEDED: what is missing].
 3. Never turn pending consent into a default. If a step needs the user's approval, either get the approval before you write the goal, or put a stop in that slice: "Stop and ask the user. Do not continue this slice without a yes."
 4. Every done item names the evidence that proves it, in a form that the check at the end of the session can see: the exact command and the output it must show, the state of a pull request, or a file and the text it must contain. "Tests pass" is not evidence. "`npm test` exits 0 and prints `0 failed`" is evidence.
 5. If a done item needs a review, name the kind of reviewer: a person, a separate session of the same assistant, or a different provider. Do not write "independent review" alone.
 6. Write a done item so the session can check it after the evidence exists. Tell the session to tick an item only after it has run the check and the output is in the session.
-7. Roll back by path. Never put a command in the goal that resets, cleans or checks out the whole working copy. Other sessions may share it.
+7. Roll back by path, and only the changes the slice made. Never put a command in the goal that resets, cleans or checks out the whole working copy. Other sessions may share it, and a path can hold changes that existed before the slice.
 8. If you have no tools in this chat, do not write tool calls and do not say that you ran a command or wrote a file. Use only what the user pasted, and mark the rest as [NEEDED]. Put the anchor text in your reply, and say that the file is not written.
 9. If the user gives a goal that already meets these rules, write "This goal is already good." directly after the anchor line. Keep its done items, evidence, reviewer kinds, slices and stops. Do not add slices or requirements. Change only what the repository contradicts, and list each change with its reason.
 
@@ -30,12 +30,13 @@ A long session can lose its context, hit a usage limit, crash mid-step or leave 
     - the exact paths it changes
     - the proof: the command to run and the output that proves the slice is done
     - the rollback boundary: the last commit before the slice, and the paths to restore
+    - the baseline to record when the slice starts: the output of `git status --porcelain -- <slice paths>`, which shows staged and unstaged changes and untracked files
 4. Tell the session to commit each slice when its proof passes, with the slice id in the subject, for example `docs: [ws-002] add the glossary entry`. Each commit is then the last known good point, and `git log` lists the finished slices.
 5. Write the goal anchor file before you reply. Use `goals/<YYYY-MM-DD>-<slug>.md`, or the path the user names. Put the objective, the done list, the slice table, the recovery steps and the assumptions in it. Start it with frontmatter: `goal`, `status`, `branch`, `base_sha`, `created_at` (UTC, with seconds).
 6. Name a progress log file next to the anchor, for example `goals/<YYYY-MM-DD>-<slug>.progress.md`. Tell the session to append one entry after each slice: time, slice id, commit, proof output, next slice.
 7. Check your draft against this list. Fix any failure before you reply.
     - Does every done item name its evidence and, where needed, its reviewer kind?
-    - Does every slice have a proof and a path-scoped rollback?
+    - Does every slice have a proof, a baseline and a path-scoped rollback?
     - Is every consent decision either settled or written as a stop?
     - Is every path and command from the repository, or marked [NEEDED]?
     - Is the anchor file written?
@@ -58,18 +59,20 @@ Write one fenced `text` block. Line 1 starts with `/goal ` and states the end st
 1. Read the anchor and the progress log.
 2. Run `git status --short`, `git log --oneline -10` and `git worktree list`.
 3. Find the last slice id in the commit subjects. That commit is the last known good point.
-4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice. If it fails, write the failure in the progress log, then restore only that slice's paths: `git restore --source=<last known good sha> -- <slice paths>`. Delete only the new files that slice created.
-5. If a helper worktree for this goal is still listed, commit any partial work to a salvage branch, then remove only that worktree.
-6. Do not run a command that resets, cleans or checks out the whole working copy.
+4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice. If it fails, write the failure in the progress log, then read the slice's baseline in the progress log.
+5. If the baseline shows that a slice path had staged or unstaged changes before the slice, or if there is no baseline, stop and ask the user. Do not restore that path. Otherwise restore the slice paths in the index and the working tree: `git restore --staged --worktree --source=<last known good sha> -- <slice paths>`. Delete only the new files that the slice created, as shown by the baseline.
+6. If a helper worktree is still listed, check two things. The progress log must show that this goal created it. The helper must not still be running: your tool shows it as finished or stopped, or the user says so. If either check fails, leave the worktree and wait. If both pass, commit any partial work to a salvage branch, then remove only that worktree.
+7. Do not run a command that resets, cleans or checks out the whole working copy.
 
 3. Coordination
 - The main session reads state, sends work to helpers, checks what they return, commits and updates the progress log.
 - Send exploration of more than three files, and any large draft, to a helper with a bounded brief: the slice outcome, the paths in scope, earlier failures from the progress log, the proof command, and a word limit for the reply.
-- Give each helper that writes files its own worktree, or run such helpers one at a time.
+- Give each helper that writes files its own worktree, or run such helpers one at a time. Record each helper worktree in the progress log when you create it.
+- When a slice starts, append its baseline to the progress log: the slice id, the time and the output of `git status --porcelain -- <slice paths>`.
 - Before you accept a helper's work, run the slice proof yourself and read the diff.
 
 4. Slices
-- ws-001: <outcome> | Paths: <paths> | Proof: <command and expected output> | Rollback: `git restore --source=<base sha> -- <paths>`
+- ws-001: <outcome> | Paths: <paths> | Proof: <command and expected output> | Baseline: logged at start | Rollback: `git restore --staged --worktree --source=<base sha> -- <paths>`, only if the baseline was clean
 - ws-002: <outcome> | Depends on: ws-001 | Paths: ... | Proof: ... | Rollback: ...
 - ws-NNN: <a slice that needs consent> | Stop and ask the user. Do not continue this slice without a yes.
 

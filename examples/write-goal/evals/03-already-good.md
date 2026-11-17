@@ -12,7 +12,7 @@ D1: The settings page has a theme switch. Evidence: `npm test -- settings` exits
 D2: The choice survives a reload. Evidence: `npm test -- persist` exits 0 and prints "theme persists". Reviewer: none.
 D3: A person checks contrast in both themes. Evidence: a comment from the user on the pull request that says "contrast ok". Reviewer: person.
 Out of scope: other pages.
-Recovery: read the anchor and goals/2026-11-17-dark-theme.progress.md, run git status --short, git log --oneline -10 and git worktree list, find the last [ws-NNN] commit, rerun an interrupted slice's proof, and restore only that slice's paths with git restore --source=<sha> -- <paths> if it fails. Never reset the whole working copy.
+Recovery: read the anchor and goals/2026-11-17-dark-theme.progress.md, run git status --short, git log --oneline -10 and git worktree list, find the last [ws-NNN] commit, rerun an interrupted slice's proof, and if it fails, read the slice baseline (git status --porcelain -- <paths>, logged when the slice started). Stop and ask if a path had changes before the slice; otherwise restore only that slice's paths with git restore --staged --worktree --source=<sha> -- <paths>. A helper worktree is removed only if the progress log shows this goal made it and the helper has finished. Never reset the whole working copy.
 Slices: ws-001 switch (src/settings/Theme.jsx, proof D1), ws-002 persistence (src/settings/store.js, proof D2), ws-003 stop and ask the user for the contrast check (D3). Commit each slice with its id in the subject. Append to the progress log after each slice. Status card on every stop.
 ```
 
