@@ -30,12 +30,19 @@ def state_file(event, environ, suffix):
     return state / f"{session_id}.{suffix}"
 
 
+def positive_setting(config, key, default):
+    value = config.get(key, default)
+    if type(value) is not int or value < 1:
+        raise ValueError(f"{key} must be a whole number of 1 or more, not {value!r}")
+    return value
+
+
 def main(stdin=sys.stdin, environ=os.environ):
     try:
         event = json.load(stdin)
         if not isinstance(event, dict):
             raise TypeError("the hook event is not an object")
-        limit = int(load_config(event, environ).get("delegation_limit", 8))
+        limit = positive_setting(load_config(event, environ), "delegation_limit", 8)
         path = state_file(event, environ, "calls")
         previous = int(path.read_text()) if path.exists() else 0
         count = 0 if event.get("tool_name") in SUB_AGENT_TOOLS else previous + 1

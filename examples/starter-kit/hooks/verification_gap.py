@@ -41,13 +41,20 @@ def update(event, config, files):
     return files + [path] if isinstance(path, str) and path not in files else files
 
 
+def positive_setting(config, key, default):
+    value = config.get(key, default)
+    if type(value) is not int or value < 1:
+        raise ValueError(f"{key} must be a whole number of 1 or more, not {value!r}")
+    return value
+
+
 def main(stdin=sys.stdin, environ=os.environ):
     try:
         event = json.load(stdin)
         if not isinstance(event, dict):
             raise TypeError("the hook event is not an object")
         config = load_config(event, environ)
-        threshold = int(config.get("verification_gap_files", 3))
+        threshold = positive_setting(config, "verification_gap_files", 3)
         path = state_file(event, environ, "written")
         before = json.loads(path.read_text()) if path.exists() else []
         after = update(event, config, before)

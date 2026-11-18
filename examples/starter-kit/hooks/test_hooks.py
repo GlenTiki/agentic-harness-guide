@@ -53,6 +53,21 @@ class HookCase(unittest.TestCase):
                 "CLAUDE_PROJECT_DIR": str(self.root), **extra}
 
 
+class Thresholds(HookCase):
+    CASES = [("verification_gap.py", "verification_gap_files", {"tool_name": "Write", "tool_input": {"file_path": "a"}}),
+             ("delegation_counter.py", "delegation_limit", {"tool_name": "Read"}),
+             ("recall_reinject.py", "recall_every", {"prompt": "next"})]
+
+    def test_a_threshold_below_1_is_reported_and_never_blocks(self):
+        for script, key, event in self.CASES:
+            for value in [0, -1, "3"]:
+                with self.subTest(script=script, value=value):
+                    self.write_config(**{key: value})
+                    result = run_hook(script, {"session_id": "s1", **event}, self.env())
+                    self.assertEqual((result.returncode, result.stdout), (0, ""))
+                    self.assertIn(f"{key} must be a whole number of 1 or more", result.stderr)
+
+
 class BlockDestructiveGit(HookCase):
     BLOCK = ["git push -f", "git push --force origin main", "git push --force-with-lease", "git push origin +main",
              "git -C . push -fu origin main", "git reset --hard", "git reset --hard HEAD~1", "git clean -fd",
