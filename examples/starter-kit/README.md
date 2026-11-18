@@ -12,6 +12,7 @@ This kit is data. It describes a starter setup for a repository that an agent wo
 | --- | --- |
 | `kit-manifest.json` | The typed contract: the questions, the rules between answers, and the items each answer writes or asks the person to run. |
 | `validate_plan.py` | A standard-library Python 3 script. It checks a plan against the manifest and lists the files the plan writes and the commands for the person. |
+| `merge_settings.py` | A standard-library Python 3 script for the `merge-json` mode. It merges a JSON fragment into a JSON file and reports conflicts. |
 | `fixtures/` | Plans with an expected outcome, in language-neutral JSON. One invalid plan exists for each rule. |
 | `files/` | The templates that the items point to. |
 | `hooks/` | Eight hook scripts and their tests. |
@@ -90,7 +91,13 @@ Codex hook support is being checked separately. Until a docs line confirms it, e
 | `orca-python`, `orca-node` | `orca` is true and the stack matches | `orca.yaml` with `nice -n 10 uv sync` or `nice -n 10 npm ci` |
 | `skill-prompt-refiner` | Claude Code and the skill is selected | `.claude/skills/prompt-refiner/SKILL.md`, copied from this guide's prompt refiner kit |
 
-A write has a `mode`. `create` writes a new file. `append` adds the text to the end of the file. `merge-json` merges the fragment into the JSON file: objects merge by key and lists join without duplicates. In a template, `{{test_command}}` and `{{lint_command}}` take the answer. In a JSON template, a whole string `"{{name}}"` becomes the JSON value of the answer, or `null` when it is not set.
+A write has a `mode`. `create` writes a new file. `append` adds the text to the end of the file. `merge-json` merges the fragment into the JSON file with `merge_settings.py`: objects merge by key and lists join without duplicates. Two different values at the same key are a conflict. The script reports each conflict by its JSON path, keeps the target value and exits 1. It prints the merged JSON and never writes the file:
+
+```text
+python3 -I merge_settings.py .claude/settings.json files/claude/hook-tests-before-stop.json
+```
+
+In a template, `{{test_command}}` and `{{lint_command}}` take the answer. In a JSON template, a whole string `"{{name}}"` becomes the JSON value of the answer, or `null` when it is not set.
 
 Commands for the person:
 
@@ -121,6 +128,7 @@ The tests run each hook with a hook event on standard input and check the exit c
 ```text
 python3 -I examples/starter-kit/hooks/test_hooks.py
 python3 -I examples/starter-kit/test_validate_plan.py
+python3 -I examples/starter-kit/test_merge_settings.py
 ```
 
 ### Docs lines
