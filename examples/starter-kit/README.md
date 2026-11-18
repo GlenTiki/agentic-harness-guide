@@ -74,7 +74,7 @@ The `then` outcome is `{"require": "<question>"}`, a condition that must hold, o
 | `orca-needs-known-stack` | error | The Orca setup command comes from the stack. |
 | `hooks-without-claude-code` | warning | The kit registers hooks for Claude Code only. With Codex alone, nothing runs them. |
 
-Codex hook support is being checked separately. Until a docs line confirms it, every blocking hook is Claude Code only.
+The Codex hooks docs say hooks are on by default and that exit code 2 blocks a PreToolUse call. They also list Stop, PostToolUse and UserPromptSubmit, read project hooks from `.codex/hooks.json` in a trusted project, and say a hook that is not managed must be reviewed and trusted before it runs. The kit writes no Codex registration, and none of the kit's hooks has been tested on Codex. So every blocking hook stays Claude Code only in this version.
 
 ## Items
 
@@ -149,7 +149,7 @@ python3 -I examples/starter-kit/test_merge_settings.py
 
 <p class="verified">Docs page fetched on 2026-11-18: https://docs.astral.sh/uv/getting-started/installation/. Quoted line: "curl -LsSf https://astral.sh/uv/install.sh | sh".</p>
 
-The Codex lines are not checked against current docs.
+<p class="verified">Docs page fetched on 2026-11-18: https://learn.chatgpt.com/docs/hooks. Quoted line: "Hooks are enabled by default." The same page says "You can also use exit code 2 and write the blocking reason to stderr" for PreToolUse, and "Non-managed hooks must be reviewed and trusted before they run." Codex CLI on that date: 0.169.0-alpha.11.1. The docs page states no version of its own.</p>
 
 ## Skills by category
 
