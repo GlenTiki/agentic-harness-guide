@@ -138,10 +138,33 @@ class Manifest(unittest.TestCase):
 
     def test_command_pattern_refuses_each_shell_character(self):
         question = next(question for question in MANIFEST["questions"] if question["id"] == "test_command")
-        for char in [";", "&", "|", "`", "$", "<", ">", '"', "\\", "\n", "\r"]:
+        refused = [";", "&", "|", "`", "$", "<", ">", '"', "'", "\\", "(", ")", "*", "?", "[", "]", "{", "}", "\x7f"]
+        for char in refused + [chr(code) for code in range(0x20)]:
             with self.subTest(char=repr(char)):
                 self.assertIsNone(re.fullmatch(question["pattern"], f"pytest {char} x"))
+        for blank in [" ", "   "]:
+            self.assertIsNone(re.fullmatch(question["pattern"], blank))
         self.assertIsNotNone(re.fullmatch(question["pattern"], "uv run pytest -q tests/unit"))
+        self.assertIsNotNone(re.fullmatch(question["pattern"], "npm run test:unit -- --ci=true"))
+
+    def test_lint_command_uses_the_same_pattern(self):
+        patterns = {question["id"]: question.get("pattern") for question in MANIFEST["questions"]}
+        self.assertEqual(patterns["lint_command"], patterns["test_command"])
+
+    def test_pattern_message_names_every_refused_kind(self):
+        _, message = validate_plan.check_string(next(q for q in MANIFEST["questions"] if q["id"] == "test_command"),
+                                                "a'b")[0]
+        for word in ["quote", "bracket", "wildcard", "control"]:
+            self.assertIn(word, message)
+
+
+class JsonRender(unittest.TestCase):
+    def test_answer_inside_a_json_string_is_escaped(self):
+        source = (HERE / "files/claude/permissions-test.json").read_text()
+        for value in ['a"b', "a\\b", "a\tb", "a\x00b"]:
+            with self.subTest(value=repr(value)):
+                text = validate_plan.render(source, {"test_command": value}, True)
+                self.assertEqual(json.loads(text)["permissions"]["allow"], [f"Bash({value})"])
 
 
 if __name__ == "__main__":

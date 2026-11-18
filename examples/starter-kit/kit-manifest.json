@@ -36,23 +36,23 @@
       "id": "test_command",
       "type": "string",
       "label": "Which command runs the tests?",
-      "help": "One command, for example: uv run pytest. Leave it empty if the repository has no tests yet. Shell operators, quotes and backslashes are refused.",
+      "help": "One command, for example: uv run pytest. Leave it empty if the repository has no tests yet. Shell operators, quotes, backslashes, brackets, wildcards and control characters are refused.",
       "options": [],
       "default": null,
       "min": 1,
       "max": 200,
-      "pattern": "^[^;&|`$<>\"\\\\\\r\\n]+$"
+      "pattern": "^(?=.*[^ ])[^;&|`$<>\"'\\\\()*?\\[\\]{}\\x00-\\x1f\\x7f]+$"
     },
     {
       "id": "lint_command",
       "type": "string",
       "label": "Which command runs the linter or the static checks?",
-      "help": "One command, for example: uv run ruff check. Leave it empty if you have none. Shell operators, quotes and backslashes are refused.",
+      "help": "One command, for example: uv run ruff check. Leave it empty if you have none. Shell operators, quotes, backslashes, brackets, wildcards and control characters are refused.",
       "options": [],
       "default": null,
       "min": 1,
       "max": 200,
-      "pattern": "^[^;&|`$<>\"\\\\\\r\\n]+$"
+      "pattern": "^(?=.*[^ ])[^;&|`$<>\"'\\\\()*?\\[\\]{}\\x00-\\x1f\\x7f]+$"
     },
     {
       "id": "memory",

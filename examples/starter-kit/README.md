@@ -43,7 +43,7 @@ A browser chat uses a form page that reads the same manifest and runs the same r
 | --- | --- | --- | --- |
 | `hosts` | multi | `["claude-code"]` | At least 1 of `claude-code`, `codex` |
 | `stack` | single | `python` | `python`, `node` or `other` |
-| `test_command` | string | not set | 1 to 200 characters. No `;`, `&`, `\|`, backtick, `$`, `<`, `>`, double quote, backslash or line break |
+| `test_command` | string | not set | 1 to 200 characters, at least one not a space. No `;`, `&`, `\|`, backtick, `$`, `<`, `>`, single or double quote, backslash, `(`, `)`, `[`, `]`, `{`, `}`, `*`, `?` or control character |
 | `lint_command` | string | not set | The same as `test_command` |
 | `memory` | boolean | `false` | |
 | `orca` | boolean | `false` | |
@@ -97,7 +97,7 @@ A write has a `mode`. `create` writes a new file. `append` adds the text to the 
 python3 -I merge_settings.py .claude/settings.json files/claude/hook-tests-before-stop.json
 ```
 
-In a template, `{{test_command}}` and `{{lint_command}}` take the answer. In a JSON template, a whole string `"{{name}}"` becomes the JSON value of the answer, or `null` when it is not set.
+In a template, `{{test_command}}` and `{{lint_command}}` take the answer. In a JSON template, a whole string `"{{name}}"` becomes the JSON value of the answer, or `null` when it is not set. A placeholder inside a longer JSON string takes the JSON-escaped answer. The command pattern refuses brackets and wildcards, so an answer such as `*` cannot render the permission rule `Bash(*)`, which would allow every command.
 
 Commands for the person:
 

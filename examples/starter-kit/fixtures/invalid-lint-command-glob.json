@@ -1,0 +1,19 @@
+{
+  "description": "A glob bracket in the lint command.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "lint_command": "ruff check [ab].py"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "lint_command-pattern"
+    ],
+    "warnings": []
+  }
+}

@@ -71,7 +71,11 @@ def check_string(question, value):
     if len(value) > question.get("max", len(value)):
         return [(f"{qid}-max", f"{qid} is longer than {question['max']} characters.")]
     if "pattern" in question and not re.fullmatch(question["pattern"], value):
-        return [(f"{qid}-pattern", f"{qid} contains a character the kit refuses, such as ; & | $ or a quote.")]
+        return [(
+            f"{qid}-pattern",
+            f"{qid} must hold a command and no shell operator (; & | ` $ < >), quote, backslash, "
+            "bracket ( ) [ ] { }, wildcard (* ?) or control character such as a tab.",
+        )]
     return []
 
 
@@ -121,9 +125,10 @@ def resolve(answers, manifest):
 
 
 def render(text, answers, as_json):
-    if as_json:
-        text = JSON_PLACEHOLDER.sub(lambda match: json.dumps(answers.get(match.group(1))), text)
-    return PLACEHOLDER.sub(lambda match: answers.get(match.group(1)) or UNSET_TEXT, text)
+    if not as_json:
+        return PLACEHOLDER.sub(lambda match: answers.get(match.group(1)) or UNSET_TEXT, text)
+    text = JSON_PLACEHOLDER.sub(lambda match: json.dumps(answers.get(match.group(1))), text)
+    return PLACEHOLDER.sub(lambda match: json.dumps(answers.get(match.group(1)) or UNSET_TEXT)[1:-1], text)
 
 
 def print_resolution(resolution, answers, render_files, kit_dir):
