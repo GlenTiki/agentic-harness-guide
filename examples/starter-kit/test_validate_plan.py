@@ -81,7 +81,7 @@ class Resolution(unittest.TestCase):
     def test_codex_alone_gets_no_claude_files(self):
         _, resolution = self.resolve("valid-codex-node")
         self.assertEqual([write["path"] for write in resolution["writes"]], ["AGENTS.md", "orca.yaml"])
-        self.assertEqual([step["command"] for step in resolution["run"]], ["orca --version"])
+        self.assertEqual([step["command"] for step in resolution["run"]], ["brew install --cask stablyai/orca/orca"])
 
     def test_full_plan_renders_every_json_file_to_valid_json(self):
         answers, resolution = self.resolve("valid-full")

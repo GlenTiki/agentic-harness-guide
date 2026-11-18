@@ -104,7 +104,9 @@ Commands for the person:
 | Item | Command | Why |
 | --- | --- | --- |
 | `orca-python` | `curl -LsSf https://astral.sh/uv/install.sh \| sh` | Installs uv, which the setup script calls. Skip it if `uv --version` works. |
-| `orca-python`, `orca-node` | `orca --version` | Checks that Orca is installed. If it fails, install Orca from its official site. |
+| `orca-python`, `orca-node` | `brew install --cask stablyai/orca/orca` | Installs the Orca app on macOS with Homebrew. On Windows or Linux, use the installer from the GitHub Releases page, https://github.com/stablyai/orca/releases. Skip it if Orca is installed. |
+
+<p class="verified">Docs page fetched on 2026-11-18: https://orca.dev/docs/install. Quoted line: "Orca is also published as a Homebrew cask, auto-bumped on every stable release: brew install --cask stablyai/orca/orca". The same page links the macOS, Windows and Linux installers on https://github.com/stablyai/orca/releases.</p>
 
 ## Hooks
 

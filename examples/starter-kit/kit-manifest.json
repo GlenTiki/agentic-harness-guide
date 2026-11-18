@@ -385,7 +385,7 @@
       "writes": [{ "path": "orca.yaml", "source": "files/orca/python.yaml", "mode": "create" }],
       "run": [
         { "command": "curl -LsSf https://astral.sh/uv/install.sh | sh", "why": "Installs uv, which the setup script calls. Skip it if uv --version already works." },
-        { "command": "orca --version", "why": "Checks that the Orca app and its command are installed. Install Orca from its official site if this fails." }
+        { "command": "brew install --cask stablyai/orca/orca", "why": "Installs the Orca app on macOS with Homebrew. On Windows or Linux, use the installer from https://github.com/stablyai/orca/releases instead. Skip it if Orca is installed." }
       ]
     },
     {
@@ -393,7 +393,7 @@
       "when": [{ "answer": "orca", "equals": true }, { "answer": "stack", "equals": "node" }],
       "writes": [{ "path": "orca.yaml", "source": "files/orca/node.yaml", "mode": "create" }],
       "run": [
-        { "command": "orca --version", "why": "Checks that the Orca app and its command are installed. Install Orca from its official site if this fails." }
+        { "command": "brew install --cask stablyai/orca/orca", "why": "Installs the Orca app on macOS with Homebrew. On Windows or Linux, use the installer from https://github.com/stablyai/orca/releases instead. Skip it if Orca is installed." }
       ]
     },
     {
