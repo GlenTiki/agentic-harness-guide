@@ -399,6 +399,10 @@ Removing one part of an instruction to see what changes. One run per variant sho
 
 A fixed formula that ranks documents by the words they share with a query. Rare words count more. It needs no model. See the [relevance page](../setup/relevance-and-reranking/).
 
+### Bounded context
+
+A part of a system where each word has one meaning, usually owned by one team. For agent work, it is the folder, files and check that one helper owns for one task. See [distributed-systems primitives](../shelf/foundations/distributed-systems-primitives/).
+
 ### Capability
 
 A named power the assistant may use, such as "send email". A capability can be on or off independently of the others. A [tool](#tool) is the action that uses it.
@@ -418,6 +422,10 @@ A short fingerprint (a hash) of an exact file or set of changes. Approval record
 ### Embedding
 
 A list of numbers that stands for the meaning of a text. Texts with similar meaning have lists that are close together. Use the same embedding model to index and to query.
+
+### Eventual consistency
+
+Copies of data agree only after updates spread, so a read can be out of date for a while. Two helpers can hold different views of one repository. See [distributed-systems primitives](../shelf/foundations/distributed-systems-primitives/).
 
 ### Exit code
 
