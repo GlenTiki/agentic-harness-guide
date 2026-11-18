@@ -22,9 +22,10 @@ def load_config(event, environ):
 
 def test_command(event, environ):
     command = environ.get("STARTER_KIT_TEST_COMMAND") or load_config(event, environ).get("test_command")
-    if not isinstance(command, str) or not command:
+    args = shlex.split(command) if isinstance(command, str) else []
+    if not args:
         raise ValueError("no test command is configured")
-    return shlex.split(command)
+    return args
 
 
 def main(stdin=sys.stdin, environ=os.environ):

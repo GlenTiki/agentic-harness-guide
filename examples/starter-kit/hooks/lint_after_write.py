@@ -26,11 +26,12 @@ def context(text):
 
 def lint_report(event, environ):
     command = environ.get("STARTER_KIT_LINT_COMMAND") or load_config(event, environ).get("lint_command")
-    if not isinstance(command, str) or not command:
+    args = shlex.split(command) if isinstance(command, str) else []
+    if not args:
         return None
     try:
         result = subprocess.run(
-            shlex.split(command), cwd=project_dir(event, environ), capture_output=True, text=True, timeout=120
+            args, cwd=project_dir(event, environ), capture_output=True, text=True, timeout=120
         )
     except FileNotFoundError as error:
         return f"The lint hook could not start {error.filename}."

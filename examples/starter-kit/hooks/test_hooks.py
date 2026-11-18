@@ -109,6 +109,18 @@ class TestsBeforeStop(HookCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("no test command", result.stderr)
 
+    def test_blank_command_blocks_with_a_clear_reason(self):
+        self.write_config(test_command="   ")
+        result = self.stop()
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("no test command", result.stderr)
+
+    def test_unbalanced_quote_blocks_with_a_clear_reason(self):
+        self.write_config(test_command="npm test 'oops")
+        result = self.stop()
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("could not check this stop", result.stderr)
+
     def test_command_that_cannot_start_blocks(self):
         self.write_config(test_command="no-such-program-starter-kit")
         result = self.stop()
@@ -139,6 +151,11 @@ class LintAfterWrite(HookCase):
 
     def test_bad_input_never_blocks(self):
         self.assertEqual(run_hook("lint_after_write.py", "not json", self.env()).returncode, 0)
+
+    def test_blank_lint_command_adds_nothing(self):
+        self.write_config(lint_command="   ")
+        result = self.write()
+        self.assertEqual((result.returncode, result.stdout, result.stderr), (0, "", ""))
 
 
 class VerificationGap(HookCase):
