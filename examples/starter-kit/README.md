@@ -35,7 +35,7 @@ A terminal agent, such as Claude Code, Codex or an agent in Orca, asks one picke
 
 ### Questions in a browser chat
 
-A browser chat uses a form page that reads the same manifest and runs the same rules. The form is not in this version of the kit. Both surfaces produce the same plan JSON, and `validate_plan.py` checks both.
+A browser chat uses the form on the guide's "Set up your environment" page (https://glentiki.dev/agentic-harness-guide/setup/set-up-your-environment/). It reads the same manifest and runs the same rules. Both surfaces produce the same plan JSON, and `validate_plan.py` checks both.
 
 ## Answers and rules
 
