@@ -105,10 +105,9 @@ export const resolve = (answers, manifest) => {
 export const visibleOptions = (question, answers) =>
   (question.options ?? []).filter((option) => !option.hosts || option.hosts.some((host) => (answers.hosts ?? []).includes(host)));
 
-/** The form shows a question unless its options all drop out, or a rule requires it and no such rule is active. */
-export const isVisible = (question, answers, manifest) => {
-  if ((question.options ?? []).length > 0 && visibleOptions(question, answers).length === 0) return false;
-  const requiring = manifest.rules.filter((rule) => rule.then.require === question.id);
-  if (requiring.length === 0) return true;
-  return requiring.some((rule) => allHold(rule.when, answers));
-};
+/** The form shows a question unless all of its options drop out. */
+export const isVisible = (question, answers) => (question.options ?? []).length === 0 || visibleOptions(question, answers).length > 0;
+
+/** The active rules that require an answer to this question, such as a selected hook that runs the test command. */
+export const requiringRules = (question, answers, manifest) =>
+  manifest.rules.filter((rule) => rule.then.require === question.id && allHold(rule.when, answers));

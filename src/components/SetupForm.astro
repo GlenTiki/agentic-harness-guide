@@ -32,7 +32,16 @@ const defaultText = (value: unknown) => {
       const describedBy = `${help} ${issue}`;
       return (
         <fieldset class="kit-question" data-question={question.id} data-type={question.type} aria-describedby={describedBy}>
-          <legend>{question.label}</legend>
+          <legend>
+            {question.label}
+            {question.type === 'string' && (
+              <>
+                {' '}
+                <span class="kit-tag" data-optional-tag>(optional)</span>
+                <span class="kit-tag kit-tag-required" data-required-tag hidden>(required by a selected hook)</span>
+              </>
+            )}
+          </legend>
           <p class="kit-help" id={help}>{question.help}</p>
           {question.type === 'single' &&
             question.options.map((option) => (
@@ -101,7 +110,7 @@ const defaultText = (value: unknown) => {
 
 <script>
   import manifest from '../../examples/starter-kit/kit-manifest.json';
-  import { isVisible, resolve, validate, visibleOptions } from '../lib/kit-rules.mjs';
+  import { isVisible, requiringRules, resolve, validate, visibleOptions } from '../lib/kit-rules.mjs';
   import { REPO_URL } from '../data/site';
 
   type Answers = Record<string, unknown>;
@@ -152,8 +161,15 @@ const defaultText = (value: unknown) => {
       const answers: Answers = {};
       for (const question of manifest.questions) {
         const set = fieldsetOf(question.id);
-        set.hidden = !isVisible(question, shown, manifest);
+        set.hidden = !isVisible(question, shown);
         if (!set.hidden && question.id in shown) answers[question.id] = shown[question.id];
+      }
+      for (const question of manifest.questions) {
+        const set = fieldsetOf(question.id);
+        const required = !set.hidden && requiringRules(question, answers, manifest).length > 0;
+        set.toggleAttribute('data-required', required);
+        set.querySelector<HTMLElement>('[data-required-tag]')?.toggleAttribute('hidden', !required);
+        set.querySelectorAll('input[type="text"]').forEach((input) => input.toggleAttribute('aria-required', required));
       }
       return answers;
     };
@@ -279,6 +295,18 @@ const defaultText = (value: unknown) => {
     font-weight: 600;
     padding-inline: var(--ahg-space-1);
     color: var(--ahg-text);
+  }
+  .kit-tag {
+    font-weight: 400;
+    color: var(--ahg-muted);
+    font-size: var(--ahg-text-small);
+  }
+  .kit-tag-required {
+    color: var(--ahg-wrong);
+    font-weight: 600;
+  }
+  .kit-question[data-required] [data-optional-tag] {
+    display: none;
   }
   .kit-help,
   .kit-option-note {

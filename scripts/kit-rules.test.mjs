@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
-import { fullMatch, isVisible, resolve, validate } from '../src/lib/kit-rules.mjs';
+import { fullMatch, isVisible, requiringRules, resolve, validate } from '../src/lib/kit-rules.mjs';
 
 const kit = path.resolve('examples/starter-kit');
 const manifest = JSON.parse(fs.readFileSync(path.join(kit, 'kit-manifest.json'), 'utf8'));
@@ -80,13 +80,17 @@ test('a string over the maximum counts code points, not UTF-16 units', () => {
   assert.ok(!ids(errors).includes('test_command-max'));
 });
 
-test('the form hides the test command until a rule needs it, and hides hooks with no host', () => {
+test('the form always shows the commands, marks them required only when a hook needs them, and hides hooks with no host', () => {
   const tests = question('test_command');
   const hooks = question('hooks');
-  assert.equal(isVisible(tests, { hosts: ['claude-code'], hooks: [] }, manifest), false);
-  assert.equal(isVisible(tests, { hosts: ['claude-code'], hooks: ['tests-before-stop'] }, manifest), true);
-  assert.equal(isVisible(hooks, { hosts: ['codex'] }, manifest), false);
-  assert.equal(isVisible(hooks, { hosts: ['claude-code'] }, manifest), true);
+  assert.equal(isVisible(tests, { hosts: ['claude-code'], hooks: [] }), true);
+  assert.deepEqual(requiringRules(tests, { hosts: ['claude-code'], hooks: [] }, manifest), []);
+  assert.deepEqual(
+    requiringRules(tests, { hosts: ['claude-code'], hooks: ['tests-before-stop', 'verification-gap'] }, manifest).map((rule) => rule.id),
+    ['tests-before-stop-needs-test-command', 'verification-gap-needs-test-command'],
+  );
+  assert.equal(isVisible(hooks, { hosts: ['codex'] }), false);
+  assert.equal(isVisible(hooks, { hosts: ['claude-code'] }), true);
 });
 
 test('the hook menu has nothing selected by default', () => {
