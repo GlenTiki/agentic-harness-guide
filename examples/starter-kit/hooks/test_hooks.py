@@ -290,6 +290,14 @@ class PrSizeNudge(HookCase):
         self.commit_files(3, 1)
         self.assertIn("in 3 files", context_of(self.push()))
 
+    def test_option_shaped_base_ref_is_refused(self):
+        self.commit_files(1, 9)
+        self.write_config(base_ref=f"--output={self.root / 'evil'}")
+        result = self.push()
+        self.assertEqual((result.returncode, result.stdout), (0, ""))
+        self.assertIn("base_ref must not start with -", result.stderr)
+        self.assertEqual(list(self.root.glob("evil*")), [])
+
     def test_other_commands_add_nothing(self):
         self.commit_files(1, 9)
         self.assertIsNone(context_of(self.push("git status")))

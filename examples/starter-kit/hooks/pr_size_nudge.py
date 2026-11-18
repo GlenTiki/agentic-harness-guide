@@ -24,8 +24,14 @@ def is_push(command):
 
 
 def diff_size(cwd, base_ref):
+    if not isinstance(base_ref, str) or not base_ref or base_ref.startswith("-"):
+        raise ValueError(f"base_ref must not start with - and must not be empty, not {base_ref!r}")
     result = subprocess.run(
-        ["git", "diff", "--numstat", f"{base_ref}...HEAD"], cwd=cwd, capture_output=True, text=True, timeout=30
+        ["git", "diff", "--numstat", "--end-of-options", f"{base_ref}...HEAD", "--"],
+        cwd=cwd,
+        capture_output=True,
+        text=True,
+        timeout=30,
     )
     if result.returncode != 0:
         raise OSError(result.stderr.strip() or "git diff failed")
