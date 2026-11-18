@@ -33,7 +33,9 @@ description: Draft release notes from merged pull requests since the last tag. U
 
 The `--merges` flag lists only merge commits. A squash merge or a rebase merge makes ordinary commits, so the flag would hide those changes. A merge commit also does not have to name a pull request. Whether the host puts the pull request number in the commit subject depends on its settings, so check yours before you rely on step 3.
 
-**2. Write the description as the trigger.** The harness uses it to decide when to load the skill. Say what the skill does and when to use it. Put the main use first, because long descriptions are truncated in the listing.
+**2. Write the description as the trigger.** The harness uses it to decide when to load the skill. Say what the skill does and when to use it. Put the main use first. Claude Code cuts the description and the optional `when_to_use` text at 1,536 characters in the listing, so the words at the end are the first lost.
+
+<p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/skills.md. Quoted line: "Put the key use case first: the combined `description` and `when_to_use` text is truncated at 1,536 characters in the skill listing to reduce context usage." Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
 
 **3. Use progressive disclosure.** Keep `SKILL.md` under about 500 lines. Put reference material, examples and scripts in separate files in the skill directory, and link to them from the body. The agent reads them only when it needs them. Scripts run without being loaded into context.
 
@@ -115,10 +117,6 @@ description: Draft release notes from pull requests merged since the last tag. U
 ---
 ```
 
-Claude Code behaviour: the description and the optional `when_to_use` text share one limit in the skill listing. The listing cuts the combined text at 1,536 characters, so the exclusions at the end are the first words lost. Keep the whole description well under that limit.
-
-<p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/skills.md. Quoted line: "Put the key use case first: the combined `description` and `when_to_use` text is truncated at 1,536 characters in the skill listing to reduce context usage." Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
-
 ## A trigger that goes stale
 
 A description goes stale in two ways. The procedure changes and the description does not, so the skill loads for a job it no longer does. Or a new skill takes over part of the job and the old description still claims it. *Principle, not measured.*
@@ -134,7 +132,7 @@ Two agents on one machine, such as Claude Code and Codex CLI, each read skills f
 3. Pin each third-party skill in a lock file. Record the source repository, the path inside it and a content hash. A changed hash means the upstream skill changed, so read it again before you accept it.
 4. Run a packaging test in your normal test suite. The test compares each host copy with the canonical skill and fails on any difference.
 
-The lock file applies item 6 above to a whole folder of skills. The packaging test turns "I synced it" into a check that can fail.
+The lock file applies item 6 under What to enable to a whole folder of skills. The packaging test turns "I synced it" into a check that can fail.
 
 ## Sort skills by what they can do
 
@@ -146,11 +144,11 @@ A skill that only holds instructions is different from a skill that runs a scrip
 | 1 | Runs locally |
 | 2 | Reaches out beyond the machine |
 
-The classifier looks for scripts in the skill directory, dependency manifests, install verbs, a download piped into a shell, and Bash in the skill's tool approvals. The classifier only raises a tier. One tier-2 signal makes the skill tier 2, and no other signal lowers it. Review a tier-2 skill as you would review a new [connector](../../../glossary/#connector-mcp). Give its powers their own [capability](../../../glossary/#capability) switch, as [capability gating](../../control/capability-gating/) describes. Treat what it fetches as data, as [untrusted input](../../control/untrusted-input/) describes.
+The classifier looks for scripts in the skill directory and for dependency manifests. It also looks for install verbs, a download piped into a shell, and Bash in the skill's tool approvals. The classifier only raises a tier. One tier-2 signal makes the skill tier 2, and no other signal lowers it. Review a tier-2 skill as you would review a new [connector](../../../glossary/#connector-mcp). Give its powers their own [capability](../../../glossary/#capability) switch, as [capability gating](../../control/capability-gating/) describes. Treat what it fetches as data, as [untrusted input](../../control/untrusted-input/) describes.
 
 ## Skills worth having, by task
 
-The list below comes from aggregate local usage across the author's sessions. No counts and no project names are published. The orchestration skills, the ask skill and the goal writer saw the most use. An earlier usage report over the author's sessions found two top friction signals: "wrong approach" and "excessive changes". Several skills below exist to answer those two signals.
+The list below is distilled from the author's own sessions. In those sessions, the orchestration skills, the ask skill and the goal writer were used most. An earlier usage report gave the author two top friction signals: "wrong approach" and "excessive changes". Several skills below exist to answer those two signals.
 
 - **Planning:** a goal writer that turns a long task into a stated goal with recovery notes; a sequential reasoning skill; a reliability explainer that predicts how per-step errors compound across a [pipeline](../../../glossary/#pipeline).
 - **Test first and pairing:** a pair programmer that writes the failing test before any code; an iterate loop that builds one small slice at a time; an ask skill that collects open decisions into one message.
@@ -160,7 +158,7 @@ The list below comes from aggregate local usage across the author's sessions. No
 - **Memory:** recall before acting; a session reminder that restates the open task. See [memory](../../context/memory/).
 - **Writing:** diagrams. For prompts, the guide uses [the prompt refiner](../../../appendix/prompt-refiner/).
 
-The friction signals also back four habits that sit outside any one skill: make the smallest change that does the job, run a new check on a small sample before a large run, pause between a push and a pull request, and pre-approve routine permissions so the agent does not stop to ask about them.
+The friction signals also back four habits that sit outside any one skill: make [the smallest change](../../quality/small-prs/) that does the job, run a new check on a small sample before a large run, pause between a push and a pull request, and [pre-approve routine permissions](../../control/permissions-and-sandboxing/) so the agent does not stop to ask about them.
 
 ## Failure modes it reduces
 
