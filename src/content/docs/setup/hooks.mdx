@@ -142,19 +142,19 @@ My fix is one adapter that sorts hooks into two kinds. An *advisory* hook that e
 
 **Status.** Runs in my setup, in Claude Code. The case study does not build these hooks.
 
-My hooks do two jobs. A guardrail blocks an action. A nudge adds a short note to the agent's context and lets the action go ahead. Most of my hooks are nudges, because a nudge that misfires costs a sentence of context, and a block that misfires stops the work.
+My hooks do two jobs. A guardrail blocks an action. A nudge adds a short note to the agent's context and lets the action go ahead. A nudge is what the section above calls advisory. Most of my hooks are nudges, because a nudge that misfires costs a sentence of context, and a block that misfires stops the work.
 
 Three guardrails cover the shell and the sub-agents:
 
 - A Bash timeout check makes sure each shell command runs with a time limit.
 - A wrapper keeps the full output of a failed command that was piped into tail. The [shelf hooks page](../../shelf/control/hooks/#a-pipe-into-tail-hides-the-exit-status) explains the trap.
-- A worktree check blocks a [sub-agent](../../glossary/#sub-agent) that would write files from starting in the shared checkout. It must run in its own [worktree](../../glossary/#worktree).
+- A worktree check stops a [sub-agent](../../glossary/#sub-agent) that writes files from starting in the shared checkout. It must run in its own [worktree](../../glossary/#worktree).
 
 The nudges target habits an agent drops when nothing reminds it. Each row runs at the event named in its first column.
 
 | Event | What it checks | Block or nudge |
 | --- | --- | --- |
-| After each tool call and each prompt | Five, then ten, tool calls in a row with no [delegation](../../glossary/#delegation) | Nudge |
+| After each tool call and each prompt | Five, then ten, tool calls in a row with no [delegation](../../glossary/#delegation). See [orchestrator and sub-agents](../orchestrator-and-subagents/) | Nudge |
 | After each tool call and each prompt | Ten tool calls in a row with no question to the user | Nudge |
 | Each prompt | A claim in the last reply that hedges and was not checked | Nudge |
 | After the first markdown write | Nothing: it adds the style guide once per session | Nudge |
@@ -165,7 +165,7 @@ The nudges target habits an agent drops when nothing reminds it. Each row runs a
 | Before a delegation | The outgoing brief, checked against stored memory | Nudge |
 | Before a push or a pull request | More than 400 changed lines or more than 8 files | Nudge |
 | Each prompt | Hooks that crashed since the last prompt | Nudge |
-| Stop | Durable facts from the session that were not saved to memory | Blocks the first Stop once |
+| Stop | Durable facts from the session that were not saved to [memory](../memory/) | Blocks the first Stop once |
 | Stop | Changed files that no reviewer has read. It starts a read-only [reviewer](../../glossary/#reviewer) | Blocks one Stop per change set |
 | Stop | File and line citations that no longer resolve | Blocks until they resolve |
 
@@ -186,7 +186,7 @@ Only an exit-code block travels between agents. A JSON deny decision has a shape
 
 In my setup today, Codex CLI wires only the session-start hooks. The blocking guardrails protect Claude Code sessions only. A Codex session runs with no guardrail until the repair lands.
 
-Codex CLI behaviour: hooks are on by default. A hook can block a pre-tool call with exit code 2 and a reason on stderr. Codex skips a new or changed hook until you review and trust it, so the repair needs that review step for each hook.
+Codex CLI behaviour: hooks are on by default. A hook can block a pre-tool call with exit code 2 and a reason on stderr. Codex skips a new or changed non-managed hook until you review and trust it, so the repair needs that review step for each hook.
 
 <p class="verified">Docs page fetched on 2026-11-18: https://learn.chatgpt.com/docs/hooks (the old developers.openai.com/codex/hooks address redirects there). Quoted line: "Hooks are enabled by default." The same page says: "You can also use exit code 2 and write the blocking reason to stderr." and "Non-managed hooks must be reviewed and trusted before they run." Codex CLI on that date: 0.169.0-alpha.11.1. The docs page states no version of its own.</p>
 
