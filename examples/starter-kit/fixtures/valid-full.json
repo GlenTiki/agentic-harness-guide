@@ -1,0 +1,36 @@
+{
+  "description": "Every option selected on both hosts.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code",
+        "codex"
+      ],
+      "stack": "python",
+      "test_command": "uv run pytest",
+      "lint_command": "uv run ruff check",
+      "memory": true,
+      "orca": true,
+      "hooks": [
+        "block-destructive-git",
+        "tests-before-stop",
+        "lint-after-write",
+        "verification-gap",
+        "delegation-counter",
+        "memory-save-on-stop",
+        "recall-reinject",
+        "pr-size-nudge"
+      ],
+      "roles": true,
+      "skills": [
+        "prompt-refiner",
+        "independent-review"
+      ]
+    }
+  },
+  "expect": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

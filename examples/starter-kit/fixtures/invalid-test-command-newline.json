@@ -1,0 +1,19 @@
+{
+  "description": "A newline in the test command.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "test_command": "uv run pytest\nrm -rf ."
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "test_command-pattern"
+    ],
+    "warnings": []
+  }
+}

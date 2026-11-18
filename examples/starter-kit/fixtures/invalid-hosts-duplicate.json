@@ -1,0 +1,19 @@
+{
+  "description": "A host listed twice.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code",
+        "claude-code"
+      ],
+      "stack": "python"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "hosts-duplicate"
+    ],
+    "warnings": []
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "description": "The memory Stop hook with no memory folder.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "memory": false,
+      "hooks": [
+        "memory-save-on-stop"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "memory-save-on-stop-needs-memory"
+    ],
+    "warnings": []
+  }
+}

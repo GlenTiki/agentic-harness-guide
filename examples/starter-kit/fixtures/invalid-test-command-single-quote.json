@@ -1,0 +1,19 @@
+{
+  "description": "An unbalanced single quote that breaks shlex.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "test_command": "npm test 'oops"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "test_command-pattern"
+    ],
+    "warnings": []
+  }
+}

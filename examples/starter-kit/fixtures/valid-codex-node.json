@@ -1,0 +1,18 @@
+{
+  "description": "Codex alone, Node, Orca, no hooks.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "codex"
+      ],
+      "stack": "node",
+      "test_command": "npm test",
+      "orca": true
+    }
+  },
+  "expect": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

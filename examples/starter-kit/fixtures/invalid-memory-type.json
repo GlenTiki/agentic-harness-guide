@@ -1,0 +1,19 @@
+{
+  "description": "Text where a boolean belongs.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "memory": "yes"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "memory-type"
+    ],
+    "warnings": []
+  }
+}

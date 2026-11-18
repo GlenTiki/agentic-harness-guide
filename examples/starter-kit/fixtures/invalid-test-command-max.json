@@ -1,0 +1,19 @@
+{
+  "description": "A test command over 200 characters.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "test_command": "pytest aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "test_command-max"
+    ],
+    "warnings": []
+  }
+}

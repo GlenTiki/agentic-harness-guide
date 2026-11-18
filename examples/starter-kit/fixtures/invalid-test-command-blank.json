@@ -1,0 +1,19 @@
+{
+  "description": "Spaces only, which split to no command.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "test_command": "   "
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "test_command-pattern"
+    ],
+    "warnings": []
+  }
+}

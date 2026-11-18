@@ -1,0 +1,19 @@
+{
+  "description": "One value where a list belongs.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "hooks": "block-destructive-git"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "hooks-type"
+    ],
+    "warnings": []
+  }
+}

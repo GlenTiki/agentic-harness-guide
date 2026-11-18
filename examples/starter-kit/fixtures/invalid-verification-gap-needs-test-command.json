@@ -1,0 +1,21 @@
+{
+  "description": "verification-gap with no test command.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "hooks": [
+        "verification-gap"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "verification-gap-needs-test-command"
+    ],
+    "warnings": []
+  }
+}
