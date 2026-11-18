@@ -1,5 +1,10 @@
 ---
 import manifest from '../../examples/starter-kit/kit-manifest.json';
+import { ruleQuestion } from '../lib/kit-rules.mjs';
+
+const ruleTargets = new Set(manifest.rules.map(ruleQuestion));
+const canHaveIssue = (question: (typeof manifest.questions)[number]) =>
+  ruleTargets.has(question.id) || question.type === 'string' || (question.type === 'multi' && ((question as { min?: number }).min ?? 0) > 0);
 
 const typeNote = { single: 'Pick one', multi: 'Pick any', boolean: 'Yes or no', string: 'Text' } as const;
 const defaultText = (value: unknown) => {
@@ -29,7 +34,7 @@ const defaultText = (value: unknown) => {
     {manifest.questions.map((question) => {
       const help = `kit-${question.id}-help`;
       const issue = `kit-${question.id}-issue`;
-      const describedBy = `${help} ${issue}`;
+      const describedBy = canHaveIssue(question) ? `${help} ${issue}` : help;
       return (
         <fieldset class="kit-question" data-question={question.id} data-type={question.type} aria-describedby={describedBy}>
           <legend>
@@ -79,7 +84,7 @@ const defaultText = (value: unknown) => {
               />
             </label>
           )}
-          <p class="kit-issue" id={issue} data-issue aria-live="polite"></p>
+          {canHaveIssue(question) && <p class="kit-issue" id={issue} data-issue aria-live="polite"></p>}
         </fieldset>
       );
     })}
@@ -199,7 +204,8 @@ const defaultText = (value: unknown) => {
         const id = set.dataset.question!;
         const mine = errors.filter((issue: { question: string | null }) => issue.question === id);
         const cautions = warnings.filter((issue: { question: string | null }) => issue.question === id);
-        const box = set.querySelector<HTMLElement>('[data-issue]')!;
+        const box = set.querySelector<HTMLElement>('[data-issue]');
+        if (!box) continue;
         const key = JSON.stringify([mine.map((issue: { id: string }) => issue.id), cautions.map((issue: { id: string }) => issue.id)]);
         if (box.dataset.key !== key) box.dataset.key = key;
         else continue;
@@ -210,7 +216,10 @@ const defaultText = (value: unknown) => {
         set.toggleAttribute('data-invalid', mine.length > 0);
         set.querySelectorAll('input').forEach((input) => input.setAttribute('aria-invalid', String(mine.length > 0)));
       }
-      const unplaced = errors.filter((issue: { question: string | null }) => !issue.question || fieldsetOf(issue.question).hidden);
+      const unplaced = errors.filter((issue: { question: string | null }) => {
+        const set = issue.question ? fieldsetOf(issue.question) : null;
+        return !set || set.hidden || !set.querySelector('[data-issue]');
+      });
       const valid = errors.length === 0;
       form.toggleAttribute('data-valid', valid);
       copyButtons.forEach((button) => (button.disabled = !valid));
@@ -374,10 +383,10 @@ const defaultText = (value: unknown) => {
     outline-offset: 2px;
   }
   .kit-issue {
-    min-height: 1.5em;
-    line-height: 1.5;
-    margin: var(--ahg-space-1) 0 0;
-    font-size: var(--ahg-text-small);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    min-height: calc(0.875rem * 1.4);
+    margin: 4px 0 0;
   }
   .kit-issue :global(span) {
     display: block;
