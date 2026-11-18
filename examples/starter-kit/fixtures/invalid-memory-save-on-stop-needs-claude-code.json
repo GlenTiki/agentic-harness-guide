@@ -1,0 +1,24 @@
+{
+  "description": "The memory Stop hook with Codex alone.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "codex"
+      ],
+      "stack": "python",
+      "memory": true,
+      "hooks": [
+        "memory-save-on-stop"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "memory-save-on-stop-needs-claude-code"
+    ],
+    "warnings": [
+      "hooks-without-claude-code"
+    ]
+  }
+}

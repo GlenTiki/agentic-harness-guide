@@ -1,0 +1,23 @@
+{
+  "description": "Codex alone with a non-blocking hook gives a warning only.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "codex"
+      ],
+      "stack": "python",
+      "test_command": "uv run pytest",
+      "lint_command": "uv run ruff check",
+      "hooks": [
+        "lint-after-write"
+      ]
+    }
+  },
+  "expect": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      "hooks-without-claude-code"
+    ]
+  }
+}

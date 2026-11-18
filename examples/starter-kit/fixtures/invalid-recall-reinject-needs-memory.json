@@ -1,0 +1,21 @@
+{
+  "description": "recall-reinject with no memory folder.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "hooks": [
+        "recall-reinject"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "recall-reinject-needs-memory"
+    ],
+    "warnings": []
+  }
+}

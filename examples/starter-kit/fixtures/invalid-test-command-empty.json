@@ -1,0 +1,19 @@
+{
+  "description": "An empty test command. Leave the answer out instead.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "test_command": ""
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "test_command-min"
+    ],
+    "warnings": []
+  }
+}
