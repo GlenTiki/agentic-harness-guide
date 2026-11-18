@@ -58,9 +58,15 @@ class BlockDestructiveGit(HookCase):
              "git -C . push -fu origin main", "git reset --hard", "git reset --hard HEAD~1", "git clean -fd",
              "git clean -fdx", "git clean --force", "git status && git push -f", "git status; git reset --hard",
              "bash -c 'git push --force'", "echo $(git push --force)", "(git reset --hard)", "env git clean -f",
-             "GIT_SSH_COMMAND=x git push -f", "/usr/bin/git push -f"]
+             "GIT_SSH_COMMAND=x git push -f", "/usr/bin/git push -f", 'bash -lc "git reset --hard"',
+             "zsh -xc 'git clean -fd'", "sudo git push --force", "sudo -u build git reset --hard",
+             "find . -name x | xargs git clean -f", 'eval "git reset --hard"', "nice -n 10 git push -f",
+             "timeout 5 git push origin +main"]
     ALLOW = ["git status", "git push origin main", "git push -u origin feature", "git reset --soft HEAD~1",
-             "git clean -n", "git commit -m 'push -f notes'", "echo git push -f", "git log --grep reset"]
+             "git clean -n", "git commit -m 'push -f notes'", "git log --grep reset", "sudo git status",
+             'eval "git status"', "grep -r git README.md"]
+    KNOWN_LIMITS = ["F=-f; git push $F", "g=git; $g push -f", "git config alias.wipe 'reset --hard'; git wipe",
+                    "./scripts/reset-all.sh"]
 
     def call(self, command):
         return run_hook("block_destructive_git.py", {"tool_name": "Bash", "tool_input": {"command": command}})
@@ -74,6 +80,11 @@ class BlockDestructiveGit(HookCase):
 
     def test_allows_safe_commands(self):
         for command in self.ALLOW:
+            with self.subTest(command=command):
+                self.assertEqual(self.call(command).returncode, 0)
+
+    def test_known_limits_still_pass_as_the_readme_says(self):
+        for command in self.KNOWN_LIMITS:
             with self.subTest(command=command):
                 self.assertEqual(self.call(command).returncode, 0)
 

@@ -123,7 +123,13 @@ Every hook is one Python 3 file. Each file uses only the standard library and ma
 | `recall-reinject` | UserPromptSubmit | no | Adds `memory/INDEX.md` to the context every Nth prompt (default 10), cut to 9,000 characters. |
 | `pr-size-nudge` | PreToolUse, Bash | no | On `git push`, runs `git diff --numstat <base>...HEAD`. Adds a reminder above 400 lines or 8 files. |
 
-The destructive-git hook reads the command text. It does not see through a shell variable, a git alias or a script file. The permission rule that asks before `git push` covers some of those cases.
+The destructive-git hook is a best-effort guard, not a sandbox. It reads the command text. It finds `git` anywhere in each simple command, so `sudo git`, `xargs git`, `nice -n 10 git` and `timeout 5 git` are checked. It also checks each quoted argument that holds a space, so `bash -lc "..."` and `eval "..."` are checked. These known limits pass, and the tests confirm it:
+
+- a shell variable that holds the flag or the program name, such as `F=-f; git push $F`;
+- a git alias, such as `git wipe` after `git config alias.wipe 'reset --hard'`;
+- a script file that runs git, such as `./scripts/reset-all.sh`.
+
+The hook also blocks some safe commands that quote a destructive one, such as `git commit -m "git push -f"`. The permission rule that asks before `git push` covers some of the limits. A sandbox or a protected branch on the remote covers more.
 
 The tests run each hook with a hook event on standard input and check the exit code and the output:
 

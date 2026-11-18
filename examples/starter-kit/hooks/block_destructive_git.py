@@ -6,8 +6,6 @@ import os
 import shlex
 import sys
 
-SHELLS = {"sh", "bash", "zsh", "dash"}
-WRAPPERS = {"env", "command", "nohup", "time", "exec"}
 SEPARATORS = {";", "&", "&&", "|", "||", "(", ")", "$(", "`"}
 GIT_OPTIONS_WITH_VALUE = {"-C", "-c", "--git-dir", "--work-tree", "--namespace"}
 
@@ -41,26 +39,22 @@ def is_destructive(subcommand, args):
     return False
 
 
-def git_subcommand(tokens):
-    index = 0
-    while index < len(tokens) and (tokens[index] in WRAPPERS or "=" in tokens[index].split("/")[0]):
-        index += 1
-    if index >= len(tokens) or os.path.basename(tokens[index]) != "git":
-        return None, []
-    rest = tokens[index + 1:]
-    while rest and rest[0].startswith("-"):
-        rest = rest[2:] if rest[0] in GIT_OPTIONS_WITH_VALUE else rest[1:]
-    return (rest[0], rest[1:]) if rest else (None, [])
+def git_calls(tokens):
+    for index, token in enumerate(tokens):
+        if os.path.basename(token) != "git":
+            continue
+        rest = tokens[index + 1:]
+        while rest and rest[0].startswith("-"):
+            rest = rest[2:] if rest[0] in GIT_OPTIONS_WITH_VALUE else rest[1:]
+        if rest:
+            yield rest[0], rest[1:]
 
 
 def is_risky(command):
     for tokens in split_commands(command):
-        if os.path.basename(tokens[0]) in SHELLS and "-c" in tokens[:-1]:
-            if is_risky(tokens[tokens.index("-c") + 1]):
-                return True
-            continue
-        subcommand, args = git_subcommand(tokens)
-        if subcommand and is_destructive(subcommand, args):
+        if any(is_risky(token) for token in tokens if any(char.isspace() for char in token)):
+            return True
+        if any(is_destructive(subcommand, args) for subcommand, args in git_calls(tokens)):
             return True
     return False
 
