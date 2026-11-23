@@ -109,6 +109,7 @@ export default defineConfig({
             { slug: 'setup/second-brain' },
             { slug: 'setup/relevance-and-reranking' },
             { slug: 'setup/orchestrator-and-subagents' },
+            { slug: 'setup/one-workspace-per-task' },
             { slug: 'setup/personas' },
             { slug: 'setup/retros' },
             { slug: 'setup/monitor-and-showcase' },
