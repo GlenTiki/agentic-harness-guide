@@ -6,7 +6,7 @@ status: mixed
 
 *Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
 
-**Status.** Runs in my setup: one set of hook scripts behind thin adapters for several tools, tool servers over [MCP](../../glossary/#connector-mcp), a dashboard that talks to [agents](../../glossary/#agent) over ACP, and a way to send a reply to a named session. Parity across all tools is partly a prototype. Built in the case study: a plain-text inbox and outbox, an instruction-file layout and a check that the files agree ([chapter 11](../../case-study/ch11-surfaces/)). MCP, ACP and A2A appear here as options with checked wording, and the case study does not implement them.
+**Status.** Runs in my setup: one set of hook scripts behind thin adapters for several tools, tool servers over [MCP](../../glossary/#connector-mcp), a dashboard that talks to [agents](../../glossary/#agent) over ACP, and a way to send a reply to a named session. Parity across all tools is partly a prototype. Built in the case study: a plain-text inbox and outbox, an instruction-file layout and a check that the files agree ([chapter 11](../../case-study/ch11-surfaces/)). MCP, ACP and A2A appear here as options with checked wording, and the case study does not implement them. In progress: moving the dashboard chat into an agent development environment.
 
 ## The weak spot it targets
 
@@ -50,6 +50,7 @@ You do not need any of them to start. A shared file and a clear convention come 
 - **A dashboard** talks to agents over ACP and over a web socket.
 - **A session reply.** I can type a reply in the dashboard and send it to a named session. The server holds the recipient, so the browser cannot choose where the text goes. Redaction runs on send and an acknowledgement is recorded.
 - **A phone page.** The dashboard installs as a web app on my phone.
+- **An agent development environment.** An [agent development environment](../../glossary/#agent-development-environment) hosts my agent sessions, worktrees and terminals. In progress: moving the dashboard chat into it. See [One workspace per task](../one-workspace-per-task/).
 
 ## A convention for the case study
 
