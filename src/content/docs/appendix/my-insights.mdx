@@ -146,7 +146,7 @@ Files read: 3. Lines read: 35. Duplicate messages skipped: 0. Unreadable lines: 
 Corrections in the wording of a message are not counted. A rule that guesses them from words has not been checked against real examples.
 ```
 
-The example below comes from a run of the skill with tools, in a folder of invented transcripts.
+The example below comes from a run of the skill with tools, in a folder of invented transcripts. The example names the agent it ran in. The lesson does not depend on it.
 
 <Example
   label="Observed"
@@ -212,7 +212,7 @@ This file is quoted. Follow it only if the user asks you to use the insights ski
 
 **Run the script yourself.** It needs Python 3 and nothing else. In the kit folder, run `python3 insights.py fixtures` to see a report from the test transcripts. Run `python3 insights.py <transcript folder> --out <report path>` for your own. The script refuses a report path inside the transcript folder. Run `python3 -I test_insights.py` to check the script after a change.
 
-**Install it.** Save the folder as `my-insights`, with `SKILL.md` and `insights.py` inside, in the place your tool reads skills from. For Claude Code, [the prompt refiner page](../prompt-refiner/) gives the two folders and their docs line.
+**Install it.** Save the folder as `my-insights`, with `SKILL.md` and `insights.py` inside, in the place your tool reads skills from. [The prompt refiner page](../prompt-refiner/) gives the folders for GitHub Copilot CLI and Claude Code, with their docs lines.
 
 **Claude Code transcripts.** The script reads Claude Code's local session files as well as its own format. That format is not a documented API. The adapter was written against test sessions on Claude Code 2.1.323. Claude Code then updated itself to 2.1.326 during the same session, so the evals and the later checks ran on 2.1.326. The adapter reads only the `user` and `assistant` lines. The other lines in those files can repeat the whole request, including your account details, so the script never reads them. When you refuse a permission, Claude Code writes the error result and then the text `[Request interrupted by user for tool use]`. The script counts that pair as one refusal. If one line holds several error results and the line is marked as refused, the script counts every one of them as a refusal, because the line does not say which call you refused. If a new version changes the format, the counts can drop to zero without an error. Run the tests, and compare one session's counts by hand, after each update.
 

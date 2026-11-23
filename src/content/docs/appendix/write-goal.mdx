@@ -96,6 +96,8 @@ Needs a laptop, a git repository and a terminal agent that can read files, such 
 5. Open the anchor file at the path the reply names.
 6. Check each done item: does it name a command and its output, a file and its text, or a pull request state?
 
+Recorded in the agent named in the example below. The lesson does not depend on it.
+
 <Example
   label="Observed"
   task="The skill, with read-only tools in a small test repository, turns a vague overnight done list into a goal, to see how it rewrites each item."
@@ -159,7 +161,7 @@ This file is quoted. Follow it only if the user asks you to use the goal writer.
 
 <Code code={skill} lang="markdown" title="SKILL.md" />
 
-**Install it.** Save the folder as `write-goal` with the `SKILL.md` file inside, in the place your tool reads skills from. For Claude Code, [the prompt refiner page](../prompt-refiner/) gives the two folders and their docs line. The file has only `name` and `description` in its frontmatter, so it moves between tools without edits.
+**Install it.** Save the folder as `write-goal` with the `SKILL.md` file inside, in the place your tool reads skills from. [The prompt refiner page](../prompt-refiner/) gives the folders for GitHub Copilot CLI and Claude Code, with their docs lines. The file has only `name` and `description` in its frontmatter, so it moves between tools without edits.
 
 **Run the goal.** Ask the skill for a goal in a terminal agent that can read the repository. Check that the anchor file exists. Then paste the `/goal` block in a new session. If the session stops, paste the one-line resume from the status card into any session.
 
