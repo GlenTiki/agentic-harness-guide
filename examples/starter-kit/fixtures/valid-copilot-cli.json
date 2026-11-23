@@ -1,0 +1,24 @@
+{
+  "description": "GitHub Copilot CLI alone with the destructive git guard and the prompt refiner. The guard runs on Copilot, so the plan is valid. The warning says that the other hooks would not run.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "copilot-cli"
+      ],
+      "stack": "python",
+      "hooks": [
+        "block-destructive-git"
+      ],
+      "skills": [
+        "prompt-refiner"
+      ]
+    }
+  },
+  "expect": {
+    "valid": true,
+    "errors": [],
+    "warnings": [
+      "hooks-without-claude-code"
+    ]
+  }
+}

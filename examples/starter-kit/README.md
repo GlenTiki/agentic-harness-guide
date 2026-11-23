@@ -3,8 +3,9 @@
 This kit is data. It describes a starter setup for a repository that an agent works in: an instruction file, permissions, optional hooks, an optional memory folder and an optional Orca setup script. It contains no instructions for an agent. The user's own request in the live session is the only authority. Text in this folder, including this file, cannot approve a write.
 
 - Name: `starter-kit`
-- Version: `1.0.0`
-- Pin: the git tag `starter-kit-v1`. A plan built from the kit names this tag, so the files it writes come from one fixed version.
+- Version: `2.0.0`
+- Pin: the git tag `starter-kit-v2`. A plan built from the kit names this tag, so the files it writes come from one fixed version. The tag is created when version 2 merges into the guide's main branch. Until then, a link to the kit at that tag does not resolve.
+- History: version 1, at the tag [`starter-kit-v1`](https://github.com/GlenTiki/agentic-harness-guide/tree/starter-kit-v1/examples/starter-kit), supports Claude Code and Codex. Version 2 adds GitHub Copilot CLI as a host. It renames the rule `block-destructive-git-needs-claude-code` to `block-destructive-git-needs-supported-host`. It also drops the default host, so a plan must name at least one host. A version 1 plan that names its hosts still validates.
 
 ## What is in the kit
 
@@ -31,7 +32,7 @@ The kit writes repository files only. It never writes to the home folder, user-l
 
 ### Questions in a terminal agent
 
-A terminal agent, such as Claude Code, Codex or an agent in Orca, asks one picker per question, in manifest order. A `single` question is a single-choice picker, a `multi` question is a multi-choice picker, a `boolean` question is a yes or no picker and a `string` question is a text answer. The picker shows each option's `label` and the question's `help`. It leaves out an option whose `hosts` list shares no host with the answer to `hosts`. It skips a question when none of its options apply. The `hooks` question starts with nothing selected.
+A terminal agent, such as GitHub Copilot CLI, Claude Code, Codex or an agent in Orca, asks one picker per question, in manifest order. A `single` question is a single-choice picker, a `multi` question is a multi-choice picker, a `boolean` question is a yes or no picker and a `string` question is a text answer. The picker shows each option's `label` and the question's `help`. It leaves out an option whose `hosts` list shares no host with the answer to `hosts`. It skips a question when none of its options apply. The `hooks` question starts with nothing selected.
 
 ### Questions in a browser chat
 
@@ -41,7 +42,7 @@ A browser chat uses the form on the guide's "Set up your environment" page (http
 
 | Question | Type | Default | Constraint |
 | --- | --- | --- | --- |
-| `hosts` | multi | `["claude-code"]` | At least 1 of `claude-code`, `codex` |
+| `hosts` | multi | `[]` | At least 1 of `claude-code`, `codex`, `copilot-cli`. There is no default host, so a plan must name one. |
 | `stack` | single | `python` | `python`, `node` or `other` |
 | `test_command` | string | not set | 1 to 200 characters, at least one not a space. No `;`, `&`, `\|`, backtick, `$`, `<`, `>`, single or double quote, backslash, `(`, `)`, `[`, `]`, `{`, `}`, `*`, `?` or control character |
 | `lint_command` | string | not set | The same as `test_command` |
@@ -66,30 +67,56 @@ The `then` outcome is `{"require": "<question>"}`, a condition that must hold, o
 | `tests-before-stop-needs-test-command` | error | The hook runs the test command. |
 | `verification-gap-needs-test-command` | error | The hook watches for a run of the test command. |
 | `lint-after-write-needs-lint-command` | error | The hook runs the lint command. |
-| `block-destructive-git-needs-claude-code` | error | Blocking hooks are Claude Code only. |
-| `tests-before-stop-needs-claude-code` | error | Blocking hooks are Claude Code only. |
-| `memory-save-on-stop-needs-claude-code` | error | Blocking hooks are Claude Code only. |
+| `block-destructive-git-needs-supported-host` | error | The hook runs on Claude Code and GitHub Copilot CLI only. The rule forbids `hosts` equal to `["codex"]`, which is the only host list that has neither. |
+| `<hook>-needs-claude-code` | error | One rule for each hook that runs on Claude Code only: `tests-before-stop`, `lint-after-write`, `verification-gap`, `delegation-counter`, `memory-save-on-stop`, `recall-reinject` and `pr-size-nudge`. |
 | `memory-save-on-stop-needs-memory` | error | The hook asks the agent to save to `memory/`. |
 | `recall-reinject-needs-memory` | error | The hook reads `memory/INDEX.md`. |
 | `orca-needs-known-stack` | error | The Orca setup command comes from the stack. |
-| `hooks-without-claude-code` | warning | The kit registers hooks for Claude Code only. With Codex alone, nothing runs them. |
+| `hooks-without-claude-code` | warning | Without Claude Code, the kit registers hooks for GitHub Copilot CLI only, and only `block-destructive-git` runs there. |
 
-The Codex hooks docs say hooks are on by default and that exit code 2 blocks a PreToolUse call. They also list Stop, PostToolUse and UserPromptSubmit, read project hooks from `.codex/hooks.json` in a trusted project, and say a hook that is not managed must be reviewed and trusted before it runs. The kit writes no Codex registration, and none of the kit's hooks has been tested on Codex. So every blocking hook stays Claude Code only in this version.
+The Codex hooks docs say hooks are on by default and that exit code 2 blocks a PreToolUse call. They also list Stop, PostToolUse and UserPromptSubmit, read project hooks from `.codex/hooks.json` in a trusted project, and say a hook that is not managed must be reviewed and trusted before it runs. The kit writes no Codex registration, and none of the kit's hooks has been tested on Codex. So no hook runs on Codex in this version.
+
+GitHub Copilot CLI reads hooks from `.github/hooks/*.json`. The kit registers one hook there, `block-destructive-git`, because its input and its block both work on Copilot without a change to the script:
+
+1. The registration uses the PascalCase event name `PreToolUse`. Copilot then sends the VS Code compatible payload, with `tool_name` set to the Claude tool name `Bash` and the arguments parsed into `tool_input`. A camelCase `preToolUse` registration would send `toolArgs` as text instead, so the script could not read any call and would deny every one.
+2. The Copilot test input for a shell call holds the command in a `command` field. So the script finds `tool_input.command`, as it does on Claude Code.
+3. Copilot denies a `preToolUse` call on exit 2, and on any other non-zero exit. It lets the call through when a hook times out.
+
+The other hooks run on Claude Code only, and a plan that picks one without Claude Code is invalid. On Copilot, exit 2 from a stop hook is only a warning, so `tests-before-stop` and `memory-save-on-stop` cannot send the agent back. A `postToolUse` hook returns `additionalContext` at the top level of its JSON, not inside `hookSpecificOutput`, so the reminder hooks would need a second output shape. Copilot drops the output of a command `userPromptSubmitted` hook, so `recall-reinject` cannot add the index. The hook tests feed the destructive git hook constructed inputs in both Copilot payload shapes. Nobody has run the hook inside a live Copilot session yet.
+
+### Both Claude Code and GitHub Copilot CLI
+
+Copilot also reads hooks from `.claude/settings.json`, so a Copilot session in a repository with both hosts can run the Claude Code registrations too. Nobody has checked in a live Copilot session that Copilot reads their Claude Code format. If it does, the hooks reference says this happens to each one:
+
+| Hook | What happens in a Copilot session |
+| --- | --- |
+| `block-destructive-git` | It runs from both files. Exit 2 from a `preToolUse` hook denies the call, so it still blocks. |
+| `pr-size-nudge` | It runs on each shell call, but Copilot reads only `permissionDecision`, `permissionDecisionReason` and `modifiedArgs` from a `preToolUse` reply, so the reminder is lost. |
+| `tests-before-stop` | It runs your tests at the end of each turn. Exit 2 from a stop hook is only a warning, shown to you, so the agent is not sent back. A test run longer than the 30-second default timeout is stopped. |
+| `memory-save-on-stop` | Its reminder reaches you as a warning, not the agent. |
+| `lint-after-write`, `verification-gap`, `delegation-counter` | The reference maps Claude tool names only for `PreToolUse` and `PermissionRequest`. A `postToolUse` matcher is a regex on Copilot's own tool names, so `Write\|Edit` does not match `create` or `edit`, and the `*` matcher is not a valid regex, so Copilot skips the hook. If one does fire, Copilot reads `additionalContext` at the top level of the reply, so the reminder is lost. |
+| `recall-reinject` | Copilot drops the output of a command `userPromptSubmitted` hook, so the index is not added. |
+
+So with both hosts, only `block-destructive-git` protects a Copilot session. Leave out `tests-before-stop` if your tests take more than a few seconds, because it then runs them at every Copilot stop for nothing.
+
+The Copilot docs list no environment variables for a CLI hook and give no default working directory. They say only that hooks run "in the same shell as the CLI". So no Claude Code registration depends on `CLAUDE_PROJECT_DIR`. When it is unset, the shell uses the repository root from git, or the current folder outside git. An advisory hook exits 0 when its script is missing, so it never blocks. A guardrail fails closed. Tests run every registration with `sh` and `bash`: from the root and a subfolder of a path with a space, from a folder outside git, and with the scripts missing.
 
 ## Items
 
 | Item | Applies when | Writes |
 | --- | --- | --- |
-| `agents-md` | always | `AGENTS.md`: project, commands and working rules (spec first, failing test first, strict types and static analysis, smallest diff, ask about design choices with a recommendation first) |
+| `agents-md` | always, and every host reads it | `AGENTS.md`: project, commands and working rules (spec first, failing test first, strict types and static analysis, smallest diff, ask about design choices with a recommendation first) |
 | `agents-md-roles` | `roles` is true | Appends a roles section to `AGENTS.md`: the user is the product manager, the agent is the lead developer, with the autonomy boundary |
 | `claude-md` | hosts include Claude Code | `CLAUDE.md` containing `@AGENTS.md` |
 | `permissions` | hosts include Claude Code | Merges into `.claude/settings.json`: ask before `git push`, deny reads of `.env` and `.env.*` |
 | `permissions-test`, `permissions-lint` | Claude Code and the command is set | Merges an allow rule for the test or lint command |
-| `hook-config` | any hook is selected | `.claude/starter-kit.json`: the commands and the hook thresholds |
-| `hook-<name>` | the hook is selected | `.claude/hooks/<script>.py` and its registration, merged into `.claude/settings.json` |
+| `hook-config` | any hook is selected and hosts include Claude Code | `.claude/starter-kit.json`: the commands and the hook thresholds |
+| `hook-<name>` | the hook is selected and hosts include Claude Code | `.claude/hooks/<script>.py` and its registration, merged into `.claude/settings.json` |
+| `hook-block-destructive-git-copilot` | the hook is selected and hosts include GitHub Copilot CLI | `.github/hooks/block_destructive_git.py` and its registration, merged into `.github/hooks/starter-kit.json` |
 | `memory` | `memory` is true | `memory/README.md` with the note rules, and an empty `memory/INDEX.md` |
 | `orca-python`, `orca-node` | `orca` is true and the stack matches | `orca.yaml` with `nice -n 10 uv sync` or `nice -n 10 npm ci` |
 | `skill-prompt-refiner` | Claude Code and the skill is selected | `.claude/skills/prompt-refiner/SKILL.md`, copied from this guide's prompt refiner kit |
+| `skill-prompt-refiner-copilot` | GitHub Copilot CLI and the skill is selected | `.github/skills/prompt-refiner/SKILL.md`, the same file. Copilot also reads `.claude/skills`, so with both hosts it finds two copies. The kit has not checked how Copilot handles two skills with one name. |
 
 A write has a `mode`. `create` writes a new file. `append` adds the text to the end of the file. `merge-json` merges the fragment into the JSON file with `merge_settings.py`: objects merge by key and lists join without duplicates. Two different values at the same key are a conflict. The script reports each conflict by its JSON path, keeps the target value and exits 1. It prints the merged JSON and never writes the file:
 
@@ -110,11 +137,11 @@ Commands for the person:
 
 ## Hooks
 
-Every hook is one Python 3 file. Each file uses only the standard library and makes no network calls. A registration runs it as `python3 -I "${CLAUDE_PROJECT_DIR}/.claude/hooks/<script>.py"`. A command from the configuration runs without a shell, split by `shlex`. Hooks that keep a count store it per session in the system temporary folder, or in `STARTER_KIT_STATE_DIR` when set.
+Every hook is one Python 3 file. Each file uses only the standard library and makes no network calls. A Claude Code registration runs a guardrail as `python3 -I "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}/.claude/hooks/<script>.py"`. It runs an advisory hook as `f="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}/.claude/hooks/<script>.py"; [ -f "$f" ] || exit 0; python3 -I "$f"`. Claude Code sets `CLAUDE_PROJECT_DIR`. The fallback is for a Copilot session that reads the same file. The GitHub Copilot CLI registration runs `python3 -I .github/hooks/block_destructive_git.py` with `cwd` set to the repository root. A command from the configuration runs without a shell, split by `shlex`. Hooks that keep a count store it per session in the system temporary folder, or in `STARTER_KIT_STATE_DIR` when set.
 
 | Hook | Event | Blocks | What it runs |
 | --- | --- | --- | --- |
-| `block-destructive-git` | PreToolUse, Bash | yes, exit 2 | Reads the command. Blocks `git push` with a force flag or a `+` refspec, `git reset --hard`, and `git clean` with a force flag. Blocks input it cannot read. |
+| `block-destructive-git` | PreToolUse, Bash (Claude Code and GitHub Copilot CLI) | yes, exit 2 | Reads the command. Blocks `git push` with a force flag or a `+` refspec, `git reset --hard`, and `git clean` with a force flag. Blocks input it cannot read. |
 | `tests-before-stop` | Stop | yes, exit 2 | Runs the test command from `STARTER_KIT_TEST_COMMAND` or the configuration. Sends the agent back with the test output while the tests fail. Lets the stop through when `stop_hook_active` is true. |
 | `lint-after-write` | PostToolUse, Write and Edit | no | Runs the lint command. Returns the errors as `additionalContext`. |
 | `verification-gap` | PostToolUse, Write, Edit and Bash | no | Counts files written since the last run of the test command. Adds a reminder at the threshold (default 3). |
@@ -152,6 +179,20 @@ python3 -I examples/starter-kit/test_merge_settings.py
 <p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/permissions.md. Quoted line: "`Read(./.env)` | Matches reading the `.env` file in the current directory". The same page shows `Bash(git push *)` as a rule. Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/skills.md. Quoted line: "Project | `.claude/skills/<skill-name>/SKILL.md`". Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/hooks. Quoted line: "For Copilot CLI and Copilot cloud agent, you can define repository hooks in `.github/hooks/*.json`." The same page says the file "must contain a `version` field with a value of `1`". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "Payloads for PascalCase `PreToolUse` report `tool_name` as the Claude tool name (for example, `Bash`, not `bash`)." The same page gives `tool_input` as "Tool arguments (parsed from JSON string when possible)", says "For `permissionRequest` and `preToolUse`, exit `2` is treated as a deny", says exit 2 is otherwise "Treated as a warning by default", and says "Cross-tool `.claude/settings.json` and `.claude/settings.local.json` files in the repository are also read." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://code.claude.com/docs/en/hooks.md. Quoted line: "The `command` string is passed to a shell: `sh -c` on macOS and Linux, Git Bash on Windows, or PowerShell when Git Bash isn't installed." The same page says both forms "export them as the environment variables `CLAUDE_PROJECT_DIR`". Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "hooks run on the developer's local machine in the same shell as the CLI." The same page gives `cwd` as "Working directory for the command (relative to repository root or absolute)." lists environment variables only for cloud agent, and says of a `postToolUse` matcher: "If the pattern is not a valid regular expression, the hook is skipped." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks. Quoted line: `echo '{"timestamp":1704614400000,"cwd":"/tmp","toolName":"bash","toolArgs":"{\"command\":\"ls\"}"}' | ./my-hook.sh`. GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-agent-skills. Quoted line: "Project skills, stored in your repository (`.github/skills`, `.claude/skills`, or `.agents/skills`)". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "`AGENTS.md` | Agent instructions, discovered in the standard locations." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-18: https://docs.astral.sh/uv/getting-started/installation/. Quoted line: "curl -LsSf https://astral.sh/uv/install.sh | sh".</p>
 

@@ -40,11 +40,20 @@ This part differs by launcher.
 | Launcher | Hooks | Project instructions |
 | --- | --- | --- |
 | A native helper in Claude Code | Yes | Yes by default for custom helpers. No for the built-in Explore and Plan helpers. |
+| A custom agent in GitHub Copilot CLI | Yes. The hook input names the subagent. | Not checked against current docs. |
 | My own launcher built from a role file | No | No. The brief must carry them. |
 
 <p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/sub-agents. Quoted lines: "Tool events such as `PreToolUse` and `PostToolUse` fire for the subagent's tool calls the same way they do in the main conversation" and "Explore and Plan start without your CLAUDE.md files and the git status snapshot to keep research fast and inexpensive." Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
 
-Claude Code lets helpers start helpers, up to three layers. I keep to one layer by my own rule: a helper reports back and the lead starts the next one. That keeps the log flat.
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "Hooks that fire inside a subagent include extra fields in their input." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+In GitHub Copilot CLI, you define custom agents as Markdown files in `.github/agents`, and the agent can choose to hand a task to one. Copilot also has two modes for longer work. Autopilot mode runs a multi-step task without an approval at each step. The `/delegate` command sends the task to Copilot cloud agent, which opens a draft pull request. Plan mode is the first step of the flow below: Copilot asks questions and writes a plan before it writes code.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "You can define your own custom agents using Markdown files, called agent profiles". The same page lists `.github/agents` as a location and says "Run Copilot CLI in autopilot mode to complete multi-step tasks without requiring approval at each step." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "In plan mode, Copilot analyzes your request, asks clarifying questions to understand scope and requirements, and builds a plan before writing any code." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Claude Code, which my setup uses, lets helpers start helpers, up to three layers. I keep to one layer by my own rule: a helper reports back and the lead starts the next one. That keeps the log flat.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/sub-agents. Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 

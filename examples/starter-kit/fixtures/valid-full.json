@@ -1,10 +1,11 @@
 {
-  "description": "Every option selected on both hosts.",
+  "description": "Every option selected on every host.",
   "plan": {
     "answers": {
       "hosts": [
         "claude-code",
-        "codex"
+        "codex",
+        "copilot-cli"
       ],
       "stack": "python",
       "test_command": "uv run pytest",

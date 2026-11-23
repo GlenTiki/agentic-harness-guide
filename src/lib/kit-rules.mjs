@@ -37,7 +37,7 @@ const checkChoice = (question, value, values) => {
   if (!Array.isArray(value) || !value.every(isString)) return [[`${qid}-type`, `${qid} must be a list of values.`]];
   const errors = value.filter((item) => !values.includes(item)).map((item) => [`${qid}-option`, `${qid} has no option '${item}'.`]);
   if (new Set(value).size !== value.length) errors.push([`${qid}-duplicate`, `${qid} lists a value twice.`]);
-  if (value.length < (question.min ?? 0)) errors.push([`${qid}-min`, `${qid} needs at least ${question.min} value(s).`]);
+  if (value.length < (question.min ?? 0)) errors.push([`${qid}-min`, `Pick at least ${question.min} for ${qid}.`]);
   if (value.length > (question.max ?? values.length)) errors.push([`${qid}-max`, `${qid} allows at most ${question.max} value(s).`]);
   return errors;
 };

@@ -56,7 +56,7 @@ def check_choice(question, value, values):
     if len(set(value)) != len(value):
         errors.append((f"{qid}-duplicate", f"{qid} lists a value twice."))
     if len(value) < question.get("min", 0):
-        errors.append((f"{qid}-min", f"{qid} needs at least {question['min']} value(s)."))
+        errors.append((f"{qid}-min", f"Pick at least {question['min']} for {qid}."))
     if len(value) > question.get("max", len(values)):
         errors.append((f"{qid}-max", f"{qid} allows at most {question['max']} value(s)."))
     return errors

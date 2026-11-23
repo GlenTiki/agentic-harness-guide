@@ -30,6 +30,10 @@ I use Orca. Its project page says it can "Run Claude Code, Codex, and any other 
 
 <p class="verified">Docs page fetched on 2026-11-16: https://github.com/stablyai/orca. Quoted line: "It splits the work, starts worker agents in their own workspaces, and brings their results back to you". Orca CLI on that date: 1.4.258.</p>
 
+GitHub Copilot CLI has a remote version of the same idea. Its `/delegate` command hands a task to Copilot cloud agent, which works on its own branch and opens a draft pull request. The task cannot collide with your checkout, and you review it as a pull request.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/delegate-tasks-to-cca. Quoted line: "The work runs remotely: Copilot creates a branch, opens a draft pull request, and works in the background." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
 I am moving my own setup into it. The plan gives the environment the agent sessions, the worktrees and the terminals. My own code keeps the memory, the preferences and the checks. The [second brain page](../second-brain/) describes the memory half.
 
 ## End-to-end flow

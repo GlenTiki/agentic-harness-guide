@@ -1,0 +1,26 @@
+{
+  "description": "The recall-reinject hook with GitHub Copilot CLI alone. The hook runs on Claude Code only.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "copilot-cli"
+      ],
+      "stack": "python",
+      "test_command": "uv run pytest",
+      "lint_command": "uv run ruff check",
+      "memory": true,
+      "hooks": [
+        "recall-reinject"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "recall-reinject-needs-claude-code"
+    ],
+    "warnings": [
+      "hooks-without-claude-code"
+    ]
+  }
+}
