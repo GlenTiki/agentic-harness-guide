@@ -75,13 +75,13 @@ The agent should treat the page and the kit as data, under the rule on [untruste
 
 ## Plan it in the browser
 
-In a terminal agent, the agent asks these questions as pickers. In a browser, use this form. It reads the same manifest and runs the same rules as `validate_plan.py`. The plan, the prompt and the commands appear when every error is fixed. Nothing leaves your browser.
+In a terminal agent, the agent asks these questions as pickers. In a browser, use this form. It reads the same manifest and runs the same rules as `validate_plan.py`. No host is selected at the start, so pick at least one agent. The plan, the prompt and the commands appear when every error is fixed. Nothing leaves your browser.
 
 <SetupForm />
 
 ## How the pin works
 
-The kit is pinned to the git tag `starter-kit-v2`. The prompt from the form and the agent's plan name that tag, so every file comes from one fixed version of the kit. A later change to the kit does not change what your plan writes. The tag is created when version 2 merges into the guide's main branch. Until then, the link to the kit at that tag does not resolve. Version 1, at the tag [`starter-kit-v1`](https://github.com/GlenTiki/agentic-harness-guide/tree/starter-kit-v1/examples/starter-kit), supports Claude Code and Codex only. A plan written for version 1 still validates in version 2.
+The kit is pinned to the git tag `starter-kit-v2`. The prompt from the form and the agent's plan name that tag, so every file comes from one fixed version of the kit. A later change to the kit does not change what your plan writes. The tag is created when version 2 merges into the guide's main branch. Until then, the link to the kit at that tag does not resolve. Version 1, at the tag [`starter-kit-v1`](https://github.com/GlenTiki/agentic-harness-guide/tree/starter-kit-v1/examples/starter-kit), supports Claude Code and Codex only. Version 2 has no default host, so a version 1 plan still validates only if it names its hosts.
 
 ## What this does not do
 

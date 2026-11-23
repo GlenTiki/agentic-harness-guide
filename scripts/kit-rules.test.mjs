@@ -97,3 +97,15 @@ test('the form always shows the commands, marks them required only when a hook n
 test('the hook menu has nothing selected by default', () => {
   assert.deepEqual(question('hooks').default, []);
 });
+
+test('no host is selected by default, and a plan with no host names the hosts question in a plain error', () => {
+  assert.deepEqual(question('hosts').default, []);
+  assert.equal(question('hosts').min, 1);
+  const { errors } = validate({ answers: { stack: 'python' } }, manifest);
+  assert.deepEqual(errors.map((issue) => [issue.id, issue.question, issue.message]), [['hosts-min', 'hosts', 'Pick at least 1 for hosts.']]);
+});
+
+test('with no host, the form still shows every question that does not depend on a host', () => {
+  const shown = manifest.questions.filter((q) => isVisible(q, { hosts: [] })).map((q) => q.id);
+  assert.deepEqual(shown, manifest.questions.map((q) => q.id).filter((id) => id !== 'hooks'));
+});

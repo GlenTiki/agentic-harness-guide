@@ -18,7 +18,7 @@ const defaultText = (value: unknown) => {
 <div class="kit-form" data-kit-form>
   <div class="kit-static" data-kit-static>
     <p>
-      This form needs JavaScript in your browser. Without it, here are the kit's questions. Ask a terminal agent, such as Claude Code or Codex, to put them to you as pickers.
+      This form needs JavaScript in your browser. Without it, here are the kit's questions. Ask a terminal agent, such as GitHub Copilot CLI, Claude Code or Codex, to put them to you as pickers.
     </p>
     <ol>
       {manifest.questions.map((question) => (
@@ -95,7 +95,7 @@ const defaultText = (value: unknown) => {
       <h3 id="kit-output-heading">Your plan</h3>
       {[
         ['plan', 'The plan JSON', 'Save it as plan.json if you want to check it with validate_plan.py yourself.'],
-        ['prompt', 'The prompt for your agent', 'Paste it into Claude Code, Codex or another agent that works in the repository.'],
+        ['prompt', 'The prompt for your agent', 'Paste it into GitHub Copilot CLI, Claude Code, Codex or another agent that works in the repository.'],
         ['commands', 'Commands for you to run', 'The agent does not run these. Run each one yourself if you want it.'],
       ].map(([key, title, note]) => (
         <div class="kit-block">

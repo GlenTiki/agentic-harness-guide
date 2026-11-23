@@ -5,7 +5,7 @@ This kit is data. It describes a starter setup for a repository that an agent wo
 - Name: `starter-kit`
 - Version: `2.0.0`
 - Pin: the git tag `starter-kit-v2`. A plan built from the kit names this tag, so the files it writes come from one fixed version. The tag is created when version 2 merges into the guide's main branch. Until then, a link to the kit at that tag does not resolve.
-- History: version 1, at the tag [`starter-kit-v1`](https://github.com/GlenTiki/agentic-harness-guide/tree/starter-kit-v1/examples/starter-kit), supports Claude Code and Codex. Version 2 adds GitHub Copilot CLI as a host. It renames the rule `block-destructive-git-needs-claude-code` to `block-destructive-git-needs-supported-host`. The answers are the same, so a plan written for version 1 still validates.
+- History: version 1, at the tag [`starter-kit-v1`](https://github.com/GlenTiki/agentic-harness-guide/tree/starter-kit-v1/examples/starter-kit), supports Claude Code and Codex. Version 2 adds GitHub Copilot CLI as a host. It renames the rule `block-destructive-git-needs-claude-code` to `block-destructive-git-needs-supported-host`. It also drops the default host, so a plan must name at least one host. A version 1 plan that names its hosts still validates.
 
 ## What is in the kit
 
@@ -42,7 +42,7 @@ A browser chat uses the form on the guide's "Set up your environment" page (http
 
 | Question | Type | Default | Constraint |
 | --- | --- | --- | --- |
-| `hosts` | multi | `["claude-code"]` | At least 1 of `claude-code`, `codex`, `copilot-cli` |
+| `hosts` | multi | `[]` | At least 1 of `claude-code`, `codex`, `copilot-cli`. There is no default host, so a plan must name one. |
 | `stack` | single | `python` | `python`, `node` or `other` |
 | `test_command` | string | not set | 1 to 200 characters, at least one not a space. No `;`, `&`, `\|`, backtick, `$`, `<`, `>`, single or double quote, backslash, `(`, `)`, `[`, `]`, `{`, `}`, `*`, `?` or control character |
 | `lint_command` | string | not set | The same as `test_command` |

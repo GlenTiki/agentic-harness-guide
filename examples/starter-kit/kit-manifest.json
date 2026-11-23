@@ -11,13 +11,13 @@
       "id": "hosts",
       "type": "multi",
       "label": "Which agent hosts will use this repository?",
-      "help": "Pick every host you use. Every host reads AGENTS.md. The kit writes CLAUDE.md and .claude/settings.json only for Claude Code, and .github/hooks and .github/skills only for GitHub Copilot CLI.",
+      "help": "Pick at least one: every host you use. Nothing is selected by default. Every host reads AGENTS.md. The kit writes CLAUDE.md and .claude/settings.json only for Claude Code, and .github/hooks and .github/skills only for GitHub Copilot CLI.",
       "options": [
         { "value": "claude-code", "label": "Claude Code" },
         { "value": "codex", "label": "Codex" },
         { "value": "copilot-cli", "label": "GitHub Copilot CLI" }
       ],
-      "default": ["claude-code"],
+      "default": [],
       "min": 1,
       "max": 3
     },

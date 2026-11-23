@@ -1,0 +1,15 @@
+{
+  "description": "No hosts answer. The kit has no default host, so the person must pick at least one.",
+  "plan": {
+    "answers": {
+      "stack": "python"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "hosts-min"
+    ],
+    "warnings": []
+  }
+}
