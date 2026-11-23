@@ -29,6 +29,20 @@ capabilities:
 
 **3. Gate at the seam.** Check the capability in one place, where the call leaves your code, not in every caller. One check is easy to test and hard to forget. The gate covers only the paths that go through the seam. The agent's general shell is a second route out unless you deny it, so pair the gate with [permission rules and a sandbox](../permissions-and-sandboxing/).
 
+Most agents give you a coarse switch of this kind for connectors. GitHub Copilot CLI is the worked example. It keeps its MCP server (connector) list in `mcp-config.json` under `~/.copilot`. It comes with the GitHub MCP server already configured, so one connector is on before you add any. Its approval options can allow or deny a whole server or one tool on it. Example, do not run:
+
+```bash
+copilot --allow-tool='My-MCP-Server' --deny-tool='My-MCP-Server(tool_name)'
+```
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "Details of your configured MCP servers are stored in the `mcp-config.json` file, which is located, by default, in the `~/.copilot` directory." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "Copilot CLI comes with the GitHub MCP server already configured." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "Using the server name without specifying a tool allows or denies all tools from that server." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Such a switch is per tool call and per session. Your registry still records the decision, the reason and the default, across every agent you use. Claude Code and Codex name their connector files and options differently, so check your agent's docs before you copy a flag.
+
 **4. Consent per surface.** Treat each surface as its own decision: each mailbox, each repository, each chat channel, each device. Granting access to one does not grant the next.
 
 **5. Redact before egress.** Strip personal data and secrets before text goes to a model provider, a search service or a log shipper. Replace values with stable placeholders and restore them locally after the response returns. Put the redaction step in the same seam as the capability check so no path skips it. Redaction is a filter with a miss rate. Measure recall on a labelled sample, and keep the capability gate as the primary control. The worked method, with a tested script, is in [Removing personal data before sharing](../removing-personal-data/).

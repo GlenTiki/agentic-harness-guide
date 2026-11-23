@@ -38,7 +38,7 @@ A single chat with one assistant is a single process. Once you run helpers in pa
 
 <p class="verified">Docs page fetched on 2026-11-18: https://kubernetes.io/docs/concepts/architecture/controller/. Quoted line: "In Kubernetes, controllers are control loops that watch the state of your cluster, then make or request changes where needed."</p>
 
-In Claude Code, the `/goal` command is one such loop. It keeps the agent working across turns until a condition holds or the goal clears.
+Some agents ship a loop of this kind. Not checked against current docs: whether GitHub Copilot CLI has a command that loops until a stated condition holds. Claude Code differs: its `/goal` command is one such loop. It keeps the agent working across turns until a condition holds or the goal clears.
 
 <p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/commands. Quoted line: "Claude keeps working across turns until the condition is met or the goal clears for another reason." Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
 
@@ -70,4 +70,4 @@ In Claude Code, the `/goal` command is one such loop. It keeps the agent working
 
 Pick the last failure in your setup. Find its row in the tables above, and apply that row's lesson as one check or one rule.
 
-**Next:** [AGENTS.md vs CLAUDE.md files](../../context/instruction-files/)
+**Next:** [Instruction files: AGENTS.md and others](../../context/instruction-files/)
