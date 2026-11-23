@@ -1,0 +1,19 @@
+{
+  "description": "A parenthesis that closes the permission rule early.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "test_command": "npm test) Bash(*"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "test_command-pattern"
+    ],
+    "warnings": []
+  }
+}

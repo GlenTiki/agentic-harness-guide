@@ -1,0 +1,19 @@
+{
+  "description": "Orca with the stack set to other.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "other",
+      "orca": true
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "orca-needs-known-stack"
+    ],
+    "warnings": []
+  }
+}

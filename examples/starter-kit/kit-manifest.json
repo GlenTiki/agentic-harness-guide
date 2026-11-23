@@ -1,0 +1,406 @@
+{
+  "kit": {
+    "name": "starter-kit",
+    "version": "1.0.0",
+    "pin": { "tag": "starter-kit-v1" },
+    "role": "data",
+    "condition_vocabulary": ["includes", "equals", "is_set"]
+  },
+  "questions": [
+    {
+      "id": "hosts",
+      "type": "multi",
+      "label": "Which agent hosts will use this repository?",
+      "help": "Pick every host you use. The kit writes CLAUDE.md and .claude/settings.json only for Claude Code.",
+      "options": [
+        { "value": "claude-code", "label": "Claude Code" },
+        { "value": "codex", "label": "Codex" }
+      ],
+      "default": ["claude-code"],
+      "min": 1,
+      "max": 2
+    },
+    {
+      "id": "stack",
+      "type": "single",
+      "label": "What is the main stack of the repository?",
+      "help": "The stack sets the setup command in orca.yaml. Pick other if neither fits.",
+      "options": [
+        { "value": "python", "label": "Python, managed with uv" },
+        { "value": "node", "label": "Node, managed with npm" },
+        { "value": "other", "label": "Other" }
+      ],
+      "default": "python"
+    },
+    {
+      "id": "test_command",
+      "type": "string",
+      "label": "Which command runs the tests?",
+      "help": "One command, for example: uv run pytest. Leave it empty if the repository has no tests yet. Shell operators, quotes, backslashes, brackets, wildcards and control characters are refused.",
+      "options": [],
+      "default": null,
+      "min": 1,
+      "max": 200,
+      "pattern": "^(?=.*[^ ])[^;&|`$<>\"'\\\\()*?\\[\\]{}\\x00-\\x1f\\x7f]+$"
+    },
+    {
+      "id": "lint_command",
+      "type": "string",
+      "label": "Which command runs the linter or the static checks?",
+      "help": "One command, for example: uv run ruff check. Leave it empty if you have none. Shell operators, quotes, backslashes, brackets, wildcards and control characters are refused.",
+      "options": [],
+      "default": null,
+      "min": 1,
+      "max": 200,
+      "pattern": "^(?=.*[^ ])[^;&|`$<>\"'\\\\()*?\\[\\]{}\\x00-\\x1f\\x7f]+$"
+    },
+    {
+      "id": "memory",
+      "type": "boolean",
+      "label": "Add a memory folder for durable facts?",
+      "help": "The kit writes memory/README.md with the note rules and an empty memory/INDEX.md.",
+      "options": [],
+      "default": false
+    },
+    {
+      "id": "orca",
+      "type": "boolean",
+      "label": "Add an orca.yaml setup script for Orca worktrees?",
+      "help": "The setup script runs the install command for your stack at low priority. You install the Orca app yourself.",
+      "options": [],
+      "default": false
+    },
+    {
+      "id": "hooks",
+      "type": "multi",
+      "label": "Which hooks do you want? Nothing is selected by default.",
+      "help": "Each hook is one Python 3 script. It uses only the standard library and makes no network calls. Blocking hooks are Claude Code only.",
+      "options": [
+        {
+          "value": "block-destructive-git",
+          "label": "Block destructive git commands",
+          "hosts": ["claude-code"],
+          "event": "PreToolUse",
+          "blocking": true,
+          "file": "block_destructive_git.py",
+          "runs": "Reads the Bash command. Exits 2 on git push with a force flag or a + refspec, git reset --hard, and git clean with a force flag, such as -fd. Exits 2 on input it cannot read."
+        },
+        {
+          "value": "tests-before-stop",
+          "label": "Run the tests before the agent stops",
+          "hosts": ["claude-code"],
+          "event": "Stop",
+          "blocking": true,
+          "file": "tests_before_stop.py",
+          "runs": "Runs the configured test command without a shell. Exits 2 with the test output while the tests fail. Lets the stop through when stop_hook_active is true."
+        },
+        {
+          "value": "lint-after-write",
+          "label": "Run the linter after each file write",
+          "hosts": ["claude-code"],
+          "event": "PostToolUse",
+          "blocking": false,
+          "file": "lint_after_write.py",
+          "runs": "Runs the configured lint command without a shell after Write or Edit. Returns the lint errors to the agent as context."
+        },
+        {
+          "value": "verification-gap",
+          "label": "Nudge when files change with no test run",
+          "hosts": ["claude-code"],
+          "event": "PostToolUse",
+          "blocking": false,
+          "file": "verification_gap.py",
+          "runs": "Counts files written since the last run of the test command. Adds a reminder to the context at the threshold."
+        },
+        {
+          "value": "delegation-counter",
+          "label": "Nudge after many tool calls without a sub-agent",
+          "hosts": ["claude-code"],
+          "event": "PostToolUse",
+          "blocking": false,
+          "file": "delegation_counter.py",
+          "runs": "Counts tool calls in a row that are not a sub-agent call. Adds a reminder to the context at the threshold."
+        },
+        {
+          "value": "memory-save-on-stop",
+          "label": "Ask once per session to save durable facts",
+          "hosts": ["claude-code"],
+          "event": "Stop",
+          "blocking": true,
+          "file": "memory_save_on_stop.py",
+          "runs": "Blocks the first stop of each session with exit 2 and a reminder to save durable facts to memory/. Lets every later stop through."
+        },
+        {
+          "value": "recall-reinject",
+          "label": "Re-inject the memory index every few prompts",
+          "hosts": ["claude-code"],
+          "event": "UserPromptSubmit",
+          "blocking": false,
+          "file": "recall_reinject.py",
+          "runs": "Counts prompts. Every Nth prompt it adds memory/INDEX.md to the context, cut to 9,000 characters."
+        },
+        {
+          "value": "pr-size-nudge",
+          "label": "Nudge before a large push",
+          "hosts": ["claude-code"],
+          "event": "PreToolUse",
+          "blocking": false,
+          "file": "pr_size_nudge.py",
+          "runs": "On git push, runs git diff --numstat against the base branch. Adds a reminder when the change is over 400 lines or 8 files."
+        }
+      ],
+      "default": [],
+      "min": 0,
+      "max": 8
+    },
+    {
+      "id": "roles",
+      "type": "boolean",
+      "label": "Add a roles section to AGENTS.md?",
+      "help": "You are the product manager. The agent is the lead developer. The section states which choices the agent makes and which it brings to you.",
+      "options": [],
+      "default": false
+    },
+    {
+      "id": "skills",
+      "type": "multi",
+      "label": "Which kinds of skill do you want?",
+      "help": "The list is ranked by category. Only the prompt refiner ships with this guide. For the others, the agent names the kind and you choose a public or vendor skill.",
+      "options": [
+        { "value": "prompt-refiner", "label": "Prompt refiner (ships with this guide)", "category": "planning and spec", "ships": true },
+        { "value": "goal-writer", "label": "Goal writer for long sessions", "category": "planning and spec", "ships": false },
+        { "value": "sequential-reasoning", "label": "Sequential reasoning", "category": "planning and spec", "ships": false },
+        { "value": "pair-programming", "label": "Pair programming, failing test first", "category": "TDD and pairing", "ships": false },
+        { "value": "independent-review", "label": "Independent review", "category": "review", "ships": false },
+        { "value": "mutation-testing", "label": "Mutation testing", "category": "review", "ships": false },
+        { "value": "stacked-prs", "label": "Stacked pull requests", "category": "orchestration", "ships": false },
+        { "value": "orca-orchestration", "label": "Orca orchestration", "category": "orchestration", "ships": false },
+        { "value": "recall-before-acting", "label": "Recall before acting", "category": "memory", "ships": false },
+        { "value": "diagrams", "label": "Diagrams", "category": "writing", "ships": false }
+      ],
+      "default": [],
+      "min": 0,
+      "max": 10
+    }
+  ],
+  "rules": [
+    {
+      "id": "tests-before-stop-needs-test-command",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "tests-before-stop" }],
+      "then": { "require": "test_command" },
+      "message": "The tests-before-stop hook needs a test command."
+    },
+    {
+      "id": "verification-gap-needs-test-command",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "verification-gap" }],
+      "then": { "require": "test_command" },
+      "message": "The verification-gap hook needs a test command, so it can tell when the tests ran."
+    },
+    {
+      "id": "lint-after-write-needs-lint-command",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "lint-after-write" }],
+      "then": { "require": "lint_command" },
+      "message": "The lint-after-write hook needs a lint command."
+    },
+    {
+      "id": "block-destructive-git-needs-claude-code",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "block-destructive-git" }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The block-destructive-git hook blocks, and blocking hooks are Claude Code only. Add Claude Code to hosts or remove the hook."
+    },
+    {
+      "id": "tests-before-stop-needs-claude-code",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "tests-before-stop" }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The tests-before-stop hook blocks, and blocking hooks are Claude Code only. Add Claude Code to hosts or remove the hook."
+    },
+    {
+      "id": "memory-save-on-stop-needs-claude-code",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "memory-save-on-stop" }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The memory-save-on-stop hook blocks, and blocking hooks are Claude Code only. Add Claude Code to hosts or remove the hook."
+    },
+    {
+      "id": "memory-save-on-stop-needs-memory",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "memory-save-on-stop" }],
+      "then": { "answer": "memory", "equals": true },
+      "message": "The memory-save-on-stop hook needs the memory folder. Answer yes to the memory question or remove the hook."
+    },
+    {
+      "id": "recall-reinject-needs-memory",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "recall-reinject" }],
+      "then": { "answer": "memory", "equals": true },
+      "message": "The recall-reinject hook reads memory/INDEX.md. Answer yes to the memory question or remove the hook."
+    },
+    {
+      "id": "orca-needs-known-stack",
+      "level": "error",
+      "when": [{ "answer": "orca", "equals": true }],
+      "then": { "forbid": { "answer": "stack", "equals": "other" } },
+      "message": "The orca.yaml setup command comes from the stack. Pick python or node, or answer no to Orca and write orca.yaml yourself."
+    },
+    {
+      "id": "hooks-without-claude-code",
+      "level": "warning",
+      "when": [{ "answer": "hooks", "is_set": true }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The kit registers hooks for Claude Code only. With Codex alone, the hook scripts are copied but nothing runs them."
+    }
+  ],
+  "items": [
+    {
+      "id": "agents-md",
+      "when": [],
+      "writes": [{ "path": "AGENTS.md", "source": "files/AGENTS.md", "mode": "create" }],
+      "run": []
+    },
+    {
+      "id": "agents-md-roles",
+      "when": [{ "answer": "roles", "equals": true }],
+      "writes": [{ "path": "AGENTS.md", "source": "files/AGENTS.roles.md", "mode": "append" }],
+      "run": []
+    },
+    {
+      "id": "claude-md",
+      "when": [{ "answer": "hosts", "includes": "claude-code" }],
+      "writes": [{ "path": "CLAUDE.md", "source": "files/CLAUDE.md", "mode": "create" }],
+      "run": []
+    },
+    {
+      "id": "permissions",
+      "when": [{ "answer": "hosts", "includes": "claude-code" }],
+      "writes": [{ "path": ".claude/settings.json", "source": "files/claude/permissions.json", "mode": "merge-json" }],
+      "run": []
+    },
+    {
+      "id": "permissions-test",
+      "when": [{ "answer": "hosts", "includes": "claude-code" }, { "answer": "test_command", "is_set": true }],
+      "writes": [{ "path": ".claude/settings.json", "source": "files/claude/permissions-test.json", "mode": "merge-json" }],
+      "run": []
+    },
+    {
+      "id": "permissions-lint",
+      "when": [{ "answer": "hosts", "includes": "claude-code" }, { "answer": "lint_command", "is_set": true }],
+      "writes": [{ "path": ".claude/settings.json", "source": "files/claude/permissions-lint.json", "mode": "merge-json" }],
+      "run": []
+    },
+    {
+      "id": "hook-config",
+      "when": [{ "answer": "hooks", "is_set": true }],
+      "writes": [{ "path": ".claude/starter-kit.json", "source": "files/claude/starter-kit.json", "mode": "create" }],
+      "run": []
+    },
+    {
+      "id": "hook-block-destructive-git",
+      "when": [{ "answer": "hooks", "includes": "block-destructive-git" }],
+      "writes": [
+        { "path": ".claude/hooks/block_destructive_git.py", "source": "hooks/block_destructive_git.py", "mode": "create" },
+        { "path": ".claude/settings.json", "source": "files/claude/hook-block-destructive-git.json", "mode": "merge-json" }
+      ],
+      "run": []
+    },
+    {
+      "id": "hook-tests-before-stop",
+      "when": [{ "answer": "hooks", "includes": "tests-before-stop" }],
+      "writes": [
+        { "path": ".claude/hooks/tests_before_stop.py", "source": "hooks/tests_before_stop.py", "mode": "create" },
+        { "path": ".claude/settings.json", "source": "files/claude/hook-tests-before-stop.json", "mode": "merge-json" }
+      ],
+      "run": []
+    },
+    {
+      "id": "hook-lint-after-write",
+      "when": [{ "answer": "hooks", "includes": "lint-after-write" }],
+      "writes": [
+        { "path": ".claude/hooks/lint_after_write.py", "source": "hooks/lint_after_write.py", "mode": "create" },
+        { "path": ".claude/settings.json", "source": "files/claude/hook-lint-after-write.json", "mode": "merge-json" }
+      ],
+      "run": []
+    },
+    {
+      "id": "hook-verification-gap",
+      "when": [{ "answer": "hooks", "includes": "verification-gap" }],
+      "writes": [
+        { "path": ".claude/hooks/verification_gap.py", "source": "hooks/verification_gap.py", "mode": "create" },
+        { "path": ".claude/settings.json", "source": "files/claude/hook-verification-gap.json", "mode": "merge-json" }
+      ],
+      "run": []
+    },
+    {
+      "id": "hook-delegation-counter",
+      "when": [{ "answer": "hooks", "includes": "delegation-counter" }],
+      "writes": [
+        { "path": ".claude/hooks/delegation_counter.py", "source": "hooks/delegation_counter.py", "mode": "create" },
+        { "path": ".claude/settings.json", "source": "files/claude/hook-delegation-counter.json", "mode": "merge-json" }
+      ],
+      "run": []
+    },
+    {
+      "id": "hook-memory-save-on-stop",
+      "when": [{ "answer": "hooks", "includes": "memory-save-on-stop" }],
+      "writes": [
+        { "path": ".claude/hooks/memory_save_on_stop.py", "source": "hooks/memory_save_on_stop.py", "mode": "create" },
+        { "path": ".claude/settings.json", "source": "files/claude/hook-memory-save-on-stop.json", "mode": "merge-json" }
+      ],
+      "run": []
+    },
+    {
+      "id": "hook-recall-reinject",
+      "when": [{ "answer": "hooks", "includes": "recall-reinject" }],
+      "writes": [
+        { "path": ".claude/hooks/recall_reinject.py", "source": "hooks/recall_reinject.py", "mode": "create" },
+        { "path": ".claude/settings.json", "source": "files/claude/hook-recall-reinject.json", "mode": "merge-json" }
+      ],
+      "run": []
+    },
+    {
+      "id": "hook-pr-size-nudge",
+      "when": [{ "answer": "hooks", "includes": "pr-size-nudge" }],
+      "writes": [
+        { "path": ".claude/hooks/pr_size_nudge.py", "source": "hooks/pr_size_nudge.py", "mode": "create" },
+        { "path": ".claude/settings.json", "source": "files/claude/hook-pr-size-nudge.json", "mode": "merge-json" }
+      ],
+      "run": []
+    },
+    {
+      "id": "memory",
+      "when": [{ "answer": "memory", "equals": true }],
+      "writes": [
+        { "path": "memory/README.md", "source": "files/memory/README.md", "mode": "create" },
+        { "path": "memory/INDEX.md", "source": "files/memory/INDEX.md", "mode": "create" }
+      ],
+      "run": []
+    },
+    {
+      "id": "orca-python",
+      "when": [{ "answer": "orca", "equals": true }, { "answer": "stack", "equals": "python" }],
+      "writes": [{ "path": "orca.yaml", "source": "files/orca/python.yaml", "mode": "create" }],
+      "run": [
+        { "command": "curl -LsSf https://astral.sh/uv/install.sh | sh", "why": "Installs uv, which the setup script calls. Skip it if uv --version already works." },
+        { "command": "brew install --cask stablyai/orca/orca", "why": "Installs the Orca app on macOS with Homebrew. On Windows or Linux, use the installer from https://github.com/stablyai/orca/releases instead. Skip it if Orca is installed." }
+      ]
+    },
+    {
+      "id": "orca-node",
+      "when": [{ "answer": "orca", "equals": true }, { "answer": "stack", "equals": "node" }],
+      "writes": [{ "path": "orca.yaml", "source": "files/orca/node.yaml", "mode": "create" }],
+      "run": [
+        { "command": "brew install --cask stablyai/orca/orca", "why": "Installs the Orca app on macOS with Homebrew. On Windows or Linux, use the installer from https://github.com/stablyai/orca/releases instead. Skip it if Orca is installed." }
+      ]
+    },
+    {
+      "id": "skill-prompt-refiner",
+      "when": [{ "answer": "hosts", "includes": "claude-code" }, { "answer": "skills", "includes": "prompt-refiner" }],
+      "writes": [{ "path": ".claude/skills/prompt-refiner/SKILL.md", "source": "../prompt-refiner/SKILL.md", "mode": "create" }],
+      "run": []
+    }
+  ]
+}

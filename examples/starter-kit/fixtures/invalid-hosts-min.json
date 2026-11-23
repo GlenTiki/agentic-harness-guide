@@ -1,0 +1,16 @@
+{
+  "description": "No host selected.",
+  "plan": {
+    "answers": {
+      "hosts": [],
+      "stack": "python"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "hosts-min"
+    ],
+    "warnings": []
+  }
+}

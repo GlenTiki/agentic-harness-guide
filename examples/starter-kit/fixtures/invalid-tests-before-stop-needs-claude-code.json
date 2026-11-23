@@ -1,0 +1,25 @@
+{
+  "description": "A blocking Stop hook with Codex alone.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "codex"
+      ],
+      "stack": "python",
+      "test_command": "uv run pytest",
+      "lint_command": "uv run ruff check",
+      "hooks": [
+        "tests-before-stop"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "tests-before-stop-needs-claude-code"
+    ],
+    "warnings": [
+      "hooks-without-claude-code"
+    ]
+  }
+}

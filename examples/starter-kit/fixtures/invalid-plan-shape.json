@@ -1,0 +1,15 @@
+{
+  "description": "A plan with no answers object.",
+  "plan": {
+    "hosts": [
+      "claude-code"
+    ]
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "plan-shape"
+    ],
+    "warnings": []
+  }
+}

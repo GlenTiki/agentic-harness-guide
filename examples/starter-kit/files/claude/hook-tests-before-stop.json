@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -I \"${CLAUDE_PROJECT_DIR}/.claude/hooks/tests_before_stop.py\""
+          }
+        ]
+      }
+    ]
+  }
+}

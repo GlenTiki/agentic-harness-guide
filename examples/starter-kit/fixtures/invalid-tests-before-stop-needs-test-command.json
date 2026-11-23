@@ -1,0 +1,21 @@
+{
+  "description": "tests-before-stop with no test command.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "hooks": [
+        "tests-before-stop"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "tests-before-stop-needs-test-command"
+    ],
+    "warnings": []
+  }
+}

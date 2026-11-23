@@ -1,0 +1,16 @@
+{
+  "description": "Claude Code, Python, nothing else selected.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python"
+    }
+  },
+  "expect": {
+    "valid": true,
+    "errors": [],
+    "warnings": []
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "description": "A control character that breaks the rendered JSON.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "test_command": "npm\ttest"
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "test_command-pattern"
+    ],
+    "warnings": []
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "description": "An answer to a question the kit does not ask.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "install_everything": true
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "install_everything-unknown"
+    ],
+    "warnings": []
+  }
+}

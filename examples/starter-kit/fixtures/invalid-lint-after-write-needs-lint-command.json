@@ -1,0 +1,22 @@
+{
+  "description": "lint-after-write with no lint command.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "claude-code"
+      ],
+      "stack": "python",
+      "test_command": "uv run pytest",
+      "hooks": [
+        "lint-after-write"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "lint-after-write-needs-lint-command"
+    ],
+    "warnings": []
+  }
+}

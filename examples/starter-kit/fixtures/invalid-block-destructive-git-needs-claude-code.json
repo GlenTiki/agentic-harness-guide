@@ -1,0 +1,23 @@
+{
+  "description": "A blocking hook with Codex alone.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "codex"
+      ],
+      "stack": "python",
+      "hooks": [
+        "block-destructive-git"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "block-destructive-git-needs-claude-code"
+    ],
+    "warnings": [
+      "hooks-without-claude-code"
+    ]
+  }
+}
