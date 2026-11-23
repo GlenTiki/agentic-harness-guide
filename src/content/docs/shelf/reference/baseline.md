@@ -15,7 +15,7 @@ description: The minimum viable harness as one checklist.
 
 - [ ] **BL-01** Deny rules cover secrets files and credential directories. [Permissions and sandboxing](../../control/permissions-and-sandboxing/)
 - [ ] **BL-02** The shell sandbox is on, with an empty network allow list plus the hosts your build needs. A command that fails inside it cannot retry outside it without a person. GitHub Copilot CLI behaviour: `/sandbox enable` turns on local sandboxing, and a hook cannot pre-approve a request to leave the sandbox. Claude Code behaviour: set `allowUnsandboxedCommands` to `false`; otherwise a matching allow rule approves the retry with no prompt.
-- [ ] **BL-03** Skip-all-prompts modes are disabled, or confined to a disposable environment. In GitHub Copilot CLI these are `--allow-all` (alias `--yolo`) and autopilot with full permissions.
+- [ ] **BL-03** Skip-all-prompts modes are disabled, or confined to a disposable environment. In GitHub Copilot CLI these are `--allow-all` (alias `--yolo`), `--allow-all-tools`, `--allow-tool='shell'` and autopilot with full permissions.
 - [ ] **BL-04** Every external action has a capability switch, default off. [Capability gating](../../control/capability-gating/)
 
 ### Instructions and memory
@@ -60,7 +60,7 @@ Each unchecked box corresponds to a row in [Anti-patterns](../anti-patterns/), w
 
 The maintainer checks what the repository already has. The maintainer does the first unchecked item under Boundaries, then Enforcement, then Quality.
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "To enable it, run `/sandbox enable` inside a session." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "To enable it, run `/sandbox enable` inside a session." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own. The same page says that with `--allow-all-tools` Copilot "can run any shell commands that you can run, without getting your prior approval", and gives `copilot --allow-tool='shell'` as allowing "any shell command without individual approval".</p>
 
 <p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-configuration. Quoted line: "leaving the sandbox is a privilege escalation the user must always confirm interactively". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own. The same page gives the fail-closed and timeout rules for `preToolUse` and lists the `agentStop` event, and https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode, fetched on the same date, documents `--allow-all` and its alias `--yolo`.</p>
 

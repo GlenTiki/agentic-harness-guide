@@ -54,7 +54,7 @@ The rule differs by agent, so read your harness's exit code table. GitHub Copilo
 
 <p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-configuration. Quoted line: "Timeouts are always fail-open, including for `preToolUse` and admin-deployed policy hooks". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
-Claude Code differs. In Claude Code, exit code 1 is a non-blocking error by default. A notice shows the first line of stderr, and the tool call goes ahead. A pre-tool hook blocks the call when it exits with code 2, or when it exits 0 and prints JSON with `"permissionDecision": "deny"`. From v2.1.295 you can also set `"onFailure": "block"` on the hook. Then a crash, a timeout, a script that does not start or any exit code other than 0 and 2 blocks the call too. Without one of these, a security hook that exits 1 only logs.
+Claude Code differs: exit code 1 is a non-blocking error by default, so the tool call goes ahead. A pre-tool hook blocks when it exits 2 or exits 0 with `"permissionDecision": "deny"`, and from v2.1.295 `"onFailure": "block"` makes a crash, a timeout, a script that does not start or any other exit code block too. Without one of these, a security hook that exits 1 only logs.
 
 ### 2. Environment variable pollution across sub-agents (AP-08)
 

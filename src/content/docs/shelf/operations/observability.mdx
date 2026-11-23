@@ -43,7 +43,7 @@ jq -cn --arg time "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg session "$session" --ar
   '{time: $time, session: $session, seq: $seq, phase: $phase, tool: $tool, id: $id, target: $target}' >> "$log_dir/actions.jsonl"
 ```
 
-GitHub Copilot CLI behaviour: save the script as `.github/hooks/log-action.sh` and register it in a repository hook file such as `.github/hooks/log-action.json`. Use the PascalCase event names `PreToolUse` and `PostToolUse`. With those names Copilot sends the snake_case fields that the script reads. The documented payload has no tool-call id, so the `id` field stays empty. Set `CLAUDE_PROJECT_DIR` in the hook's `env`, because the script stops when it is unset. Test the script before you register it: a command `preToolUse` hook that crashes denies the tool call.
+GitHub Copilot CLI behaviour: save the script as `.github/hooks/log-action.sh` and register it in a repository hook file such as `.github/hooks/log-action.json`. Use the PascalCase event names `PreToolUse` and `PostToolUse`. With those names Copilot sends the snake_case fields that the script reads. The documented payload has no tool-call id, so the `id` field stays empty. The hooks reference types `tool_input` as `unknown` and does not name its fields, so whether an edit carries a `file_path` is not documented: check the `target` field on a real edit before you rely on it. Set `CLAUDE_PROJECT_DIR` in the hook's `env`, because the script stops when it is unset. Test the script before you register it: a command `preToolUse` hook that crashes denies the tool call.
 
 Example, do not run:
 
@@ -63,7 +63,7 @@ Example, do not run:
 
 <p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-configuration. Quoted line: "Configure the event name in PascalCase (for example, `SessionStart`). Fields use snake_case to match the VS Code Copilot extension format." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own. The same page shows the `PreToolUse` payload without a tool-call id, and says: "Command `preToolUse` hooks are fail-closed on errors".</p>
 
-Claude Code differs: save the script as `.claude/hooks/log-action.sh`. Register it on both events with the commands `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" pre` and `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" post`. In `settings.json`, escape the inner quotes as `\"`. Quote the path so a folder name with a space still works, and name `bash` so the file needs no executable permission. If you run the file directly, run `chmod +x` on it first. The log goes to `${CLAUDE_PROJECT_DIR}/.agent-log`, so it lands in one place whatever directory the session is in. Check the path first with `test -f`. A missing shell script exits 127, and the hook then logs nothing. The only sign is a hook error notice in the transcript (see [Hooks](../../control/hooks/)).
+Claude Code differs: save the script as `.claude/hooks/log-action.sh` and register it on both events with `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" pre` and the same command with `post`, escaping the inner quotes as `\"` in `settings.json`. Check the path first with `test -f`, because a missing script exits 127 and the hook then logs nothing. [Hooks](../../control/hooks/) covers the error notice this leaves in the transcript.
 
 <Example
   label="Computed"
