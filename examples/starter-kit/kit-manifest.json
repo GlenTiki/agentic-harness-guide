@@ -218,14 +218,49 @@
       "level": "error",
       "when": [{ "answer": "hooks", "includes": "tests-before-stop" }],
       "then": { "answer": "hosts", "includes": "claude-code" },
-      "message": "The tests-before-stop hook blocks, and blocking hooks are Claude Code only. Add Claude Code to hosts or remove the hook."
+      "message": "The tests-before-stop hook runs on Claude Code only. Add Claude Code to hosts or remove the hook."
     },
     {
       "id": "memory-save-on-stop-needs-claude-code",
       "level": "error",
       "when": [{ "answer": "hooks", "includes": "memory-save-on-stop" }],
       "then": { "answer": "hosts", "includes": "claude-code" },
-      "message": "The memory-save-on-stop hook blocks, and blocking hooks are Claude Code only. Add Claude Code to hosts or remove the hook."
+      "message": "The memory-save-on-stop hook runs on Claude Code only. Add Claude Code to hosts or remove the hook."
+    },
+    {
+      "id": "lint-after-write-needs-claude-code",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "lint-after-write" }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The lint-after-write hook runs on Claude Code only. Add Claude Code to hosts or remove the hook."
+    },
+    {
+      "id": "verification-gap-needs-claude-code",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "verification-gap" }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The verification-gap hook runs on Claude Code only. Add Claude Code to hosts or remove the hook."
+    },
+    {
+      "id": "delegation-counter-needs-claude-code",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "delegation-counter" }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The delegation-counter hook runs on Claude Code only. Add Claude Code to hosts or remove the hook."
+    },
+    {
+      "id": "recall-reinject-needs-claude-code",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "recall-reinject" }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The recall-reinject hook runs on Claude Code only. Add Claude Code to hosts or remove the hook."
+    },
+    {
+      "id": "pr-size-nudge-needs-claude-code",
+      "level": "error",
+      "when": [{ "answer": "hooks", "includes": "pr-size-nudge" }],
+      "then": { "answer": "hosts", "includes": "claude-code" },
+      "message": "The pr-size-nudge hook runs on Claude Code only. Add Claude Code to hosts or remove the hook."
     },
     {
       "id": "memory-save-on-stop-needs-memory",
@@ -253,7 +288,7 @@
       "level": "warning",
       "when": [{ "answer": "hooks", "is_set": true }],
       "then": { "answer": "hosts", "includes": "claude-code" },
-      "message": "The kit registers every hook for Claude Code, and only block-destructive-git for GitHub Copilot CLI. Without Claude Code, the other hook scripts are copied but nothing runs them."
+      "message": "Without Claude Code, the kit registers hooks for GitHub Copilot CLI only, and only block-destructive-git runs there."
     }
   ],
   "items": [
@@ -295,7 +330,7 @@
     },
     {
       "id": "hook-config",
-      "when": [{ "answer": "hooks", "is_set": true }],
+      "when": [{ "answer": "hooks", "is_set": true }, { "answer": "hosts", "includes": "claude-code" }],
       "writes": [{ "path": ".claude/starter-kit.json", "source": "files/claude/starter-kit.json", "mode": "create" }],
       "run": []
     },
@@ -319,7 +354,7 @@
     },
     {
       "id": "hook-tests-before-stop",
-      "when": [{ "answer": "hooks", "includes": "tests-before-stop" }],
+      "when": [{ "answer": "hooks", "includes": "tests-before-stop" }, { "answer": "hosts", "includes": "claude-code" }],
       "writes": [
         { "path": ".claude/hooks/tests_before_stop.py", "source": "hooks/tests_before_stop.py", "mode": "create" },
         { "path": ".claude/settings.json", "source": "files/claude/hook-tests-before-stop.json", "mode": "merge-json" }
@@ -328,7 +363,7 @@
     },
     {
       "id": "hook-lint-after-write",
-      "when": [{ "answer": "hooks", "includes": "lint-after-write" }],
+      "when": [{ "answer": "hooks", "includes": "lint-after-write" }, { "answer": "hosts", "includes": "claude-code" }],
       "writes": [
         { "path": ".claude/hooks/lint_after_write.py", "source": "hooks/lint_after_write.py", "mode": "create" },
         { "path": ".claude/settings.json", "source": "files/claude/hook-lint-after-write.json", "mode": "merge-json" }
@@ -337,7 +372,7 @@
     },
     {
       "id": "hook-verification-gap",
-      "when": [{ "answer": "hooks", "includes": "verification-gap" }],
+      "when": [{ "answer": "hooks", "includes": "verification-gap" }, { "answer": "hosts", "includes": "claude-code" }],
       "writes": [
         { "path": ".claude/hooks/verification_gap.py", "source": "hooks/verification_gap.py", "mode": "create" },
         { "path": ".claude/settings.json", "source": "files/claude/hook-verification-gap.json", "mode": "merge-json" }
@@ -346,7 +381,7 @@
     },
     {
       "id": "hook-delegation-counter",
-      "when": [{ "answer": "hooks", "includes": "delegation-counter" }],
+      "when": [{ "answer": "hooks", "includes": "delegation-counter" }, { "answer": "hosts", "includes": "claude-code" }],
       "writes": [
         { "path": ".claude/hooks/delegation_counter.py", "source": "hooks/delegation_counter.py", "mode": "create" },
         { "path": ".claude/settings.json", "source": "files/claude/hook-delegation-counter.json", "mode": "merge-json" }
@@ -355,7 +390,7 @@
     },
     {
       "id": "hook-memory-save-on-stop",
-      "when": [{ "answer": "hooks", "includes": "memory-save-on-stop" }],
+      "when": [{ "answer": "hooks", "includes": "memory-save-on-stop" }, { "answer": "hosts", "includes": "claude-code" }],
       "writes": [
         { "path": ".claude/hooks/memory_save_on_stop.py", "source": "hooks/memory_save_on_stop.py", "mode": "create" },
         { "path": ".claude/settings.json", "source": "files/claude/hook-memory-save-on-stop.json", "mode": "merge-json" }
@@ -364,7 +399,7 @@
     },
     {
       "id": "hook-recall-reinject",
-      "when": [{ "answer": "hooks", "includes": "recall-reinject" }],
+      "when": [{ "answer": "hooks", "includes": "recall-reinject" }, { "answer": "hosts", "includes": "claude-code" }],
       "writes": [
         { "path": ".claude/hooks/recall_reinject.py", "source": "hooks/recall_reinject.py", "mode": "create" },
         { "path": ".claude/settings.json", "source": "files/claude/hook-recall-reinject.json", "mode": "merge-json" }
@@ -373,7 +408,7 @@
     },
     {
       "id": "hook-pr-size-nudge",
-      "when": [{ "answer": "hooks", "includes": "pr-size-nudge" }],
+      "when": [{ "answer": "hooks", "includes": "pr-size-nudge" }, { "answer": "hosts", "includes": "claude-code" }],
       "writes": [
         { "path": ".claude/hooks/pr_size_nudge.py", "source": "hooks/pr_size_nudge.py", "mode": "create" },
         { "path": ".claude/settings.json", "source": "files/claude/hook-pr-size-nudge.json", "mode": "merge-json" }

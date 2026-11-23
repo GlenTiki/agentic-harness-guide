@@ -101,8 +101,16 @@ class Resolution(unittest.TestCase):
     def test_copilot_cli_alone_gets_its_hook_and_skill_and_no_claude_registration(self):
         _, resolution = self.resolve("valid-copilot-cli")
         self.assertEqual([write["path"] for write in resolution["writes"]], [
-            "AGENTS.md", ".claude/starter-kit.json", ".github/hooks/block_destructive_git.py",
+            "AGENTS.md", ".github/hooks/block_destructive_git.py",
             ".github/hooks/starter-kit.json", ".github/skills/prompt-refiner/SKILL.md"])
+
+    def test_without_claude_code_no_item_writes_under_dot_claude(self):
+        hooks = next(question for question in MANIFEST["questions"] if question["id"] == "hooks")
+        answers = validate_plan.with_defaults(MANIFEST, {
+            "hosts": ["codex", "copilot-cli"], "hooks": [option["value"] for option in hooks["options"]],
+            "memory": True, "test_command": "pytest", "lint_command": "ruff", "skills": ["prompt-refiner"]})
+        paths = [write["path"] for write in validate_plan.resolve(answers, MANIFEST)["writes"]]
+        self.assertEqual([path for path in paths if path.startswith(".claude/")], [])
 
     def test_copilot_registration_uses_the_pascal_case_event_so_the_script_reads_claude_shaped_input(self):
         fragment = json.loads((HERE / "files/copilot/hook-block-destructive-git.json").read_text())
@@ -141,17 +149,16 @@ class Manifest(unittest.TestCase):
                 self.assertTrue((HERE / "files/copilot" / f"hook-{option['value']}.json").is_file())
                 self.assertIn(f"hook-{option['value']}-copilot", item_ids)
 
-    def test_every_blocking_hook_is_refused_exactly_when_no_chosen_host_runs_it(self):
+    def test_every_hook_is_refused_exactly_when_no_chosen_host_runs_it(self):
         hooks = next(question for question in MANIFEST["questions"] if question["id"] == "hooks")
         hosts = [option["value"] for option in next(q for q in MANIFEST["questions"] if q["id"] == "hosts")["options"]]
         choices = [[host for bit, host in enumerate(hosts) if mask >> bit & 1] for mask in range(1, 2 ** len(hosts))]
         for option in hooks["options"]:
-            if not option["blocking"]:
-                continue
             for chosen in choices:
                 with self.subTest(hook=option["value"], hosts=chosen):
                     errors, _, _ = validate_plan.validate(
-                        {"answers": {"hosts": chosen, "hooks": [option["value"]], "memory": True, "test_command": "pytest"}},
+                        {"answers": {"hosts": chosen, "hooks": [option["value"]], "memory": True, "test_command": "pytest",
+                                      "lint_command": "ruff"}},
                         MANIFEST)
                     host_errors = [rule_id for rule_id, _ in errors if rule_id.startswith(f"{option['value']}-needs-")
                                    and rule_id.endswith(("-host", "-claude-code"))]

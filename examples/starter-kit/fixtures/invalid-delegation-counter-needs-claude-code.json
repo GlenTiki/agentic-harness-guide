@@ -1,0 +1,26 @@
+{
+  "description": "The delegation-counter hook with GitHub Copilot CLI alone. The hook runs on Claude Code only.",
+  "plan": {
+    "answers": {
+      "hosts": [
+        "copilot-cli"
+      ],
+      "stack": "python",
+      "test_command": "uv run pytest",
+      "lint_command": "uv run ruff check",
+      "memory": true,
+      "hooks": [
+        "delegation-counter"
+      ]
+    }
+  },
+  "expect": {
+    "valid": false,
+    "errors": [
+      "delegation-counter-needs-claude-code"
+    ],
+    "warnings": [
+      "hooks-without-claude-code"
+    ]
+  }
+}
