@@ -12,14 +12,14 @@ description: Common harness mistakes as a table of symptom, cause and fix.
 | ID | Symptom | Cause | Fix |
 | --- | --- | --- | --- |
 | AP-01 | The agent breaks a rule you wrote | The rule is advice in an instruction file: the agent reads it as context, and nothing enforces it | Move it into a [hook](../../control/hooks/) or [permission rule](../../control/permissions-and-sandboxing/), which the harness applies on the calls it covers |
-| AP-02 | A hook exists but the bad action still happens | Claude Code behaviour: the script exits 1, or fails to start, which is a non-blocking error by default | Exit 2 to block, or exit 0 with a deny decision. Set `onFailure` to `block` so a crash also blocks |
+| AP-02 | A hook exists but the bad action still happens | The hook fails open. In GitHub Copilot CLI, a pre-tool command hook that times out lets the call through. In Claude Code, exit 1 or a script that fails to start is a non-blocking error by default | Test the failure path of each hook. In GitHub Copilot CLI, keep the hook well inside its timeout. In Claude Code, exit 2 or deny, and set `onFailure` to `block` |
 | AP-03 | Adherence drops as the instruction file grows | Every line competes for attention on every turn | Cut to commands and non-obvious rules, and scope the rest to paths |
 | AP-04 | Two instruction layers give conflicting orders | Layers are concatenated, and nothing defines which of two conflicting rules the agent follows | Review the layers together and remove the conflict |
 | AP-05 | The agent repeats a corrected mistake | The correction was never stored, or was appended below the wrong claim | [Refine the memory entry](../../context/memory/) where it stands |
 | AP-06 | A constraint vanishes mid-session | It lived only in the conversation and compaction summarised it away | Write it to the [ledger](../../context/context-management/) |
 | AP-07 | A sub-agent redoes finished work | The brief was vague or missing | Build the brief from the ledger with scope, known facts and answer format |
 | AP-08 | Parallel agents overwrite each other | They share one working directory | Give each writer a [worktree](../../delegation/worktree-isolation/) |
-| AP-09 | An isolated agent lacks recent work | The worktree branched from the default branch, not the current one | Merge first, set `worktree.baseRef` to `head` (Claude Code behaviour), or state the base and verify it |
+| AP-09 | An isolated agent lacks recent work | The worktree branched from a different base than you expected | Check your harness's default. GitHub Copilot CLI branches from `HEAD`; Claude Code branches from the default branch unless `worktree.baseRef` is `head`. Merge first, or state the base and verify it |
 | AP-10 | The suite is green but a bug shipped | The agent weakened or deleted the failing assertion | Review test diffs, and add a [gate](../../quality/test-first-and-gates/) on skips and suppressions |
 | AP-11 | A commit lands that CI rejects | Local and CI run different commands | Use one `check` command in both places |
 | AP-12 | A reviewer approved but the merged code differs | Approval was not bound to a digest | [Record the diff hash](../../quality/independent-review/) and re-review after any edit |
@@ -50,7 +50,11 @@ if [ "$RISKY_OPERATION" = "true" ]; then
 fi
 ```
 
-In Claude Code, exit code 1 is a non-blocking error by default. A notice shows the first line of stderr, and the tool call goes ahead. A pre-tool hook blocks the call when it exits with code 2, or when it exits 0 and prints JSON with `"permissionDecision": "deny"`. From v2.1.295 you can also set `"onFailure": "block"` on the hook. Then a crash, a timeout, a script that does not start or any exit code other than 0 and 2 blocks the call too. Without one of these, a security hook that exits 1 only logs.
+The rule differs by agent, so read your harness's exit code table. GitHub Copilot CLI behaviour: a command `preToolUse` hook is fail-closed. Exit 2, a crash or any other non-zero exit denies the call. A timeout is fail-open: the call goes ahead after a warning. An HTTP `preToolUse` hook is fail-open on any error.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-configuration. Quoted line: "Timeouts are always fail-open, including for `preToolUse` and admin-deployed policy hooks". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Claude Code differs: exit code 1 is a non-blocking error by default, so the tool call goes ahead. A pre-tool hook blocks when it exits 2 or exits 0 with `"permissionDecision": "deny"`, and from v2.1.295 `"onFailure": "block"` makes a crash, a timeout, a script that does not start or any other exit code block too. Without one of these, a security hook that exits 1 only logs.
 
 ### 2. Environment variable pollution across sub-agents (AP-08)
 
@@ -86,6 +90,8 @@ A green run proves little when the same agent changed both the code and its asse
 Find the three rows that match your current setup. Fix those first.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Non-blocking error: your hook exits with any other code, or fails in some other way, such as not starting or printing invalid JSON. The action goes ahead, except for hooks whose failure blocks the action". Claude Code on that date: 2.1.316. The docs page states no version of its own. The same page gives a feature floor for `onFailure`: "Requires Claude Code v2.1.295 or later."</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/copilot-cli-reference/cli-command-reference. Quoted line: "By default, branches off the current checkout (`HEAD`)". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/worktrees. Quoted line: "Subagent worktrees use the same base branch as `--worktree`, so they branch from your repository's default branch unless `worktree.baseRef` is set to `"head"`." Claude Code on that date: 2.1.316.</p>
 

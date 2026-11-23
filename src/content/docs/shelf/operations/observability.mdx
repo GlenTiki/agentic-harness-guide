@@ -17,7 +17,7 @@ When something goes wrong, the question is "what did the agent do, in what order
 
 ## What to enable
 
-**1. One line per tool call, from two events.** Do not log secrets. Add the log directory to `.gitignore` unless you mean to commit it. Log from `PreToolUse` and from `PostToolUse`. Claude Code behaviour: `PostToolUse` runs after a call succeeds. A failed call produces no `PostToolUse` line, because Claude Code has a separate `PostToolUseFailure` event. A call that was blocked before it ran did not succeed, so it produces none either. The `PreToolUse` line shows what the agent tried, and a missing `post` line next to it shows what did not complete. Each line is one JSON object with a UTC timestamp, the session id, a sequence number, the phase, the tool, the tool-call id and the target. `jq` escapes every string, so a command with a new line or a `|` in it stays on one line. The tool-call id pairs a `pre` line with its `post` line when calls run in parallel.
+**1. One line per tool call, from two events.** Do not log secrets. Add the log directory to `.gitignore` unless you mean to commit it. Log from the pre-tool event and from the post-tool event. GitHub Copilot CLI and Claude Code behave the same way here: the post-tool event runs after a call succeeds, and a failed call goes to a separate failure event (`postToolUseFailure` in GitHub Copilot CLI, `PostToolUseFailure` in Claude Code), so it produces no post line. A call that was blocked before it ran did not succeed, so it produces none either. The `PreToolUse` line shows what the agent tried, and a missing `post` line next to it shows what did not complete. Each line is one JSON object with a UTC timestamp, the session id, a sequence number, the phase, the tool, the tool-call id and the target. `jq` escapes every string, so a command with a new line or a `|` in it stays on one line. The tool-call id pairs a `pre` line with its `post` line when calls run in parallel.
 
 ```bash
 #!/usr/bin/env bash
@@ -43,7 +43,27 @@ jq -cn --arg time "$(date -u +%Y-%m-%dT%H:%M:%SZ)" --arg session "$session" --ar
   '{time: $time, session: $session, seq: $seq, phase: $phase, tool: $tool, id: $id, target: $target}' >> "$log_dir/actions.jsonl"
 ```
 
-Save it as `.claude/hooks/log-action.sh`. Register it on both events with the commands `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" pre` and `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" post`. In `settings.json`, escape the inner quotes as `\"`. Quote the path so a folder name with a space still works, and name `bash` so the file needs no executable permission. If you run the file directly, run `chmod +x` on it first. The log goes to `${CLAUDE_PROJECT_DIR}/.agent-log`, so it lands in one place whatever directory the session is in. Check the path first with `test -f`. A missing shell script exits 127, and the hook then logs nothing. The only sign is a hook error notice in the transcript (see [Hooks](../../control/hooks/)).
+GitHub Copilot CLI behaviour: save the script as `.github/hooks/log-action.sh` and register it in a repository hook file such as `.github/hooks/log-action.json`. Use the PascalCase event names `PreToolUse` and `PostToolUse`. With those names Copilot sends the snake_case fields that the script reads. The documented payload has no tool-call id, so the `id` field stays empty. The hooks reference types `tool_input` as `unknown` and does not name its fields, so whether an edit carries a `file_path` is not documented: check the `target` field on a real edit before you rely on it. Set `CLAUDE_PROJECT_DIR` in the hook's `env`, because the script stops when it is unset. Test the script before you register it: a command `preToolUse` hook that crashes denies the tool call.
+
+Example, do not run:
+
+```json
+{
+  "version": 1,
+  "hooks": {
+    "PreToolUse": [
+      { "type": "command", "bash": "bash .github/hooks/log-action.sh pre", "cwd": ".", "env": { "CLAUDE_PROJECT_DIR": "." } }
+    ],
+    "PostToolUse": [
+      { "type": "command", "bash": "bash .github/hooks/log-action.sh post", "cwd": ".", "env": { "CLAUDE_PROJECT_DIR": "." } }
+    ]
+  }
+}
+```
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-configuration. Quoted line: "Configure the event name in PascalCase (for example, `SessionStart`). Fields use snake_case to match the VS Code Copilot extension format." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own. The same page shows the `PreToolUse` payload without a tool-call id, and says: "Command `preToolUse` hooks are fail-closed on errors".</p>
+
+Claude Code differs: save the script as `.claude/hooks/log-action.sh` and register it on both events with `bash "${CLAUDE_PROJECT_DIR}/.claude/hooks/log-action.sh" pre` and the same command with `post`, escaping the inner quotes as `\"` in `settings.json`. Check the path first with `test -f`, because a missing script exits 127 and the hook then logs nothing. [Hooks](../../control/hooks/) covers the error notice this leaves in the transcript.
 
 <Example
   label="Computed"
@@ -97,7 +117,7 @@ The `perl` filter redacts `Bearer` values, any `name=value` pair whose name cont
 
 Parallel tool calls can race on the counter file, so treat a repeated number as a prompt to look, not as proof of tampering. The script writes in append mode, which is not append-only: a log file the agent can write is a log the agent can edit. Ship each line off the machine, or write to a path that the agent's user account cannot write.
 
-**2. Log lifecycle events too.** Session start, session end, sub-agent start and stop, configuration changes and capability changes all belong in the trail. Claude Code exposes events for most of these, including `SessionStart`, `SessionEnd`, `SubagentStart`, `SubagentStop` and `ConfigChange`.
+**2. Log lifecycle events too.** Session start, session end, sub-agent start and stop, configuration changes and capability changes all belong in the trail. GitHub Copilot CLI exposes `sessionStart`, `sessionEnd`, `subagentStart` and `subagentStop`. Claude Code exposes the same four as `SessionStart`, `SessionEnd`, `SubagentStart` and `SubagentStop`, plus `ConfigChange` for configuration changes.
 
 **3. Use second-resolution UTC timestamps.** They sort lexically, they compare without time zone arithmetic, and you convert to local time only when you display them.
 
@@ -121,6 +141,8 @@ Parallel tool calls can race on the counter file, so treat a repeated number as 
 ## First step for the maintainer
 
 Add the action-log hook above on both events. Perform one edit and one command. Check that four lines appear, two `pre` and two `post`.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-configuration. Quoted line: "A subagent is spawned (before it runs)." (the `subagentStart` event). GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "tool events (`PreToolUse`, `PostToolUse`, `PostToolUseFailure`, `PermissionRequest`, `PermissionDenied`)". Claude Code on that date: 2.1.316. The docs page states no version of its own. Transcript retention periods vary by tool and version, so this page names no figure. Check your tool's documentation.</p>
 

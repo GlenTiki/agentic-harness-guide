@@ -345,6 +345,12 @@ One cause of flakiness, reproduced. It does not give a rate for your suite.
 | Pre-commit | At commit, on the staged files | A delay on every commit | A bypass flag skips it |
 | CI | On push, on a clean checkout | Minutes per push, and the feedback is late | Slowest to tell the agent |
 
+GitHub Copilot CLI behaviour: a post-edit check is a `postToolUse` hook, and a stop check is an `agentStop` hook, which can block and force another turn. Repository hooks live in `.github/hooks/*.json`. Claude Code differs in names and exit codes: its hook blocks when it exits 2.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-configuration. Quoted line: "The main agent finishes a turn." (the `agentStop` event, whose output "can block and force continuation"). GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/hooks. Quoted line: "For Copilot CLI and Copilot cloud agent, you can define repository hooks in `.github/hooks/*.json`." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
 Put the fastest checks earliest and the complete required checks before merge. Inspect the CI result for the exact revision: a skipped job, missing matrix entry or successful wrapper around a failed command supplies no pass for the missing check.
 
 ## Classify review findings

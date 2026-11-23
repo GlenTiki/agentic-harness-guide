@@ -33,7 +33,23 @@ The second list holds actions the agent never does, even when a person approves 
 
 A human maintainer does any approved maintenance on the second list, outside the agent session. The mechanism for the second list is a denied write to those files, plus a check that fails when they change. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
 
-**2. Apply the lists in the harness.** Do not rely on the agent remembering it. Claude Code behaviour: an `ask` permission rule such as `Bash(git push *)` makes the harness prompt for the commands it matches. It does not match every way to write the same command, so add a pre-tool hook that parses the command where the action matters. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/) and [Hooks](../../control/hooks/).
+**2. Apply the lists in the harness.** Do not rely on the agent remembering it. GitHub Copilot CLI behaviour: in the default manual approval mode, Copilot asks before any tool request you have not allowed. `--deny-tool` blocks a command outright and wins over every allow option, which suits the never list. A rule does not match every way to write the same command, so add a pre-tool hook that parses the command where the action matters. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/) and [Hooks](../../control/hooks/).
+
+Example, do not run:
+
+```bash
+copilot --deny-tool='shell(git push)'
+```
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "In manual approval mode, Copilot asks for your approval when a tool request isn't already allowed." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Claude Code differs: an `ask` permission rule such as `Bash(git push *)` makes the harness prompt for the commands it matches.
+
+**Know what autopilot removes.** An unattended mode removes the person from the loop, so the lists above must already sit in the harness. GitHub Copilot CLI behaviour: autopilot mode keeps working through steps without a new prompt. With full permissions (`--allow-all`, alias `--yolo`) it also stops asking, so nothing on the ask list reaches a person. `--allow-all-tools` and `--allow-tool='shell'` skip prompts too, in any mode. With manual approval, autopilot denies each request that needs approval. Use autopilot only for work on the unattended list, in a sandbox, with `--max-autopilot-continues` set.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "If you use an automatic approval option such as `--allow-all-tools`, Copilot has the same access as you do to files on your computer, and can run any shell commands that you can run, without getting your prior approval." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode. Quoted line: "If you choose manual approval, Copilot will automatically deny any tool requests that require approval, which may prevent it from completing certain tasks." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 **3. Separate drafting from sending.** The agent drafts a message, a pull request or a command. A person authorises the send. This fits any outward action and costs little.
 
@@ -43,7 +59,9 @@ A human maintainer does any approved maintenance on the second list, outside the
 
 **6. Do not end a turn on an open question you could have asked with a tool.** If your harness has a structured question tool, use it, so the answer comes back in the same session.
 
-**7. Ask once.** An approval for an action stays valid for the same action in the same scope. Do not re-ask for it, and do not stretch it to cover a wider scope.
+**7. Ask once.** An approval for an action stays valid for the same action in the same scope. Do not re-ask for it, and do not stretch it to cover a wider scope. A harness can stretch it for you. GitHub Copilot CLI behaviour: the option "Yes, and approve TOOL for the rest of the running session" covers the whole tool, not the one command. If you approve `rm ./this-file.txt` that way, any `rm` command runs without a prompt for the rest of the session. The CLI restores these approvals when you resume the session with `--resume`, `/resume` or `--continue`. Choose the one-time approval for anything on the ask list.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "Yes, and approve TOOL for the rest of the running session". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own. The same page says: "The CLI restores these approvals when you resume the session, so it won't ask again for requests covered by them." The resume options are from https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli, fetched on the same date: "You can use the `--resume` command-line option or the `/resume` slash command to select and resume an interactive CLI session".</p>
 
 **8. Keep explicit holds in force.** If a person says "wait", nothing in the agent's plan overrides that, including a passing review.
 
@@ -140,7 +158,7 @@ Two rules keep batches safe. Approve a batch only for items in the unattended gr
 
 ## First step for the maintainer
 
-Copy both lists above into your instruction file. Then add an `ask` rule for `git push` so the harness prompts for the first approval item. Add a deny rule or a blocking hook for force-pushes to shared branches and for writes to the settings and hook files. The sample hook blocks all force-pushes. A policy that distinguishes shared branches needs a separate check of the branch.
+Copy both lists above into your instruction file. Then make sure the harness prompts for `git push`, the first approval item. In GitHub Copilot CLI, keep `git push` out of every allow option. In Claude Code, add an `ask` rule. Add a deny rule or a blocking hook for force-pushes to shared branches and for writes to the settings and hook files. The sample hook blocks all force-pushes. A policy that distinguishes shared branches needs a separate check of the branch.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "Content-scoped ask rules like `Bash(git push *)` still force a prompt". Claude Code on that date: 2.1.316. The docs page states no version of its own. The permission modes page, fetched on the same date, says the same ask rules "fall back to a permission prompt" in auto mode.</p>
 

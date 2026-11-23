@@ -17,7 +17,11 @@ Instruction files load every session, so everything in them costs context all th
 
 ## What to enable
 
-**1. One directory per skill.** Claude Code behaviour: a skill is a directory with a `SKILL.md` file, in `.claude/skills/<name>/` for a project or `~/.claude/skills/<name>/` for all your projects. The file has YAML frontmatter and markdown instructions:
+**1. One directory per skill.** A skill is a directory with a `SKILL.md` file. The file has YAML frontmatter and markdown instructions. GitHub Copilot CLI behaviour: project skills go in `.github/skills/<name>/`, `.claude/skills/<name>/` or `.agents/skills/<name>/`. Personal skills go in `~/.copilot/skills/<name>/` or `~/.agents/skills/<name>/`. The frontmatter needs `name` and `description`.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills. Quoted line: "For **project skills**, specific to a single repository, create a `.github/skills`, `.claude/skills`, or `.agents/skills` directory in your repository." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Claude Code differs: it reads `.claude/skills/<name>/` for a project and `~/.claude/skills/<name>/` for all your projects.
 
 ```markdown
 ---
@@ -33,13 +37,19 @@ description: Draft release notes from merged pull requests since the last tag. U
 
 The `--merges` flag lists only merge commits. A squash merge or a rebase merge makes ordinary commits, so the flag would hide those changes. A merge commit also does not have to name a pull request. Whether the host puts the pull request number in the commit subject depends on its settings, so check yours before you rely on step 3.
 
-**2. Write the description as the trigger.** The harness uses it to decide when to load the skill. Say what the skill does and when to use it. Put the main use first. Claude Code cuts the description and the optional `when_to_use` text at 1,536 characters in the listing, so the words at the end are the first lost.
+**2. Write the description as the trigger.** The harness uses it to decide when to load the skill. Say what the skill does and when to use it. Put the main use first. GitHub Copilot CLI asks for "A description of what the skill does, and when Copilot should use it."
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills. Quoted line: "**description** (required): A description of what the skill does, and when Copilot should use it." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Claude Code differs in one limit: it cuts the description and the optional `when_to_use` text at 1,536 characters in the listing, so the words at the end are the first lost.
 
 <p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/skills.md. Quoted line: "Put the key use case first: the combined `description` and `when_to_use` text is truncated at 1,536 characters in the skill listing to reduce context usage." Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
 
 **3. Use progressive disclosure.** Keep `SKILL.md` under about 500 lines. Put reference material, examples and scripts in separate files in the skill directory, and link to them from the body. The agent reads them only when it needs them. Scripts run without being loaded into context.
 
-**4. Control who can invoke it.** A frontmatter flag stops the model from loading a skill on its own, which suits anything with side effects, such as a deploy. Another flag hides a skill from the menu while leaving it available to the model. An `allowed-tools` field pre-approves tools for the turn that invokes the skill, and it does not restrict other tools.
+**4. Control who can invoke it.** A frontmatter flag stops the model from loading a skill on its own, which suits anything with side effects, such as a deploy. Another flag hides a skill from the menu while leaving it available to the model. An `allowed-tools` field pre-approves tools, and it does not restrict other tools. In GitHub Copilot CLI, a tool that is not in `allowed-tools` still asks for permission.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-skills. Quoted line: "If a tool is not listed in the `allowed-tools` field, Copilot will prompt you for permission before using it." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 **5. A skill beats a prompt when** the procedure repeats, has a stable trigger, includes scripts or templates, or must be shared across a team. A prompt beats a skill when the task is novel or the steps change each time.
 
@@ -125,7 +135,7 @@ For each skill, keep two requests that must trigger it and two that must not. Ru
 
 ## Package one skill for several agents
 
-Two agents on one machine, such as Claude Code and Codex CLI, each read skills from their own folder. Two hand-kept copies drift apart. The author's setup keeps one copy and checks the others against it:
+Two agents on one machine, such as GitHub Copilot CLI and Claude Code, may read skills from different folders. Two hand-kept copies drift apart. Some agents share a folder: GitHub Copilot CLI also reads project skills from `.claude/skills` and `.agents/skills`, so one of those folders can serve it and another agent. Check each agent's docs for the folders it reads. The author's setup keeps one copy and checks the others against it:
 
 1. Keep one canonical folder of `SKILL.md` directories. Edit skills only there.
 2. Copy each skill into every host's skills folder with a sync script, or link it with a symlink. A symlink cannot drift. A copy suits a host that does not follow links.
@@ -144,7 +154,7 @@ A skill that only holds instructions is different from a skill that runs a scrip
 | 1 | Runs locally |
 | 2 | Reaches out beyond the machine |
 
-The classifier looks for scripts in the skill directory and for dependency manifests. It also looks for install verbs, a download piped into a shell, and Bash in the skill's tool approvals. The classifier only raises a tier. One tier-2 signal makes the skill tier 2, and no other signal lowers it. Review a tier-2 skill as you would review a new [connector](../../../glossary/#connector-mcp). Give its powers their own [capability](../../../glossary/#capability) switch, as [capability gating](../../control/capability-gating/) describes. Treat what it fetches as data, as [untrusted input](../../control/untrusted-input/) describes.
+The classifier looks for scripts in the skill directory and for dependency manifests. It also looks for install verbs, a download piped into a shell, and a shell tool in the skill's tool approvals (`allowed-tools: shell` in GitHub Copilot CLI, `Bash` in Claude Code). The classifier only raises a tier. One tier-2 signal makes the skill tier 2, and no other signal lowers it. Review a tier-2 skill as you would review a new [connector](../../../glossary/#connector-mcp). Give its powers their own [capability](../../../glossary/#capability) switch, as [capability gating](../../control/capability-gating/) describes. Treat what it fetches as data, as [untrusted input](../../control/untrusted-input/) describes.
 
 ## Skills worth having, by task
 
@@ -170,7 +180,9 @@ For a worked skill with evals, see [the goal writer](../../../appendix/write-goa
 
 ## First step for the maintainer
 
-Take the one multi-step task you most often retype. Move it into `.claude/skills/<name>/SKILL.md` with a trigger-style description, then test it in a fresh session.
+Take the one multi-step task you most often retype. Move it into `.github/skills/<name>/SKILL.md` (GitHub Copilot CLI) or `.claude/skills/<name>/SKILL.md` (Claude Code) with a trigger-style description, then test it in a fresh session.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-agent-skills. Quoted line: "Agent skills are folders of instructions, scripts, and resources that Copilot can load when relevant to improve its performance in specialized tasks." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/skills. Quoted line: "Skills extend what Claude can do. Create a `SKILL.md` file with instructions, and Claude adds it to its toolkit." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
