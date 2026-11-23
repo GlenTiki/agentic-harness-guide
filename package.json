@@ -14,7 +14,7 @@
     "check:evidence": "python3 -I -m unittest discover -s examples/wrong-behaviour/tests -p 'test_*.py' && node scripts/make-evidence.mjs --check && node scripts/check-evidence-selftest.mjs",
     "words": "node scripts/words.mjs",
     "check:examples": "node scripts/check-examples.mjs && node scripts/check-examples-selftest.mjs",
-    "check:claims": "node --test scripts/page-claims.test.mjs && python3 -I examples/gate-gaming/test_gates.py && python3 -I examples/worktree-collisions/test_worktree_collisions.py && python3 -I examples/hook-traps/test_gated_stop.py",
+    "check:claims": "node --test scripts/page-claims.test.mjs && python3 -I examples/gate-gaming/test_gates.py && python3 -I examples/worktree-collisions/test_worktree_collisions.py && python3 -I examples/hook-traps/test_gated_stop.py && python3 -I examples/my-insights/test_insights.py",
     "check:skill-coverage": "node scripts/check-skill-coverage.mjs",
     "check:llms": "node scripts/check-llms.mjs",
     "check:mako": "node scripts/check-mako-standards.mjs",

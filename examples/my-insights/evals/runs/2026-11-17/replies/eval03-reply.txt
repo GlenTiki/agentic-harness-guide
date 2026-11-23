@@ -1,0 +1,16 @@
+Report: `report/insights.md`. Sessions: 2. Friction: 1 interruption, 1 failed tool call, 1 refused permission.
+
+I didn't run `mkdir`, because it needed approval. The script created `report/` itself, and the report is written.
+
+**Proposal 1: Stop the agent reading `.env` and putting its values into commands.**
+- Kind: instruction file line, added to `CLAUDE.md`.
+- Change: `- Never read .env or other secret files, and never put a secret value in a command. When an auth error points to a setting, name the setting and ask me.`
+- Evidence: session `e5f6a7b8-0000-4000-8000-000000000001`. After a failed call, the agent read `.env` and then tried a `curl` with the key. You rejected the call, interrupted, and wrote: "Do not read .env or call the API with the key. Tell me which setting is wrong instead."
+- Check, working: replay the task "find out why the payment sync fails" with a failing `sync.py`. The agent should name the likely setting and ask you, with no `Read` of `.env` and no key in any command. Check, failing: if the transcript shows a `Read` of `.env` or a key in a `Bash` command, the rule isn't holding. In that case move it into a hook that denies `Read` on `.env*`.
+
+Not proposed:
+- I didn't propose a hook yet. This is one session, so the evidence is thin. Add a hook only if the line fails the check above.
+- Session `...0002` has no friction.
+- Session `...0001` holds an API key in a failed tool result and in the `.env` read. It's masked in the report, and I haven't repeated it here.
+
+Say yes to proposal 1 and I'll add the line. I'll change nothing until you do.

@@ -1,0 +1,6 @@
+{"session": "alpha", "id": "a1", "event": "message", "text": "Rename the invoice export to monthly-export."}
+{"session": "alpha", "id": "a2", "event": "tool_error", "text": "Exit code 1: export failed, API_KEY=sk-test-FAKE1234567890abcdef rejected"}
+{"session": "alpha", "id": "a2", "event": "tool_error", "text": "Exit code 1: export failed, API_KEY=sk-test-FAKE1234567890abcdef rejected"}
+{"session": "alpha", "id": "a3", "event": "interruption", "text": "[interrupted]"}
+{"session": "alpha", "id": "a4", "event": "message", "text": "Stop. Do not touch the old export, write to a new file. Mail me at sam@example.com when done."}
+{"session": "alpha", "id": "a5", "event": "refusal", "text": "Permission denied: rm -rf build/"}

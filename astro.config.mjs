@@ -166,6 +166,7 @@ export default defineConfig({
             { slug: 'appendix/prompt-refiner' },
             { slug: 'appendix/prompt-refiner-line-by-line' },
             { slug: 'appendix/write-goal' },
+            { slug: 'appendix/my-insights' },
           ],
         },
         {

@@ -441,6 +441,10 @@ A small, fixed sample file that a test reads, such as a three-line recipe, so th
 
 The block of settings at the top of a file, between two `---` lines. In a skill file it holds the name and the description.
 
+### Friction signal
+
+A recorded event that shows work went wrong in an agent session, such as you stopping the agent mid-reply, a tool call that returns an error, or a permission you refuse. It is a count, not a judgement: a refused push can be your check doing its job. See [your own insights report](../appendix/my-insights/).
+
 ### Goal anchor
 
 A file on disk that holds the plan for a long-running agent session: the end state, the done list with its evidence, the slices and the recovery steps. A new session reads it to resume. See [the goal writer](../appendix/write-goal/).
@@ -468,6 +472,10 @@ A way to merge two ranked lists. Each item scores one divided by a constant plus
 ### Re-ranking
 
 A second pass that re-orders the top results of a fast search with a slower, more precise model, so the best passages come first. A [cross-encoder](#cross-encoder) is a common re-ranker. See the [relevance page](../setup/relevance-and-reranking/).
+
+### Session transcript
+
+The file an agent tool keeps of one session: your messages, its replies and every tool call with its result. It can hold secrets and personal data, so keep it on your machine.
 
 ### Simplified Technical English
 

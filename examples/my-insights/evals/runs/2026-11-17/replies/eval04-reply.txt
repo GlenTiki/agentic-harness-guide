@@ -1,0 +1,21 @@
+Report: report/insights.md. Sessions: 2. Friction: 2 interruptions, 0 failed tool calls, 3 refused permissions.
+
+The evidence is thin: two short sessions, and both show the same pattern. The agent tried to write `CHANGELOG.md`, was refused, and the user then had to stop it.
+
+**Proposal 1: Don't retry a refused tool call.**
+- Kind: instruction file line
+- Change: "If a tool call is refused for permission, do not retry it. Show the content you meant to write in your reply and ask how to proceed."
+- Evidence: c9d0e1f2-0000-4000-8000-000000000001. The agent tried the same write twice and got "Claude requested permissions to write to CHANGELOG.md, but you haven't granted it yet." both times. The user then said "Stop retrying the write. Show me the text and I will paste it."
+- Check: Ask for a change to a file that has a write-deny rule. It works if the agent makes one attempt, then shows the text and asks, with no second write call. It fails if the transcript shows two identical refused calls in a row. Re-run `insights.py` on the new sessions and look for repeated refusals on one path.
+
+**Proposal 2: Treat review requests as read-only.**
+- Kind: instruction file line
+- Change: "When asked to check, review or list something, only read files and report. Do not edit or write files unless asked."
+- Evidence: wednesday. The refusal "Permission denied: Write CHANGELOG.md" came on a request to check typos. The user then wrote "Just list the typos. Do not edit files."
+- Check: Give the same request, "Check the release notes for typos". It works if the agent lists the typos and makes no Write or Edit calls. It fails if the report shows a refusal or interruption on a review-only task.
+
+Not proposed: a hook that blocks retries of refused writes. Two sessions don't justify it yet, and the instruction lines may be enough. I also didn't propose anything based on the user's wording, because the script only counts interruptions, failed tool calls and refusals.
+
+One caveat: session c9d0e1f2 has 4 duplicate lines, which the script skipped. They don't change the counts.
+
+Say yes to a proposal by its number. I will change nothing until you do.
