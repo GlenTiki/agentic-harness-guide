@@ -178,6 +178,7 @@ export default defineConfig({
           items: [
             { slug: 'shelf/foundations/principles' },
             { slug: 'shelf/foundations/adoption-path' },
+            { slug: 'shelf/foundations/distributed-systems-primitives' },
           ],
         },
         {
