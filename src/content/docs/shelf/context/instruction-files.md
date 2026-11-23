@@ -17,13 +17,13 @@ The harness loads the instruction file into every session. Every line costs cont
 
 **1. Use layers, and remove conflicts.** Most agents read instruction files at more than one level: a personal file in your home directory, a file for the repository and files for parts of the tree. GitHub Copilot CLI is the worked example here. It reads your personal file at `~/.copilot/copilot-instructions.md`. It reads `.github/copilot-instructions.md`, `AGENTS.md`, `CLAUDE.md` and `GEMINI.md` from the repository root, the working directory and the directories between them. It also reads path-specific files under `.github/instructions/` whose names end in `.instructions.md`. Copilot CLI combines all of them, and its docs define no general precedence order. Do not depend on an order. Remove the conflict. Put personal preferences in the home file, team rules at the repository root, and package-specific rules in path-specific files.
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "When multiple applicable user-level and repository instruction files exist, Copilot CLI combines their instructions. It removes duplicate copies of identical user-level `copilot-instructions.md`, repository-wide, and agent instructions, but does not define a general precedence order between these files." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "When multiple applicable user-level and repository instruction files exist, Copilot CLI combines their instructions. It removes duplicate copies of identical user-level `copilot-instructions.md`, repository-wide, and agent instructions, but does not define a general precedence order between these files." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 Other agents differ. Claude Code loads `CLAUDE.md` and `CLAUDE.local.md` from each directory, from the filesystem root down to the working directory, after your user file at `~/.claude/CLAUDE.md`. Codex CLI reads `AGENTS.md` from its home directory (`~/.codex` by default), then from the project root down to the working directory. The Codex docs say later files override earlier guidance. The Claude Code docs say that when two instructions contradict each other, Claude may pick one arbitrarily. The rule is the same for all three: remove the conflict.
 
 **2. Share one file across tools.** `AGENTS.md` is an open convention read by many tools. Copilot CLI reads `AGENTS.md` and `CLAUDE.md` directly, so one shared file serves it and the agents that read either name.
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "Agent instructions, discovered in the standard locations. Copilot CLI also uses `.claude/CLAUDE.md`." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "Agent instructions, discovered in the standard locations. Copilot CLI also uses `.claude/CLAUDE.md`." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 Claude Code differs. Claude Code v2.1.277 or later reads `AGENTS.md` directly, and by default only when no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` exists in the working directory or above it. If you need both, make the tool-specific file a thin wrapper that imports the shared one:
 
@@ -42,7 +42,7 @@ applyTo: "app/models/**/*.rb"
 ---
 ```
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "In `.github/copilot-instructions.md`, `AGENTS.md`, or `CLAUDE.md`, use `@` followed by a relative path to include another file." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "In `.github/copilot-instructions.md`, `AGENTS.md`, or `CLAUDE.md`, use `@` followed by a relative path to include another file." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 Claude Code also expands `@path/to/file` imports at launch, and imports can nest to a "maximum depth of four hops".
 
@@ -74,9 +74,9 @@ Before adding another instruction file, inspect your agent's settings and help. 
 
 In **GitHub Copilot CLI**, the `/instructions` command lists the instruction files the session found and lets you turn single files on or off. `/settings` shows your personal settings. An edit to an instruction file does not reach a running session: exit, then resume the session or start a new one.
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "Use the `/instructions` command to view the instruction files discovered for the current session and enable or disable individual files." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "Use the `/instructions` command to view the instruction files discovered for the current session and enable or disable individual files." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "You can view and change your personal Copilot CLI settings using the `/settings` slash command." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "You can view and change your personal Copilot CLI settings using the `/settings` slash command." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 Other agents name these controls differently. In the **Claude Code terminal**, `/config` opens a settings dialog. It is not a complete view of `settings.json`. Output styles are one useful control: select one there, or use `/output-style`. See the [settings guide](https://code.claude.com/docs/en/settings) and [output-style reference](https://code.claude.com/docs/en/output-styles). In **Codex**, personal settings live in `~/.codex/config.toml`; trusted projects can supply `.codex/config.toml` overrides. Use the [configuration guide](https://learn.chatgpt.com/docs/config-file/config-basic) to check the controls your client supports. Do not assume that one agent's slash commands transfer to another.
 

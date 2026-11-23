@@ -35,11 +35,11 @@ Most agents give you a coarse switch of this kind for connectors. GitHub Copilot
 copilot --allow-tool='My-MCP-Server' --deny-tool='My-MCP-Server(tool_name)'
 ```
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "Details of your configured MCP servers are stored in the `mcp-config.json` file, which is located, by default, in the `~/.copilot` directory." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "Details of your configured MCP servers are stored in the `mcp-config.json` file, which is located, by default, in the `~/.copilot` directory." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "Copilot CLI comes with the GitHub MCP server already configured." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "Copilot CLI comes with the GitHub MCP server already configured." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "Using the server name without specifying a tool allows or denies all tools from that server." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "Using the server name without specifying a tool allows or denies all tools from that server." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 Such a switch is per tool call and per session. Your registry still records the decision, the reason and the default, across every agent you use. Claude Code and Codex name their connector files and options differently, so check your agent's docs before you copy a flag.
 

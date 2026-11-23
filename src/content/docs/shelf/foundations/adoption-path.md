@@ -16,7 +16,7 @@ description: A staged checklist for building a harness, ordered by effort and no
 ## Stage 1: bound the blast radius
 
 - [ ] Run the agent in a repository with a clean working tree and a remote.
-- [ ] Set a deny list for dangerous commands and secrets, and a short allow list for routine commands. An allow rule only skips the prompt. In GitHub Copilot CLI, a deny option such as `--deny-tool='shell(git push)'` wins over every allow option, and a tool request that is not already allowed asks you. Claude Code differs: an unmatched call asks you in Manual mode, goes to a classifier model in auto mode and is denied in `dontAsk` mode, and auto mode is the starting mode for terminal sessions from v2.1.283. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
+- [ ] Set a deny list for dangerous commands and secrets, and a short allow list for routine commands. An allow rule only skips the prompt. In GitHub Copilot CLI, a deny option such as `--deny-tool='shell(git push)'` wins over every allow option, but it names a tool, not a file. To deny a secrets file in Copilot CLI, add it to the local sandbox's denied paths. File-level deny rules are agent-specific. Claude Code differs: an unmatched call asks you in Manual mode, goes to a classifier model in auto mode and is denied in `dontAsk` mode, and auto mode is the starting mode for terminal sessions from v2.1.283. See [Permissions and sandboxing](../../control/permissions-and-sandboxing/).
 - [ ] Turn on the sandbox for shell commands if your harness has one.
 
 Exit check: in a throwaway project, a read of a harmless decoy credential file that matches your deny pattern was refused. A call to a host you did not list also failed. A broken rule exposes only the decoy. Then apply the same rule to your real secret paths.
@@ -66,7 +66,9 @@ Skipping to stage 5 gives you parallel agents with no tests, no review and no lo
 
 Do stage 1 today. It takes minutes and it is the stage that limits damage from every later mistake.
 
-<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "This option takes precedence over the `--allow-all-tools` and `--allow-tool` options." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "This option takes precedence over the `--allow-all-tools` and `--allow-tool` options." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/about-cloud-and-local-sandboxes. Quoted line: "**Filesystem**: Grant read-only or read/write access to specific paths, or deny paths." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permissions. Quoted line: "`dontAsk` | Auto-denies every call that would otherwise prompt". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
