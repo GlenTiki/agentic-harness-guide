@@ -15,7 +15,7 @@ description: The minimum viable harness as one checklist.
 
 - [ ] **BL-01** Deny rules cover secrets files and credential directories. [Permissions and sandboxing](../../control/permissions-and-sandboxing/)
 - [ ] **BL-02** The shell sandbox is on, with an empty network allow list plus the hosts your build needs. A command that fails inside it cannot retry outside it without a person. GitHub Copilot CLI behaviour: `/sandbox enable` turns on local sandboxing, and a hook cannot pre-approve a request to leave the sandbox. Claude Code behaviour: set `allowUnsandboxedCommands` to `false`; otherwise a matching allow rule approves the retry with no prompt.
-- [ ] **BL-03** Skip-all-prompts modes are disabled, or confined to a disposable environment. In GitHub Copilot CLI these are `--allow-all` (alias `--yolo`), `--allow-all-tools`, `--allow-tool='shell'` and autopilot with full permissions.
+- [ ] **BL-03** Skip-all-prompts modes are disabled, or confined to a disposable environment. In GitHub Copilot CLI these are `--allow-all` (alias `--yolo`), `--allow-all-tools`, `--allow-tool='shell'` (which skips every shell prompt) and autopilot with full permissions.
 - [ ] **BL-04** Every external action has a capability switch, default off. [Capability gating](../../control/capability-gating/)
 
 ### Instructions and memory
