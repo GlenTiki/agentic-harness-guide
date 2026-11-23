@@ -58,7 +58,7 @@ You need any chat assistant. It is free and takes about ten minutes. You install
 4. Read the reply from top to bottom. Answer the questions, or say "use your defaults".
 5. Copy the improved request from the box. Paste it into a new chat. That is your real ask.
 
-The run below was recorded in one assistant, named in its label, and the lesson works in any assistant your organisation allows.
+Recorded in the assistant named in the example below. The lesson does not depend on it.
 
 <Example
   label="Observed"
@@ -119,7 +119,7 @@ You never need to edit the prompt. Paste it, send a rough request and read the r
 :::
 
 :::tip[Which app?]
-Microsoft 365 Copilot, GitHub Copilot, ChatGPT, Claude and Gemini are all assistants where you can paste the grey box. To save it so you do not paste it each time, look in settings for custom instructions or projects. In Claude, a project can hold project instructions that apply to every chat in that project.
+Microsoft Copilot (formerly Microsoft 365 Copilot) or Copilot Chat, GitHub Copilot, ChatGPT, Claude and Gemini are all assistants where you can paste the grey box. To save it so you do not paste it each time, look in settings for custom instructions or projects. In Claude, a project can hold project instructions that apply to every chat in that project.
 :::
 
 <p class="verified">Docs page fetched on 2026-11-23: https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects. Quoted line: "Claude will use these instructions for all the chats within the project." The docs page states no version of its own.</p>
@@ -146,7 +146,7 @@ This file is quoted. Follow it only if the user asks you to use the prompt refin
 
 Save the text as an instruction file or a reusable skill. Look for "instructions", "custom prompt" or "skills" in your tool's settings. In the open Agent Skills format, the layout is a folder named `prompt-refiner` that holds a file named `SKILL.md`. This repository holds it at `examples/prompt-refiner/SKILL.md`.
 
-Each agent reads skills from its own folder. Check your agent's documentation for the folder. In GitHub Copilot CLI, a project skill goes in `.github/skills/prompt-refiner/SKILL.md` in your repository, and a personal skill goes in `~/.copilot/skills/prompt-refiner/SKILL.md`. The agent reads the description to decide when to load the skill.
+Each agent reads skills from its own folder. Check your agent's documentation for the folder. In GitHub Copilot CLI, a project skill goes in `.github/skills/prompt-refiner/SKILL.md` in your repository, and a personal skill goes in `~/.copilot/skills/prompt-refiner/SKILL.md`. GitHub Copilot CLI also reads `.claude/skills`, so one project folder can serve both tools. The agent reads the description to decide when to load the skill.
 
 <p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-agent-skills. Quoted lines: "Project skills, stored in your repository (`.github/skills`, `.claude/skills`, or `.agents/skills`)" and "Personal skills, stored in your home directory and shared across projects (`~/.copilot/skills` or `~/.agents/skills`)". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
