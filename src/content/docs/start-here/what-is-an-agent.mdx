@@ -18,7 +18,7 @@ An [agentic workflow](../../glossary/#agentic-workflow) is a piece of work that 
 
 | | Chat assistant | Agent | Agentic workflow |
 | --- | --- | --- | --- |
-| You give it | A question or a request | A goal and the limits | A goal, the steps, the checks and who approves |
+| You give it | A question or a request | A goal and the constraints | A goal, the steps, the checks and who approves |
 | It does | Writes one reply | Plans, uses tools, acts, checks, repeats | Runs the steps, with a check between them |
 | It stops | After each reply | When the goal is met or a limit is hit | At each approval point and at the end |
 | You stay in charge by | Reading the reply | Setting limits and checking the result | Approving anything that leaves your control |
@@ -26,8 +26,8 @@ An [agentic workflow](../../glossary/#agentic-workflow) is a piece of work that 
 ## What "agentic" does not mean
 
 - **Not a chatbot with a new name.** If it only writes a reply and waits, it is an assistant. That is still useful. It is not an agent.
-- **Not its own judgement.** An agent follows the goal and the limits you give it. It does not know your customers, your policies or what "good" means for your team unless you tell it. It can be confident and wrong.
-- **Not free access to everything.** A well-run agent can reach only the tools and data it needs for the task. It asks before it sends, pays, deletes or shares anything. If a product gives an agent more access than the task needs, that is a risk to raise, not a feature to enjoy.
+- **Not a replacement for your judgement.** An agent chooses its own steps, but only within the goal and limits you give it; you decide what matters and whether the result is right. It does not know your customers, your policies or what "good" means for your team unless you tell it. It can be confident and wrong.
+- **Not free access to everything.** A well-run agent can reach only the tools and data it needs for the task. It should be set up to ask before it sends, pays, deletes or shares anything. If a product gives an agent more access than the task needs, that is a risk to raise, not a feature to enjoy.
 
 ## Three business examples
 
@@ -47,7 +47,7 @@ An agent can be confidently wrong. It can count a row twice, misread a date or i
 
 <p class="audience">Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</p>
 
-Use a chat assistant your organisation allows. Your organisation's AI policy and data rules come first. Do not paste confidential or personal data into a tool your organisation has not approved. Pick one repetitive task you know well, and paste this:
+Use a chat assistant your organisation allows, and follow [the safety basics](../professional-route/#start-in-under-30-minutes) first. Pick one repetitive task you know well, and paste this:
 
 ```text
 I want to hand part of a weekly task to an assistant. The task: [describe it in two or three sentences].
@@ -63,10 +63,12 @@ Keep it under 200 words.
 Read the reply as a draft plan, not an answer. Cross out any step you would not trust it with. What remains is the first slice of an agentic workflow.
 
 :::tip[Which app?]
-Chat assistants include Microsoft 365 Copilot, ChatGPT, Claude and Gemini. In Microsoft 365, Copilot Chat is the baseline chat, and agents are focused versions of Copilot that can automate business processes. GitHub Copilot is a coding assistant for software work. Which ones you can use, and with which data, depends on your organisation's licence and policy.
+Chat assistants include Microsoft Copilot (formerly Microsoft 365 Copilot) or Copilot Chat, ChatGPT, Claude and Gemini. In Microsoft 365, Copilot Chat is the baseline chat, and agents are focused versions of Copilot that can automate business processes. GitHub Copilot is a coding assistant for software work. Which ones you can use, and with which data, depends on your organisation's licence and policy.
 :::
 
 <p class="verified">Docs page fetched on 2026-11-23: https://learn.microsoft.com/en-us/copilot/plan/copilot-overview. Quoted line: "agents are scoped or focused versions of Microsoft Copilot that act as AI assistants and can automate business processes." Microsoft 365 Copilot on that date: Version not checked. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://learn.microsoft.com/en-us/copilot/plan/copilot-overview. Quoted line: "The Microsoft 365 Copilot app is now called Microsoft Copilot". Microsoft Copilot on that date: Version not checked. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-23: https://learn.microsoft.com/en-us/copilot/plan/copilot-overview. Quoted line: "Copilot Chat (Basic) is the standalone baseline experience included with eligible Microsoft 365 licenses." Microsoft 365 Copilot on that date: Version not checked. The docs page states no version of its own.</p>
 
