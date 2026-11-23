@@ -1,0 +1,10 @@
+
+<invoke name="Bash">
+<parameter name="command">date -u +%Y-%m-%dT%H:%M:%SZ</parameter>
+<parameter name="description">Get the UTC timestamp for the anchor frontmatter</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">ls goals 2>/dev/null; git branch --show-current</parameter>
+<parameter name="description">Check for an existing goals directory and the current branch</parameter>
+</invoke>

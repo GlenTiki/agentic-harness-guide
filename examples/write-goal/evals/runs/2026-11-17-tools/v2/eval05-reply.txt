@@ -1,0 +1,55 @@
+**Anchor:** `goals/2026-11-17-rate-limit.md` is written, and the file is untracked. I couldn't run `go test ./...` or `gh pr view 42` because both needed approval, so the test baseline and the state of PR #42 are not verified.
+
+```text
+/goal Finish the rate-limit fix on PR #42 with real tests, green CI, an independent review and a written report. Done means every item in goals/2026-11-17-rate-limit.md passes with its evidence shown.
+
+1. Anchor and done list
+- Anchor: goals/2026-11-17-rate-limit.md. The anchor is the plan. If this prompt and the anchor disagree, follow the anchor and say so. Progress log: goals/2026-11-17-rate-limit.progress.md. Never `git add` anything under goals/.
+- Branch: fix/rate-limit. Base commit: 685b6aa875ff4cba4ecce49e651059576bdf710d.
+- D1: Tests are real and pass. Evidence: `go test ./...` exits 0 with no `FAIL`; `go test -run TestAllow -v ./...` prints `--- PASS: TestAllow`; ratelimit_test.go calls t.Error/t.Errorf/t.Fatal/t.Fatalf at least once. Reviewer: none.
+- D2: CI is green on PR #42. Evidence: `gh pr checks 42` exits 0, lists at least one check, and every row says `pass`; `gh pr view 42 --json state -q .state` prints `OPEN`. Reviewer: none.
+- D3: Independent review done. Evidence: reports/rate-limit-review.md contains `Reviewed: <sha>` and `Verdict: approve`, and `git diff <sha> HEAD -- ratelimit.go ratelimit_test.go` prints nothing. Reviewer: a separate session of the same assistant that sees only the diff.
+- D4: Report written. Evidence: reports/rate-limit.md exists with headings `## Change`, `## Tests`, `## Review`, `## Open issues`, and `## Tests` quotes real `go test ./...` output. Reviewer: none.
+- Out of scope: merging PR #42, force-pushing, pushing to any other branch, changing CI config, editing files outside ratelimit.go, ratelimit_test.go, reports/ and README.md.
+
+2. Recovery (run on the first turn and on every resume)
+1. Read the anchor and the progress log.
+2. Run `git status --short`, `git log --oneline -10` and `git worktree list`.
+3. Find the last slice id in the commit subjects. That commit is the last known good point.
+4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice. If it fails, write the failure in the progress log, then restore only that slice's paths: `git restore --source=<last known good sha> -- <slice paths>`. Delete only the new files that slice created.
+5. If a helper worktree for this goal is still listed, commit any partial work to a salvage branch, then remove only that worktree.
+6. Do not run a command that resets, cleans or checks out the whole working copy.
+
+3. Coordination
+- The main session reads state, sends work to helpers, checks what they return, commits and updates the progress log.
+- Send exploration of more than three files, and any large draft, to a helper with a bounded brief: the slice outcome, the paths in scope, earlier failures from the progress log, the proof command, and a word limit for the reply.
+- Give each helper that writes files its own worktree, or run such helpers one at a time.
+- The ws-003 reviewer is a separate session that is read-only and gets only the branch name and `git diff 685b6aa..HEAD`.
+- Before you accept a helper's work, run the slice proof yourself and read the diff.
+
+4. Slices (commit each when its proof passes, e.g. `test: [ws-001] assert Allow behavior`)
+- ws-001: TestAllow asserts real behavior | Paths: ratelimit_test.go | Proof: `go test -run TestAllow -v ./...` shows `--- PASS: TestAllow` and the file contains t.Error or t.Fatal | Rollback: `git restore --source=685b6aa -- ratelimit_test.go`
+- ws-002: Allow matches the behavior PR #42 describes | Depends on: ws-001 | Paths: ratelimit.go, ratelimit_test.go | Proof: `go test ./...` exits 0 with no FAIL | Rollback: `git restore --source=<ws-001 sha> -- ratelimit.go ratelimit_test.go`. Read `gh pr view 42 --json body -q .body` first. If it does not state the intended limit (value, window, per-key or global), stop and ask the user. Do not continue this slice without a yes.
+- ws-003: Independent review approves | Depends on: ws-002 | Paths: reports/rate-limit-review.md | Proof: file has `Verdict: approve` and `Reviewed: <sha>` and the code diff since <sha> is empty | Rollback: delete only that file. Fix findings as new commits and re-review. Stop after three rounds with the verdict still `changes`.
+- ws-004: Report written | Depends on: ws-003 | Paths: reports/rate-limit.md | Proof: the four headings exist and real `go test ./...` output is quoted | Rollback: delete only that file.
+- ws-005: Push and CI green | Depends on: ws-004 | Paths: none (remote state) | Proof: D2 evidence | Rollback: none. Use `git push origin fix/rate-limit`, never `--force`. On a failed check, read `gh run view --log-failed`, fix it as a new commit and push again. Stop after three failed rounds on the same failure. If ratelimit.go or ratelimit_test.go changes here, repeat ws-003 for the new sha.
+
+5. Stops and the status card
+- Make technical choices yourself, and record each one in the progress log.
+- Stop only for a consent decision, a choice that changes what the user gets, or a blocker that repeats with no other safe work left.
+- Do not make the done list smaller to finish.
+- Each time you stop, write this status card in the progress log and in your reply:
+  Done and proved: <slice ids and commits>
+  Last known good: <branch and sha>
+  Next or blocked on: <next slice, or the exact action needed from the user>
+  Resume: "Resume goals/2026-11-17-rate-limit.md at <slice id>."
+- Before you say the goal is complete, check D1 to D4 one at a time. For each item, run the check now and show its output. Do not mark an item done from memory.
+```
+
+**Assumptions**
+- I assumed a push to `fix/rate-limit` is allowed, because green CI needs it. Merging is not.
+- I assumed "independent review" means a separate session of the same assistant. If you want a person or another provider, change D3.
+- I assumed CI on #42 has at least one check. If it has none, the session stops.
+
+**Needs you**
+- **ws-002:** `Allow` is currently `n < 10`, and `TestAllow` is empty, so "all tests pass" is true today but proves nothing. I don't know what "fixed" should mean here. If the PR #42 body doesn't say (limit value, window, per-key or global), the session stops at ws-002 overnight. If you know the intended policy, tell me and I'll put it in the anchor.

@@ -1,0 +1,58 @@
+**Anchor:** `goals/2026-11-17-tidy-docs-site.md`. I issued the write, but the tool calls returned no output, so I can't confirm the file exists. Run `ls goals/` before you start. `created_at` and `branch` in the frontmatter are marked [NEEDED]. I had no clock output and your paste didn't give a branch.
+
+```text
+/goal Tidy the docs content in src/content/docs (glossary.mdx, index.mdx, workflows/) without renaming, moving or deleting any page, and leave `npm run check` passing. Done means every item in goals/2026-11-17-tidy-docs-site.md passes with its evidence shown.
+
+1. Anchor and done list
+- Anchor: goals/2026-11-17-tidy-docs-site.md. The anchor is the plan. If this prompt and the anchor disagree, follow the anchor and say so.
+- Branch: [NEEDED: run `git branch --show-current` and record it in the progress log and the anchor frontmatter]. Base commit: 4be1c2a.
+- D1: A findings file lists every tidy item, each with a file path and a one-line fix. Evidence: `test -s goals/2026-11-17-tidy-docs-site.findings.md && echo ok` prints `ok`. Reviewer: none.
+- D2: The site builds and links resolve. Evidence: `npm run check; echo "exit=$?"` output ends with `exit=0`. Reviewer: none.
+- D3: Every finding marked "safe" is fixed, one commit per slice with the slice id in the subject. Evidence: `git log --oneline 4be1c2a..HEAD` lists the slice commits, and `grep -c '^- \[ \] safe' goals/2026-11-17-tidy-docs-site.findings.md` prints `0`. Reviewer: none.
+- D4: Every rename, move, deletion or URL change is listed under "Needs a yes" in the findings file and is not applied. Evidence: `git diff --name-status 4be1c2a..HEAD -- src/content/docs` shows no `R` or `D` lines. Reviewer: person (the user reads the "Needs a yes" list in the morning).
+- D5: The progress log (goals/2026-11-17-tidy-docs-site.progress.md) has one entry per finished slice. Evidence: lines matching `ws-` in the log are at least the number of slice commits in `git log`. Reviewer: none.
+- Out of scope: renames, moves, deletions, URL changes, new pages, edits to package.json, scripts/ or build config, `git push`, pull requests.
+
+2. Recovery (run on the first turn and on every resume)
+1. Read the anchor, the findings file and the progress log.
+2. Run `git status --short`, `git log --oneline -10` and `git worktree list`.
+3. Find the last slice id in the commit subjects. That commit is the last known good point.
+4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice. If it fails, write the failure in the progress log, then restore only that slice's paths: `git restore --source=<last known good sha> -- <slice paths>`. Delete only the new files that slice created.
+5. If a helper worktree for this goal is still listed, commit any partial work to a salvage branch, then remove only that worktree.
+6. Do not run a command that resets, cleans or checks out the whole working copy.
+
+3. Coordination
+- The main session reads state, sends work to helpers, checks what they return, commits and updates the progress log.
+- Send exploration of more than three files, and any large draft, to a helper with a bounded brief: the slice outcome, the paths in scope, earlier failures from the progress log, the proof command, and a word limit for the reply.
+- Give each helper that writes files its own worktree, or run such helpers one at a time.
+- Before you accept a helper's work, run the slice proof yourself and read the diff.
+
+4. Slices
+- ws-001: Record the baseline result of `npm run check` | Paths: goals/2026-11-17-tidy-docs-site.progress.md | Proof: `npm run check; echo "exit=$?"` output pasted in the log | Rollback: none, no content changes
+- ws-002: Audit and write the findings file, split into "safe" and "Needs a yes" | Depends on: ws-001 | Paths: goals/2026-11-17-tidy-docs-site.findings.md | Proof: `test -s goals/2026-11-17-tidy-docs-site.findings.md && echo ok` prints `ok` | Rollback: delete the findings file
+- ws-003: Fix safe findings in glossary.mdx and index.mdx | Depends on: ws-002 | Paths: src/content/docs/glossary.mdx, src/content/docs/index.mdx | Proof: `npm run check` exits 0 | Rollback: `git restore --source=<ws-002 commit sha> -- src/content/docs/glossary.mdx src/content/docs/index.mdx`
+- ws-004: Fix safe findings in the workflows files named in the findings file | Depends on: ws-003 | Paths: [NEEDED: take the file list from the findings file after ws-002] | Proof: `npm run check` exits 0 | Rollback: `git restore --source=<ws-003 commit sha> -- <those files>`
+- ws-005: Apply any rename, move, deletion or URL change from "Needs a yes" | Stop and ask the user. Do not continue this slice without a yes.
+
+5. Stops and the status card
+- Make technical choices yourself, and record each one in the progress log.
+- Stop only for a consent decision, a choice that changes what the user gets, or a blocker that repeats with no other safe work left.
+- Do not make the done list smaller to finish.
+- After each slice, append one entry to the progress log: time, slice id, commit, proof output, next slice. Commit each slice when its proof passes, e.g. `docs: [ws-003] fix glossary link text`.
+- Each time you stop, write this status card in the progress log and in your reply:
+  Done and proved: <slice ids and commits>
+  Last known good: <branch and sha>
+  Next or blocked on: <next slice, or the exact action needed from the user>
+  Resume: "Resume goals/2026-11-17-tidy-docs-site.md at <slice id>."
+- Before you say the goal is complete, check D1 to D5 one at a time. For each item, run the check now and show its output. Do not mark an item done from memory.
+```
+
+**Assumptions**
+- "Tidy" means broken or stale links, inconsistent headings and front matter, typos, and formatting. It does not mean new content.
+- The check command is `npm run check`, taken from your `package.json` line.
+- The session works on whatever branch is current, and never pushes.
+
+**Needs you**
+- ws-005 waits for your yes. Any page rename, move, deletion or URL change stops there.
+- ws-004's file list is [NEEDED] until ws-002 produces the findings file, because I don't know what's in `workflows/`.
+- Fill in `branch` and `created_at` in the anchor frontmatter, or let the session do it on its first turn.

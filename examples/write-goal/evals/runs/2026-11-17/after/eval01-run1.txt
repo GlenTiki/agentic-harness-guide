@@ -1,0 +1,5 @@
+
+<invoke name="Bash">
+<parameter name="command">date -u +%Y-%m-%dT%H:%M:%SZ</parameter>
+<parameter name="description">Get UTC timestamp for anchor frontmatter</parameter>
+</invoke>

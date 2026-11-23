@@ -70,4 +70,4 @@ Do stage 1 today. It takes minutes and it is the stage that limits damage from e
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/permission-modes. Quoted line: "With Claude Code v2.1.283 or later, auto mode is the built-in starting permission mode for interactive terminal and VS Code sessions." Claude Code on that date: 2.1.316.</p>
 
-**Next:** [AGENTS.md vs CLAUDE.md files](../../context/instruction-files/)
+**Next:** [Distributed-systems primitives](../distributed-systems-primitives/)

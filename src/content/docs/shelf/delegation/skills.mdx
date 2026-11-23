@@ -33,7 +33,9 @@ description: Draft release notes from merged pull requests since the last tag. U
 
 The `--merges` flag lists only merge commits. A squash merge or a rebase merge makes ordinary commits, so the flag would hide those changes. A merge commit also does not have to name a pull request. Whether the host puts the pull request number in the commit subject depends on its settings, so check yours before you rely on step 3.
 
-**2. Write the description as the trigger.** The harness uses it to decide when to load the skill. Say what the skill does and when to use it. Put the main use first, because long descriptions are truncated in the listing.
+**2. Write the description as the trigger.** The harness uses it to decide when to load the skill. Say what the skill does and when to use it. Put the main use first. Claude Code cuts the description and the optional `when_to_use` text at 1,536 characters in the listing, so the words at the end are the first lost.
+
+<p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/skills.md. Quoted line: "Put the key use case first: the combined `description` and `when_to_use` text is truncated at 1,536 characters in the skill listing to reduce context usage." Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
 
 **3. Use progressive disclosure.** Keep `SKILL.md` under about 500 lines. Put reference material, examples and scripts in separate files in the skill directory, and link to them from the body. The agent reads them only when it needs them. Scripts run without being loaded into context.
 
@@ -100,7 +102,20 @@ Write a trigger in this order:
 
 1. Start with the verb and the output: "Draft release notes from pull requests".
 2. Give the signal: "Use when asked to prepare release notes".
-3. Name when not to use it, with the nearest task it could be confused with and where that task goes.
+3. List the phrases a person types when they want it: "release notes", "what shipped".
+4. Name when not to use it, with the nearest task it could be confused with and where that task goes.
+
+The frontmatter below follows that order. It is an example, not a skill from any real project.
+
+```markdown
+---
+name: release-notes
+description: Draft release notes from pull requests merged since the last tag. Use when
+  asked to prepare or write release notes. Triggers on "release notes", "what shipped",
+  "changelog for v2.4". Does NOT trigger on a single changelog edit, a version bump or
+  a deploy. Those have their own skills.
+---
+```
 
 ## A trigger that goes stale
 
@@ -108,11 +123,50 @@ A description goes stale in two ways. The procedure changes and the description 
 
 For each skill, keep two requests that must trigger it and two that must not. Run all four in a fresh session after every edit to the skill or after you add a neighbour. Review every description when you add a skill, because a new skill changes the neighbours of the others.
 
+## Package one skill for several agents
+
+Two agents on one machine, such as Claude Code and Codex CLI, each read skills from their own folder. Two hand-kept copies drift apart. The author's setup keeps one copy and checks the others against it:
+
+1. Keep one canonical folder of `SKILL.md` directories. Edit skills only there.
+2. Copy each skill into every host's skills folder with a sync script, or link it with a symlink. A symlink cannot drift. A copy suits a host that does not follow links.
+3. Pin each third-party skill in a lock file. Record the source repository, the path inside it and a content hash. A changed hash means the upstream skill changed, so read it again before you accept it.
+4. Run a packaging test in your normal test suite. The test compares each host copy with the canonical skill and fails on any difference.
+
+The lock file applies item 6 under What to enable to a whole folder of skills. The packaging test turns "I synced it" into a check that can fail.
+
+## Sort skills by what they can do
+
+A skill that only holds instructions is different from a skill that runs a script, and both differ from a skill that reaches the network. The author's setup sorts each skill into one of three safety tiers with a deterministic classifier. The classifier is a plain script, not a model, so the same skill always gets the same tier.
+
+| Tier | Meaning |
+| --- | --- |
+| 0 | Inert: text only |
+| 1 | Runs locally |
+| 2 | Reaches out beyond the machine |
+
+The classifier looks for scripts in the skill directory and for dependency manifests. It also looks for install verbs, a download piped into a shell, and Bash in the skill's tool approvals. The classifier only raises a tier. One tier-2 signal makes the skill tier 2, and no other signal lowers it. Review a tier-2 skill as you would review a new [connector](../../../glossary/#connector-mcp). Give its powers their own [capability](../../../glossary/#capability) switch, as [capability gating](../../control/capability-gating/) describes. Treat what it fetches as data, as [untrusted input](../../control/untrusted-input/) describes.
+
+## Skills worth having, by task
+
+The list below is distilled from the author's own sessions. In those sessions, the orchestration skills, the ask skill and the goal writer were used most. An earlier usage report gave the author two top friction signals: "wrong approach" and "excessive changes". Several skills below exist to answer those two signals.
+
+- **Planning:** a goal writer that turns a long task into a stated goal with recovery notes; a sequential reasoning skill; a reliability explainer that predicts how per-step errors compound across a [pipeline](../../../glossary/#pipeline).
+- **Test first and pairing:** a pair programmer that writes the failing test before any code; an iterate loop that builds one small slice at a time; an ask skill that collects open decisions into one message.
+- **Review:** an independent quality audit; a persona review; a dependency audit. See [independent review](../../quality/independent-review/).
+- **Testing:** mutation testing that runs parallel [sub-agents](../sub-agents/) in [worktrees](../worktree-isolation/), each breaking the code on purpose to see if the tests notice; a test strategy skill.
+- **Orchestration:** stacked pull requests; a skill that drives an orchestration tool; multi-skill workflows declared in YAML; a builder for delegation briefs.
+- **Memory:** recall before acting; a session reminder that restates the open task. See [memory](../../context/memory/).
+- **Writing:** diagrams. For prompts, the guide uses [the prompt refiner](../../../appendix/prompt-refiner/).
+
+The friction signals also back four habits that sit outside any one skill: make [the smallest change](../../quality/small-prs/) that does the job, run a new check on a small sample before a large run, pause between a push and a pull request, and [pre-approve routine permissions](../../control/permissions-and-sandboxing/) so the agent does not stop to ask about them.
+
 ## Failure modes it reduces
 
 - A long procedure sits in the instruction file and dilutes every session.
 - Each person on the team prompts the same task slightly differently and gets different results.
 - A vague description causes the skill to load for unrelated tasks, or never.
+
+For a worked skill with evals, see [the goal writer](../../../appendix/write-goal/). It turns a rough objective into a long-running goal with recovery steps. For a skill that pairs instructions with a small script, see [your own insights report](../../../appendix/my-insights/).
 
 ## First step for the maintainer
 
