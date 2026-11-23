@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "matcher": "Bash",
+        "bash": "python3 -I .github/hooks/block_destructive_git.py",
+        "cwd": "."
+      }
+    ]
+  }
+}

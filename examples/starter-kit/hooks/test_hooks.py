@@ -109,6 +109,27 @@ class BlockDestructiveGit(HookCase):
                 self.assertEqual(run_hook("block_destructive_git.py", raw).returncode, 2)
 
 
+class BlockDestructiveGitOnCopilotCli(HookCase):
+    """Constructed inputs in the shapes of the GitHub Copilot hooks reference, fetched 2026-11-23."""
+
+    def event(self, command):
+        return {"hook_event_name": "PreToolUse", "session_id": "s1", "timestamp": "2026-11-23T10:00:00Z",
+                "cwd": "/repo", "tool_name": "Bash", "tool_input": {"command": command}}
+
+    def test_pascal_case_input_blocks_and_allows_as_on_claude_code(self):
+        self.assertEqual(run_hook("block_destructive_git.py", self.event("git push --force")).returncode, 2)
+        self.assertEqual(run_hook("block_destructive_git.py", self.event("git status")).returncode, 0)
+
+    def test_camel_case_input_is_unreadable_so_the_registration_must_use_pascal_case(self):
+        event = {"sessionId": "s1", "timestamp": 1704614400000, "cwd": "/repo", "toolName": "bash",
+                 "toolArgs": json.dumps({"command": "git status"})}
+        self.assertEqual(run_hook("block_destructive_git.py", event).returncode, 2)
+
+    def test_arguments_left_as_text_are_unreadable_and_block(self):
+        event = {**self.event("x"), "tool_input": "not json"}
+        self.assertEqual(run_hook("block_destructive_git.py", event).returncode, 2)
+
+
 class TestsBeforeStop(HookCase):
     def stop(self, active=False, **env):
         return run_hook("tests_before_stop.py", {"session_id": "s1", "stop_hook_active": active}, self.env(**env))

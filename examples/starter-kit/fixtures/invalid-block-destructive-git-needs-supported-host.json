@@ -14,7 +14,7 @@
   "expect": {
     "valid": false,
     "errors": [
-      "block-destructive-git-needs-claude-code"
+      "block-destructive-git-needs-supported-host"
     ],
     "warnings": [
       "hooks-without-claude-code"

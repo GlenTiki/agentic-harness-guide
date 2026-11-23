@@ -96,6 +96,20 @@ class Resolution(unittest.TestCase):
         events = {event for fragment in settings for event in fragment.get("hooks", {})}
         self.assertEqual(events, {"PreToolUse", "PostToolUse", "Stop", "UserPromptSubmit"})
         self.assertEqual(merged[".claude/starter-kit.json"][0]["test_command"], "uv run pytest")
+        self.assertEqual(merged[".github/hooks/starter-kit.json"][0]["version"], 1)
+
+    def test_copilot_cli_alone_gets_its_hook_and_skill_and_no_claude_registration(self):
+        _, resolution = self.resolve("valid-copilot-cli")
+        self.assertEqual([write["path"] for write in resolution["writes"]], [
+            "AGENTS.md", ".claude/starter-kit.json", ".github/hooks/block_destructive_git.py",
+            ".github/hooks/starter-kit.json", ".github/skills/prompt-refiner/SKILL.md"])
+
+    def test_copilot_registration_uses_the_pascal_case_event_so_the_script_reads_claude_shaped_input(self):
+        fragment = json.loads((HERE / "files/copilot/hook-block-destructive-git.json").read_text())
+        self.assertEqual(fragment["version"], 1)
+        [entry] = fragment["hooks"]["PreToolUse"]
+        self.assertEqual((entry["type"], entry["matcher"], entry["cwd"]), ("command", "Bash", "."))
+        self.assertIn(".github/hooks/block_destructive_git.py", entry["bash"])
 
     def test_unset_command_renders_as_null_in_json(self):
         answers = validate_plan.with_defaults(MANIFEST, {"hosts": ["claude-code"]})
@@ -121,14 +135,27 @@ class Manifest(unittest.TestCase):
             self.assertTrue((HERE / "hooks" / option["file"]).is_file())
             self.assertTrue((HERE / "files/claude" / f"hook-{option['value']}.json").is_file())
             self.assertIn(f"hook-{option['value']}", item_ids)
-            self.assertEqual(option["hosts"], ["claude-code"])
+            self.assertIn("claude-code", option["hosts"])
+            self.assertLessEqual(set(option["hosts"]), {"claude-code", "copilot-cli"})
+            if "copilot-cli" in option["hosts"]:
+                self.assertTrue((HERE / "files/copilot" / f"hook-{option['value']}.json").is_file())
+                self.assertIn(f"hook-{option['value']}-copilot", item_ids)
 
-    def test_every_blocking_hook_has_a_claude_code_rule(self):
+    def test_every_blocking_hook_is_refused_exactly_when_no_chosen_host_runs_it(self):
         hooks = next(question for question in MANIFEST["questions"] if question["id"] == "hooks")
-        rule_ids = {rule["id"] for rule in MANIFEST["rules"]}
+        hosts = [option["value"] for option in next(q for q in MANIFEST["questions"] if q["id"] == "hosts")["options"]]
+        choices = [[host for bit, host in enumerate(hosts) if mask >> bit & 1] for mask in range(1, 2 ** len(hosts))]
         for option in hooks["options"]:
-            if option["blocking"]:
-                self.assertIn(f"{option['value']}-needs-claude-code", rule_ids)
+            if not option["blocking"]:
+                continue
+            for chosen in choices:
+                with self.subTest(hook=option["value"], hosts=chosen):
+                    errors, _, _ = validate_plan.validate(
+                        {"answers": {"hosts": chosen, "hooks": [option["value"]], "memory": True, "test_command": "pytest"}},
+                        MANIFEST)
+                    host_errors = [rule_id for rule_id, _ in errors if rule_id.startswith(f"{option['value']}-needs-")
+                                   and rule_id.endswith(("-host", "-claude-code"))]
+                    self.assertEqual(bool(host_errors), not set(chosen) & set(option["hosts"]))
 
     def test_hook_scripts_use_only_the_standard_library_and_no_network(self):
         allowed = {"json", "os", "pathlib", "re", "shlex", "subprocess", "sys", "tempfile"}

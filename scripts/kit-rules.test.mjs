@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
-import { fullMatch, isVisible, requiringRules, resolve, validate } from '../src/lib/kit-rules.mjs';
+import { fullMatch, isVisible, requiringRules, resolve, validate, visibleOptions } from '../src/lib/kit-rules.mjs';
 
 const kit = path.resolve('examples/starter-kit');
 const manifest = JSON.parse(fs.readFileSync(path.join(kit, 'kit-manifest.json'), 'utf8'));
@@ -91,6 +91,7 @@ test('the form always shows the commands, marks them required only when a hook n
   );
   assert.equal(isVisible(hooks, { hosts: ['codex'] }), false);
   assert.equal(isVisible(hooks, { hosts: ['claude-code'] }), true);
+  assert.deepEqual(visibleOptions(hooks, { hosts: ['copilot-cli'] }).map((option) => option.value), ['block-destructive-git']);
 });
 
 test('the hook menu has nothing selected by default', () => {
