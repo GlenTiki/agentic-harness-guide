@@ -53,7 +53,7 @@ The overlap supports the method's foundations: test assumptions, inspect actual 
 
 OpenAI's account also centres human time and attention. I want to make that concern usable at the scale of one person's recurring chore. For comparable tasks, record whether the outcome was accepted, then count your interventions and active time spent on setup, review, repair and recovery. Include ongoing maintenance and model costs. A quicker generation that needs longer repair is a poor bargain.
 
-Treat that as a measurement plan until you have results. Become the professional gambler the robots want you to be: price the downside, keep the losing runs and change your bet when the evidence changes. [The probability and checkpoints](../../../journey/07-run-it-for-real/#small-errors-accumulate) explain why.
+Treat that as a measurement plan until you have results. Then treat each run as a calculated risk: price the downside, keep the failed runs and change your plan when the evidence changes. [The probability and checkpoints](../../../journey/07-run-it-for-real/#small-errors-accumulate) explain why.
 
 *Sources above fetched on 2026-11-04. The comparisons are editorial judgements, not comparative performance tests.*
 

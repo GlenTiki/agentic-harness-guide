@@ -56,6 +56,7 @@ export default defineConfig({
         {
           label: 'Start here',
           items: [
+            { slug: 'start-here/what-is-an-agent' },
             { slug: 'start-here/why-bother' },
             { slug: 'start-here/how-to-read' },
             { slug: 'start-here/consistency-fast-track' },

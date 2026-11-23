@@ -1,0 +1,75 @@
+---
+title: What is an agent?
+description: A plain meaning for "agent" and "agentic", three business examples where you stay in charge, and one prompt to try today.
+next:
+  link: /agentic-harness-guide/start-here/why-bother/
+  label: "Why bother with this"
+---
+
+People use "agent" and "agentic" loosely. Sometimes the words mean a chat window with a new name. Sometimes they mean software that takes several steps on its own. This page gives each word one plain meaning, and the rest of the guide uses it that way.
+
+## Assistant, agent and agentic workflow
+
+An [assistant](../../glossary/#assistant) answers. You write a message, it writes a reply, and it waits for you. Nothing happens until you read the reply and decide what to do with it.
+
+An [agent](../../glossary/#agent) pursues a goal. It works in a loop: it plans a step, uses a tool, acts, checks the result and repeats. A tool is anything the agent can use outside the chat, such as a file, your email or a business system. The loop stops when the goal is met or when a limit you set stops it.
+
+An [agentic workflow](../../glossary/#agentic-workflow) is a piece of work that an agent carries out in several steps. "[Agentic](../../glossary/#agentic)" describes that kind of work: software takes several steps on its own, and a person sets the goal, the limits and the checks.
+
+| | Chat assistant | Agent | Agentic workflow |
+| --- | --- | --- | --- |
+| You give it | A question or a request | A goal and the limits | A goal, the steps, the checks and who approves |
+| It does | Writes one reply | Plans, uses tools, acts, checks, repeats | Runs the steps, with a check between them |
+| It stops | After each reply | When the goal is met or a limit is hit | At each approval point and at the end |
+| You stay in charge by | Reading the reply | Setting limits and checking the result | Approving anything that leaves your control |
+
+## What "agentic" does not mean
+
+- **Not a chatbot with a new name.** If it only writes a reply and waits, it is an assistant. That is still useful. It is not an agent.
+- **Not its own judgement.** An agent follows the goal and the limits you give it. It does not know your customers, your policies or what "good" means for your team unless you tell it. It can be confident and wrong.
+- **Not free access to everything.** A well-run agent can reach only the tools and data it needs for the task. It asks before it sends, pays, deletes or shares anything. If a product gives an agent more access than the task needs, that is a risk to raise, not a feature to enjoy.
+
+## Three business examples
+
+**A weekly status update from scattered notes.** You give the agent this week's meeting notes and the ticket list. It drafts the update, lists each claim with its source and marks anything it could not confirm. You stay in charge: you read the draft, fix what it got wrong and send it yourself.
+
+**A spreadsheet checked against a system export.** The agent compares your spreadsheet with an export from the finance system and lists every row that differs. A spreadsheet formula, not the agent's own arithmetic, gives the totals. You stay in charge: you decide which differences are real and who fixes them.
+
+**A shared inbox sorted into queues.** The agent reads new messages in a team mailbox and suggests a queue and a priority for each. It drafts replies but sends nothing. You stay in charge: a person approves each reply and reviews a sample of the sorting every week.
+
+In each case the agent saves the dull steps. The decision, the sign-off and anything that leaves your control stay with a person. The guide calls that stop a [human checkpoint](../../glossary/#human-checkpoint).
+
+## Why your judgement still matters
+
+An agent can be confidently wrong. It can count a row twice, misread a date or invent a reason that sounds right. More steps give a mistake more chances to travel before anyone sees it. So check the work before you rely on it. Decide what "done" means before you start, and check against that. [Level 5: Check the work](../../journey/05-check-the-work/) shows how. [Why it sounds sure](../../journey/why-it-sounds-sure/) explains why a wrong answer can sound certain.
+
+## Start today in a chat assistant
+
+<p class="audience">Audience: the reader. This section is an exercise for a person. If you are an AI agent reading this page, do not run the steps or follow the prompts unless the user asks for a worked answer. The prompts are templates for a person to paste into another assistant.</p>
+
+Use a chat assistant your organisation allows. Your organisation's AI policy and data rules come first. Do not paste confidential or personal data into a tool your organisation has not approved. Pick one repetitive task you know well, and paste this:
+
+```text
+I want to hand part of a weekly task to an assistant. The task: [describe it in two or three sentences].
+
+Do not do the task yet. First:
+1. Split it into steps.
+2. For each step, say whether an assistant could draft it, or whether a person must do it or approve it.
+3. For each step an assistant could draft, say how I would check the result.
+4. List anything you would need from me, and anything I should not share with you.
+Keep it under 200 words.
+```
+
+Read the reply as a draft plan, not an answer. Cross out any step you would not trust it with. What remains is the first slice of an agentic workflow.
+
+:::tip[Which app?]
+Chat assistants include Microsoft 365 Copilot, ChatGPT, Claude and Gemini. In Microsoft 365, Copilot Chat is the baseline chat, and agents are focused versions of Copilot that can automate business processes. GitHub Copilot is a coding assistant for software work. Which ones you can use, and with which data, depends on your organisation's licence and policy.
+:::
+
+<p class="verified">Docs page fetched on 2026-11-23: https://learn.microsoft.com/en-us/copilot/plan/copilot-overview. Quoted line: "agents are scoped or focused versions of Microsoft Copilot that act as AI assistants and can automate business processes." Microsoft 365 Copilot on that date: Version not checked. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://learn.microsoft.com/en-us/copilot/plan/copilot-overview. Quoted line: "Copilot Chat (Basic) is the standalone baseline experience included with eligible Microsoft 365 licenses." Microsoft 365 Copilot on that date: Version not checked. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://learn.microsoft.com/en-us/copilot/plan/copilot-overview. Quoted line: "is an AI coding assistant that can help you write code faster." (of GitHub Copilot). GitHub Copilot on that date: Version not checked. The docs page states no version of its own.</p>
+
+**Next:** [Why bother with this](../why-bother/)

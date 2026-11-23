@@ -5,7 +5,7 @@ import path from 'node:path';
 import { chromium } from 'playwright-core';
 
 const base = '/agentic-harness-guide';
-const pages = ['why-bother', 'how-to-read', 'consistency-fast-track', 'professional-route', 'engineer-route', 'cheat-sheet', 'what-the-time-is-for'].map((slug) => `start-here/${slug}`);
+const pages = ['what-is-an-agent', 'why-bother', 'how-to-read', 'consistency-fast-track', 'professional-route', 'engineer-route', 'cheat-sheet', 'what-the-time-is-for'].map((slug) => `start-here/${slug}`);
 pages.push(...['engineer-weak-spots', 'product-manager-and-team-lead', 'the-feedback-loop', 'be-the-product-manager-of-your-own-tooling'].map((slug) => `method/${slug}`));
 const server = http.createServer((req, res) => {
   const pathname = new URL(req.url, 'http://localhost').pathname.slice(base.length);

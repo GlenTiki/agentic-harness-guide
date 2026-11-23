@@ -61,6 +61,7 @@ const workflowOrder = [
   'build-a-kitchen-assistant',
 ];
 const readFirst = [
+  'start-here/what-is-an-agent',
   'start-here/why-bother',
   'start-here/how-to-read',
   'start-here/consistency-fast-track',
