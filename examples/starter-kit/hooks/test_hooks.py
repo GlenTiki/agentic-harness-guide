@@ -324,37 +324,75 @@ class PrSizeNudge(HookCase):
         self.assertIsNone(context_of(self.push("git status")))
 
 
-class ClaudeRegistrationsWithoutClaudeProjectDir(HookCase):
+class ClaudeRegistrationsWithoutClaudeProjectDir(unittest.TestCase):
     """GitHub Copilot CLI also reads .claude/settings.json and documents no CLAUDE_PROJECT_DIR."""
 
+    BLOCKING = {option["file"]: option["blocking"] for option in next(
+        question for question in json.loads((HERE.parent / "kit-manifest.json").read_text())["questions"]
+        if question["id"] == "hooks")["options"]}
+    EVENT = {"session_id": "s1", "tool_name": "Bash", "tool_input": {"command": "git status"}, "prompt": "x",
+             "stop_hook_active": True}
+
     def setUp(self):
-        super().setUp()
-        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
-        (self.root / ".claude/hooks").mkdir(parents=True)
-        for script in set(HERE.glob("*.py")) - {HERE / "test_hooks.py"}:
-            (self.root / ".claude/hooks" / script.name).write_text(script.read_text())
-        (self.root / "src").mkdir()
+        self.tmp = tempfile.TemporaryDirectory()
+        self.state = pathlib.Path(self.tmp.name) / "state"
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def project(self, name, in_git=True, with_scripts=True):
+        root = pathlib.Path(self.tmp.name) / name
+        (root / ".claude/hooks").mkdir(parents=True)
+        (root / "src").mkdir()
+        if in_git:
+            subprocess.run(["git", "init", "-q", str(root)], check=True)
+        if with_scripts:
+            for script in set(HERE.glob("*.py")) - {HERE / "test_hooks.py"}:
+                (root / ".claude/hooks" / script.name).write_text(script.read_text())
+        return root
 
     def commands(self):
         for registration in sorted((HERE.parent / "files/claude").glob("hook-*.json")):
             for groups in json.loads(registration.read_text())["hooks"].values():
                 for group in groups:
                     for handler in group["hooks"]:
-                        yield registration.name, handler["command"]
+                        script = handler["command"].split("/.claude/hooks/")[1].split(".py")[0] + ".py"
+                        yield registration.name, script, handler["command"]
 
-    def test_every_registered_command_starts_from_the_root_and_a_subfolder(self):
+    def run_command(self, shell, command, folder):
         environ = {key: value for key, value in os.environ.items() if not key.startswith(("STARTER_KIT_", "CLAUDE_"))}
-        event = json.dumps({"session_id": "s1", "cwd": str(self.root), "tool_name": "Bash",
-                            "tool_input": {"command": "git status"}, "prompt": "x", "stop_hook_active": True})
-        for name, command in self.commands():
+        return subprocess.run([shell, "-c", command], cwd=folder, input=json.dumps({**self.EVENT, "cwd": str(folder)}),
+                              capture_output=True, text=True, timeout=30,
+                              env={**environ, "STARTER_KIT_STATE_DIR": str(self.state)})
+
+    def assert_started(self, result):
+        self.assertNotIn("can't open file", result.stderr)
+        self.assertNotEqual(result.returncode, 127, result.stderr)
+
+    def test_every_command_starts_from_the_root_and_a_subfolder_of_a_path_with_a_space(self):
+        root = self.project("my repo")
+        for name, _, command in self.commands():
             for shell in ["sh", "bash"]:
-                for folder in [self.root, self.root / "src"]:
+                for folder in [root, root / "src"]:
                     with self.subTest(registration=name, shell=shell, folder=folder.name):
-                        result = subprocess.run([shell, "-c", command], cwd=folder, input=event, capture_output=True,
-                                                text=True, timeout=30,
-                                                env={**environ, "STARTER_KIT_STATE_DIR": str(self.state)})
-                        self.assertNotIn("can't open file", result.stderr)
-                        self.assertNotEqual(result.returncode, 127, result.stderr)
+                        self.assert_started(self.run_command(shell, command, folder))
+
+    def test_every_command_starts_from_the_root_of_a_folder_outside_git(self):
+        root = self.project("no git", in_git=False)
+        for name, _, command in self.commands():
+            with self.subTest(registration=name):
+                self.assert_started(self.run_command("sh", command, root))
+
+    def test_a_missing_advisory_script_lets_the_call_through_and_a_missing_guardrail_blocks(self):
+        root = self.project("empty", with_scripts=False)
+        for name, script, command in self.commands():
+            for shell in ["sh", "bash"]:
+                with self.subTest(registration=name, shell=shell):
+                    result = self.run_command(shell, command, root)
+                    if self.BLOCKING[script]:
+                        self.assertNotEqual(result.returncode, 0)
+                    else:
+                        self.assertEqual((result.returncode, result.stdout), (0, ""))
 
 
 if __name__ == "__main__":
