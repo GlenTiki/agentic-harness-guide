@@ -1,0 +1,56 @@
+**Anchor:** `goals/2026-11-17-rename-customer-to-client.md`. I wrote it to disk. I didn't run the goal or edit any source file.
+
+```text
+/goal Add a client rename migration and rename Customer/customer_id to Client/client_id in src/api, without touching src/billing or docs/. Done means every item in goals/2026-11-17-rename-customer-to-client.md passes with its evidence shown.
+
+1. Anchor and done list
+- Anchor: goals/2026-11-17-rename-customer-to-client.md. The anchor is the plan. If this prompt and the anchor disagree, follow the anchor and say so.
+- Branch: main. Base commit: c473ceb1293e55c7e590132c3386654c313192d8.
+- D1: migrations/0003_rename_customer_to_client.py exists and renames table customer -> client and column customer_id -> client_id. Evidence: `grep -c -i "client" migrations/0003_rename_customer_to_client.py` prints a number >= 2, and the file text names both renames. Reviewer: person.
+- D2: Old name gone from the API. Evidence: `grep -rni customer src/api` prints nothing and exits 1. Reviewer: none.
+- D3: The API package still imports. Evidence: `PYTHONPATH=src python -c "import api.routes"` exits 0 with no traceback. Run it once on the base commit first to confirm the command works. Reviewer: none.
+- D4: Old migrations untouched. Evidence: `git diff c473ceb1293e55c7e590132c3386654c313192d8 -- migrations/0001_initial.py migrations/0002_invoice.py` prints nothing. Reviewer: none.
+- D5: No other session's work was touched. Evidence: `git diff --name-only c473ceb1293e55c7e590132c3386654c313192d8 HEAD` lists only migrations/0003_rename_customer_to_client.py, src/api/schemas.py, src/api/routes.py and goals/ files. Reviewer: none.
+- D6: One commit per slice with the slice id in the subject. Evidence: `git log --oneline c473ceb..HEAD` shows [ws-001] and [ws-002]. Reviewer: none.
+- Out of scope: src/billing/, docs/ (including `GET /customer/{id}` in docs/api.md), migrations/0001_*, migrations/0002_*. The repo has no tests, so `make test` is not evidence.
+
+2. Recovery (run on the first turn and on every resume)
+1. Read the anchor and the progress log (goals/2026-11-17-rename-customer-to-client.progress.md).
+2. Run `git status --short`, `git log --oneline -10` and `git worktree list`.
+3. Find the last slice id in the commit subjects. That commit is the last known good point.
+4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice with a pathspec. If it fails, write the failure in the progress log, then read the slice's baseline in the progress log.
+5. If the baseline shows that a slice path had staged or unstaged changes before the slice, or if there is no baseline, stop and ask the user. Do not restore that path. (This already applies to src/api/routes.py.) Otherwise restore only the slice paths: `git restore --staged --worktree --source=<last known good sha> -- <slice paths>`. Delete only the new files that the slice created, as shown by the baseline.
+6. If a helper worktree is still listed, check that the progress log shows this goal created it and that the helper is no longer running. If either check fails, leave it and wait. If both pass, commit partial work to a salvage branch, then remove only that worktree.
+7. Do not run a command that resets, cleans or checks out the whole working copy. Do not touch src/billing/ or docs/, even if they look wrong: other sessions are working there.
+
+3. Coordination
+- The main session reads state, commits and updates the progress log. The work is three paths, so use a helper only if scope grows past three files.
+- When a slice starts, append its baseline to the progress log: slice id, time and the output of `git status --porcelain -- <slice paths>`.
+- Other sessions share this checkout and src/api/routes.py already has someone else's staged change. Never use `git add -A`, `git add .` or `git commit -a`. Commit with `git commit -m "<type>: [ws-00N] <summary>" -- <slice paths>` so other staged changes stay out. End the message with `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
+- Other sessions commit to main too, so HEAD may move. Use the newest [ws-00N] commit from this goal as the last known good point.
+- Before you accept a helper's work, run the slice proof yourself and read the diff.
+
+4. Slices
+- ws-001: Add migration 0003 renaming table customer -> client and column customer_id -> client_id | Paths: migrations/0003_rename_customer_to_client.py (new file) | Proof: D1 check passes and D4 check prints nothing | Baseline: logged at start (expect empty) | Rollback: delete only that new file, and only if the baseline was empty
+- ws-002: Rename Customer -> Client and customer_id -> client_id in the API | Depends on: ws-001 | Paths: src/api/schemas.py, src/api/routes.py | Proof: D2 and D3 checks pass | Stop and ask the user. Do not continue this slice without a yes. src/api/routes.py has a staged change from before this goal with an unknown owner. Ask whose it is and whether the ws-002 commit may include it. Record the answer in the progress log before proceeding. | Rollback: `git restore --staged --worktree --source=<last known good sha> -- src/api/schemas.py`. Touch routes.py only as the user directs.
+
+5. Stops and the status card
+- Make technical choices yourself, and record each one in the progress log.
+- Stop only for a consent decision, a choice that changes what the user gets, or a blocker that repeats with no other safe work left.
+- Do not make the done list smaller to finish.
+- Each time you stop, write this status card in the progress log and in your reply:
+  Done and proved: <slice ids and commits>
+  Last known good: <branch and sha>
+  Next or blocked on: <next slice, or the exact action needed from the user>
+  Resume: "Resume goals/2026-11-17-rename-customer-to-client.md at <slice id>."
+- Before you say the goal is complete, check D1 to D6 one at a time. For each item, run the check now and show its output. Do not mark an item done from memory.
+```
+
+**Assumptions** (correct any in one sentence):
+- Migrations 0001 and 0002 may already be applied, so I add a new 0003 and leave them alone.
+- The rename covers class `Customer`, `customer_id`, table `customer` and the invoice foreign key.
+- I haven't run the `import api.routes` check. The goal tells the session to test it on the base commit first.
+
+**Decisions that still need you:**
+- **ws-002 (waits for a yes):** `src/api/routes.py` has a staged change that isn't ours. Whose is it, and may the ws-002 commit include it? ws-001 can run in the meantime.
+- **Docs:** `docs/api.md` still says `GET /customer/{id}`. I left it out of scope because the docs session owns it, so someone needs to update it there. The goal logs it as a hand-off.

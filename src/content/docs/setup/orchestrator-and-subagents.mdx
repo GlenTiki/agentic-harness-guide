@@ -39,12 +39,14 @@ This part differs by launcher.
 
 | Launcher | Hooks | Project instructions |
 | --- | --- | --- |
-| A native helper in Claude Code | Yes | Yes for custom helpers. No for the built-in Explore and Plan helpers. |
+| A native helper in Claude Code | Yes | Yes by default for custom helpers. No for the built-in Explore and Plan helpers. |
 | My own launcher built from a role file | No | No. The brief must carry them. |
 
-<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/sub-agents. Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-18: https://code.claude.com/docs/en/sub-agents. Quoted lines: "Tool events such as `PreToolUse` and `PostToolUse` fire for the subagent's tool calls the same way they do in the main conversation" and "Explore and Plan start without your CLAUDE.md files and the git status snapshot to keep research fast and inexpensive." Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
 
 Claude Code lets helpers start helpers, up to three layers. I keep to one layer by my own rule: a helper reports back and the lead starts the next one. That keeps the log flat.
+
+<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/sub-agents. Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 ## End-to-end flow
 
@@ -84,4 +86,4 @@ A good brief fits on a screen. It has five parts.
 
 [Case-study chapter 7: Orchestrator](../../case-study/ch07-orchestrator/) is a downloadable kit. [Level 6](../../journey/06-hire-a-team/) teaches the idea.
 
-**Next:** [Personas are review lenses](../personas/)
+**Next:** [One workspace per task](../one-workspace-per-task/)

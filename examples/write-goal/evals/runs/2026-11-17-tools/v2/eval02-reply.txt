@@ -1,0 +1,63 @@
+Anchor: `goals/2026-11-17-newsletter-provider-move.md`. I wrote it, along with `goals/2026-11-17-newsletter-provider-move.progress.md`. Neither is committed yet.
+
+```text
+/goal Move newsletter signup to the new mailing service, prove the new list works, delete the old list, and email subscribers only if the owner approves. Done means every item in goals/2026-11-17-newsletter-provider-move.md passes with its evidence shown.
+
+1. Anchor and done list
+- Anchor: goals/2026-11-17-newsletter-provider-move.md. The anchor is the plan. If this prompt and the anchor disagree, follow the anchor and say so.
+- Branch: main. Base commit: f79d78e82d4c035d72d6717bcf2996f252931f06.
+- D1: signup.js calls the new provider and no longer references the old one. Evidence: `grep -c oldProvider src/newsletter/signup.js` prints `0`. Reviewer: none.
+- D2: A test proves signup goes to the new provider. Evidence: `npm test` exits 0 and prints `# fail 0` and a `# pass` count of at least 1. Reviewer: none.
+- D3: A real signup with a test address reaches the new list. Evidence: [NEEDED: the new provider's command or dashboard view that lists the test address]. Reviewer: person.
+- D4: Old subscribers are exported outside git before anything is deleted. Evidence: `wc -l <export path>` matches the old provider's subscriber count ([NEEDED: export path and count source]). Reviewer: person.
+- D5: The owner's decision is logged as `EMAIL DECISION: yes` or `EMAIL DECISION: no`, with who decided and when. Evidence: `grep "EMAIL DECISION" goals/2026-11-17-newsletter-provider-move.progress.md` prints that line. Reviewer: person (the owner).
+- D6: If yes, every subscriber in the export was emailed. Evidence: [NEEDED: send report with sent count equal to the export count]. If no, evidence is the `no` line and no send in the log. Reviewer: person.
+- D7: The old list is deleted. Evidence: [NEEDED: old provider view showing the list is gone]; `git ls-files src/newsletter/old-provider.js` prints nothing. Reviewer: person.
+- Out of scope: the signup form markup, anything outside src/newsletter/ and goals/, committing subscriber emails to git.
+
+2. Recovery (run on the first turn and on every resume)
+1. Read the anchor and the progress log.
+2. Run `git status --short`, `git log --oneline -10` and `git worktree list`.
+3. Find the last slice id in the commit subjects. That commit is the last known good point.
+4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice. If it fails, write the failure in the progress log, then restore only that slice's paths: `git restore --source=<last known good sha> -- <slice paths>`. Delete only the new files that slice created.
+5. If a helper worktree for this goal is still listed, commit any partial work to a salvage branch, then remove only that worktree.
+6. Do not run a command that resets, cleans or checks out the whole working copy.
+7. For external slices (ws-003, ws-004, ws-006, ws-007), read the progress log and check the provider's state before repeating the action. Never send or delete twice.
+
+3. Coordination
+- The main session reads state, sends work to helpers, checks what they return, commits and updates the progress log.
+- Send exploration of more than three files, and any large draft, to a helper with a bounded brief: the slice outcome, the paths in scope, earlier failures from the progress log, the proof command, and a word limit for the reply.
+- Give each helper that writes files its own worktree, or run such helpers one at a time.
+- Before you accept a helper's work, run the slice proof yourself and read the diff.
+- Commit each slice when its proof passes, with the slice id in the subject, for example `feat: [ws-002] switch signup to new provider`. After each slice, append one entry to the progress log: time, slice id, commit, proof output, next slice.
+
+4. Slices
+- ws-001: New provider module exists | Paths: src/newsletter/new-provider.js | Proof: `node -e "import('./src/newsletter/new-provider.js').then(m=>console.log(Object.keys(m)))"` prints the export names | Rollback: `git restore --source=f79d78e -- src/newsletter/new-provider.js`, or delete the file if it is new. Needs [NEEDED: new provider name, API or SDK, credentials location]. Stop and ask the user for these first.
+- ws-002: signup uses the new provider, with a test (signup.js uses oldProvider without importing it, and signup.test.js has no tests) | Depends on: ws-001 | Paths: src/newsletter/signup.js, src/newsletter/signup.test.js | Proof: `npm test` shows `# fail 0` and `# pass` >= 1; `grep -c oldProvider src/newsletter/signup.js` prints `0` | Rollback: `git restore --source=<ws-001 sha> -- src/newsletter/signup.js src/newsletter/signup.test.js`
+- ws-003: Live check on the new list | Depends on: ws-002 | Stop and ask the user for a test address and approval to send a real signup to the live new provider. Do not continue this slice without a yes. Proof: D3 evidence.
+- ws-004: Export old subscribers to a file outside git | Depends on: ws-003 | Proof: D4 evidence | Rollback: delete the export file. Needs [NEEDED: how to export from the old provider].
+- ws-005: Owner decision on emailing | Stop and ask the user. They have not decided and must check with the owner. Do not continue this slice without the owner's answer. Record it as `EMAIL DECISION: yes|no` in the progress log.
+- ws-006: Email subscribers about the move | Depends on: ws-004, ws-005 | Skip if D5 says no. If yes, stop and ask the user to approve the final email text and the recipient count before sending. Do not continue this slice without a yes. Proof: D6 evidence.
+- ws-007: Delete old list and src/newsletter/old-provider.js | Depends on: ws-003, ws-004, ws-005, and ws-006 done or skipped | Stop and ask the user for a yes before deleting the remote list. Deletion cannot be undone. Proof: D7 evidence | Rollback: `git restore --source=<ws-002 sha> -- src/newsletter/old-provider.js`. The remote list can only come back from the export.
+
+5. Stops and the status card
+- Make technical choices yourself, and record each one in the progress log.
+- Stop only for a consent decision, a choice that changes what the user gets, or a blocker that repeats with no other safe work left.
+- Do not make the done list smaller to finish.
+- Each time you stop, write this status card in the progress log and in your reply:
+  Done and proved: <slice ids and commits>
+  Last known good: <branch and sha>
+  Next or blocked on: <next slice, or the exact action needed from the user>
+  Resume: "Resume goals/2026-11-17-newsletter-provider-move.md at <slice id>."
+- Before you say the goal is complete, check D1 to D7 one at a time. For each item, run the check now and show its output. Do not mark an item done from memory.
+```
+
+**Assumptions**
+- The new provider isn't named anywhere in the repo, so its name, API and credentials are marked [NEEDED].
+- I export the old list before deleting it, so the email option stays open if the owner says yes. This is my choice, not something you asked for.
+- Subscriber emails stay out of git.
+
+**Decisions that still need you**
+- **ws-005, emailing subscribers:** Nothing after it can finish until the owner decides. ws-006 (send) runs only on a yes, and even then it stops for you to approve the text and recipient count.
+- **ws-003, ws-007, live provider actions:** I made the live test signup and the deletion of the old list stops. Say so if you want either one to run without asking.
+- **Provider details:** ws-001 needs the new provider's name, API and credentials, and ws-004 needs a way to export from the old one. Both are [NEEDED].

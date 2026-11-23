@@ -1,0 +1,75 @@
+---
+title: One workspace per task
+description: Give each agent task its own worktree, setup script and terminal, watch every helper from one place, and budget the machine they share.
+status: mixed
+---
+
+*Audience: a human maintainer. An agent must not install, add, configure or run anything on this page unless the user asks for it in the current session.*
+
+**Status.** Runs in my setup: an agent development environment that creates one worktree per task, runs a checked-in setup script in each new worktree, and lists every helper's workspace in one place. My rule is that a reviewer from a second provider reads the work before it merges. When that reviewer is unavailable, a reviewer from the same provider stands in, and the pull request says so. In progress: moving my old dashboard chat into the environment, and running a written plan step by step with [human checkpoints](../../glossary/#human-checkpoint). Treat those two as design until they land.
+
+## The weak spot it targets
+
+**Parallel agents trip over each other, and over you.** One [agent](../../glossary/#agent) fixes a bug. You start a second to draft the docs in the same folder. The second switches branch under the first. Both start a dev server on the same port. An hour later you have five terminal tabs and cannot say which one is waiting for you. Meanwhile the laptop runs out of memory and everything slows down.
+
+## How it works
+
+An [agent development environment](../../glossary/#agent-development-environment) is a desktop app built around agents, as a code editor is built around files. It gives each task a workspace and keeps every workspace in view. Five parts do the work.
+
+1. **One [worktree](../../glossary/#worktree) per task.** Each task gets its own folder and branch, so no agent can switch a branch under another. The [worktree isolation page](../../shelf/delegation/worktree-isolation/) covers ports, databases and clean-up.
+2. **A setup script per repository.** The repository holds one script that every new worktree runs. It installs from the lockfile. If the repository needs a file that git ignores, such as a local settings file, the script links it. A new worktree is ready to use without help.
+3. **One view of every helper.** The environment lists each workspace with its branch, its live terminals and any output you have not read. You see which agent waits for you.
+4. **Helpers that report back.** A lead agent starts [helpers](../../glossary/#helper) in their own workspaces. A helper asks the lead or you when it is unsure, and reports when it is done. The [orchestrator page](../orchestrator-and-subagents/) explains the briefs.
+5. **A resource budget.** All helpers share one machine. Run heavy work at low priority, cap how many helpers run at once, and check free memory and swap before a build.
+
+### What I run
+
+I use Orca. Its project page says it can "Run Claude Code, Codex, and any other coding agent in parallel, each in its own worktree." Its README says it "splits the work, starts worker agents in their own workspaces, and brings their results back to you". Orca is free and open source.
+
+<p class="verified">Docs page fetched on 2026-11-16: https://orca.dev/. Quoted lines: "Run Claude Code, Codex, and any other coding agent in parallel, each in its own worktree." and "Free and open source." Orca CLI on that date: 1.4.258.</p>
+
+<p class="verified">Docs page fetched on 2026-11-16: https://github.com/stablyai/orca. Quoted line: "It splits the work, starts worker agents in their own workspaces, and brings their results back to you". Orca CLI on that date: 1.4.258.</p>
+
+I am moving my own setup into it. The plan gives the environment the agent sessions, the worktrees and the terminals. My own code keeps the memory, the preferences and the checks. The [second brain page](../second-brain/) describes the memory half.
+
+## End-to-end flow
+
+1. You describe a task. The lead agent creates a worktree for it, and the setup script runs.
+2. The lead starts a helper in that worktree with a [bounded brief](../../glossary/#bounded-brief).
+3. You start a second task in a second worktree. Neither agent's checkout or branch change lands in the other's folder. A worktree prevents these collisions, but an agent with file access can still edit another folder. To block that, use [permissions or a sandbox](../../shelf/control/permissions-and-sandboxing/).
+4. One helper is unsure about a choice. It asks, and you answer. In my setup, this step is still in progress.
+5. The helper finishes and reports. A reviewer reads the change and returns findings, from a second provider when one is available.
+6. The lead fixes the findings, the checks pass, and the change goes up for merge.
+7. You remove the worktree after the merge.
+
+## What this does not do
+
+- It does not review the work. The reviewer and the checks do that.
+- It does not enforce your rules. My setup's agent configuration records that the environment's own hooks can block only Claude Code, one of the agents I use. Keep the safety checks in each agent's own hooks and in CI.
+- It does not make the machine bigger. More helpers share the same memory.
+- I have not measured whether it makes me faster.
+
+## When to skip it
+
+An environment costs an install, a setup script and a habit. Ask three questions before you adopt one.
+
+- **Do you run more than one agent at a time?** If not, one checkout and one terminal are enough.
+- **Can the machine hold another helper?** If memory is already short, a second helper slows both.
+- **Does the repository install in one command?** If setup needs manual steps, write the setup script first. Without it, every new worktree fails the same way.
+
+## Build it
+
+This repository holds its own setup script, `orca.yaml`, at the root:
+
+```yaml
+scripts:
+  setup: |
+    set -euo pipefail
+    nice -n 10 npm ci
+```
+
+In my setup, the environment runs the `setup` script in each new worktree of this repository. The script stops at the first error. It installs the exact dependency versions from the lockfile, at low priority. A new worktree can then run `npm run check` with no other step. Orca's own repository uses the same `scripts` and `setup` keys in its `orca.yaml`.
+
+<p class="verified">Docs page fetched on 2026-11-16: https://github.com/stablyai/orca/blob/main/orca.yaml. Quoted lines: "scripts:" and "setup: |". Orca CLI on that date: 1.4.258.</p>
+
+**Next:** [Personas are review lenses](../personas/)

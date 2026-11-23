@@ -1,0 +1,55 @@
+Anchor: `goals/2026-11-17-rename-customer-to-client.md`. I wrote it, along with the progress log `goals/2026-11-17-rename-customer-to-client.progress.md`. Both are untracked, and I haven't committed anything.
+
+```text
+/goal Rename "customer" to "client" in the API code and the database migrations, in a checkout shared with two other sessions. Done means every item in goals/2026-11-17-rename-customer-to-client.md passes with its evidence shown.
+
+1. Anchor and done list
+- Anchor: goals/2026-11-17-rename-customer-to-client.md. The anchor is the plan. If this prompt and the anchor disagree, follow the anchor and say so.
+- Branch: main. Base commit: 5c26ae0aa57e084159fdf4c576381999f81b46a7.
+- Shared checkout: other sessions have uncommitted work in docs/api.md, src/billing/invoice.py and src/billing/discount.py. Do not edit, stage, restore or delete anything under src/billing/ or docs/. Never run `git add -A`, `git add .`, `git commit -a`, `git stash`, `git reset`, `git clean` or `git checkout .`. Stage and commit by explicit path only: `git add -- <paths>` then `git commit -m "<msg>" -- <paths>`.
+- D1: The API code uses Client and client_id. Evidence: `grep -n -i customer src/api/schemas.py src/api/routes.py` prints nothing and exits 1; `grep -n -E "^class Client:|client_id: int" src/api/schemas.py` prints `1:class Client:` and `2:    client_id: int`; `grep -n "import Client" src/api/routes.py` prints `1:from .schemas import Client`. Reviewer: none.
+- D2: The migrations carry the rename in the form the user chose for ws-002. Option A (new migration): migrations/0003_rename_customer_to_client.py exists and contains the word `client`, and `git diff --stat 5c26ae0 -- migrations/0001_initial.py migrations/0002_invoice.py` prints nothing. Option B (rewrite in place): `grep -rn -i customer migrations/` prints nothing and exits 1. Reviewer: a person (the user picks A or B before ws-002 starts).
+- D3: Only in-scope paths were touched. Evidence: `git log 5c26ae0..HEAD --grep='\[ws-00' --name-only --format=` prints only paths that start with src/api/, migrations/ or goals/. Reviewer: none.
+- D4: The docs rename is handed off, not done. Evidence: `grep -n "docs/api.md" goals/2026-11-17-rename-customer-to-client.progress.md` prints a line saying `GET /customer/{id}` in docs/api.md still needs the rename and belongs to the docs session. Reviewer: none.
+- Out of scope: docs/, src/billing/, README.md, any branch other than main.
+
+2. Recovery (run on the first turn and on every resume)
+1. Read the anchor and the progress log.
+2. Run `git status --short`, `git log --oneline -10` and `git worktree list`. Expect other sessions' changes under src/billing/ and docs/. Leave them alone.
+3. Find the last slice id in the commit subjects. That commit is the last known good point.
+4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice by path. If it fails, write the failure in the progress log, then restore only that slice's paths: `git restore --source=<last known good sha> -- <slice paths>`. Delete only the new files that slice created.
+5. If a helper worktree for this goal is still listed, commit any partial work to a salvage branch, then remove only that worktree.
+6. Do not run a command that resets, cleans or checks out the whole working copy.
+
+3. Coordination
+- The main session reads state, sends work to helpers, checks what they return, commits and updates the progress log.
+- This job touches about 5 small files, so do it in the main session. If you need to explore more than three files, send a helper with a bounded brief: the slice outcome, the paths in scope, earlier failures from the progress log, the proof command, and a 150-word reply limit.
+- Give each helper that writes files its own worktree, or run such helpers one at a time.
+- Before you accept a helper's work, run the slice proof yourself and read the diff.
+
+4. Slices
+- ws-001: rename `Customer` to `Client` and `customer_id` to `client_id` in the API | Paths: src/api/schemas.py, src/api/routes.py, plus goals/2026-11-17-rename-customer-to-client.md and the .progress.md next to it (include the goals files in this commit) | Proof: the three D1 commands with the output shown in D1 | Rollback: `git restore --source=5c26ae0 -- src/api/schemas.py src/api/routes.py` | Commit subject: `refactor: [ws-001] rename customer to client in API`
+- ws-002: rename in the migrations | Depends on: ws-001 | Stop and ask the user. Do not continue this slice without a yes. Ask: "A: add a new migrations/0003_rename_customer_to_client.py and leave 0001 and 0002 untouched, or B: rewrite 0001 and 0002 in place?" Paths: A: migrations/0003_rename_customer_to_client.py. B: migrations/0001_initial.py, migrations/0002_invoice.py | Proof: the D2 commands for the chosen option | Rollback: A: delete only migrations/0003_rename_customer_to_client.py. B: `git restore --source=<ws-001 commit> -- migrations/0001_initial.py migrations/0002_invoice.py` (find the sha with `git log --grep='\[ws-001\]' --format=%h`) | Commit subject: `refactor: [ws-002] rename customer to client in migrations`
+- ws-003: record the docs handoff | Paths: the progress log only | Proof: the D4 command | Rollback: none needed, the log is append-only | Commit subject: `docs: [ws-003] note docs/api.md rename for the docs session`
+
+5. Stops and the status card
+- Make technical choices yourself, and record each one in the progress log.
+- Stop only for a consent decision, a choice that changes what the user gets, or a blocker that repeats with no other safe work left. If another session changes a file in your slice paths, stop and report it.
+- Do not make the done list smaller to finish.
+- Each time you stop, write this status card in the progress log and in your reply:
+  Done and proved: <slice ids and commits>
+  Last known good: <branch and sha>
+  Next or blocked on: <next slice, or the exact action needed from the user>
+  Resume: "Resume goals/2026-11-17-rename-customer-to-client.md at <slice id>."
+- After each slice, append one entry to the progress log: time, slice id, commit, proof output, next slice.
+- Before you say the goal is complete, check D1 to D4 one at a time. For each item, run the check now and show its output. Do not mark an item done from memory.
+```
+
+Assumptions, so you can correct them in one sentence:
+- This is a breaking rename with no alias kept for the old names.
+- The work stays on `main` in the shared checkout, with commits scoped to explicit paths.
+- `make test` is not used as evidence, because the repo has no `tests/` directory.
+
+Decisions still needed from you:
+- **ws-002 (migrations):** The goal stops at this slice until you pick A or B. **A** adds a new `0003` migration that does the rename and leaves `0001` and `0002` untouched. **B** rewrites `0001` and `0002` in place. B is only safe if neither migration has been applied anywhere. I couldn't tell from the repo, so I didn't choose for you.
+- **`docs/api.md` line 3, `GET /customer/{id}`:** I left it out of scope because the docs session has that file open with uncommitted edits. ws-003 only writes a handoff note in the progress log. If you want the docs rename inside this goal, tell the docs session first.

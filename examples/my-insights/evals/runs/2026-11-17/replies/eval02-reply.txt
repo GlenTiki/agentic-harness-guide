@@ -1,0 +1,11 @@
+Report written to `report/insights.md`. 2 sessions, 7 lines read. The friction is thin: 0 interruptions, 1 failed tool call and 0 refused permissions.
+
+**Proposal 1 (weak evidence, optional):** Add a line to your instruction file.
+- Kind: instruction file line
+- Change: "When a notes file path isn't found, list the `notes/` directory and look for a close match before reporting an error."
+- Evidence: session `tuesday`, "File not found: notes/2026-11-10.md". The file was actually `notes/2026-11-10-standup.md`, and the session recovered on the next turn.
+- Check: Ask for a summary of a note by its date alone. It works if the agent lists `notes/` and opens the `-standup` file without a failed call. It fails if you get another "File not found" for a name that has a suffix.
+
+**Not proposed:** Nothing for `monday`, which had no friction. I'm also not proposing a hook or a skill edit. One failed call that fixed itself is too little to justify either, so treat Proposal 1 as a low-confidence suggestion. The report doesn't count wording-based corrections, such as "no, I meant…", because the tool doesn't count them.
+
+Say yes to a proposal by its number. I'll change nothing until you do.

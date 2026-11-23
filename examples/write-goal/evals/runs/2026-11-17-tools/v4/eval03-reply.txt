@@ -1,0 +1,57 @@
+Anchor: `goals/2026-11-17-dark-theme.md`. I wrote it. I did not write the progress log. The session creates that file on its first slice.
+
+Your goal was close, but the repository contradicted three things, so I changed them. The base commit `3c9e0f2` is not in the repo (HEAD is `464daa1`), `goals/` didn't exist, and the repo has no tests. D1 and D2 therefore name commands and outputs that nothing can produce yet.
+
+```text
+/goal Add a dark theme to the settings page on feat/dark-theme. Done means every item in goals/2026-11-17-dark-theme.md passes with its evidence shown.
+
+1. Anchor and done list
+- Anchor: goals/2026-11-17-dark-theme.md. The anchor is the plan. If this prompt and the anchor disagree, follow the anchor and say so.
+- Branch: feat/dark-theme. Base commit: 464daa129a6f4aaba51db5ec9db748dd36e63c9c.
+- D1: The settings page has a theme switch. Evidence: `npm test -- settings` exits 0 and prints "theme switch renders". Reviewer: none.
+- D2: The choice survives a reload. Evidence: `npm test -- persist` exits 0 and prints "theme persists". Reviewer: none.
+- D3: A person checks contrast in both themes. Evidence: `gh pr view <PR> --comments` shows a comment from the user that says "contrast ok". Reviewer: person.
+- Out of scope: other pages.
+
+2. Recovery (run on the first turn and on every resume)
+1. Read the anchor and goals/2026-11-17-dark-theme.progress.md.
+2. Run `git status --short`, `git log --oneline -10` and `git worktree list`.
+3. Find the last [ws-NNN] commit. That commit is the last known good point.
+4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice. If it fails, write the failure in the progress log, then read the slice's baseline in the progress log.
+5. If the baseline shows that a slice path had staged or unstaged changes before the slice, or if there is no baseline, stop and ask the user. Do not restore that path. Otherwise run `git restore --staged --worktree --source=<last known good sha> -- <slice paths>`. Delete only the new files that the slice created, as shown by the baseline.
+6. If a helper worktree is still listed, remove it only if the progress log shows this goal created it and the helper has finished. Otherwise leave it and wait. Commit any partial work to a salvage branch first.
+7. Never run a command that resets, cleans or checks out the whole working copy.
+
+3. Coordination
+- The main session reads state, sends work to helpers, checks what they return, commits and updates the progress log.
+- Send exploration of more than three files, and any large draft, to a helper with a bounded brief: the slice outcome, the paths in scope, earlier failures from the progress log, the proof command, and a word limit.
+- Give each helper that writes files its own worktree, or run such helpers one at a time. Record each helper worktree in the progress log when you create it.
+- When a slice starts, append its baseline to the progress log: the slice id, the time and the output of `git status --porcelain -- <slice paths>`.
+- Before you accept a helper's work, run the slice proof yourself and read the diff.
+
+4. Slices
+- ws-001: Theme switch renders on the settings page | Paths: src/settings/Theme.jsx and its test file [NEEDED: test path and how tests load .jsx] | Proof: `npm test -- settings` exits 0 and prints "theme switch renders" | Baseline: logged at start | Rollback: `git restore --staged --worktree --source=464daa1 -- <paths>`, only if the baseline was clean. Commit as `[ws-001] ...`.
+- ws-002: Theme choice persists across reload | Depends on: ws-001 | Paths: src/settings/store.js and its test file [NEEDED: test path] | Proof: `npm test -- persist` exits 0 and prints "theme persists" | Baseline: logged at start | Rollback: same form, with the ws-001 commit as the source. Commit as `[ws-002] ...`.
+- ws-003: Contrast check by a person | Depends on: ws-002 | Stop and ask the user. Do not continue this slice without a yes. Ask them to open or approve a pull request and comment "contrast ok". Do not open one yourself.
+
+5. Stops and the status card
+- Make technical choices yourself, and record each one in the progress log.
+- Stop only for a consent decision, a choice that changes what the user gets, or a blocker that repeats with no other safe work left.
+- Do not make the done list smaller to finish.
+- Append to the progress log after each slice: time, slice id, commit, proof output, next slice.
+- Each time you stop, write this status card in the progress log and in your reply:
+  Done and proved: <slice ids and commits>
+  Last known good: <branch and sha>
+  Next or blocked on: <next slice, or the exact action needed from the user>
+  Resume: "Resume goals/2026-11-17-dark-theme.md at <slice id>."
+- Before you say the goal is complete, check D1 to D3 one at a time. For each item, run the check now and show its output. Do not mark an item done from memory.
+```
+
+Assumptions:
+- The base commit is `464daa1`, the current HEAD of `feat/dark-theme`. This replaces `3c9e0f2`.
+- Your slice list had no test files, so I added them to ws-001 and ws-002 as [NEEDED].
+- I couldn't run `npm test -- settings` here. I don't know what it does with no test files.
+
+Decisions that still need you:
+- **Test setup (ws-001):** `package.json` only has `node --test`, with no dependencies, and plain `node` can't import `.jsx`. Tell me which test setup to use (for example, a jsdom/React runner) and where the tests live. Otherwise the session adds a dev dependency to make D1 and D2 provable, and you may not want that.
+- **Pull request (ws-003):** D3 needs a PR number. Opening the PR is your call, so ws-003 stops for a yes.
