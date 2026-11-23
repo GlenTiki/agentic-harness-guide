@@ -85,7 +85,7 @@ GitHub Copilot CLI reads hooks from `.github/hooks/*.json`. The kit registers on
 
 The other hooks stay Claude Code only. On Copilot, exit 2 from a stop hook is only a warning, so `tests-before-stop` and `memory-save-on-stop` cannot send the agent back. A `postToolUse` hook returns `additionalContext` at the top level of its JSON, not inside `hookSpecificOutput`, so the reminder hooks would need a second output shape. Copilot drops the output of a command `userPromptSubmitted` hook, so `recall-reinject` cannot add the index. The hook tests feed the destructive git hook constructed inputs in both Copilot payload shapes. Nobody has run the hook inside a live Copilot session yet.
 
-Copilot also reads hooks from `.claude/settings.json`. With both Claude Code and GitHub Copilot CLI as hosts, a Copilot session can see the Claude Code registrations too. The Copilot docs do not say whether Copilot sets `CLAUDE_PROJECT_DIR`, which those registrations use. If it does not, the Claude Code copy of a `PreToolUse` hook fails to start, and Copilot denies the call.
+Copilot also reads hooks from `.claude/settings.json`. With both Claude Code and GitHub Copilot CLI as hosts, a Copilot session can see the Claude Code registrations too. The Copilot docs list no environment variables for a CLI hook and give no default working directory. They say only that hooks run "in the same shell as the CLI". So each Claude Code registration does not depend on `CLAUDE_PROJECT_DIR`: when it is unset, the shell takes the repository root from `git rev-parse --show-toplevel`. A test runs every registration with `sh` and `bash`, from the root and from a subfolder, with `CLAUDE_PROJECT_DIR` unset, and checks that each script starts. Nobody has checked in a live Copilot session that Copilot reads the Claude Code format of these registrations.
 
 ## Items
 
@@ -123,7 +123,7 @@ Commands for the person:
 
 ## Hooks
 
-Every hook is one Python 3 file. Each file uses only the standard library and makes no network calls. A Claude Code registration runs it as `python3 -I "${CLAUDE_PROJECT_DIR}/.claude/hooks/<script>.py"`. The GitHub Copilot CLI registration runs `python3 -I .github/hooks/block_destructive_git.py` with `cwd` set to the repository root. A command from the configuration runs without a shell, split by `shlex`. Hooks that keep a count store it per session in the system temporary folder, or in `STARTER_KIT_STATE_DIR` when set.
+Every hook is one Python 3 file. Each file uses only the standard library and makes no network calls. A Claude Code registration runs it as `python3 -I "${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/.claude/hooks/<script>.py"`. Claude Code sets `CLAUDE_PROJECT_DIR`, and the fallback is for a Copilot session that reads the same file. The GitHub Copilot CLI registration runs `python3 -I .github/hooks/block_destructive_git.py` with `cwd` set to the repository root. A command from the configuration runs without a shell, split by `shlex`. Hooks that keep a count store it per session in the system temporary folder, or in `STARTER_KIT_STATE_DIR` when set.
 
 | Hook | Event | Blocks | What it runs |
 | --- | --- | --- | --- |
@@ -169,6 +169,10 @@ python3 -I examples/starter-kit/test_merge_settings.py
 <p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/hooks. Quoted line: "For Copilot CLI and Copilot cloud agent, you can define repository hooks in `.github/hooks/*.json`." The same page says the file "must contain a `version` field with a value of `1`". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "Payloads for PascalCase `PreToolUse` report `tool_name` as the Claude tool name (for example, `Bash`, not `bash`)." The same page gives `tool_input` as "Tool arguments (parsed from JSON string when possible)", says "For `permissionRequest` and `preToolUse`, exit `2` is treated as a deny", says exit 2 is otherwise "Treated as a warning by default", and says "Cross-tool `.claude/settings.json` and `.claude/settings.local.json` files in the repository are also read." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://code.claude.com/docs/en/hooks.md. Quoted line: "The `command` string is passed to a shell: `sh -c` on macOS and Linux, Git Bash on Windows, or PowerShell when Git Bash isn't installed." The same page says both forms "export them as the environment variables `CLAUDE_PROJECT_DIR`". Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "hooks run on the developer's local machine in the same shell as the CLI." The same page gives `cwd` as "Working directory for the command (relative to repository root or absolute)." and lists environment variables only for cloud agent. GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/use-hooks. Quoted line: `echo '{"timestamp":1704614400000,"cwd":"/tmp","toolName":"bash","toolArgs":"{\"command\":\"ls\"}"}' | ./my-hook.sh`. GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -I \"${CLAUDE_PROJECT_DIR}/.claude/hooks/verification_gap.py\""
+            "command": "python3 -I \"${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/.claude/hooks/verification_gap.py\""
           }
         ]
       }

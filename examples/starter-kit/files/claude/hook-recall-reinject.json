@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -I \"${CLAUDE_PROJECT_DIR}/.claude/hooks/recall_reinject.py\""
+            "command": "python3 -I \"${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/.claude/hooks/recall_reinject.py\""
           }
         ]
       }

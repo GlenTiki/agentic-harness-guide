@@ -85,7 +85,7 @@ The kit is pinned to the git tag `starter-kit-v2`. The prompt from the form and 
 
 ## What this does not do
 
-The kit writes files inside your repository only. It does not install apps, change user-level settings or write to your home folder. Those stay as commands for you to run. It does not choose third-party skills for you. It does not check that your test or lint command works. The hooks have not been tested on Codex, so the kit registers none for it. On GitHub Copilot CLI, the destructive git guard is tested with inputs built from the Copilot docs, not in a live session. Copilot also reads hooks from `.claude/settings.json`. If you pick both Claude Code and Copilot, check in your first Copilot session that a plain `git status` still runs.
+The kit writes files inside your repository only. It does not install apps, change user-level settings or write to your home folder. Those stay as commands for you to run. It does not choose third-party skills for you. It does not check that your test or lint command works. The hooks have not been tested on Codex, so the kit registers none for it. On GitHub Copilot CLI, the destructive git guard is tested with inputs built from the Copilot docs, not in a live session. Copilot also reads hooks from `.claude/settings.json`. The Copilot docs do not say that it sets `CLAUDE_PROJECT_DIR`, so the kit's Claude Code registrations fall back to the repository root from git. A test runs them that way, but nobody has run them in a live Copilot session.
 
 ## Build it
 

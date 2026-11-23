@@ -324,5 +324,38 @@ class PrSizeNudge(HookCase):
         self.assertIsNone(context_of(self.push("git status")))
 
 
+class ClaudeRegistrationsWithoutClaudeProjectDir(HookCase):
+    """GitHub Copilot CLI also reads .claude/settings.json and documents no CLAUDE_PROJECT_DIR."""
+
+    def setUp(self):
+        super().setUp()
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        (self.root / ".claude/hooks").mkdir(parents=True)
+        for script in set(HERE.glob("*.py")) - {HERE / "test_hooks.py"}:
+            (self.root / ".claude/hooks" / script.name).write_text(script.read_text())
+        (self.root / "src").mkdir()
+
+    def commands(self):
+        for registration in sorted((HERE.parent / "files/claude").glob("hook-*.json")):
+            for groups in json.loads(registration.read_text())["hooks"].values():
+                for group in groups:
+                    for handler in group["hooks"]:
+                        yield registration.name, handler["command"]
+
+    def test_every_registered_command_starts_from_the_root_and_a_subfolder(self):
+        environ = {key: value for key, value in os.environ.items() if not key.startswith(("STARTER_KIT_", "CLAUDE_"))}
+        event = json.dumps({"session_id": "s1", "cwd": str(self.root), "tool_name": "Bash",
+                            "tool_input": {"command": "git status"}, "prompt": "x", "stop_hook_active": True})
+        for name, command in self.commands():
+            for shell in ["sh", "bash"]:
+                for folder in [self.root, self.root / "src"]:
+                    with self.subTest(registration=name, shell=shell, folder=folder.name):
+                        result = subprocess.run([shell, "-c", command], cwd=folder, input=event, capture_output=True,
+                                                text=True, timeout=30,
+                                                env={**environ, "STARTER_KIT_STATE_DIR": str(self.state)})
+                        self.assertNotIn("can't open file", result.stderr)
+                        self.assertNotEqual(result.returncode, 127, result.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()
