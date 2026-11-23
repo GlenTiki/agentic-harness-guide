@@ -1,5 +1,5 @@
 ---
-title: AGENTS.md and CLAUDE.md in sync
+title: One rules file for several agents
 description: Share rules between tools with a plain-text inbox and outbox, an AGENTS.md and CLAUDE.md layout, and a check that the files exist and agree.
 status: built
 sidebar:
@@ -279,7 +279,7 @@ Both conventions can fail. They do not show the tools honour them.
 
 ## What is not tested
 
-Verified by tests: the layout check, the message format, the safe write and 8 concurrent posts. Not verified: how any real tool behaves when it reads these files. The statements about Claude Code, Codex and Gemini come from their documentation, which the setup page quotes with its fetch date. Nobody ran this layout in those tools for this chapter. A polling convention is not a real-time channel. An agent only sees a message when it looks. [MCP](../../glossary/#connector-mcp), ACP and A2A are described in the spec and not built.
+Verified by tests: the layout check, the message format, the safe write and 8 concurrent posts. Not verified: how any real tool behaves when it reads these files. The statements about Claude Code, Codex and Gemini come from their documentation, which the setup page quotes with its fetch date. Nobody ran this layout in those tools for this chapter. GitHub Copilot CLI reads both `AGENTS.md` and `CLAUDE.md`, so the same layout serves it, but `layout.py` does not check anything for Copilot. A polling convention is not a real-time channel. An agent only sees a message when it looks. [MCP](../../glossary/#connector-mcp), ACP and A2A are described in the spec and not built.
 
 **Read the matching page:** [Connecting surfaces](../../setup/connecting-surfaces/). For the environment that hosts the agent sessions, see [One workspace per task](../../setup/one-workspace-per-task/).
 

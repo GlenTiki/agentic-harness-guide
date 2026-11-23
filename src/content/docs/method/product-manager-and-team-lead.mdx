@@ -287,7 +287,7 @@ Helpers do the bulky reading and return a short report. The lead keeps the plan 
 
 ## For engineers: what helpers inherit
 
-In plain terms: rules you set up outside the assistant also apply to its helpers. The rest of this section is for readers who build or configure agent harnesses, and you can skip it. It lists what each helper inherits, because people often guess wrong.
+In plain terms: rules you set up outside the assistant also apply to its helpers. The rest of this section is for readers who build or configure agent harnesses, and you can skip it. It lists what each helper inherits, because people often guess wrong. The three points below come from Claude Code, which my setup uses. GitHub Copilot CLI shares the first: hooks fire inside its subagents, and the hook input names the subagent. Check your own agent's docs for the other two.
 
 - **Hooks apply to helpers.** A hook runs for tool calls made by a helper in the same way as for the main thread. The hook input identifies the helper.
 - **Project instructions apply, with exceptions.** Custom helpers load the project instruction files. The built-in read-only Explore and Plan helpers skip them. A custom helper can opt out with a setting.
@@ -296,6 +296,8 @@ In plain terms: rules you set up outside the assistant also apply to its helpers
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/sub-agents. Quoted line: "Tool events such as PreToolUse and PostToolUse fire for the subagent's tool calls the same way they do in the main conversation". Quoted line: "Explore and Plan start without your CLAUDE.md files and the git status snapshot to keep research fast and inexpensive. Other built-in and custom subagents load both, unless you set omitClaudeMd in a custom subagent's definition". Quoted line: "By default, a subagent can spawn subagents of its own, up to three layers below the main conversation." Quoted line: "Set 1 to turn nesting off." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "the input carries the agent_id and agent_type common input fields that identify the subagent". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "Hooks that fire inside a subagent include extra fields in their input." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 My own rule is stricter than the tool allows. In my setup a helper returns its findings and the lead starts the next helper. I keep one layer on purpose, because a flat layout is easier to read in a log. That is a choice, not a limit of the tool.
 
