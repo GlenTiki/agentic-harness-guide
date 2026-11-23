@@ -1,6 +1,6 @@
 # Judgement First: A guide to working with AI
 
-Set the task, check the work and decide when an AI assistant is worth using. The Guide teaches practical habits; Field notes records dated lessons and corrections. Nine short levels develop the ideas. The reference shelf is for engineers and is written against Claude Code, with notes on Codex CLI; the ideas transfer. It is built with [Astro Starlight](https://starlight.astro.build/).
+Set the task, check the work and decide when an AI assistant is worth using. The Guide teaches practical habits; Field notes records dated lessons and corrections. Nine short levels develop the ideas. The reference shelf is for engineers. It is agent-generic, with GitHub Copilot CLI as the worked example and notes where Claude Code or Codex differ. It is built with [Astro Starlight](https://starlight.astro.build/).
 
 ## Develop
 
