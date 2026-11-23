@@ -87,7 +87,7 @@ export const orderedSections = async (): Promise<[string, Doc[]][]> => {
     ['Read first', sortBy(docs.filter((doc) => readFirst.includes(doc.id) || doc.id === 'index'), ['index', ...readFirst])],
     ['Journey (concepts in order)', sortBy(inFolder('journey'), [])],
     ['Method (the weak-spot loop)', inFolder('method')],
-    ['Setup (what runs, what is built, what is design)', inFolder('setup')],
+    ['Setup (what runs, what is built, what is design)', sortBy(inFolder('setup'), ['setup/set-up-your-environment', 'setup'])],
     ['Case study (one tested fix per chapter)', inFolder('case-study')],
     ['Evidence (what the tests triggered)', inFolder('evidence')],
     ['Workflows (worked examples, human steps shown)', sortBy(inFolder('workflows'), workflowOrder.map((slug) => `workflows/${slug}`))],

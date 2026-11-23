@@ -101,6 +101,7 @@ export default defineConfig({
         {
           label: 'The setup',
           items: [
+            { slug: 'setup/set-up-your-environment' },
             { slug: 'setup' },
             { slug: 'setup/hooks' },
             { slug: 'setup/plain-text-and-simple-english' },
