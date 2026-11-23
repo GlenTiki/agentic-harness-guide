@@ -8,10 +8,10 @@ The site teaches one skill: how to get dependable, checkable work from an AI ass
 
 1. The core prose is generic. Teach the idea first. Name a tool category before a product.
 2. Use categories first: chat assistant, spreadsheet, notes app, team chat, calendar, email, design tool, ticket tracker, automation tool, code editor, terminal agent. After the category, give well-known examples so the reader can place it, for example "a spreadsheet such as Sheets or Excel".
-3. Never name a private person, employer, client, product codename or local file path. The cast in section 5 is the only set of people. One author bio may name Glen and his own employers, never clients. Keep that bio in one place. The other exception is "Mako", the author's own personal setup, which the setup, method and case-study pages may name as that setup and nothing else.
+3. Never name a private person, employer, client, product codename or local file path. The cast in section 5 is the only set of people. Published writers quoted under section 16 are the exception: name them with a link to their own page. One author bio may name Glen and his own employers, never clients. Keep that bio in one place. Another exception is "Mako", the author's own personal setup, which the setup, method and case-study pages may name as that setup and nothing else.
 4. Never invent statistics, quotes, benchmarks or study results. If a number matters, work it out on the page so the reader can check it, or leave it out. Label an illustrative number as illustrative.
 5. A tool-specific fact (a setting name, a file name a product reads, a price, a limit) needs one of two treatments. Either verify it against the official documentation and add a verification line (section 9), or remove it and stay generic.
-6. Real products may be named in a `Which app?` aside (section 4) and nowhere else in the core prose. The aside may name ChatGPT, Claude, Gemini, Microsoft Copilot, Excel and Google Sheets, and the feature that does the job (for example standing instructions or projects). Open the vendor's help page in the session, confirm the feature name, and add the section 9 verification line with the real date. If you cannot verify a feature name, the aside names only the products and says "look in settings for custom instructions or projects".
+6. Real products may be named in a `Which app?` aside (section 4) and nowhere else in the core prose. The aside may name ChatGPT, Claude, Gemini, Microsoft Copilot, Excel and Google Sheets, and the feature that does the job (for example standing instructions or projects). Open the vendor's help page in the session, confirm the feature name, and add the section 9 verification line with the real date. If you cannot verify a feature name, the aside names only the products and says "look in settings for custom instructions or projects". Setup pages are an exception: they describe the author's own setup, so they may name the tools it uses (for example Claude Code or Orca) in prose. Put a section 9 verification line under each fact about a named tool. Section 9.5 still applies.
 7. The shelf is written against Claude Code, with notes on Codex CLI. The ideas transfer; the setting names do not. Each shelf page names the tool and the docs page fetched, with the date, in the form in section 9. A page that could not be fetched says `Not checked against current docs.`
 
 ## 2. Voice
@@ -527,3 +527,26 @@ Choose the rules that apply to the page. Copy the text exactly. Each Agent note 
 | R-DELEGATE | If you are a sub-agent, do not delegate: return findings to your caller. If you are the lead and have a delegation tool, delegate one layer only. |
 | R-REVIEW | If you can start a separate reviewer, send it the output and the definition of done. You may report the result of a mechanical check you ran, with its output. Do not report a pass based only on your own reading. |
 | R-CAP | If no cap is given for a multi-step run, ask for one before you start. Use a run identity: a string you generate once at the start and reuse on every log line. |
+
+## 16. Techniques borrowed from other writers
+
+These seven writers explain technical work well. Borrow one technique from each. Do not copy their phrasing or imitate their voice. If a technique conflicts with an earlier section, the earlier section wins.
+
+| Writer | Technique | Where it goes | Source (fetched 2026-11-16) |
+| --- | --- | --- | --- |
+| Julia Evans | Start a concept with a realistic example from the reader's work, before the term. | Scene, The weak spot it targets | https://jvns.ca/blog/confusing-explanations/ |
+| Martin Fowler | For each recommendation, say when you would not use it, and what decides it. | A "When to skip it" section, Expert corner, Mistakes | https://martinfowler.com/articles/writingPatterns.html |
+| Simon Willison | Quote the primary source, name its author and add something of your own. | Under the bonnet, field notes | https://simonwillison.net/2024/Dec/22/link-blog/ |
+| Dan Abramov | Say where your knowledge stops, and why that is normal. | Expert corner, What this does not do, field notes | https://overreacted.io/things-i-dont-know-as-of-2018/ |
+| David Walsh | Show the snippet, then one use of it, then one short paragraph on its effect. | Try it, Build it | https://davidwalsh.name/javascript-debounce-function |
+| Addy Osmani | Sort rules into Always, Ask first and Never, then check the result against the spec. | Agent note, Checkpoint | https://addyosmani.com/blog/good-spec/ |
+| Gergely Orosz | Draft the key ideas as bullets first, then research while you expand each one. | The drafting process, before any page text | https://blog.pragmaticengineer.com/writing-motivation/ |
+
+Rules for using them:
+
+1. Use first person only where the author describes their own setup or work: setup, method and case-study pages, and field notes. Everywhere else, address the reader as "you" (section 2). Never invent an experience to fit a technique.
+2. Setup and shelf pages may add a `## When to skip it` section. Put it after `## What this does not do` where that heading exists, and otherwise before `## Build it` or the `**Next:**` line. Journey chapters keep the section 3 headings. The section asks the questions that decide whether to use the idea. It does not repeat "What this does not do". That section says what the tool cannot do. "When to skip it" says when the reader should not use it.
+3. A quoted line from another writer gets a link and the writer's name in the same sentence.
+4. Field notes are the place for the conversational form of these techniques. `check:slop` scans only the docs pages, but field notes still follow section 2.
+
+The worked sample is the "When to skip it" section of `setup/retros.mdx`.
