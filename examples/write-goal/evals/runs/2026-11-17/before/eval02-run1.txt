@@ -1,0 +1,8 @@
+
+<invoke name="Bash">
+<parameter name="command">date -u +%Y-%m-%dT%H:%M:%SZ</parameter>
+</invoke>
+
+<invoke name="Bash">
+<parameter name="command">git branch --show-current; git rev-parse HEAD; ls goals 2>&1 | head</parameter>
+</invoke>

@@ -441,6 +441,10 @@ A small, fixed sample file that a test reads, such as a three-line recipe, so th
 
 The block of settings at the top of a file, between two `---` lines. In a skill file it holds the name and the description.
 
+### Goal anchor
+
+A file on disk that holds the plan for a long-running agent session: the end state, the done list with its evidence, the slices and the recovery steps. A new session reads it to resume. See [the goal writer](../appendix/write-goal/).
+
 ### Lethal trifecta
 
 Three things in one assistant that are unsafe together: access to private data, exposure to content you do not control, and a way to send data out. Removing any one closes the cheapest route out. It does not make the assistant safe.
@@ -470,6 +474,10 @@ A second pass that re-orders the top results of a fast search with a slower, mor
 A controlled language for technical documents, with writing rules and a dictionary of roughly 900 approved words. A script can check some rules. Open checkers do not include the official dictionary, which ASD gives away free after a request form.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://www.asd-europe.org/standards-specifications/simplified-technical-english/what-are-the-basics-of-simplified-technical-english/. Quoted line: "To download the latest free copy of ASD-STE100 Issue 9, please fill in this form".</p>
+
+### Slice
+
+One small part of a long job that ends in a commit. It has an outcome, the paths it changes, a proof command and a rollback boundary. If a slice fails, you undo that slice and nothing else.
 
 ### Worktree
 

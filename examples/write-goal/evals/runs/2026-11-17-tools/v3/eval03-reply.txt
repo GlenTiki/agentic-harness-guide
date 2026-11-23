@@ -1,0 +1,26 @@
+Anchor: `goals/2026-11-17-dark-theme.md`. I wrote it, but the progress log `goals/2026-11-17-dark-theme.progress.md` doesn't exist yet. The first slice will create it.
+
+This goal is already good. Its done items name their evidence, D3 names a person as reviewer, the slices have proofs and path-scoped restores, and ws-003 is a stop. I kept all of that. I changed one thing, because the repository contradicts it:
+
+- **Base commit:** `3c9e0f2` doesn't exist here. HEAD of `feat/dark-theme` is `b5d8f2e`, so I used that.
+
+```text
+/goal Add a dark theme to the settings page. Done means every item in goals/2026-11-17-dark-theme.md passes with its evidence shown.
+
+Anchor: goals/2026-11-17-dark-theme.md. Branch: feat/dark-theme. Base commit: b5d8f2e.
+D1: The settings page has a theme switch. Evidence: `npm test -- settings` exits 0 and prints "theme switch renders". Reviewer: none.
+D2: The choice survives a reload. Evidence: `npm test -- persist` exits 0 and prints "theme persists". Reviewer: none.
+D3: A person checks contrast in both themes. Evidence: a comment from the user on the pull request that says "contrast ok". Reviewer: person.
+Out of scope: other pages.
+Recovery: read the anchor and goals/2026-11-17-dark-theme.progress.md, run git status --short, git log --oneline -10 and git worktree list, find the last [ws-NNN] commit, rerun an interrupted slice's proof, and restore only that slice's paths with git restore --source=<sha> -- <paths> if it fails. Never reset the whole working copy.
+Slices: ws-001 switch (src/settings/Theme.jsx, proof D1), ws-002 persistence (src/settings/store.js, proof D2), ws-003 stop and ask the user for the contrast check (D3). Commit each slice with its id in the subject. Append to the progress log after each slice. Status card on every stop.
+```
+
+**Assumptions**
+- The base commit is `b5d8f2e`, the current HEAD.
+- Tick a done item only after you've run its check and the output is in the session. This is in the anchor.
+- I didn't run `npm test -- settings` because it needed approval I couldn't get here. I haven't confirmed it can print the strings in D1 and D2.
+
+**Needs you**
+- **Test files:** the repo has no test files, and ws-001 and ws-002 don't list one in their paths. `package.json` runs `node --test`, which treats `settings` as a path, not a name filter. Tell me where the D1 and D2 tests should live and I'll add them to the slice paths. Until then the anchor marks this as [NEEDED].
+- **ws-003 / D3:** it waits for your "contrast ok" comment on the pull request. The session will stop there.

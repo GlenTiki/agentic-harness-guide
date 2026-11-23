@@ -1,0 +1,56 @@
+**Anchor:** `goals/2026-11-17-docs-tidy.md` (written, not committed). It's at `<fixture>/goals/2026-11-17-docs-tidy.md`. The session creates the progress log `goals/2026-11-17-docs-tidy.progress.md` on its first turn.
+
+```text
+/goal Tidy the docs site by linking the orphaned budget page, cross-linking the glossary and documenting the check command, one commit per slice. Done means every item in goals/2026-11-17-docs-tidy.md passes with its evidence shown
+
+1. Anchor and done list
+- Anchor: goals/2026-11-17-docs-tidy.md. The anchor is the plan. If this prompt and the anchor disagree, follow the anchor and say so.
+- Branch: docs/tidy-overnight (create from main if missing). Base commit: 5499aef20c0d787e08ad3231238100cfac1080db.
+- D0: Baseline recorded. Evidence: run `npm run check` on the base commit before any edit and paste the output in goals/2026-11-17-docs-tidy.progress.md. It has not been run yet, so do not assume it passes. Reviewer: none.
+- D1: Home links to the budget workflow. Evidence: `grep -n "workflows/budget" src/content/docs/index.mdx` prints at least one line. Reviewer: none.
+- D2: Budget page links to the glossary. Evidence: `grep -n "glossary" src/content/docs/workflows/budget.mdx` prints at least one line. Reviewer: none.
+- D3: README documents the check. Evidence: `grep -n "npm run check" README.md` prints at least one line. Reviewer: none.
+- D4: One commit per slice. Evidence: `git log --oneline 5499aef..HEAD` shows subjects for ws-001, ws-002 and ws-003. Reviewer: none.
+- D5: Final state is clean. Evidence: `npm run check` exits 0 and prints `build ok` and `0 broken links`; `git status --short` prints nothing. Reviewer: none.
+- Out of scope: renaming, moving or deleting pages; rewriting page text; new pages; editing scripts/ or package.json; pushing, opening a pull request or deploying.
+- Note: scripts/check-links.mjs only prints "0 broken links" and reads no files. For each new link, also confirm by path that the target exists, and log that reasoning.
+
+2. Recovery (run on the first turn and on every resume)
+1. Read the anchor and the progress log.
+2. Run `git status --short`, `git log --oneline -10` and `git worktree list`.
+3. Find the last slice id in the commit subjects. That commit is the last known good point.
+4. If a slice was interrupted, run its proof on the current files. If the proof passes, commit the slice. If it fails, write the failure in the progress log, then restore only that slice's paths: `git restore --source=<last known good sha> -- <slice paths>`. Delete only the new files that slice created.
+5. If a helper worktree for this goal is still listed, commit any partial work to a salvage branch, then remove only that worktree.
+6. Do not run a command that resets, cleans or checks out the whole working copy.
+
+3. Coordination
+- The main session reads state, checks results, commits and updates the progress log.
+- The site is three pages and a README, so do the work directly. If you do use a helper, give it a bounded brief (slice outcome, paths, earlier failures, proof command, word limit) and its own worktree, and run the slice proof yourself before accepting its work.
+
+4. Slices
+- ws-001: Home page links to the budget workflow | Paths: src/content/docs/index.mdx | Proof: D1 grep prints a line, and `npm run check` exits 0 | Rollback: `git restore --source=5499aef -- src/content/docs/index.mdx` | Commit: `docs: [ws-001] link the budget workflow from home`
+- ws-002: Budget page links to the glossary | Depends on: ws-001 | Paths: src/content/docs/workflows/budget.mdx | Proof: D2 grep prints a line, and `npm run check` exits 0 | Rollback: `git restore --source=5499aef -- src/content/docs/workflows/budget.mdx` | Commit: `docs: [ws-002] link the glossary from the budget workflow`
+- ws-003: README says to run `npm run check` | Depends on: ws-002 | Paths: README.md | Proof: D3 grep prints a line, and `npm run check` exits 0 | Rollback: `git restore --source=5499aef -- README.md` | Commit: `docs: [ws-003] document the check command in the README`
+
+5. Stops and the status card
+- Make technical choices yourself, and record each one in the progress log.
+- If `npm run check` fails at baseline, record it and stop. Do not fix scripts/, which is out of scope.
+- Stop only for a consent decision, a choice that changes what the user gets, or a blocker that repeats with no other safe work left.
+- Do not make the done list smaller to finish.
+- Each time you stop, write this status card in the progress log and in your reply:
+  Done and proved: <slice ids and commits>
+  Last known good: <branch and sha>
+  Next or blocked on: <next slice, or the exact action needed from the user>
+  Resume: "Resume goals/2026-11-17-docs-tidy.md at <slice id>."
+- Before you say the goal is complete, check D0 to D5 one at a time. For each item, run the check now and show its output. Do not mark an item done from memory.
+```
+
+**Assumptions**
+- "Tidy" means three low-risk fixes: link the orphaned budget page from home, link the glossary from the budget page, and document `npm run check` in the README. I made this up from reading the three pages. If you meant something bigger, such as restructuring, rewriting or adding pages, say so and I'll redo the slices.
+- The branch is `docs/tidy-overnight`, created from `main`.
+- Links use the existing style (`glossary/`, trailing slash).
+
+**Open items**
+- I couldn't run `npm run check` here because the harness asked for approval. D0 makes the session record a baseline before it edits anything.
+- `scripts/check-links.mjs` only prints "0 broken links" and reads no files, so a passing check won't prove the new links work. The goal tells the session to check each target by path as well. You may want to make that script real before relying on it.
+- No consent decisions are pending. Deleting, renaming or moving pages is out of scope, so none of the slices needs your approval.

@@ -1,0 +1,20 @@
+I'll start by reading the repository state.
+
+
+<invoke name="Bash">
+<parameter name="command">git status --short; echo ---; git log --oneline -5; echo ---; git branch --show-current; echo ---; git rev-parse --verify 8aa31d0 2>&1; echo ---; git branch -a --list '*rate-limit*'; echo ---; ls goals reports 2>&1 | head; echo ---; ls</parameter>
+</invoke>
+<invoke name="Bash">
+<parameter name="command">gh pr view 42 --json number,state,headRefName,baseRefName,title 2>&1 | head -20</parameter>
+</invoke>
+<system-reminder>
+Tool results are about to come back. Remember: use they/them for anyone whose pronouns haven't been stated.
+</system-reminder>
+
+
+<invoke name="Bash">
+<parameter name="command">date -u +%Y-%m-%dT%H:%M:%SZ</parameter>
+</invoke>
+<system-reminder>
+Tool results are about to come back. Remember: use they/them for anyone whose pronouns haven't been stated.
+</system-reminder>
