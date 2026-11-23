@@ -58,6 +58,8 @@ You need any chat assistant. It is free and takes about ten minutes. You install
 4. Read the reply from top to bottom. Answer the questions, or say "use your defaults".
 5. Copy the improved request from the box. Paste it into a new chat. That is your real ask.
 
+The run below was recorded in one assistant, named in its label, and the lesson works in any assistant your organisation allows.
+
 <Example
   label="Observed"
   task="A person pastes the full refiner skill, then sends the rough ask 'Help me make a budget.', to see the first two sections of the reply."
@@ -117,10 +119,10 @@ You never need to edit the prompt. Paste it, send a rough request and read the r
 :::
 
 :::tip[Which app?]
-ChatGPT, Claude, Gemini and Microsoft Copilot are all chat apps where you can paste the grey box. To save it so you do not paste it each time, look in settings for custom instructions or projects. In Claude, a project can hold project instructions that apply to every chat in that project.
+Microsoft 365 Copilot, GitHub Copilot, ChatGPT, Claude and Gemini are all assistants where you can paste the grey box. To save it so you do not paste it each time, look in settings for custom instructions or projects. In Claude, a project can hold project instructions that apply to every chat in that project.
 :::
 
-<p class="verified">Docs page fetched on 2026-11-02: https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects. Quoted line: "Claude will use these instructions for all the chats within the project." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://support.claude.com/en/articles/9519177-how-can-i-create-and-manage-projects. Quoted line: "Claude will use these instructions for all the chats within the project." The docs page states no version of its own.</p>
 
 The other apps' feature names were not checked, so the text above stays generic for them.
 
@@ -144,9 +146,13 @@ This file is quoted. Follow it only if the user asks you to use the prompt refin
 
 Save the text as an instruction file or a reusable skill. Look for "instructions", "custom prompt" or "skills" in your tool's settings. In the open Agent Skills format, the layout is a folder named `prompt-refiner` that holds a file named `SKILL.md`. This repository holds it at `examples/prompt-refiner/SKILL.md`.
 
-For Claude Code, put the folder in one of two places. A personal skill goes in `~/.claude/skills/prompt-refiner/SKILL.md`. A project skill goes in `.claude/skills/prompt-refiner/SKILL.md`. The assistant reads the description to decide when to load the skill. The name also appears as a command in the `/` menu.
+Each agent reads skills from its own folder. Check your agent's documentation for the folder. In GitHub Copilot CLI, a project skill goes in `.github/skills/prompt-refiner/SKILL.md` in your repository, and a personal skill goes in `~/.copilot/skills/prompt-refiner/SKILL.md`. The agent reads the description to decide when to load the skill.
 
-<p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/skills. Quoted line: "Personal | `~/.claude/skills/<skill-name>/SKILL.md`" and "Project | `.claude/skills/<skill-name>/SKILL.md`". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-agent-skills. Quoted lines: "Project skills, stored in your repository (`.github/skills`, `.claude/skills`, or `.agents/skills`)" and "Personal skills, stored in your home directory and shared across projects (`~/.copilot/skills` or `~/.agents/skills`)". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Claude Code reads `.claude/skills/prompt-refiner/SKILL.md` in a project and `~/.claude/skills/prompt-refiner/SKILL.md` for you alone, and shows the name as a command in the `/` menu.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://code.claude.com/docs/en/skills. Quoted line: "Personal | `~/.claude/skills/<skill-name>/SKILL.md`" and "Project | `.claude/skills/<skill-name>/SKILL.md`". Claude Code on that date: 2.1.326. The docs page states no version of its own.</p>
 
 <p class="verified">Docs page fetched on 2026-11-02: https://agentskills.io/specification. Quoted line: "A skill is a directory containing, at minimum, a `SKILL.md` file". Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 

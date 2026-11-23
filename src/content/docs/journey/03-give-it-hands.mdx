@@ -12,7 +12,7 @@ import ToolLoopFlow from '../../../components/ToolLoopFlow.astro';
 
 *Last time: you saved the rules once in an instruction file. The assistant learned to say how many months it counted and to ask when a figure was missing. If you arrive here directly: Sam shares a flat with Priya and Tom, and does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
-*Only use a chat window? Skip to [level 5](../05-check-the-work/) and come back when you connect tools.*
+*Only use a chat window? Attaching a file in Part A of Try it already gives the assistant hands, and Part B needs only a chat. Take one rule from this level: let the assistant read before it may change anything. You can skip to [level 5](../05-check-the-work/) and come back when you connect tools.*
 
 Mina runs a candle shop that sells online and at weekend markets. Each month Sam copies rows out of the bank export, pastes them into the chat, copies the reply and pastes it into a summary. The assistant does the thinking and Sam is the courier.
 
@@ -26,7 +26,7 @@ Level 2 left you copying and pasting between tools, and that is where the Februa
 
 Three ideas make this safe and useful:
 
-- **Tools and connectors.** A tool is one action, such as "look at the bank rows". A [connector](../../glossary/#connector-mcp) gives the assistant a set of tools for one system, such as a calendar, a spreadsheet or a folder. Many connectors follow an open standard called [MCP](../../glossary/#connector-mcp), so one connector can work in many chat apps.
+- **Tools and connectors.** A tool is one action, such as "look at the bank rows". A [connector](../../glossary/#connector-mcp) gives the assistant a set of tools for one system, such as a calendar, a spreadsheet or a folder. Many connectors follow an open standard called [MCP](../../glossary/#connector-mcp) (Model Context Protocol, a shared way to describe a system's tools), so one connector can work in many chat apps.
 - **Read versus write.** A read tool looks. A write tool makes a change: it sends, edits, books or deletes. They carry very different risk, so you treat them differently.
 - **The order of trust.** Connect a new system in [four steps](../../glossary/#read-draft-write-with-confirmation-write-alone): read, draft, write with confirmation, write alone. Stay on each step until it has earned the next one.
 
@@ -122,7 +122,7 @@ Market cash takings,410.00
 3. Optional. If your app offers a Calendar or Drive connector, connect it read-only and ask what is on your calendar next Tuesday. Check the answer.
 
 :::tip[Which app?]
-Chat apps such as ChatGPT, Claude, Gemini and Microsoft Copilot differ in how they take a file and what they can connect to. Features change by product and plan. Look in settings for connectors, apps or tools, and read the product's help page before you connect anything.
+Assistants such as Microsoft 365 Copilot, GitHub Copilot, ChatGPT, Claude and Gemini differ in how they take a file and what they can connect to. Features change by product and plan. Look in settings for connectors, apps or tools, and read the product's help page before you connect anything.
 :::
 
 **Part B. A pretend menu.**

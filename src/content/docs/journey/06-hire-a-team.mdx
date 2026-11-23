@@ -12,7 +12,7 @@ import TeamOrchestratorFlow from '../../../components/TeamOrchestratorFlow.astro
 
 *Last time: you wrote a checkable "done" for the money admin, checked it with a formula first, and used a separate reviewer for the rest. If you arrive here directly: Sam does the books for Mina's candle shop. The same slip comes back in several levels: a month counted twice, or a month missing.*
 
-*Only use a chat window? The Try it below needs only two chats. You can also skip ahead to [level 8's Try it](../08-design-anything/#try-it) and come back.*
+*Only use a chat window? The Try it below needs only two chats: one does the work and one checks it without seeing the first. Take the brief format (goal, scope, return, do not) and use it for any task you hand over. You can also skip ahead to [level 8's Try it](../08-design-anything/#try-it) and come back.*
 
 A house move goes well when friends each get one job: one packs the kitchen, one drives, one holds the clipboard. Nobody needs to know the whole move. Mina's shop has the opposite problem. Sam's month-end run has grown into one long chat that reads exports, adds up sales, checks fees and writes a summary. It is slow, and it forgets things halfway through.
 
@@ -22,7 +22,7 @@ Level 5 checked one answer, but one assistant still does the whole job. **One as
 
 ## The idea
 
-**Split a big job into small jobs, and give each helper a brief it can finish without you.** A [helper](../../glossary/#helper) (a [sub-agent](../../glossary/#sub-agent)) is a second assistant that takes one task, works on it with its own fresh [context window](../../glossary/#context-window), and hands back a short result.
+**Split a big job into small jobs, and give each helper a brief it can finish without you.** A [helper](../../glossary/#helper) (a [sub-agent](../../glossary/#sub-agent)) is a second assistant that takes one task, works on it with its own fresh [context window](../../glossary/#context-window) (the text an assistant can see at one time), and hands back a short result.
 
 Three ideas make this work:
 
