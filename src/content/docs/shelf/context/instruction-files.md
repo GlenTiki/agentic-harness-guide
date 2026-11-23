@@ -1,6 +1,6 @@
 ---
-title: AGENTS.md vs CLAUDE.md files
-description: "AGENTS.md vs CLAUDE.md: layer, size and scope the instruction files that tell an agent how your project works, and share one file across tools."
+title: "Instruction files: AGENTS.md and others"
+description: "Layer, size and scope the instruction files that tell an agent how your project works, and share one file across several agents."
 ---
 
 *Deep dive for [level 2: House rules](../../../journey/02-house-rules/).*
@@ -15,9 +15,17 @@ The harness loads the instruction file into every session. Every line costs cont
 
 ## What to enable
 
-**1. Use layers, and remove conflicts.** Two common conventions exist. Claude Code behaviour: it loads your organisation's managed file, if there is one, and your user file at `~/.claude/CLAUDE.md`. Then it loads `CLAUDE.md` and `CLAUDE.local.md` from each directory, from the filesystem root down to the working directory, and concatenates them. A file in a subdirectory below the working directory loads later, when the agent works in that subdirectory. Codex CLI reads `AGENTS.md` from its home directory (`~/.codex` by default), then from the project root down to the working directory, one file per directory, and concatenates those. In both, text nearer the working directory comes later. The Codex docs say later files override earlier guidance. The Claude Code docs say that when two instructions contradict each other, Claude may pick one arbitrarily. Do not depend on the order. Remove the conflict. Put personal preferences in the home file, team rules at the repository root, and package-specific rules in the package directory.
+**1. Use layers, and remove conflicts.** Most agents read instruction files at more than one level: a personal file in your home directory, a file for the repository and files for parts of the tree. GitHub Copilot CLI is the worked example here. It reads your personal file at `~/.copilot/copilot-instructions.md`. It reads `.github/copilot-instructions.md`, `AGENTS.md`, `CLAUDE.md` and `GEMINI.md` from the repository root, the working directory and the directories between them. It also reads path-specific files under `.github/instructions/` whose names end in `.instructions.md`. Copilot CLI combines all of them, and its docs define no general precedence order. Do not depend on an order. Remove the conflict. Put personal preferences in the home file, team rules at the repository root, and package-specific rules in path-specific files.
 
-**2. Share one file across tools.** `AGENTS.md` is an open convention read by many tools. Claude Code v2.1.277 or later reads `AGENTS.md` directly, and by default only when no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` exists in the working directory or above it. If one exists, only the `CLAUDE.md` files are read, unless one of them imports `AGENTS.md` or you change the project instructions setting. If you need both, make the tool-specific file a thin wrapper that imports the shared one:
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "When multiple applicable user-level and repository instruction files exist, Copilot CLI combines their instructions. It removes duplicate copies of identical user-level `copilot-instructions.md`, repository-wide, and agent instructions, but does not define a general precedence order between these files." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+Other agents differ. Claude Code loads `CLAUDE.md` and `CLAUDE.local.md` from each directory, from the filesystem root down to the working directory, after your user file at `~/.claude/CLAUDE.md`. Codex CLI reads `AGENTS.md` from its home directory (`~/.codex` by default), then from the project root down to the working directory. The Codex docs say later files override earlier guidance. The Claude Code docs say that when two instructions contradict each other, Claude may pick one arbitrarily. The rule is the same for all three: remove the conflict.
+
+**2. Share one file across tools.** `AGENTS.md` is an open convention read by many tools. Copilot CLI reads `AGENTS.md` and `CLAUDE.md` directly, so one shared file serves it and the agents that read either name.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "Agent instructions, discovered in the standard locations. Copilot CLI also uses `.claude/CLAUDE.md`." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+Claude Code differs. Claude Code v2.1.277 or later reads `AGENTS.md` directly, and by default only when no `CLAUDE.md`, `.claude/CLAUDE.md` or `CLAUDE.local.md` exists in the working directory or above it. If you need both, make the tool-specific file a thin wrapper that imports the shared one:
 
 ```markdown
 @AGENTS.md
@@ -26,7 +34,17 @@ The harness loads the instruction file into every session. Every line costs cont
 Keep only the settings that apply to this one tool here.
 ```
 
-**3. Use imports to split, not to grow.** Claude Code expands `@path/to/file` imports at launch, and imports can nest to a "maximum depth of four hops". Imported files load every session, so an import saves you from editing one big file but does not save context. For rules that apply to part of the tree, use path-scoped rule files or nested instruction files that load on demand.
+**3. Use imports to split, not to grow.** Copilot CLI expands an `@` reference to a relative path in `.github/copilot-instructions.md`, `AGENTS.md` or `CLAUDE.md`. It does not expand references in `GEMINI.md` or `*.instructions.md` files. Imported files load every session, so an import saves you from editing one big file but does not save context. For rules that apply to part of the tree, use path-specific files. In Copilot CLI, an `applyTo` glob in the file's frontmatter limits it to matching files:
+
+```markdown
+---
+applyTo: "app/models/**/*.rb"
+---
+```
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "In `.github/copilot-instructions.md`, `AGENTS.md`, or `CLAUDE.md`, use `@` followed by a relative path to include another file." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+Claude Code also expands `@path/to/file` imports at launch, and imports can nest to a "maximum depth of four hops".
 
 **4. Write for a reader with no history.** State the command, not the aspiration:
 
@@ -52,11 +70,15 @@ Keep permission, consent and mandatory organisational controls intact. Include t
 
 ## Learn the controls you already have
 
-Before adding another instruction file, inspect your agent's settings and help. Find the active model, output style, loaded instructions, enabled tools and permission mode. Check whether a change affects this session, this project or every project. Save the old value before changing it.
+Before adding another instruction file, inspect your agent's settings and help. Find the active model, loaded instructions, enabled tools and permission mode. Check whether a change affects this session, this project or every project. Save the old value before changing it.
 
-In the **Claude Code terminal**, `/config` opens a settings dialog. It is not a complete view of `settings.json`. Output styles are one useful control: select one there, or use `/output-style`. Style-file edits need a restart. If you customise a style for coding, read the reference on `keep-coding-instructions` before relying on it. See the [settings guide](https://code.claude.com/docs/en/settings) and [output-style reference](https://code.claude.com/docs/en/output-styles).
+In **GitHub Copilot CLI**, the `/instructions` command lists the instruction files the session found and lets you turn single files on or off. `/settings` shows your personal settings. An edit to an instruction file does not reach a running session: exit, then resume the session or start a new one.
 
-In **Codex**, personal settings live in `~/.codex/config.toml`; trusted projects can supply `.codex/config.toml` overrides. Reusable working instructions belong in `AGENTS.md`, with personal defaults under `~/.codex` unless you changed its home. Configuration settings and a working agreement are different things. Use the [configuration guide](https://learn.chatgpt.com/docs/config-file/config-basic) to check the controls your client supports; do not assume Claude's slash commands transfer.
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/add-custom-instructions. Quoted line: "Use the `/instructions` command to view the instruction files discovered for the current session and enable or disable individual files." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "You can view and change your personal Copilot CLI settings using the `/settings` slash command." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+Other agents name these controls differently. In the **Claude Code terminal**, `/config` opens a settings dialog. It is not a complete view of `settings.json`. Output styles are one useful control: select one there, or use `/output-style`. See the [settings guide](https://code.claude.com/docs/en/settings) and [output-style reference](https://code.claude.com/docs/en/output-styles). In **Codex**, personal settings live in `~/.codex/config.toml`; trusted projects can supply `.codex/config.toml` overrides. Use the [configuration guide](https://learn.chatgpt.com/docs/config-file/config-basic) to check the controls your client supports. Do not assume that one agent's slash commands transfer to another.
 
 Use a settings screen or local editor to prepare a small excerpt first. Remove credentials, account identifiers and private paths before sharing it. Do not attach a whole configuration file: it may contain secrets. Then ask:
 

@@ -1,6 +1,6 @@
 ---
-title: "Claude Code hooks: block, format, log"
-description: Claude Code hooks run scripts at fixed points, such as PreToolUse, to block risky calls on the paths they cover, format code and keep an audit log.
+title: "Hooks: block, format, log"
+description: Agent hooks run scripts at fixed points, such as before a tool call, to block risky calls on the paths they cover, format code and keep a log.
 ---
 
 import HookLifecycle from '../../../../components/HookLifecycle.astro';
@@ -22,9 +22,30 @@ An instruction file is advice, and nothing guarantees the model follows it. That
 
 ## What to enable
 
-**1. Know the events.** Claude Code documents more than thirty hook events. The ones that matter first are `PreToolUse` (before a tool call), `PostToolUse` (after a call succeeds) and `Stop` (when the agent finishes). Two more are `UserPromptSubmit` (before a prompt is processed) and `SessionStart`. Others cover sub-agents, compaction, worktrees, configuration changes and permission requests. Other harnesses use different names for the same ideas.
+GitHub Copilot CLI is the worked example on this page. Claude Code is the second example, because the sample hook and its recorded runs below use Claude Code's input format. Other agents use different names for the same ideas.
 
-**2. Register hooks in a shared settings file.** In Claude Code, hooks live in `~/.claude/settings.json` (all projects), `.claude/settings.json` (shared with the team) or `.claude/settings.local.json` (yours only). The shape is event, then matcher group, then handler:
+**1. Know the events.** Copilot CLI's hook events include `preToolUse` (before a tool call), `postToolUse` (after a call, whether it succeeded or failed) and `agentStop` (when the agent finishes its reply). Others include `sessionStart`, `sessionEnd`, `userPromptSubmitted`, `subagentStop` and `errorOccurred`. Start with the first three.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/hooks. Quoted line: "**preToolUse**: Executed before the agent uses any tool (such as `bash`, `edit`, `view`)." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+Claude Code documents more than thirty hook events. Its names for the first three are `PreToolUse`, `PostToolUse` (after a call succeeds) and `Stop`.
+
+**2. Register hooks in a file the team shares.** Copilot CLI reads repository hooks from `.github/hooks/*.json` and personal hooks from `~/.copilot/hooks/*.json`. Each file has a `version` of 1 and a `hooks` object keyed by event. Example, do not run:
+
+```json
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      { "type": "command", "bash": "./scripts/format-changed.sh", "cwd": ".", "timeoutSec": 30 }
+    ]
+  }
+}
+```
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/hooks. Quoted line: "For Copilot CLI and Copilot cloud agent, you can define repository hooks in `.github/hooks/*.json`. Copilot CLI also supports personal hooks in `~/.copilot/hooks/*.json`." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+Claude Code differs: hooks live in `~/.claude/settings.json` (all projects), `.claude/settings.json` (shared with the team) or `.claude/settings.local.json` (yours only). The shape is event, then matcher group, then handler:
 
 ```json
 {
@@ -39,7 +60,15 @@ An instruction file is advice, and nothing guarantees the model follows it. That
 }
 ```
 
-**3. Choose blocking or advising deliberately.** Claude Code behaviour: for command hooks, exit code 0 means success. Exit code 2 blocks the action on events that can block, and feeds standard error back to the model as the reason. [Exit code 2 by event](#exit-code-2-by-event) lists what it does on each event. By default, any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not block anything. In Claude Code v2.1.295 or later, you can set `"onFailure": "block"` on a command handler. A hook that cannot start, times out, prints invalid JSON or exits with a code other than 0 or 2 then blocks the action. The setting has no effect on stop hooks. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
+The Copilot CLI hooks reference says it also reads the hooks in a repository's `.claude/settings.json` and `.claude/settings.local.json`. Not checked against current docs: whether every Claude Code hook field behaves the same there.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "Cross-tool `.claude/settings.json` and `.claude/settings.local.json` files in the repository are also read." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+**3. Choose blocking or advising deliberately.** A Copilot CLI `preToolUse` hook decides by printing one JSON object, such as `{"permissionDecision": "deny", "permissionDecisionReason": "..."}`. The reason is required for a deny. A crash or any non-zero exit, including exit 2, also denies the call. A timeout does not: it lets the call go on to the normal permission flow. On most other events a failed hook is logged and skipped. So keep a blocking hook fast, and treat a hook that times out as a hook that allowed the call.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "`preToolUse` command hooks are fail-closed on exit `2` and on non-timeout errors" GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+Claude Code differs. For command hooks, exit code 0 means success. Exit code 2 blocks the action on events that can block, and feeds standard error back to the model as the reason. [Exit code 2 by event](#exit-code-2-by-event) lists what it does on each event. By default, any other non-zero exit code is a non-blocking error and the action proceeds. So a script that exits 1 on failure does not block anything in Claude Code, though it would in Copilot CLI. In Claude Code v2.1.295 or later, you can set `"onFailure": "block"` on a command handler. A hook that cannot start, times out, prints invalid JSON or exits with a code other than 0 or 2 then blocks the action. The setting has no effect on stop hooks. A pre-tool hook can also return JSON with a `permissionDecision` of `allow`, `deny`, `ask` or `defer`, plus a reason.
 
 **4. Parse the command. Do not match text.** A hook that looks for the string `push --force` misses `git push origin main -f`, because the flag comes later. The sample below splits the command into words with `shlex` and looks at the flags. It reads the tool call as JSON on standard input. It is a teaching sample, not a security boundary.
 
@@ -101,7 +130,11 @@ if __name__ == "__main__":
 
 The same file is at `examples/hook-sample/block_force_push.py`. A test file next to it, `test_matrix.py`, runs it on every row of the table below and prints one line per row.
 
-**Where to put it and how to register it.** Save the script as `.claude/hooks/block_force_push.py` in your project. Register it with the project-root variable, not a relative path. The hooks reference defines it in these words: "`${CLAUDE_PROJECT_DIR}`: the project root where the session started." Its own examples use the form `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.sh`. The same page says that handlers "run in the current directory", so a relative path breaks when the session moves to another directory.
+**The input format differs between agents.** The sample reads `tool_input.command`, which is Claude Code's input format. Copilot CLI sends `toolName` and `toolArgs` to a `preToolUse` hook. If you register the event under the name `PreToolUse` instead, it sends `tool_name` and `tool_input`, and it matches `Bash` as Claude Code does. Not checked against current docs: whether `tool_input` for Copilot CLI's shell tool carries a `command` field. Pipe a recorded call to the script by hand before you rely on it.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "When configured with the PascalCase event name `PreToolUse`, the payload uses snake\_case field names to match the VS Code Copilot extension format". GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+**Where to put it and how to register it in Claude Code.** Save the script as `.claude/hooks/block_force_push.py` in your project. Register it with the project-root variable, not a relative path. The hooks reference defines it in these words: "`${CLAUDE_PROJECT_DIR}`: the project root where the session started." Its own examples use the form `${CLAUDE_PROJECT_DIR}/.claude/hooks/block-rm.sh`. The same page says that handlers "run in the current directory", so a relative path breaks when the session moves to another directory.
 
 ```json
 {
@@ -118,7 +151,7 @@ The same file is at `examples/hook-sample/block_force_push.py`. A test file next
 
 Quote the expanded path, as the example does. A shell splits an unquoted path that contains a space into several words. Run through `sh -c` in a scratch folder with a space in its name, the quoted command ran the script, and the unquoted one exited 2 because Python could not open the split path. On that hook, exit 2 blocks the call. Name the interpreter (`python3` or `bash`) in the command, so the script needs no executable permission. If you run a script directly instead, run `chmod +x` on it first.
 
-**A broken hook can block every Bash call, or do nothing.** A missing Python script exits with code 2, which blocks. A missing shell script exits with code 127, which is a non-blocking error. The call goes ahead, and the only sign is a hook error notice in the transcript. With `"onFailure": "block"` (item 3), the missing script blocks the call instead.
+**A broken hook can block every Bash call, or do nothing.** In Claude Code, a missing Python script exits with code 2, which blocks. A missing shell script exits with code 127, which is a non-blocking error. The call goes ahead, and the only sign is a hook error notice in the transcript. With `"onFailure": "block"` (item 3), the missing script blocks the call instead. In Copilot CLI, both exits deny a `preToolUse` call, because any non-zero exit denies it.
 
 <Example
   label="Computed"
@@ -420,7 +453,11 @@ It shows the status of a pipeline in `sh`. It does not show how any harness read
 
 ### A one-shot stop reminder
 
-A stop hook that blocks every time keeps sending the agent back to work. By default, Claude Code permits eight consecutive continuations and overrides the next block. A tool call resets the count, and CLAUDE_CODE_STOP_HOOK_BLOCK_CAP can raise the cap, so this is not a total-run limit. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
+A stop hook that blocks every time keeps sending the agent back to work. In Copilot CLI, an `agentStop` hook that returns `"decision": "block"` forces another turn, with its `reason` as the next prompt. After eight blocks in a row, Copilot CLI ends the turn anyway. The sample below uses Claude Code's input and exit codes.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "After 8 consecutive `block` continuations, the CLI overrides the hook and ends the turn anyway, to prevent an unbounded loop." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+By default, Claude Code permits eight consecutive continuations and overrides the next block. A tool call resets the count, and CLAUDE_CODE_STOP_HOOK_BLOCK_CAP can raise the cap, so this is not a total-run limit. A one-shot reminder keys the block to the session identifier. It is a reminder, not a quality gate: it never looks at the test result. The docs list `session_id` as a common input field ("Current session identifier"). The script blocks the first stop in a session, writes a marker file named for the session, and passes after that. The docs say exit code 2 on `Stop` "prevents Claude from stopping, continues the conversation".
 
 Source for these excerpts: [gated_stop.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/hook-traps/gated_stop.py), [nested_repo_trap.sh](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/hook-traps/nested_repo_trap.sh), [one_shot_stop.py](https://github.com/GlenTiki/agentic-harness-guide/blob/main/examples/hook-traps/one_shot_stop.py).
 
@@ -610,21 +647,25 @@ It shows git's behaviour with an inherited variable. It does not show how your h
 
 ### Several hooks and latency
 
-The docs say: "When an event fires, its matching hooks run in parallel." So the wait for an event is about the slowest hook, not the sum. For pre-tool hooks the docs state the order: "When multiple PreToolUse hooks return different decisions, precedence is `deny` > `defer` > `ask` > `allow`." For other events, test two hooks that disagree before you rely on an order. The same page gives command hooks a default timeout of 600 seconds, so set a shorter one on each. This guide measured no harness-level latency and no parallel-hook latency. The only timings are the standalone script runs in the chart above.
+Copilot CLI runs several hooks for the same event in order, and a `preToolUse` call is blocked if any of them denies it. Its default timeout is 30 seconds, and a timeout lets the call through, so a slow guard is a weak guard.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-reference. Quoted line: "If multiple hooks of the same type are configured, they execute in order. For `preToolUse`, if any hook returns `\"deny\"`, the tool is blocked." GitHub Copilot CLI on that date: Version not checked. The docs page states no version of its own.</p>
+
+Claude Code differs. Its docs say: "When an event fires, its matching hooks run in parallel." So the wait for an event is about the slowest hook, not the sum. For pre-tool hooks the docs state the order: "When multiple PreToolUse hooks return different decisions, precedence is `deny` > `defer` > `ask` > `allow`." For other events, test two hooks that disagree before you rely on an order. The same page gives Claude Code command hooks a default timeout of 600 seconds, so set a shorter one on each. This guide measured no harness-level latency and no parallel-hook latency. The only timings are the standalone script runs in the chart above.
 
 ## Failure modes it reduces
 
 - The agent runs a destructive command that the instruction file forbids, because an instruction file is advice. A rule given only in chat can also be gone after compaction.
 - Unformatted or unlinted code reaches review.
 - The agent stops with failing tests and reports success.
-- A hook script exits 1 and the team believes it blocks a rule.
+- A hook script exits 1 in Claude Code and the team believes it blocks a rule.
 - A hook path that no longer resolves blocks every Bash call, or lets every call through, depending on the script type.
 - A text-matching hook misses the same command written in another order.
 
 ## First step for the maintainer
 
-Add one `PostToolUse` hook on `Edit|Write` that runs your formatter. Add one `PreToolUse` hook on `Bash` that blocks the single command you fear most. Trigger both on purpose to confirm they fire.
+Add one post-tool hook on file edits that runs your formatter (`postToolUse` in Copilot CLI, `PostToolUse` on `Edit|Write` in Claude Code). Add one pre-tool hook on shell commands that blocks the single command you fear most. Trigger both on purpose to confirm they fire.
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "Blocking error: your hook exits 2." Claude Code on that date: 2.1.316. The docs page states no version of its own. The sample and matrix were run on 2026-10-22 with Python 3, re-run on 2026-11-02, and are in the repository.</p>
 
-**Next:** [Claude Code permissions, sandboxing](../permissions-and-sandboxing/)
+**Next:** [Permissions and sandboxing](../permissions-and-sandboxing/)
