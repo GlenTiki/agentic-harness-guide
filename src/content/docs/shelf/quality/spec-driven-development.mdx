@@ -40,6 +40,10 @@ One paragraph: what changes for whom, and why.
 
 **2. Challenge the spec.** Ask a second agent, ideally from a different provider, to find missing criteria, ambiguous wording and unstated assumptions. Resolve each finding in the text. The [independent review](../independent-review/) page covers why a fresh context matters.
 
+Some agents have a planning mode that helps you draft the spec. GitHub Copilot CLI behaviour: press Shift+Tab to switch to plan mode. Copilot then asks clarifying questions and builds a plan before it writes code. Save the plan you accept in the spec shape above, so it outlives the session.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "In plan mode, Copilot analyzes your request, asks clarifying questions to understand scope and requirements, and builds a plan before writing any code." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
 **3. Write acceptance criteria that a test can check.** "Handles errors well" is not checkable. "Returns 503 with a retry-after header when the database is unreachable" is.
 
 **4. Include failure behaviour.** Name the edge cases up front: concurrent calls, duplicates and retries, stale state, cancellation, restart and resource exhaustion. For each, state the expected behaviour and the test that proves it. Keep the solution proportionate to measured load, and do not design for scale you have not measured.

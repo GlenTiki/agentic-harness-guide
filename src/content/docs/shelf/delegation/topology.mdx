@@ -107,6 +107,12 @@ The reason is arithmetic. Every return lands in the lead's context. The numbers 
 
 With the bound, the lead can run many more helpers before its own context fills. Without it, the lead pays for the helpers' noise and loses room for the task.
 
+## A whole task handed to a cloud agent
+
+Some agents can hand a whole task to an agent that runs remotely. That is one helper with a wide seam: it sees the prompt and the repository, and nothing you did not write down. GitHub Copilot CLI behaviour: `/delegate` sends the task to Copilot cloud agent, which works on a new branch, opens a draft pull request and asks you to review it. Write the prompt as a brief, and review the pull request as you would review any helper's return.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/delegate-tasks-to-cca. Quoted line: "Copilot cloud agent will open a draft pull request, make changes in the background, and request a review from you." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
 ## When not to delegate
 
 Keep the work in one context when any of these is true:
@@ -118,6 +124,5 @@ Keep the work in one context when any of these is true:
 
 A reviewer who is handed the author's reasoning may read the work as the author does. That is the design argument for giving a reviewer the raw data and the criterion, as [level 6](../../../journey/06-hire-a-team/) says. *Principle, not measured.* The guide's one isolated test of this found that a simulated same-context reviewer did as well as a fresh one on its task, so the guide does not claim a gain from fresh context. See the [C07 result on the evidence page](../../../evidence/). Choose independence for the design reason, and measure it on your own task.
 
-Not checked against current docs.
 
 **Next:** [Git worktrees for parallel agents](../worktree-isolation/)

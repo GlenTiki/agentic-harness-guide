@@ -42,7 +42,13 @@ exit 1
 
 **9. Mind memory on a shared machine.** Local models, container stacks and several agent sessions all compete for RAM. When swap grows, stop the least important process first.
 
-**10. Alert on the trend.** Record cost per session (see [Observability](../observability/)) and review the totals weekly. Set a hard spending limit at the provider if one is available.
+**10. Alert on the trend.** Record cost per session (see [Observability](../observability/)) and review the totals weekly. Set a hard spending limit at the provider if one is available. GitHub Copilot CLI behaviour: `/usage` shows the session's AI credits, duration, lines edited and token use per model. Copy it to your record before you close the session.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "`/usage`: Lets you view your session statistics". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+**11. Cap unattended continuation.** An agent mode that continues without a new prompt is a loop, so give it a count. GitHub Copilot CLI behaviour: `--max-autopilot-continues` caps the continuation messages in autopilot mode. See [Human-in-the-loop](../human-in-the-loop/) for what autopilot removes.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode. Quoted line: "Use `--max-autopilot-continues=COUNT` to cap automatic continuation messages." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
 
 ## Failure modes it reduces
 

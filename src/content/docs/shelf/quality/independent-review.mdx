@@ -36,6 +36,10 @@ Return findings as: file:line - checklist item - symptom.
 Drop vague findings. Do not edit files. Do not start other work.
 ```
 
+A read-only custom agent can hold this brief. In GitHub Copilot CLI, an agent profile with `tools: ["read", "search"]` cannot edit; see [Sub-agents](../../delegation/sub-agents/). GitHub Copilot CLI also consults a built-in "rubber duck" critic on some tasks. Copilot consults it on the author's behalf, so count it as part of the author's own work, not as an independent review.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli. Quoted line: "Acts as a constructive critic to provide feedback on some non-trivial tasks. Used automatically by Copilot CLI." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
 **2. A short checklist.** Include correctness, tests that would fail without the change, failure modes (concurrency, retries, partial writes, restart), security and secrets, and unnecessary scope. Keep it under twenty lines.
 
 **3. Compute a digest of the candidate.** Hash the diff between the merge base and the head, and record the digest with the verdict. Do not diff against the tip of the main branch. If main has moved, that diff also contains the reverse of every unrelated change that landed on main since you branched.

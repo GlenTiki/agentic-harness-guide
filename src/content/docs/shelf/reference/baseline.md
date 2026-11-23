@@ -14,8 +14,8 @@ description: The minimum viable harness as one checklist.
 ### Boundaries
 
 - [ ] **BL-01** Deny rules cover secrets files and credential directories. [Permissions and sandboxing](../../control/permissions-and-sandboxing/)
-- [ ] **BL-02** The shell sandbox is on, with an empty network allow list plus the hosts your build needs. A command that fails inside it cannot retry outside it (Claude Code behaviour: `allowUnsandboxedCommands` set to `false`; otherwise a matching allow rule approves the retry with no prompt).
-- [ ] **BL-03** Skip-all-prompts modes are disabled, or confined to a disposable environment.
+- [ ] **BL-02** The shell sandbox is on, with an empty network allow list plus the hosts your build needs. A command that fails inside it cannot retry outside it without a person. GitHub Copilot CLI behaviour: `/sandbox enable` turns on local sandboxing, and a hook cannot pre-approve a request to leave the sandbox. Claude Code behaviour: set `allowUnsandboxedCommands` to `false`; otherwise a matching allow rule approves the retry with no prompt.
+- [ ] **BL-03** Skip-all-prompts modes are disabled, or confined to a disposable environment. In GitHub Copilot CLI these are `--allow-all` (alias `--yolo`) and autopilot with full permissions.
 - [ ] **BL-04** Every external action has a capability switch, default off. [Capability gating](../../control/capability-gating/)
 
 ### Instructions and memory
@@ -28,8 +28,8 @@ description: The minimum viable harness as one checklist.
 ### Enforcement
 
 - [ ] **BL-09** A post-tool hook formats or lints edited files. [Hooks](../../control/hooks/)
-- [ ] **BL-10** A pre-tool hook blocks the one action you fear most, using exit code 2 or a deny decision, with `onFailure` set to `block` so a broken script also blocks (Claude Code behaviour). It covers the paths the hook sees; see [Hooks](../../control/hooks/).
-- [ ] **BL-11** A stop hook runs the test suite.
+- [ ] **BL-10** A pre-tool hook blocks the one action you fear most, using exit code 2 or a deny decision, and a broken script also blocks. GitHub Copilot CLI behaviour: a command `preToolUse` hook already blocks on a crash, but lets the call through on a timeout. Claude Code behaviour: set `onFailure` to `block`. It covers the paths the hook sees; see [Hooks](../../control/hooks/).
+- [ ] **BL-11** A stop hook runs the test suite (`agentStop` in GitHub Copilot CLI).
 - [ ] **BL-12** An audit log is written by a hook. [Observability](../../operations/observability/)
 
 ### Quality
@@ -59,6 +59,10 @@ Each unchecked box corresponds to a row in [Anti-patterns](../anti-patterns/), w
 ## First step for the maintainer
 
 The maintainer checks what the repository already has. The maintainer does the first unchecked item under Boundaries, then Enforcement, then Quality.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "To enable it, run `/sandbox enable` inside a session." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/reference/hooks-configuration. Quoted line: "leaving the sandbox is a privilege escalation the user must always confirm interactively". GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own. The same page gives the fail-closed and timeout rules for `preToolUse` and lists the `agentStop` event, and https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/use-autopilot-mode, fetched on the same date, documents `--allow-all` and its alias `--yolo`.</p>
 
 <p class="verified">Docs page fetched on 2026-11-02: https://code.claude.com/docs/en/hooks. Quoted line: "To block the action instead, set `"onFailure": "block"` on a `command` or `http` hook. Requires Claude Code v2.1.295 or later." Claude Code on that date: 2.1.316. The docs page states no version of its own.</p>
 

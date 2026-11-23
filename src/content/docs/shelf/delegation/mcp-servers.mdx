@@ -13,11 +13,22 @@ import Example from '../../../../components/Example.astro';
 
 ## Why it matters
 
-An MCP server (a connector, as [level 3](../../../journey/03-give-it-hands/) calls it) adds tools to the agent. Each tool is a new capability and a new source of text that reaches the model. A tool description is itself text the model reads and may follow, so a malicious or compromised server can steer the agent through its descriptions as well as through its output. Claude Code's own documentation says to verify that you trust each server before connecting it, and warns that servers which fetch external content can expose you to prompt injection.
+An MCP server (a connector, as [level 3](../../../journey/03-give-it-hands/) calls it) adds tools to the agent. Each tool is a new capability and a new source of text that reaches the model. A tool description is itself text the model reads and may follow, so a malicious or compromised server can steer the agent through its descriptions as well as through its output. Agent vendors say the same. Claude Code's documentation says to verify that you trust each server before connecting it, and warns that servers which fetch external content can expose you to prompt injection.
 
 ## What to enable
 
-**1. Choose the scope on purpose.** Claude Code behaviour: `claude mcp add` takes a scope. `local` is the default and applies to you in one project. `project` writes to a `.mcp.json` file at the repository root, which you commit to share the server with the team. `user` applies to all your projects. Share a server through the project scope only after the team has reviewed it.
+**1. Choose the scope on purpose.** A server can apply to you alone or to everyone who clones the repository. Share a server through the repository only after the team has reviewed it. GitHub Copilot CLI behaviour: the GitHub MCP server is already configured. `copilot mcp add` writes to your user configuration, `~/.copilot/mcp-config.json`. A project shares a server through `.github/mcp.json`, which you commit, or `.mcp.json`. The `--tools` option limits which tools of the server are on.
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers. Quoted line: "You can add MCP servers from the terminal using the `copilot mcp add` subcommand, without entering interactive mode. The server is added to the user configuration at `~/.copilot/mcp-config.json`." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own. The same page lists `.mcp.json` and `.github/mcp.json` as project-level locations and documents `--tools`. The use page, https://docs.github.com/en/copilot/how-tos/use-copilot-agents/use-copilot-cli, fetched on the same date, says: "Copilot CLI comes with the GitHub MCP server already configured."</p>
+
+Example, do not run:
+
+```bash
+copilot mcp add --transport http docs-search https://example.com/mcp
+copilot mcp list
+```
+
+Claude Code differs: `claude mcp add` takes a scope. `local` is the default and applies to you in one project. `project` writes to a `.mcp.json` file at the repository root. `user` applies to all your projects.
 
 Example, do not run:
 
@@ -26,9 +37,23 @@ claude mcp add --transport http docs-search --scope project https://example.com/
 claude mcp list
 ```
 
-**2. Expect an approval prompt.** Claude Code behaviour: interactive Claude Code asks you to approve project-scoped servers before use. The MCP documentation says: "In `claude -p` runs, Agent SDK sessions, and cloud sessions outside a project's threads, Claude Code can't show that prompt: it loads project-scoped servers without asking." To keep a server out anyway, add it to `disabledMcpjsonServers`, which blocks it in every permission mode. You can also exclude project settings entirely with `--setting-sources`, or start the session with `--strict-mcp-config` so that only the servers you pass with `--mcp-config` load. Skipping the approval prompt for the project servers a strict session does not load needs Claude Code v2.1.246 or later.
+**2. Know when project servers load.** A committed server file is code from whoever wrote the last commit. Check when your agent loads it. GitHub Copilot CLI behaviour: project-level servers load only after you confirm folder trust on first launch, and they are skipped in a folder you do not trust. In prompt mode (`copilot -p`) they load without a prompt when the folder is already trusted. To keep one configured server out, run `/mcp disable SERVER-NAME` in a session.
 
-**3. Use the full tool name in rules.** MCP tools are named `mcp__<server>__<tool>`. Write permission rules, skill `allowed-tools` and sub-agent `tools` lists with those names. Allow a read tool and leave the write tool to ask:
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/add-mcp-servers. Quoted line: "Project-level MCP servers are loaded only after you confirm folder trust on first launch. They are skipped in untrusted directories." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Claude Code differs: interactive Claude Code asks you to approve project-scoped servers before use. Its MCP documentation says: "In `claude -p` runs, Agent SDK sessions, and cloud sessions outside a project's threads, Claude Code can't show that prompt: it loads project-scoped servers without asking." To keep a server out anyway, add it to `disabledMcpjsonServers`, or start the session with `--strict-mcp-config` so that only the servers you pass with `--mcp-config` load (Claude Code v2.1.246 or later skips the prompt for the servers that strict session does not load).
+
+**3. Name each tool in your rules.** Allow a read tool and leave the write tool to ask. GitHub Copilot CLI behaviour: `--allow-tool` and `--deny-tool` take a server name, with the tool in brackets, such as `'docs-search(search)'`. A tool you do not allow still asks in the default approval mode.
+
+Example, do not run:
+
+```bash
+copilot --allow-tool='docs-search(search)'
+```
+
+<p class="verified">Docs page fetched on 2026-11-23: https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli. Quoted line: "Tools from the server are specified in parentheses, using the tool name that is registered with the MCP server." GitHub Copilot CLI on that date: 1.0.110. The docs page states no version of its own.</p>
+
+Claude Code differs: MCP tools are named `mcp__<server>__<tool>`. Write permission rules, skill `allowed-tools` and sub-agent `tools` lists with those names:
 
 ```json
 {
@@ -45,7 +70,7 @@ claude mcp list
 
 **6. Give it the least credential.** Use an access key scoped to the one resource and the one verb the server needs. Do not reuse your personal full-access key.
 
-**7. Remember the sandbox boundary.** MCP servers run outside Claude Code's shell sandbox. Their reach is whatever the server process can do. Run servers that handle untrusted content in a container.
+**7. Remember the sandbox boundary.** A local MCP server is its own process, and a shell sandbox may not cover it. Claude Code's sandboxing page says local MCP servers run with your full access. For GitHub Copilot CLI, whether local sandboxing covers MCP servers was not checked against current docs. Assume a server's reach is whatever the server process can do. Run servers that handle untrusted content in a container.
 
 **8. Treat output as data.** A search result, a ticket body or a page the server returns can contain injected instructions. See [Untrusted input](../../control/untrusted-input/).
 
@@ -178,7 +203,7 @@ The costs differ. A connector's definitions occupy context in every session, as 
 - A tool description tells the agent to send data to another tool.
 - An upgraded server silently adds a write tool.
 - A personal access key with wide scope leaks through a server's logs.
-- A committed `.mcp.json` from a cloned repository starts a server you never reviewed.
+- A committed `.mcp.json` or `.github/mcp.json` from a cloned repository starts a server you never reviewed.
 
 ## First step for the maintainer
 
